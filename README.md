@@ -1,20 +1,20 @@
 # SKYNovel ESM
-[![MIT License](https://img.shields.io/github/license/famibee/skynovel_ems.svg)](https://github.com/famibee/skynovel_ems/blob/master/LICENSE)
+[![MIT License](https://img.shields.io/github/license/famibee/skynovel_esm.svg)](https://github.com/famibee/skynovel_esm/blob/master/LICENSE)
 ![platform](https://img.shields.io/badge/platform-windows%20%7C%20macos-lightgrey.svg)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/famibee/skynovel_ems?color=brightgreen)
-![GitHub last commit](https://img.shields.io/github/last-commit/famibee/skynovel_ems)
-![npm type definitions](https://img.shields.io/npm/types/skynovel_ems)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/famibee/skynovel_esm?color=brightgreen)
+![GitHub last commit](https://img.shields.io/github/last-commit/famibee/skynovel_esm)
+![npm type definitions](https://img.shields.io/npm/types/skynovel_esm)
 
-[![Build Status](https://app.travis-ci.com/famibee/skynovel_ems.svg?branch=master)](https://app.travis-ci.com/famibee/skynovel_ems)
-[![Maintainability](https://api.codeclimate.com/v1/badges/228e91311459ce3f7e10/maintainability)](https://codeclimate.com/github/famibee/skynovel_ems/maintainability)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/famibee/skynovel_ems)
-![GitHub Release Date](https://img.shields.io/github/release-date/famibee/skynovel_ems)
-![Release package](https://github.com/famibee/skynovel_ems/workflows/Release%20package/badge.svg)
+[![Build Status](https://app.travis-ci.com/famibee/skynovel_esm.svg?branch=master)](https://app.travis-ci.com/famibee/skynovel_esm)
+[![Maintainability](https://api.codeclimate.com/v1/badges/228e91311459ce3f7e10/maintainability)](https://codeclimate.com/github/famibee/skynovel_esm/maintainability)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/famibee/skynovel_esm)
+![GitHub Release Date](https://img.shields.io/github/release-date/famibee/skynovel_esm)
+![Release package](https://github.com/famibee/skynovel_esm/workflows/Release%20package/badge.svg)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 WebGL NovelGame framework by PixiJS
 
-![logo.svg](https://raw.githubusercontent.com/famibee/skynovel_ems/master/test/icon.svg)
+![logo.svg](https://raw.githubusercontent.com/famibee/skynovel_esm/master/test/icon.svg)
 
 [CHANGELOG.md](CHANGELOG.md)
 
@@ -22,7 +22,7 @@ WebGL NovelGame framework by PixiJS
 ## description（説明）
 
 - コンセプトスライド（機能ギャラリー内に含めました）
-- [開発者向け情報 Information for developers](https://famibee.github.io/skynovel_ems/dev.html)
+- [開発者向け情報 Information for developers](https://famibee.github.io/skynovel_esm/dev.html)
 
 ## example
 
@@ -43,7 +43,7 @@ WebGL NovelGame framework by PixiJS
 
 ---
 ## 拡張機能 / Extension
- - [SKYNovel - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=famibee.skynovel)
+ - [SKYNovel - Visual Studio Marketplace](https://marketplace.visualstudio.com/itesm?itemName=famibee.skynovel)
 
 ---
 ## License ... [MIT](LICENSE)

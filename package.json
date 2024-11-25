@@ -56,7 +56,7 @@
 	},
 	"scripts": {
 		"build": "bun src/build.ts",
-		"watch": "bun --watch src/build.ts --watch",
+		"watch": "bun src/build.ts --watch",
 		"update": "bun update && bun watch && ncu -g",
 		"test": "bun test",
 		"docs": "vite docs/ --open /tag.html",
