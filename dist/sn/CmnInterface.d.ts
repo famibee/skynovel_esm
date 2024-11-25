@@ -1,4 +1,6 @@
 import { HArg, ITag } from './Grammar';
+import { DisplayObject, RenderTexture } from 'pixi.js';
+import { Layer } from './Layer';
 export interface IMyTrace {
     (txt: string, lvl?: string, fnline?: boolean, adjust_line?: number): void;
 }
@@ -17,17 +19,14 @@ export type T_PLUGIN_INFO = {
     };
 };
 export type IPluginInitArg = {
-    getInfo(): void;
-    addTag(tag_name: string, tag_fnc: boolean): void;
-    addLayCls(cls: string, fnc: Function): void;
     getInfo(): T_PLUGIN_INFO;
     addTag(tag_name: string, tag_fnc: ITag): void;
+    addLayCls(cls: string, fnc: ILayerFactory): void;
     searchPath(fn: string, extptn?: string): string;
     getVal(arg_name: string, def?: number | string): object;
     resume(fnc?: () => void): void;
-    render(): void;
+    render(dsp: DisplayObject, renTx?: RenderTexture, clear?: boolean): void;
     setDec(fnc: (ext: string, tx: string) => Promise<string>): void;
-    setDecAB(fnc: (ab: ArrayBuffer) => Promise<boolean>): void;
     setDecAB(fnc: (ab: ArrayBuffer) => Promise<PLUGIN_DECAB_RET>): void;
     setEnc(fnc: (tx: string) => Promise<string>): void;
     getStK(fnc: () => string): void;
@@ -39,6 +38,9 @@ export interface IPlugin {
 export interface HPlugin {
     [name: string]: IPlugin;
 }
+export interface ILayerFactory {
+    (): Layer;
+}
 export type HSysBaseArg = {
     cur: string;
     crypto: boolean;
@@ -46,6 +48,7 @@ export type HSysBaseArg = {
 };
 export type SYS_DEC_RET = HTMLImageElement | HTMLVideoElement | ArrayBuffer;
 export interface ISysBase {
+    initVal(data: IData4Vari, hTmp: object, comp: (data: IData4Vari) => void): Promise<void>;
     flush(): void;
     dec(ext: string, tx: string): Promise<string>;
     decAB(ab: ArrayBuffer): Promise<SYS_DEC_RET>;

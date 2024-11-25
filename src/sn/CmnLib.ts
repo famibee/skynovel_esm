@@ -5,8 +5,8 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-// import {HArg} from './Grammar';
-// import {IHEvt2Fnc} from './CmnInterface';
+import {HArg} from './Grammar';
+import {IHEvt2Fnc} from './CmnInterface';
 
 // =============== Global
 export function int(o: any): number {return parseInt(String(o), 10)}
@@ -54,21 +54,21 @@ export function addStyle(style: string) {
 
 
 
-// // =============== EventMng
-// import {Container} from 'pixi.js';
-// export interface IEvtMng {
-// 	button(hArg: HArg, ctnBtn: Container, normal: ()=> void, hover: ()=> boolean, clicked: ()=> void): void;
-// 	unButton(em: Container): void;
-// 	get	isSkipping(): boolean;
-// 	popLocalEvts(): IHEvt2Fnc;
-// 	pushLocalEvts(a: IHEvt2Fnc): void;
-// 	waitEvent(evnm: string, hArg: HArg, onFire: ()=> void): boolean;
-// 	breakEvent(evnm: string): void;
-// 	hideHint(): void;
-// 	cvsResize(): void;
+// =============== EventMng
+import {Container} from 'pixi.js';
+export interface IEvtMng {
+	button(hArg: HArg, ctnBtn: Container, normal: ()=> void, hover: ()=> boolean, clicked: ()=> void): void;
+	unButton(em: Container): void;
+	get	isSkipping(): boolean;
+	popLocalEvts(): IHEvt2Fnc;
+	pushLocalEvts(a: IHEvt2Fnc): void;
+	waitEvent(evnm: string, hArg: HArg, onFire: ()=> void): boolean;
+	breakEvent(evnm: string): void;
+	hideHint(): void;
+	cvsResize(): void;
 
-// 	resvFlameEvent(win: Window): void;
-// }
+	resvFlameEvent(win: Window): void;
+}
 
 export	function argChk_Num(hash: any, name: string, def: number): number {
 	const v = hash[name];
@@ -116,34 +116,34 @@ export	function argChk_Boolean(hash: any, name: string, def: boolean): boolean {
 }
 
 
-// export function parseColor(v: string): number {
-// 	if (v.startsWith('#')) return parseInt(v.slice(1), 16);
-// 	const n = Number(v);
-// 	if (! isNaN(n)) return n;	// 0, 0xffffff
+export function parseColor(v: string): number {
+	if (v.startsWith('#')) return parseInt(v.slice(1), 16);
+	const n = Number(v);
+	if (! isNaN(n)) return n;	// 0, 0xffffff
 
-// 	if (v === 'black') return 0;
-// 	CmnLib.cc4ColorName.fillStyle = v;
-// 	const cc = CmnLib.cc4ColorName.fillStyle;
-// 	if (cc === '#000000') throw `色名前 ${v} が異常です`;
+	if (v === 'black') return 0;
+	CmnLib.cc4ColorName.fillStyle = v;
+	const cc = CmnLib.cc4ColorName.fillStyle;
+	if (cc === '#000000') throw `色名前 ${v} が異常です`;
 
-// 	return parseInt(cc.slice(1), 16);
-// }
-// export	function argChk_Color(hash: any, name: string, def: number): number {
-// 	const v = hash[name];
-// 	if (! v) return hash[name] = def;
+	return parseInt(cc.slice(1), 16);
+}
+export	function argChk_Color(hash: any, name: string, def: number): number {
+	const v = hash[name];
+	if (! v) return hash[name] = def;
 
-// 	return hash[name] = parseColor(String(v));
-// }
+	return hash[name] = parseColor(String(v));
+}
 
 
-// const REG_ERRMES_JSON = /JSON at position (\d+)$/;
-// 	// Unexpected number in JSON at position 
-// export	function mesErrJSON(hArg: HArg, nm = '', mes = ''): string {
-// 	const col = (mes.match(REG_ERRMES_JSON) ?? ['',''])[1];
-// 	return `[${hArg[':タグ名']}] ${nm} 属性の解析エラー : ${mes}
-// ${(hArg as any)[nm]}${col ?`
-// ${'^'.padStart(Number(col))}` :``}`;
-// }
+const REG_ERRMES_JSON = /JSON at position (\d+)$/;
+	// Unexpected number in JSON at position 
+export	function mesErrJSON(hArg: HArg, nm = '', mes = ''): string {
+	const col = (mes.match(REG_ERRMES_JSON) ?? ['',''])[1];
+	return `[${hArg[':タグ名']}] ${nm} 属性の解析エラー : ${mes}
+${(hArg as any)[nm]}${col ?`
+${'^'.padStart(Number(col))}` :``}`;
+}
 
 
 const REG_FN	= /^[^\/\.]+$|[^\/]+(?=\.)/;

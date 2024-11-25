@@ -8,16 +8,8 @@
 import type {HPlugin, IPlugin, IPluginInitArg} from './sn/CmnInterface';
 export type {HPlugin, IPlugin, IPluginInitArg};
 
-export class SNWeb {
-	// readonly	#app = new Application;
+import {SysWeb} from './sn/SysWeb';
+import {CmnLib, argChk_Num, argChk_Boolean} from './sn/CmnLib';
+import {Layer} from './sn/Layer';
 
-	constructor() {
-console.log(`fn:web.ts line:15 `);
-	}
-
-	async init() {
-
-
-	}
-
-}
+export {SysWeb, CmnLib, argChk_Num, argChk_Boolean, Layer};

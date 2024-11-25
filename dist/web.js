@@ -1,12 +1,9 @@
-class o {
-  // readonly	#app = new Application;
-  constructor() {
-    console.log("fn:web.ts line:15 ");
-  }
-  async init() {
-  }
-}
+import { k as r, l as e, j as o, c as b, b as k } from "./web2.js";
 export {
-  o as SNWeb
+  r as CmnLib,
+  e as Layer,
+  o as SysWeb,
+  b as argChk_Boolean,
+  k as argChk_Num
 };
 //# sourceMappingURL=web.js.map
