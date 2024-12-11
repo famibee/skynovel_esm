@@ -953,6 +953,7 @@ class S {
     }, this.stop = () => {
       t.stop(), this.#s();
     }, this.destroy = () => t.destroy(), this.buf) {
+      // セリフ再生中はBGM音量を絞る
       case ot:
         const e = Number(h.getVal("sys:sn.sound.BGM.vol_mul_talking") ?? 1);
         if (e === 1) break;

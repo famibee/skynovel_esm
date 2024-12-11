@@ -158,7 +158,6 @@ export class FrameMng implements IGetFrm {
 		);
 	}
 
-	static	#REG_REP_PRM = /\?([^?]+)$/;	// https://regex101.com/r/ZUnoFq/1
 	static	#loadPic2Img(src: string, img: HTMLImageElement, onload?: (img2: HTMLImageElement)=> void) {
 		const oUrl = this.#hEncImgOUrl[src];
 		if (oUrl) {
@@ -171,8 +170,7 @@ export class FrameMng implements IGetFrm {
 		if (aImg) {aImg.push(img); return}	// load 終了前の駆け込み対応
 		this.#hARetImg[src] = [img];
 
-		const srcNoPrm = src.replace(FrameMng.#REG_REP_PRM, '');
-		const prmSrc = (src === srcNoPrm) ?'' :src.slice(srcNoPrm.length);
+		const [srcNoPrm='', Prm=''] = src.split('?');
 		const path = FrameMng.#cfg.searchPath(srcNoPrm, SEARCH_PATH_ARG_EXT.SP_GSM);
 		const ld2 = (new Loader)
 		.add({name: src, url: path, xhrType: LoaderResource.XHR_RESPONSE_TYPE.BUFFER,});
@@ -191,7 +189,7 @@ export class FrameMng implements IGetFrm {
 		ld2.load((_ldr, hRes)=> {
 			for (const [s2, {data: {src}}] of Object.entries(hRes)) {
 				const u2 = this.#hEncImgOUrl[s2]
-				= src + (src.slice(0, 5) === 'blob:' ?'' :prmSrc);
+				= src + (src.startsWith('blob:') ?'' :Prm);
 				const ri = this.#hARetImg[s2];
 				if (ri) for (const i of ri) {
 					i.src = u2;
@@ -317,10 +315,10 @@ export class FrameMng implements IGetFrm {
 		if ('disabled' in hArg) {
 			const d = this.#hDisabled[id] = argChk_Boolean(hArg, 'disabled', true);
 			const b = f.contentDocument!.body;
-			[
+			for (const e of [
 				...Array.from(b.getElementsByTagName('input')),
 				...Array.from(b.getElementsByTagName('select')),
-			].forEach(e=> e.disabled = d);
+			]) e.disabled = d;
 		}
 
 		return false;

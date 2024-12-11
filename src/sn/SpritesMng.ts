@@ -85,11 +85,11 @@ export class SpritesMng {
 		this.fncAllComp		= ()=> {};
 		this.#addChild		= sp=> sp.destroy();
 
-		this.#aSp.forEach(sp=> {
+		for (const sp of this.#aSp) {
 			SpritesMng.stopVideo(sp.name);
 			sp.parent?.removeChild(sp);
 			sp.destroy();
-		});
+		}
 		this.#aSp = [];
 	}
 
@@ -121,7 +121,10 @@ export class SpritesMng {
 
 		const aComp: {fn: string, fnc: IFncCompSpr}[] = [];
 		const ldr = new Loader;
-		csv.split(',').forEach((fn0, i)=> {
+		const a = csv.split(',');
+		const len = a.length;
+		for (let i=0; i<len; ++i) {
+			const fn0 = a[i];
 			if (! fn0) throw 'face属性に空要素が含まれます';
 
 			// 差分絵を重ねる
@@ -138,17 +141,17 @@ export class SpritesMng {
 			};
 			aComp.push({fn, fnc});
 
-			if (fn in SpritesMng.#hFn2ResAniSpr) return;
-			if (fn in utils.TextureCache) return;
-			//if (fn in utils.BaseTextureCache) return;		// 警告に変化なし
-			if (fn in Loader.shared.resources) return;
+			if (fn in SpritesMng.#hFn2ResAniSpr) break;
+			if (fn in utils.TextureCache) break;
+			//if (fn in utils.BaseTextureCache) break;		// 警告に変化なし
+			if (fn in Loader.shared.resources) break;
 			//if (fn in SpritesMng.#ldrHFn) {
 				// ここに来るという中途半端な状態がある。お陰で警告が出てしまう
 				// （警告を消そうとする）以下の試みは効かない。直前の if でそもそもここに来ない
 				//	Texture.removeFromCache(fn);
 				//	delete utils.TextureCache[fn];
 				//	delete Loader.shared.resources[fn];
-				// return;	// これは厳禁、御法度。
+				// break;	// これは厳禁、御法度。
 					// 画像ボタンや文字ボタン背景で同じ画像を、間を置かずロードした場合に最初一つしか表示されなくなる。以下は確認用ギャラリー
 					// http://localhost:8082/index.html?cur=ch_button
 			//}
@@ -162,7 +165,7 @@ export class SpritesMng {
 				: LoaderResource.XHR_RESPONSE_TYPE.BUFFER}
 			: {};
 			ldr.add({...xt, name: fn, url});
-		});
+		}
 
 		const fncLoaded = (_: any, hRes: {[fn: string]: LoaderResource})=> {
 			for (const {fn, fnc} of aComp) {
