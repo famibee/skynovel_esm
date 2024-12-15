@@ -5,12 +5,12 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import {SysBase} from "./SysBase";
+import {SysBase} from './SysBase';
 import {CmnLib, getDateStr, argChk_Boolean, argChk_Num} from './CmnLib';
-import {IHTag, ITag} from './Grammar';
-import {IVariable, IMain, IData4Vari, HPlugin, HSysBaseArg} from './CmnInterface';
+import type {IHTag, ITag} from './Grammar';
+import type {IVariable, IMain, IData4Vari, HPlugin, HSysBaseArg} from './CmnInterface';
 import {Main} from './Main';
-import {IFn2Path, IConfig} from './ConfigBase';
+import type {IFn2Path, IConfig} from './ConfigBase';
 
 import {Application} from 'pixi.js';
 import store from 'store';

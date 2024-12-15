@@ -5,11 +5,11 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import {CmnLib, IEvtMng, argChk_Boolean, argChk_Num, getExt} from './CmnLib';
+import {CmnLib, type IEvtMng, argChk_Boolean, argChk_Num, getExt} from './CmnLib';
 import {CmnTween} from './CmnTween';
-import {IHTag, HArg} from './Grammar';
-import {IVariable, IMain, IGetFrm} from './CmnInterface';
-import {SysBase} from './SysBase';
+import type {IHTag, HArg} from './Grammar';
+import type {IVariable, IMain, IGetFrm} from './CmnInterface';
+import type {SysBase} from './SysBase';
 import {Config} from './Config';
 import {SEARCH_PATH_ARG_EXT} from './ConfigBase';
 import {Main} from './Main';
@@ -188,8 +188,8 @@ export class FrameMng implements IGetFrm {
 		});
 		ld2.load((_ldr, hRes)=> {
 			for (const [s2, {data: {src}}] of Object.entries(hRes)) {
-				const u2 = this.#hEncImgOUrl[s2]
-				= src + (src.startsWith('blob:') ?'' :Prm);
+				const u2 = this.#hEncImgOUrl[s2] = src
+				+ (src.startsWith('blob:') ?'' :(Prm ? '?': '')+ Prm);
 				const ri = this.#hARetImg[s2];
 				if (ri) for (const i of ri) {
 					i.src = u2;

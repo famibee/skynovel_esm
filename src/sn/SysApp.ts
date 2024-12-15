@@ -7,14 +7,14 @@
 
 import {SysNode} from './SysNode';
 import {CmnLib, getDateStr, argChk_Boolean, argChk_Num, uint} from './CmnLib';
-import {IHTag, ITag} from './Grammar';
-import {IVariable, IData4Vari, IMain, HPlugin, HSysBaseArg} from './CmnInterface';
+import type {IHTag, ITag} from './Grammar';
+import type {IVariable, IData4Vari, IMain, HPlugin, HSysBaseArg} from './CmnInterface';
 import {Main} from './Main';
 import {DebugMng} from './DebugMng';
 
 import {Application} from 'pixi.js';
-import {HINFO, HPROC, SAVE_WIN_INF} from '../preload';
-import {IpcRendererEvent, MessageBoxOptions} from 'electron/renderer';
+import type {HINFO, HPROC, SAVE_WIN_INF} from '../preload';
+import type {IpcRendererEvent, MessageBoxOptions} from 'electron/renderer';
 const to_app: HPROC = (window as any).to_app;
 //const {to_app} = window;
 

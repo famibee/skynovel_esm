@@ -5,15 +5,15 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import {IHTag, ITag} from './Grammar';
-import {IVariable, ISysBase, IData4Vari, HPlugin, HSysBaseArg, ILayerFactory, IMain, IFire, IFncHook, PLUGIN_DECAB_RET, T_PLUGIN_INFO} from './CmnInterface';
+import type {IHTag, ITag} from './Grammar';
+import type {IVariable, ISysBase, IData4Vari, HPlugin, HSysBaseArg, ILayerFactory, IMain, IFire, IFncHook, PLUGIN_DECAB_RET, T_PLUGIN_INFO} from './CmnInterface';
 import {argChk_Boolean, CmnLib} from './CmnLib';
 import {EventListenerCtn} from './EventListenerCtn';
 import {Main} from './Main';
+import {type IConfig, type IFn2Path, type ISysRoots, SEARCH_PATH_ARG_EXT} from './ConfigBase';
 
 import {Application, DisplayObject, RenderTexture} from 'pixi.js';
 import {io, Socket} from 'socket.io-client';
-import {IConfig, IFn2Path, ISysRoots, SEARCH_PATH_ARG_EXT} from './ConfigBase';
 
 
 export class SysBase implements ISysRoots, ISysBase {

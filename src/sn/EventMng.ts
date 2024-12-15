@@ -5,24 +5,24 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import {CmnLib, IEvtMng, argChk_Boolean, addStyle, mesErrJSON} from './CmnLib';
-import {IHTag, HArg} from './Grammar';
-import {IVariable, IMain, IHEvt2Fnc} from './CmnInterface';
-import {LayerMng} from './LayerMng';
-import {ScriptIterator} from './ScriptIterator';
+import {CmnLib, type IEvtMng, argChk_Boolean, addStyle, mesErrJSON} from './CmnLib';
+import type {IHTag, HArg} from './Grammar';
+import type {IVariable, IMain, IHEvt2Fnc} from './CmnInterface';
+import type {LayerMng} from './LayerMng';
+import type {ScriptIterator} from './ScriptIterator';
 import {TxtLayer} from './TxtLayer';
 import {EventListenerCtn} from './EventListenerCtn';
 import {Button} from './Button';
 import {FocusMng} from './FocusMng';
 import {Main} from './Main';
-import {SoundMng} from './SoundMng';
-import {Config} from './Config';
+import type {SoundMng} from './SoundMng';
+import type {Config} from './Config';
 import {SysBase} from './SysBase';
 import {SEARCH_PATH_ARG_EXT} from './ConfigBase';
 import {ReadState} from './ReadState';
 
 import {Container, Application, utils} from 'pixi.js';
-import {createPopper, Instance as InsPop} from '@popperjs/core';
+import {createPopper, type Instance as InsPop} from '@popperjs/core';
 
 export class EventMng implements IEvtMng {
 	readonly	#elc		= new EventListenerCtn;
@@ -470,9 +470,7 @@ export class EventMng implements IEvtMng {
 			const len = aEv.length;
 			for (let i=0; i<len; ++i) {
 				const v = aEv[i]!;
-				const len = g.el.length;
-				for (let j=0; j<len; ++j) {
-					const elm = g.el[j]!;
+				g.el.forEach(elm=> {
 					this.#elc.add(elm, v, e=> {
 						if (! this.#rs.isWait || this.layMng.getFrmDisabled(g.id)) return;
 						if (v === 'keydown' && e.key !== 'Enter') return;
@@ -492,7 +490,7 @@ export class EventMng implements IEvtMng {
 						},
 						()=> {},
 					);
-				}
+				});
 			}
 
 			// return;	// hGlobalEvt2Fnc(hLocalEvt2Fnc)登録もする
@@ -531,18 +529,15 @@ export class EventMng implements IEvtMng {
 			const g = ReadState.getHtmlElmList(add);
 			if (g.el.length === 0 && argChk_Boolean(hArg, 'need_err', true)) throw `HTML内にセレクタ（${g.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
 
-			for (const key in g.el) {
-				const elm = g.el[key]!;
-				this.#fcs.add(
-					elm,
-					()=> {
-						if (! this.#canFocus(elm)) return false;
-						elm.focus();
-						return true;
-					},
-					()=> {},
-				);
-			}
+			g.el.forEach(elm=> this.#fcs.add(
+				elm,
+				()=> {
+					if (! this.#canFocus(elm)) return false;
+					elm.focus();
+					return true;
+				},
+				()=> {},
+			));
 			return false;
 		}
 
@@ -550,7 +545,7 @@ export class EventMng implements IEvtMng {
 			const g = ReadState.getHtmlElmList(del);
 			if (g.el.length === 0 && argChk_Boolean(hArg, 'need_err', true)) throw `HTML内にセレクタ（${g.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
 
-			for (const key in g.el) this.#fcs.remove(g.el[key]!);
+			g.el.forEach(elm=> this.#fcs.remove(elm));
 			return false;
 		}
 

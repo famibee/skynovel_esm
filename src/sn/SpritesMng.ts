@@ -5,16 +5,17 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import {Sprite, Container, Texture, AnimatedSprite, LoaderResource, utils, Loader, Rectangle, BLEND_MODES} from 'pixi.js';
 import {Config} from './Config';
-import {IEvtMng, argChk_Boolean, argChk_Num, getFn, int} from './CmnLib';
-import {IMain, IVariable, SYS_DEC_RET} from './CmnInterface';
+import {type IEvtMng, argChk_Boolean, argChk_Num, getFn, int} from './CmnLib';
+import type {IMain, IVariable, SYS_DEC_RET} from './CmnInterface';
 import {DebugMng} from './DebugMng';
 import {SEARCH_PATH_ARG_EXT} from './ConfigBase';
-import {SysBase} from './SysBase';
-import {SoundMng} from './SoundMng';
-import {HArg} from './Grammar';
+import type {SysBase} from './SysBase';
+import type {SoundMng} from './SoundMng';
+import type {HArg} from './Grammar';
 import {Layer} from './Layer';
+
+import {Sprite, Container, Texture, AnimatedSprite, LoaderResource, utils, Loader, Rectangle, BLEND_MODES} from 'pixi.js';
 
 type IFncCompSpr = (sp: Sprite)=> void;
 

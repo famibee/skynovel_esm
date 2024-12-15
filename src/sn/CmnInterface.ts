@@ -5,7 +5,7 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import {HArg, ITag} from './Grammar';
+import type {HArg, ITag} from './Grammar';
 
 export interface IMyTrace {
 	(txt: string, lvl?: string, fnline?: boolean, adjust_line?: number): void;
