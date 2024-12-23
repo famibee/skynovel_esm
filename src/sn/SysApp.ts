@@ -20,11 +20,13 @@ import {Application} from 'pixi.js';
 
 // console.log はアプリのコンソールに出る
 export class SysApp extends SysNode {
-	#em = new IpcEmitter<T_IpcEvents>;
+	#em		= new IpcEmitter<T_IpcEvents>;
+	#ipc	= new IpcListener<T_IpcRendererEvent>;
+
 	constructor(...[hPlg = {}, arg = {cur: 'prj/', crypto: false, dip: ''}]: T_SysBaseParams) {	// DOMContentLoaded は呼び出し側でやる
 		super(hPlg, arg)
 
-		this.loaded(hPlg, arg);
+		queueMicrotask(async ()=> this.loaded(hPlg, arg));
 	}
 	protected override async loaded(...[hPlg, arg]: T_SysBaseLoadedParams) {
 		await super.loaded(hPlg, arg);
@@ -35,8 +37,7 @@ export class SysApp extends SysNode {
 
 		this.$path_downloads = this.#hInfo.downloads.replaceAll('\\', '/') +'/';
 
-		const ipc = new IpcListener<T_IpcRendererEvent>;
-		ipc.on('log', (_: IpcRendererEvent, arg: any)=> console.info(`[main log] %o`, arg));
+		this.#ipc.on('log', (_: IpcRendererEvent, arg: any)=> console.info(`[main log] %o`, arg));
 
 		CmnLib.isDbg = Boolean(this.#hInfo.env['SKYNOVEL_DBG']) && ! CmnLib.isPackaged;	// 配布版では無効
 		if (CmnLib.isDbg) this.extPort = uint(this.#hInfo.env['SKYNOVEL_PORT'] ?? '3776');
@@ -52,14 +53,14 @@ export class SysApp extends SysNode {
 
 
 
-		const hdlIpcBtn = document.getElementById('ipcHandler');
-		if (hdlIpcBtn) hdlIpcBtn.addEventListener('click', ()=> {
-			this.sendTST('ping');
-		});
-		ipc.on('ready', (_e, arg)=> {
-console.log(`fn:SysApp.ts line:30 ready arg:${arg}`);
-		})
-		this.#em.send('ping', 'pong')
+// 		const hdlIpcBtn = document.getElementById('ipcHandler');
+// 		if (hdlIpcBtn) hdlIpcBtn.addEventListener('click', ()=> {
+// 			this.sendTST('ping');
+// 		});
+// 		ipc.on('ready', (_e, arg)=> {
+// console.log(`fn:SysApp.ts line:30 ready arg:${arg}`);
+// 		})
+// 		this.#em.send('ping', 'pong')
 	}
 	#hInfo:  HINFO = {
 		getAppPath	: '',
@@ -71,11 +72,6 @@ console.log(`fn:SysApp.ts line:30 ready arg:${arg}`);
 		platform	: '',
 		arch		: '',
 	};
-
-	sendTST(mes: string) {
-console.log(`fn:SysApp.ts line:41 B? sendTST:${mes}`);
-		this.#em.send('ping', mes)
-	}
 
 
 	override	fetch = (url: string)=> fetch(url, {cache: 'no-store'});
@@ -123,7 +119,7 @@ console.log(`fn:SysApp.ts line:41 B? sendTST:${mes}`);
 			const h = (this.data.sys as any)['const.sn.nativeWindow.h'] ?? CmnLib.stageH;
 			this.#em.invoke('inited', this.cfg.oCfg, {c: first, x, y, w, h});
 
-			this.#em.invoke('on', 'save_win_inf', (_e: IpcRendererEvent, {x, y, w, h, scrw, scrh}: SAVE_WIN_INF)=> {
+			this.#ipc.on('save_win_inf', (_e: IpcRendererEvent, {x, y, w, h, scrw, scrh}: SAVE_WIN_INF)=> {
 				this.val.setVal_Nochk('sys', 'const.sn.nativeWindow.x', x);
 				this.val.setVal_Nochk('sys', 'const.sn.nativeWindow.y', y);
 				this.val.setVal_Nochk('sys', 'const.sn.nativeWindow.w', w);
@@ -164,11 +160,11 @@ console.log(`fn:SysApp.ts line:41 B? sendTST:${mes}`);
 	override init(hTag: IHTag, appPixi: Application, val: IVariable, main: IMain): Promise<void>[] {
 		const ret = super.init(hTag, appPixi, val, main);
 
-		this.#em.invoke('on', 'shutdown', (_e: IpcRendererEvent)=> main.destroy());
+		this.#ipc.on('shutdown', (_e: IpcRendererEvent)=> main.destroy());
 
 		const ev = new Event('click');
-		this.#em.invoke('on', 'fire', (_e: IpcRendererEvent, KEY: string)=> this.fire(KEY, ev));
-		//this.#em.invoke('on', 'call', (_e: IpcRendererEvent, fn: string, label: string)=> main.resumeByJumpOrCall({fn, label}));	// 実験・保留コード。セキュリティ懸念
+		this.#ipc.on('fire', (_e: IpcRendererEvent, KEY: string)=> this.fire(KEY, ev));
+		//this.#ipc.on('call', (_e: IpcRendererEvent, fn: string, label: string)=> main.resumeByJumpOrCall({fn, label}));	// 実験・保留コード。セキュリティ懸念
 
 		return ret;
 	}

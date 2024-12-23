@@ -110,7 +110,7 @@ export class Main implements IMain {
 				if (isThrow) throw mes;
 			}
 
-			// レイヤ共通、文字レイヤ（16/17）、画像レイヤ
+			// レイヤ共通、文字レイヤ、画像レイヤ
 			this.#layMng = new LayerMng(cfg, this.#hTag, app, val, this, this.#scrItr, this.sys, sndMng, prpPrs);
 			this.#aDest.unshift(()=> this.#layMng.destroy());
 

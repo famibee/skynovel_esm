@@ -17867,12 +17867,10 @@ class Config extends ConfigBase {
     super(e), this.sys = e;
   }
   static async generate(e) {
-    const t = new Config(e), r = e.arg.cur + "prj.json";
-    console.log(`fn:Config.ts line:17 fn=${r}=`);
-    const s = await e.fetch(r);
+    const t = new Config(e), r = e.arg.cur + "prj.json", s = await e.fetch(r);
     if (!s.ok) throw Error(s.statusText);
     const o = await e.dec(r, await s.text());
-    return console.log("fn:Config.ts line:22 dec:%o", o.slice(0, 32)), await t.load(JSON.parse(o)), t;
+    return await t.load(JSON.parse(o)), t;
   }
   async load(e) {
     await super.load(e), CmnLib.stageW = e.window.width, CmnLib.stageH = e.window.height, CmnLib.debugLog = e.debug.debugLog;
@@ -21533,7 +21531,7 @@ class SysWeb extends SysBase {
   constructor(...[e = {}, t = { cur: "prj/", crypto: !1, dip: "" }]) {
     super(e, t);
     const r = t.cur.split("/");
-    this.#e = r.length > 2 ? r.slice(0, -2).join("/") + "/" : "", this.loaded(e, t);
+    this.#e = r.length > 2 ? r.slice(0, -2).join("/") + "/" : "", queueMicrotask(async () => this.loaded(e, t));
   }
   async loaded(...[e, t]) {
     await super.loaded(e, t), document.querySelectorAll("[data-prj]").forEach((u) => {

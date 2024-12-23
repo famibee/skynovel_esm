@@ -80,13 +80,14 @@ export class appMain {
 	#cvsW	= 0;
 	#cvsH	= 0;
 
+	readonly	 #em = new IpcEmitter<T_IpcRendererEvent>;
+
 	private	constructor(private readonly bw: BrowserWindow, readonly version: string) {
 		// 以下コメントアウトなら【プロジェクト】のターミナルに出る
 		// console.log = (_arg: any)=> {};
 		// console.log = (arg: any)=> this.bw.webContents.send('log', arg);
 			// 有効にするとエラーにもならず終了
 
-console.log(`fn:appMain.ts line:85 ver:${version}`);	//TODO: 4test
 		bw.webContents.on('devtools-opened', ()=> this.#evDevtoolsOpened());
 		const ipc = new IpcListener<T_IpcEvents>;
 		ipc.handle('openDevTools', ()=> bw.webContents.openDevTools());
@@ -175,11 +176,10 @@ console.log(`fn:appMain.ts line:85 ver:${version}`);	//TODO: 4test
 
 
 
-		const em = new IpcEmitter<T_IpcRendererEvent>;
-		ipc.on('ping', (e, arg)=> {
-console.log(`fn:appMain.ts line:94 B ping:${arg}`);
-			em.send(e.sender, 'ready', true)
-		})
+// 		ipc.on('ping', (e, arg)=> {
+// console.log(`fn:appMain.ts line:94 B ping:${arg}`);
+// 			this.#em.send(e.sender, 'ready', true)
+// 		})
 		//TODO: 4test
 		bw.on('ready-to-show', ()=> bw.show());
 	}
@@ -208,7 +208,7 @@ console.log(`fn:appMain.ts line:94 B ping:${arg}`);
 		this.#evDevtoolsOpened = ()=> {
 			this.bw.webContents.closeDevTools();	// 開こうとしたら閉じる
 			this.bw.setTitle(`DevToolは禁止されています。許可する場合は【プロジェクト設定】の【devtool】をONに。`);
-			this.bw.webContents.send('shutdown');
+			this.#em.send(this.bw.webContents, 'shutdown');
 		};
 	}
 
@@ -271,7 +271,7 @@ console.log(`fn:appMain.ts line:94 B ping:${arg}`);
 		this.#cvsH = h = Math.round(h);
 		this.bw.setContentSize(w, h);	// 小数値を渡すと例外？　ぽい（四捨五入でいく）
 
-		this.bw.webContents.send('save_win_inf', {c: centering, x, y, w, h, scrw: this.#scrSize.width, scrh: this.#scrSize.height});
+		this.#em.send(this.bw.webContents, 'save_win_inf', {c: centering, x, y, w, h, scrw: this.#scrSize.width, scrh: this.#scrSize.height});
 		this.#isMovingWin = false;
 	}
 

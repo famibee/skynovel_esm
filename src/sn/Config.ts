@@ -14,12 +14,10 @@ export class Config extends ConfigBase {
 	static	async	generate(sys: SysBase) {
 		const c = new Config(sys);
 		const fn = sys.arg.cur +'prj.json';
-console.log(`fn:Config.ts line:17 fn=${fn}=`);
 		const res = await sys.fetch(fn);
 		if (! res.ok) throw Error(res.statusText);
 
 		const dec = await sys.dec(fn, await res.text());
-console.log(`fn:Config.ts line:22 dec:%o`, dec.slice(0, 32));
 		await c.load(JSON.parse(dec));
 		return c;
 	}

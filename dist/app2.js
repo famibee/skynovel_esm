@@ -15824,23 +15824,23 @@ class bv {
 }
 class rt {
   constructor(t, e, r) {
-    this.sys = t, rt.#t = r, rt.#e = e, rt.#i = e.title, rt.myTrace = rt.#h, e.log = (n) => this.#a(n), e.trace = (n) => this.#o(n), rt.#r = document.createElement("span"), rt.#r.hidden = !0, rt.#r.textContent = "", rt.#r.style.cssText = `	z-index: ${Number.MAX_SAFE_INTEGER};
+    this.sys = t, rt.#t = r, rt.#e = e, rt.#r = e.title, rt.myTrace = rt.#h, e.log = (n) => this.#s(n), e.trace = (n) => this.#o(n), rt.#i = document.createElement("span"), rt.#i.hidden = !0, rt.#i.textContent = "", rt.#i.style.cssText = `	z-index: ${Number.MAX_SAFE_INTEGER};
 			position: absolute; left: 0; top: 0;
 			color: black;
-			background-color: rgba(255, 255, 255, 0.7);`, document.body.appendChild(rt.#r);
+			background-color: rgba(255, 255, 255, 0.7);`, document.body.appendChild(rt.#i);
   }
   static #t;
   static #e;
-  static #i;
   static #r;
+  static #i;
   destroy() {
-    rt.#i = () => !1, document.body.removeChild(rt.#r), rt.myTrace = rt.trace_beforeNew;
+    rt.#r = () => !1, document.body.removeChild(rt.#i), rt.myTrace = rt.trace_beforeNew;
   }
   // ログ出力
-  #s = !0;
-  #a(t) {
+  #a = !0;
+  #s(t) {
     let e = "";
-    return this.#s && (this.#s = !1, e = `== ${mh.description} ==
+    return this.#a && (this.#a = !1, e = `== ${mh.description} ==
 `), this.sys.appendFile(
       this.sys.path_downloads + "log.txt",
       `${e}--- ${Ya("-", "_", "")} [fn:${rt.#t.scriptFn} line:${rt.#t.lineNum}] prj:${this.sys.arg.cur}
@@ -15892,7 +15892,7 @@ ${t.text || `(text is ${t.text})`}
         break;
       case "ET":
       case "E":
-        if (rt.#i({ text: t }), this.#e.dump_lay({}), this.#e.dump_val({}), rt.#t.dumpErrForeLine(), this.#e.dump_stack({}), e === "ET") throw r;
+        if (rt.#r({ text: t }), this.#e.dump_lay({}), this.#e.dump_val({}), rt.#t.dumpErrForeLine(), this.#e.dump_stack({}), e === "ET") throw r;
         console.error("%c" + r, "color:#F30;");
         return;
       default:
@@ -15919,7 +15919,7 @@ ${t.text || `(text is ${t.text})`}
       default:
         r = "";
     }
-    rt.#r.innerHTML += `<span style='${r}'>${t}</span><br/>`, rt.#r.hidden = !1;
+    rt.#i.innerHTML += `<span style='${r}'>${t}</span><br/>`, rt.#i.hidden = !1;
   };
 }
 var Tr = /* @__PURE__ */ ((i) => (i.DEFAULT = "", i.SP_GSM = "png|jpg|jpeg|json|svg|webp|mp4|webm", i.SCRIPT = "sn|ssn", i.FONT = "woff2|woff|otf|ttf", i.SOUND = "mp3|m4a|ogg|aac|flac|wav", i.HTML = "htm|html", i.CSS = "css", i.SN = "sn", i.TST_PNGPNG_ = "png|png_", i.TST_HH = "hh", i.TST_EEE = "eee", i.TST_GGG = "ggg", i.TST_PNGXML = "png|xml", i))(Tr || {});
@@ -16015,12 +16015,12 @@ class xv {
   getNs() {
     return `skynovel.${this.oCfg.save_ns} - `;
   }
-  #i = /([^\/\s]+)\.([^\d]\w+)/;
+  #r = /([^\/\s]+)\.([^\d]\w+)/;
   // 4 match 498 step(~1ms)  https://regex101.com/r/tpVgmI/1
   searchPath(t, e = "") {
     if (!t) throw "[searchPath] fnが空です";
     if (t.startsWith("http://")) return t;
-    const r = t.match(this.#i);
+    const r = t.match(this.#r);
     let n = r ? r[1] : t;
     const s = r ? r[2] : "";
     if (this.userFnTail) {
@@ -16087,12 +16087,10 @@ class Ms extends xv {
     super(t), this.sys = t;
   }
   static async generate(t) {
-    const e = new Ms(t), r = t.arg.cur + "prj.json";
-    console.log(`fn:Config.ts line:17 fn=${r}=`);
-    const n = await t.fetch(r);
+    const e = new Ms(t), r = t.arg.cur + "prj.json", n = await t.fetch(r);
     if (!n.ok) throw Error(n.statusText);
     const s = await t.dec(r, await n.text());
-    return console.log("fn:Config.ts line:22 dec:%o", s.slice(0, 32)), await e.load(JSON.parse(s)), e;
+    return await e.load(JSON.parse(s)), e;
   }
   async load(t) {
     await super.load(t), j.stageW = t.window.width, j.stageH = t.window.height, j.debugLog = t.debug.debugLog;
@@ -16119,13 +16117,13 @@ class Tv {
   #t = /;[^\n]*|(?<key>[^\s="'#|;]+)(?:\s|;[^\n]*\n)*=(?:\s|;[^\n]*\n)*(?:(?<val>[^\s"'#|;]+)|(["'#])(?<val2>.*?)\3)(?:\|(?:(?<def>[^\s"'#;]+)|(["'#])(?<def2>.*?)\6))?|(?<literal>[^\s;]+)/g;
   // 【属性 = 値 | 省略値】の分析
   parse(t) {
-    this.#i = {}, this.#r = !1;
+    this.#r = {}, this.#i = !1;
     for (const { groups: e } of t.matchAll(this.#t)) {
       const { key: r, val: n, val2: s, def: a, def2: o, literal: h } = e;
-      r ? this.#i[r] = {
+      r ? this.#r[r] = {
         val: n ?? s ?? "",
         def: a ?? o
-      } : h && (h === "*" ? this.#r = !0 : this.#i[h] = { val: "1" });
+      } : h && (h === "*" ? this.#i = !0 : this.#r[h] = { val: "1" });
     }
   }
   // 属性と値の位置をまとめて返す
@@ -16162,13 +16160,13 @@ class Tv {
       ch: h < 2 ? r + 1 + t + s : o.at(-1).length
     };
   }
-  #i = {};
+  #r = {};
   get hPrm() {
-    return this.#i;
-  }
-  #r = !1;
-  get isKomeParam() {
     return this.#r;
+  }
+  #i = !1;
+  get isKomeParam() {
+    return this.#i;
   }
 }
 const Ko = /(?<name>[^\s;\]]+)/;
@@ -16236,12 +16234,12 @@ class O_ {
     this.#n[s] = `[${a}]`, this.addC2M(`\\${s}`, `\\${s}`), this.#f(r, n);
   }
   #e;
-  #i = new RegExp("");
-  #r = "";
-  #s = "";
+  #r = new RegExp("");
+  #i = "";
+  #a = "";
   addC2M(t, e) {
-    this.#r += `${t}|`, this.#s += `${e}`, this.#i = new RegExp(
-      `(${this.#r}[^${this.#s}]+)`,
+    this.#i += `${t}|`, this.#a += `${e}`, this.#r = new RegExp(
+      `(${this.#i}[^${this.#a}]+)`,
       "g"
     );
   }
@@ -16256,12 +16254,12 @@ class O_ {
     }) ?? [], r = { aToken: e, len: e.length, aLNum: [] };
     return this.#f(r), this.#h(r), r;
   }
-  #a = /^\[(call|loadplugin)\s/;
+  #s = /^\[(call|loadplugin)\s/;
   #o = /\bfn\s*=\s*[^\s\]]+/;
   #h(t) {
     for (let e = t.len - 1; e >= 0; --e) {
       const r = t.aToken[e];
-      if (!this.#a.test(r)) continue;
+      if (!this.#s.test(r)) continue;
       const [n, s] = Ev(r);
       this.#u.parse(s);
       const a = this.#u.hPrm.fn;
@@ -16298,7 +16296,7 @@ class O_ {
         const n = t.aToken[r];
         if (this.testNoTxt(n.at(0) ?? `
 `)) continue;
-        const s = t.aLNum[r], a = n.match(this.#i);
+        const s = t.aLNum[r], a = n.match(this.#r);
         if (!a) continue;
         let o = 1;
         for (let h = a.length - 1; h >= 0; --h) {
@@ -16318,15 +16316,15 @@ class O_ {
 const hn = "skynovel";
 class xe {
   constructor(t) {
-    this.sys = t, Xh(), Ms.generate(t).then((e) => this.#s(e)).catch((e) => console.error("load err fn:prj.json e:%o", e));
+    this.sys = t, Xh(), Ms.generate(t).then((e) => this.#a(e)).catch((e) => console.error("load err fn:prj.json e:%o", e));
   }
   static cvs;
   #t = /* @__PURE__ */ Object.create(null);
   // タグ処理辞書
   #e;
-  #i;
-  #r = [];
-  async #s(t) {
+  #r;
+  #i = [];
+  async #a(t) {
     const e = {
       width: t.oCfg.window.width,
       height: t.oCfg.window.height,
@@ -16340,10 +16338,10 @@ class xe {
       const a = r.cloneNode(!0);
       a.id = hn, e.view = r;
       const o = r.parentNode;
-      this.#r.unshift(() => o.appendChild(a));
+      this.#i.unshift(() => o.appendChild(a));
     }
     const n = new Jo(e);
-    this.#r.unshift(() => {
+    this.#i.unshift(() => {
       kf(), this.sys.destroy(), n.destroy(!0);
     }), xe.cvs = n.view, xe.cvs.id = hn + "_act", r || document.body.appendChild(xe.cvs);
     const s = document.createElement("canvas")?.getContext("2d");
@@ -16366,26 +16364,26 @@ class xe {
       const c = new a(t, this.#t), d = new o(c, t.oCfg.init.escape ?? "\\");
       this.#o = (g, I, E, B) => c.setVal_Nochk(g, I, E, B), this.#n = (g) => d.getValAmpersand(g), this.#l = (g) => d.parse(g), await Promise.allSettled(this.sys.init(this.#t, n, c, this)), this.#t.title({ text: t.oCfg.book.title || "SKYNovel" });
       const p = new h(t, this.#t, c, this, this.sys);
-      this.#r.unshift(() => p.destroy()), this.#e = new u(t, this.#t, this, c, d, p, this.sys), this.#r.unshift(() => this.#e.destroy());
+      this.#i.unshift(() => p.destroy()), this.#e = new u(t, this.#t, this, c, d, p, this.sys), this.#i.unshift(() => this.#e.destroy());
       const v = new rt(this.sys, this.#t, this.#e);
-      this.#r.unshift(() => v.destroy()), this.errScript = (g, I = !0) => {
+      this.#i.unshift(() => v.destroy()), this.errScript = (g, I = !0) => {
         if (this.stop(), rt.myTrace(g), j.debugLog && console.log("🍜 SKYNovel err!"), I) throw g;
-      }, this.#i = new l(t, this.#t, n, c, this, this.#e, this.sys, p, d), this.#r.unshift(() => this.#i.destroy());
-      const _ = new f(t, this.#t, n, this, this.#i, c, p, this.#e, this.sys);
-      this.#r.unshift(() => _.destroy()), this.#r.unshift(() => {
+      }, this.#r = new l(t, this.#t, n, c, this, this.#e, this.sys, p, d), this.#i.unshift(() => this.#r.destroy());
+      const _ = new f(t, this.#t, n, this, this.#r, c, p, this.#e, this.sys);
+      this.#i.unshift(() => _.destroy()), this.#i.unshift(() => {
         this.stop(), this.#h = !1, this.#t = {};
       }), this.#t.jump({ fn: "main" }), this.stop();
     });
   }
   destroy() {
-    if (!this.#a) {
-      this.#a = !0;
-      for (const t of this.#r) t();
-      this.#r = [];
+    if (!this.#s) {
+      this.#s = !0;
+      for (const t of this.#i) t();
+      this.#i = [];
     }
   }
-  #a = !1;
-  isDestroyed = () => this.#a;
+  #s = !1;
+  isDestroyed = () => this.#s;
   errScript = (t, e = !0) => {
   };
   resumeByJumpOrCall(t) {
@@ -16398,7 +16396,7 @@ class xe {
   #o = (t, e, r, n = !1) => {
   };
   resume() {
-    this.#a || (this.#i.clearBreak(), this.#e.noticeBreak(!1), queueMicrotask(() => this.#u()));
+    this.#s || (this.#r.clearBreak(), this.#e.noticeBreak(!1), queueMicrotask(() => this.#u()));
   }
   stop = () => {
     this.#e.noticeBreak(!0);
@@ -16454,7 +16452,7 @@ class xe {
           if (e === 42 && t.length > 1) continue;
         }
         try {
-          this.#i.setNormalChWait(), this.#i.currentTxtlayForeNeedErr.tagCh(t);
+          this.#r.setNormalChWait(), this.#r.currentTxtlayForeNeedErr.tagCh(t);
         } catch (r) {
           this.errScript(
             r instanceof Error ? `文字表示 mes=${r.message}(${r.name})` : String(r),
@@ -18769,7 +18767,7 @@ class pr {
   async loaded(...[t]) {
     const e = t.snsys_pre;
     return delete t.snsys_pre, e?.init({
-      getInfo: this.#i,
+      getInfo: this.#r,
       addTag: () => {
       },
       addLayCls: () => {
@@ -18824,7 +18822,7 @@ class pr {
       console.error(`セーブデータ（${s}）が壊れています。一度クリアする必要があります(b) %o`, a);
     }
     return t.close = (a) => this.close(a), t.export = (a) => this._export(a), t.import = (a) => this._import(a), t.navigate_to = (a) => this.navigate_to(a), t.title = (a) => this.title(a), t.toggle_full_screen = (a) => this.#y(a), t.update_check = (a) => this.update_check(a), t.window = (a) => this.window(a), r.setVal_Nochk("tmp", "const.sn.isApp", () => this.isApp), r.setVal_Nochk("tmp", "const.sn.isDbg", () => j.isDbg), r.setVal_Nochk("tmp", "const.sn.isPackaged", () => j.isPackaged), r.defTmp("const.sn.displayState", () => this.isFullScr), r.setVal_Nochk("sys", pr.VALNM_CFG_NS, this.cfg.oCfg.save_ns), r.flush(), j.isDbg && this.attach_debug(n), this.hFactoryCls = {}, Object.values(this.hPlg).map((a) => a.init({
-      getInfo: this.#i,
+      getInfo: this.#r,
       addTag: (o, h) => {
         if (t[o]) throw `すでに定義済みのタグ[${o}]です`;
         t[o] = h;
@@ -18850,27 +18848,27 @@ class pr {
     }));
   }
   static VALNM_CFG_NS = "const.sn.cfg.ns";
-  #i = () => ({
+  #r = () => ({
     window: {
       width: j.stageW,
       height: j.stageH
     }
   });
-  #r = 0;
-  #s = 0;
-  #a = 1;
+  #i = 0;
+  #a = 0;
+  #s = 1;
   #o = 0;
   #h = 0;
   #u = 0;
   #n = 0;
   get cvsWidth() {
-    return this.#r;
+    return this.#i;
   }
   get cvsHeight() {
-    return this.#s;
+    return this.#a;
   }
   get cvsScale() {
-    return this.#a;
+    return this.#s;
   }
   get ofsLeft4elm() {
     return this.#o;
@@ -18898,18 +18896,18 @@ class pr {
     }
     const s = r.getBoundingClientRect();
     if (pt(j.hDip, "expanding", !0) || n || j.stageW > t || j.stageH > e)
-      if (j.stageW / j.stageH <= t / e ? (this.#s = e, this.#r = j.stageW / j.stageH * e) : (this.#r = t, this.#s = j.stageH / j.stageW * t), this.#a = this.#r / j.stageW, n)
+      if (j.stageW / j.stageH <= t / e ? (this.#a = e, this.#i = j.stageW / j.stageH * e) : (this.#i = t, this.#a = j.stageH / j.stageW * t), this.#s = this.#i / j.stageW, n)
         this.#u = 0, this.#n = 0;
       else {
-        const h = 1 - this.#a;
-        j.isMobile ? (this.#u = (t - this.#r) / 2 * h, this.#n = (e - this.#s) / 2 * h) : (this.#u = s.left * h, this.#n = s.top * h);
+        const h = 1 - this.#s;
+        j.isMobile ? (this.#u = (t - this.#i) / 2 * h, this.#n = (e - this.#a) / 2 * h) : (this.#u = s.left * h, this.#n = s.top * h);
       }
     else
-      this.#r = j.stageW, this.#s = j.stageH, this.#a = 1, this.#u = 0, this.#n = 0;
+      this.#i = j.stageW, this.#a = j.stageH, this.#s = 1, this.#u = 0, this.#n = 0;
     const a = r.parentElement.style;
-    n || (a.position = "relative", a.width = `${this.#r}px`, a.height = `${this.#s}px`);
+    n || (a.position = "relative", a.width = `${this.#i}px`, a.height = `${this.#a}px`);
     const o = r.style;
-    o.width = a.width, o.height = a.height, n ? (this.#o = s.left, this.#h = s.top) : (this.#o = 0, this.#h = 0), this.isFullScr && (this.#o += (t - this.#r) / 2, this.#h += (e - this.#s) / 2);
+    o.width = a.width, o.height = a.height, n ? (this.#o = s.left, this.#h = s.top) : (this.#o = 0, this.#h = 0), this.isFullScr && (this.#o += (t - this.#i) / 2, this.#h += (e - this.#a) / 2);
   }
   // デバッガ接続
   attach_debug(t) {
@@ -18984,10 +18982,10 @@ class pr {
     const r = document.createElement("img"), n = pr.#g[t];
     if (!n) throw new Error(`toast 名ミス=${t}`);
     r.src = `data:image/svg+xml;base64,${n.dat}`;
-    const s = Math.min(j.stageW, j.stageH) / 4 * this.#a;
+    const s = Math.min(j.stageW, j.stageH) / 4 * this.#s;
     r.width = r.height = s, r.style.cssText = `position: absolute;
-left: ${(j.stageW - s) / 2 * this.#a + s * (n.dx ?? 0)}px;
-top: ${(j.stageH - s) / 2 * this.#a + s * (n.dy ?? 0)}px;`, r.classList.add("sn_toast", n.ease ?? "sn_BounceInOut"), n.ease || r.addEventListener("animationend", () => e.removeChild(r), { once: !0, passive: !0 }), e.insertBefore(r, xe.cvs);
+left: ${(j.stageW - s) / 2 * this.#s + s * (n.dx ?? 0)}px;
+top: ${(j.stageH - s) / 2 * this.#s + s * (n.dy ?? 0)}px;`, r.classList.add("sn_toast", n.ease ?? "sn_BounceInOut"), n.ease || r.addEventListener("animationend", () => e.removeChild(r), { once: !0, passive: !0 }), e.insertBefore(r, xe.cvs);
   }
   static #g = {
     // Thanks ICOOON MONO https://icooon-mono.com/ 、 https://vectr.com/ で 640x640化、ImageOptim経由、Base64エンコーダー https://lab.syncer.jp/Tool/Base64-encode/ 
@@ -19149,21 +19147,14 @@ class x_ {
 }
 class D_ extends y_ {
   #t = new b_();
+  #e = new x_();
   constructor(...[t = {}, e = { cur: "prj/", crypto: !1, dip: "" }]) {
-    super(t, e), this.loaded(t, e);
+    super(t, e), queueMicrotask(async () => this.loaded(t, e));
   }
   async loaded(...[t, e]) {
-    await super.loaded(t, e), this.#e = await this.#t.invoke("getInfo"), j.isPackaged = this.#e.isPackaged, this.$path_downloads = this.#e.downloads.replaceAll("\\", "/") + "/";
-    const r = new x_();
-    r.on("log", (s, a) => console.info("[main log] %o", a)), j.isDbg = !!this.#e.env.SKYNOVEL_DBG && !j.isPackaged, j.isDbg && (this.extPort = _t(this.#e.env.SKYNOVEL_PORT ?? "3776")), this.ensureFileSync = (s) => this.#t.invoke("ensureFileSync", s), this.readFileSync = (s) => this.#t.invoke("readFileSync", s), this.writeFileSync = (s, a, o) => this.#t.invoke("writeFileSync", s, a, o), this.appendFile = (s, a) => this.#t.invoke("appendFile", s, a), this.outputFile = (s, a) => this.#t.invoke("outputFile", s, a), await this.run();
-    const n = document.getElementById("ipcHandler");
-    n && n.addEventListener("click", () => {
-      this.sendTST("ping");
-    }), r.on("ready", (s, a) => {
-      console.log(`fn:SysApp.ts line:30 ready arg:${a}`);
-    }), this.#t.send("ping", "pong");
+    await super.loaded(t, e), this.#r = await this.#t.invoke("getInfo"), j.isPackaged = this.#r.isPackaged, this.$path_downloads = this.#r.downloads.replaceAll("\\", "/") + "/", this.#e.on("log", (r, n) => console.info("[main log] %o", n)), j.isDbg = !!this.#r.env.SKYNOVEL_DBG && !j.isPackaged, j.isDbg && (this.extPort = _t(this.#r.env.SKYNOVEL_PORT ?? "3776")), this.ensureFileSync = (r) => this.#t.invoke("ensureFileSync", r), this.readFileSync = (r) => this.#t.invoke("readFileSync", r), this.writeFileSync = (r, n, s) => this.#t.invoke("writeFileSync", r, n, s), this.appendFile = (r, n) => this.#t.invoke("appendFile", r, n), this.outputFile = (r, n) => this.#t.invoke("outputFile", r, n), await this.run();
   }
-  #e = {
+  #r = {
     getAppPath: "",
     isPackaged: !1,
     downloads: "",
@@ -19173,14 +19164,11 @@ class D_ extends y_ {
     platform: "",
     arch: ""
   };
-  sendTST(t) {
-    console.log(`fn:SysApp.ts line:41 B? sendTST:${t}`), this.#t.send("ping", t);
-  }
   fetch = (t) => fetch(t, { cache: "no-store" });
   $path_userdata = "";
   $path_downloads = "";
   async initVal(t, e, r) {
-    e["const.sn.isDebugger"] = !1, this.$path_userdata = j.isDbg ? this.#e.getAppPath.slice(0, -3) + ".vscode/" : this.#e.userData.replaceAll("\\", "/") + "/", this.flushSub = () => {
+    e["const.sn.isDebugger"] = !1, this.$path_userdata = j.isDbg ? this.#r.getAppPath.slice(0, -3) + ".vscode/" : this.#r.userData.replaceAll("\\", "/") + "/", this.flushSub = () => {
       this.#t.invoke("flush", JSON.parse(JSON.stringify(this.data)));
     }, this.#i().then(async () => {
       const n = e["const.sn.isFirstBoot"] = await this.#t.invoke("Store_isEmpty");
@@ -19191,7 +19179,7 @@ class D_ extends y_ {
         this.data.sys = u.sys, this.data.mark = u.mark, this.data.kidoku = u.kidoku;
       }
       const s = this.data.sys["const.sn.nativeWindow.x"] ?? 0, a = this.data.sys["const.sn.nativeWindow.y"] ?? 0, o = this.data.sys["const.sn.nativeWindow.w"] ?? j.stageW, h = this.data.sys["const.sn.nativeWindow.h"] ?? j.stageH;
-      this.#t.invoke("inited", this.cfg.oCfg, { c: n, x: s, y: a, w: o, h }), this.#t.invoke("on", "save_win_inf", (u, { x: l, y: f, w: c, h: d, scrw: p, scrh: v }) => {
+      this.#t.invoke("inited", this.cfg.oCfg, { c: n, x: s, y: a, w: o, h }), this.#e.on("save_win_inf", (u, { x: l, y: f, w: c, h: d, scrw: p, scrh: v }) => {
         this.val.setVal_Nochk("sys", "const.sn.nativeWindow.x", l), this.val.setVal_Nochk("sys", "const.sn.nativeWindow.y", f), this.val.setVal_Nochk("sys", "const.sn.nativeWindow.w", c), this.val.setVal_Nochk("sys", "const.sn.nativeWindow.h", d), this.flush(), e["const.sn.screenResolutionX"] = p, e["const.sn.screenResolutionY"] = v;
       }), r(this.data);
     });
@@ -19201,15 +19189,15 @@ class D_ extends y_ {
     name: this.arg.crypto ? "data_" : "data",
     encryptionKey: this.arg.crypto ? this.stk() : void 0
   });
-  #r;
+  #a;
   async run() {
-    this.#r && (this.#r.destroy(), await new Promise((e) => setTimeout(e, 10))), this.#r = new xe(this);
+    this.#a && (this.#a.destroy(), await new Promise((e) => setTimeout(e, 10))), this.#a = new xe(this);
   }
   init(t, e, r, n) {
     const s = super.init(t, e, r, n);
-    this.#t.invoke("on", "shutdown", (o) => n.destroy());
+    this.#e.on("shutdown", (o) => n.destroy());
     const a = new Event("click");
-    return this.#t.invoke("on", "fire", (o, h) => this.fire(h, a)), s;
+    return this.#e.on("fire", (o, h) => this.fire(h, a)), s;
   }
   cvsResize() {
     super.cvsResize();
@@ -19283,14 +19271,14 @@ class D_ extends y_ {
         if (!c) throw "[update_check] .yml に version が見つかりません";
         s = c;
       }
-      const o = this.#e.getVersion;
+      const o = this.#r.getVersion;
       if (j.debugLog && rt.myTrace(`[update_check] 現在ver=${o} 新規ver=${s}`, "D"), s === o) {
         j.debugLog && rt.myTrace("[update_check] バージョン更新なし", "I");
         return;
       }
       const h = {
         title: "アプリ更新",
-        icon: this.#e.getAppPath + "/app/icon.png",
+        icon: this.#r.getAppPath + "/app/icon.png",
         buttons: ["OK", "Cancel"],
         defaultId: 0,
         cancelId: 1,
@@ -19301,13 +19289,13 @@ class D_ extends y_ {
       }, { response: u } = await this.#t.invoke("showMessageBox", h);
       if (!(u > 0)) {
         if (j.debugLog && rt.myTrace("[update_check] アプリダウンロード開始", "D"), a.ok) {
-          const l = this.#e.platform + "_" + this.#e.arch, { cn: f, path: c } = r[l];
+          const l = this.#r.platform + "_" + this.#r.arch, { cn: f, path: c } = r[l];
           if (f) await this.#s(e, l + "-" + f, c);
           else {
             let d = "";
-            const p = new RegExp("^" + this.#e.platform + "_"), v = Object.entries(r).flatMap(([g, { path: I, cn: E }]) => p.test(g) ? (d += `
+            const p = new RegExp("^" + this.#r.platform + "_"), v = Object.entries(r).flatMap(([g, { path: I, cn: E }]) => p.test(g) ? (d += `
 - ` + I, () => this.#s(e, g + "-" + E, I)) : []);
-            h.message = `CPU = ${this.#e.arch}
+            h.message = `CPU = ${this.#r.arch}
 に対応するファイルが見つかりません。同じOSのファイルをすべてダウンロードしますか？`, h.detail = v.length + " 個ファイルがあります" + d;
             const { response: _ } = await this.#t.invoke("showMessageBox", h);
             if (_ > 0) return;
@@ -19324,7 +19312,7 @@ class D_ extends y_ {
           const [, d] = c;
           j.debugLog && rt.myTrace(`[update_check] sha=${d}=`, "D");
           const [, p, v] = /(.+)(\.\w+)/.exec(f) ?? ["", "", ""];
-          await this.#s(e, p + "-" + this.#e.arch + v, f);
+          await this.#s(e, p + "-" + this.#r.arch + v, f);
         }
         j.debugLog && rt.myTrace("アプリファイルを保存しました", "D"), h.buttons.pop(), h.message = `アプリ【${this.cfg.oCfg.book.title}】の更新パッケージを
 ダウンロードしました`, this.#t.invoke("showMessageBox", h);
@@ -19338,7 +19326,7 @@ class D_ extends y_ {
       j.debugLog && rt.myTrace(`[update_check] アプリファイルが見つかりません url=${t + r}`);
       return;
     }
-    const s = this.#e.downloads + "/" + r;
+    const s = this.#r.downloads + "/" + r;
     j.debugLog && rt.myTrace(`[update_check] pathDL=${s}`, "D");
     const a = await n.arrayBuffer();
     await this.writeFileSync(s, new DataView(a));

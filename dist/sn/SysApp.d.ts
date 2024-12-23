@@ -6,7 +6,6 @@ export declare class SysApp extends SysNode {
     #private;
     constructor(...[hPlg, arg]: T_SysBaseParams);
     protected loaded(...[hPlg, arg]: T_SysBaseLoadedParams): Promise<void>;
-    sendTST(mes: string): void;
     fetch: (url: string) => Promise<Response>;
     protected $path_userdata: string;
     protected $path_downloads: string;

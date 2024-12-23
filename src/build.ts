@@ -8,6 +8,7 @@
 const [, , ...aCmd] = process.argv;
 const watch = aCmd.includes('--watch') ?{} :null;
 const web = aCmd.includes('--web') ?{} :null;
+const app = aCmd.includes('--app') ?{} :null;
 
 import {build} from 'vite';
 import dts, {PluginOptions} from 'vite-plugin-dts';
@@ -25,6 +26,7 @@ const oDts: PluginOptions = {
 };
 
 // === ブラウザ用 ===
+if (! app)
 build({
 	build: {
 		target		: 'esnext',
@@ -42,9 +44,9 @@ build({
 	},
 	plugins: [dts(oDts)],
 });
-if (! web) {
 
 // === アプリ用 ===
+if (! web)
 build({
 	build: {
 		target		: 'esnext',
@@ -68,6 +70,7 @@ build({
 	plugins: [dts(oDts)],
 });
 
+if (! web && ! app) {
 build({
 	build: {
 		target		: 'esnext',

@@ -61,6 +61,7 @@
 		"build": "bun src/build.ts",
 		"watch": "bun --watch src/build.ts --watch",
 		"watch_web": "bun --watch src/build.ts --watch --web",
+		"watch_app": "bun --watch src/build.ts --watch --app",
 		"update": "bun update && bun watch && ncu -g",
 		"test": "bun test",
 		"testw": "bun test --watch",

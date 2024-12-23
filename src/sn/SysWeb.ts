@@ -25,7 +25,7 @@ export class SysWeb extends SysBase {
 		const a = arg.cur.split('/');
 		this.#path_base = (a.length > 2) ? a.slice(0, -2).join('/') +'/' :'';
 
-		this.loaded(hPlg, arg);
+		queueMicrotask(async ()=> this.loaded(hPlg, arg));
 	}
 	protected override async loaded(...[hPlg, arg]: T_SysBaseLoadedParams) {
 		await super.loaded(hPlg, arg);

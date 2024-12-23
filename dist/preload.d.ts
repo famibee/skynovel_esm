@@ -8,6 +8,7 @@ export type TAG_WINDOW = {
     h: number;
 };
 export type SAVE_WIN_INF = {
+    c: boolean;
     x: number;
     y: number;
     w: number;
@@ -60,6 +61,9 @@ export type HINFO = {
 };
 export type T_IpcRendererEvent = {
     log: [any];
+    save_win_inf: [SAVE_WIN_INF];
+    shutdown: [];
+    fire: [string];
     ready: [boolean];
 };
 //# sourceMappingURL=preload.d.ts.map

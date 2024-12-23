@@ -18,6 +18,7 @@ export	type	TAG_WINDOW	= {
 };
 
 export	type	SAVE_WIN_INF	= {
+	c	: boolean;
 	x	: number;
 	y	: number;
 	w	: number;
@@ -83,6 +84,10 @@ export	type	T_IpcEvents	= {
 //Renderer ipc events
 export	type	T_IpcRendererEvent = {
 	log: [any];
+
+	save_win_inf: [SAVE_WIN_INF];
+	shutdown	: [];
+	fire		: [string];
 
 
 	ready: [boolean];
