@@ -13,6 +13,11 @@ import {build} from 'vite';
 import dts, {PluginOptions} from 'vite-plugin-dts';
 import {builtinModules} from 'node:module';
 
+const output = { // entry chunk assets それぞれの書き出し名の指定
+	entryFileNames: '[name].js',
+	chunkFileNames: '[name].js',
+	assetFileNames: '[name].[ext]',
+};
 const oDts: PluginOptions = {
 	beforeWriteFile: pathOut=> ({
 		filePath: pathOut.replace('/src/', '/'),
@@ -33,13 +38,7 @@ build({
 //		minify		: 'terser',
 		reportCompressedSize	: false,
 		watch,
-		rollupOptions: {
-			output: { // entry chunk assets それぞれの書き出し名の指定
-				entryFileNames: `[name].js`,
-				chunkFileNames: `[name].js`,
-				assetFileNames: `[name].[ext]`,
-			},
-		},
+		rollupOptions: {output},
 	},
 	plugins: [dts(oDts)],
 });
@@ -63,11 +62,7 @@ build({
 			external: [
 				...builtinModules.flatMap(p=> [p, `node:${p}`]),
 			],
-			output: { // entry chunk assets それぞれの書き出し名の指定
-				entryFileNames: `[name].js`,
-				chunkFileNames: `[name].js`,
-				assetFileNames: `[name].[ext]`,
-			},
+			output,
 		},
 	},
 	plugins: [dts(oDts)],
@@ -92,11 +87,7 @@ build({
 				'electron-devtools-installer',
 				...builtinModules.flatMap(p=> [p, `node:${p}`]),
 			],
-			output: { // entry chunk assets それぞれの書き出し名の指定
-				entryFileNames: `[name].js`,
-				chunkFileNames: `[name].js`,
-				assetFileNames: `[name].[ext]`,
-			},
+			output,
 		},
 	},
 	plugins: [dts(oDts)],
@@ -120,11 +111,7 @@ build({
 				'electron',
 				...builtinModules.flatMap(p=> [p, `node:${p}`]),
 			],
-			output: { // entry chunk assets それぞれの書き出し名の指定
-				entryFileNames: `[name].js`,
-				chunkFileNames: `[name].js`,
-				assetFileNames: `[name].[ext]`,
-			},
+			output,
 		},
 	},
 	plugins: [dts(oDts)],

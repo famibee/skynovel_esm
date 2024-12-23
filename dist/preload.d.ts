@@ -15,26 +15,28 @@ export type SAVE_WIN_INF = {
     scrw: number;
     scrh: number;
 };
-export type HPROC = {
-    getInfo: () => Promise<HINFO>;
-    inited: (oCfg: T_CFG, tagW: TAG_WINDOW) => Promise<void>;
-    existsSync: (path: string) => Promise<boolean>;
+export type T_IpcEvents = {
+    ping: [string];
+} | {
+    openDevTools: () => void;
+    getInfo: () => HINFO;
+    inited: (oCfg: T_CFG, tagW: TAG_WINDOW) => void;
+    existsSync: (path: string) => boolean;
     copySync: (path_from: string, path_to: string) => void;
-    removeSync: (path: string) => Promise<void>;
-    ensureFileSync: (path: string) => Promise<void>;
-    readFileSync: (path: string) => Promise<string>;
-    writeFileSync: (path: string, data: string | NodeJS.ArrayBufferView, o?: object) => Promise<void>;
-    appendFile: (path: string, data: string) => Promise<void>;
-    outputFile: (path: string, data: string) => Promise<void>;
+    removeSync: (path: string) => void;
+    ensureFileSync: (path: string) => void;
+    readFileSync: (path: string) => string;
+    writeFileSync: (path: string, data: string | NodeJS.ArrayBufferView, o?: object) => void;
+    appendFile: (path: string, data: string) => void;
+    outputFile: (path: string, data: string) => void;
     window: (centering: boolean, x: number, y: number, w: number, h: number) => void;
-    isSimpleFullScreen: () => Promise<boolean>;
-    setSimpleFullScreen: (b: boolean) => Promise<void>;
+    isSimpleFullScreen: () => boolean;
+    setSimpleFullScreen: (b: boolean) => void;
     win_close: () => void;
     win_setTitle: (title: string) => void;
-    showMessageBox: (o: MessageBoxOptions) => Promise<MessageBoxReturnValue>;
+    showMessageBox: (o: MessageBoxOptions) => MessageBoxReturnValue;
     capturePage: (fn: string, w: number, h: number) => Promise<void>;
     navigate_to: (url: string) => void;
-    openDevTools: () => void;
     Store: (o: object) => Promise<void>;
     flush: (o: object) => Promise<void>;
     Store_isEmpty: () => Promise<boolean>;
@@ -42,6 +44,7 @@ export type HPROC = {
     zip: (inp: string, out: string) => void;
     unzip: (inp: string, out: string) => void;
     on: (channel: string, callback: Function) => void;
+    'say-hello': () => string;
 };
 export type HINFO = {
     getAppPath: string;
@@ -55,5 +58,8 @@ export type HINFO = {
     platform: string;
     arch: string;
 };
-export declare const to_app: HPROC;
+export type T_IpcRendererEvent = {
+    log: [any];
+    ready: [boolean];
+};
 //# sourceMappingURL=preload.d.ts.map

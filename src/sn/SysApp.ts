@@ -5,41 +5,61 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
+import type {HINFO, SAVE_WIN_INF, T_IpcEvents, T_IpcRendererEvent} from '../preload';
 import {SysNode} from './SysNode';
 import {CmnLib, getDateStr, argChk_Boolean, argChk_Num, uint} from './CmnLib';
 import type {IHTag, ITag} from './Grammar';
-import type {IVariable, IData4Vari, IMain, HPlugin, HSysBaseArg} from './CmnInterface';
+import type {IVariable, IData4Vari, IMain, T_SysBaseParams, T_SysBaseLoadedParams} from './CmnInterface';
 import {Main} from './Main';
 import {DebugMng} from './DebugMng';
 
-import {Application} from 'pixi.js';
-import type {HINFO, HPROC, SAVE_WIN_INF} from '../preload';
 import type {IpcRendererEvent, MessageBoxOptions} from 'electron/renderer';
-const to_app: HPROC = (window as any).to_app;
-//const {to_app} = window;
+import {IpcListener, IpcEmitter} from '@electron-toolkit/typed-ipc/renderer'
+import {Application} from 'pixi.js';
 
 
+// console.log はアプリのコンソールに出る
 export class SysApp extends SysNode {
-	constructor(hPlg = {}, arg = {cur: 'prj/', crypto: false, dip: ''}) {
-		super(hPlg, arg);
+	#em = new IpcEmitter<T_IpcEvents>;
+	constructor(...[hPlg = {}, arg = {cur: 'prj/', crypto: false, dip: ''}]: T_SysBaseParams) {	// DOMContentLoaded は呼び出し側でやる
+		super(hPlg, arg)
 
-		globalThis.addEventListener('DOMContentLoaded', async ()=> this.loaded(hPlg, arg), {once: true, passive: true});
+		this.loaded(hPlg, arg);
 	}
-	protected override async loaded(hPlg: HPlugin, arg: HSysBaseArg) {
+	protected override async loaded(...[hPlg, arg]: T_SysBaseLoadedParams) {
 		await super.loaded(hPlg, arg);
 
-		this.#hInfo = await to_app.getInfo();
+		this.#hInfo = await this.#em.invoke('getInfo');
 		CmnLib.isPackaged = this.#hInfo.isPackaged;
-		this.arg = arg = {...arg, cur: this.#hInfo.getAppPath.replaceAll('\\', '/') + (CmnLib.isPackaged ?'/doc/' :'/')+ arg.cur};
+		// this.arg = arg = {...arg, cur: this.#hInfo.getAppPath.replaceAll('\\', '/') + (CmnLib.isPackaged ?'/doc/' :'/')+ arg.cur};
 
 		this.$path_downloads = this.#hInfo.downloads.replaceAll('\\', '/') +'/';
 
-		to_app.on('log', (_: IpcRendererEvent, arg: any)=> console.info(`[main log] %o`, arg));
+		const ipc = new IpcListener<T_IpcRendererEvent>;
+		ipc.on('log', (_: IpcRendererEvent, arg: any)=> console.info(`[main log] %o`, arg));
 
 		CmnLib.isDbg = Boolean(this.#hInfo.env['SKYNOVEL_DBG']) && ! CmnLib.isPackaged;	// 配布版では無効
 		if (CmnLib.isDbg) this.extPort = uint(this.#hInfo.env['SKYNOVEL_PORT'] ?? '3776');
 
+
+		this.ensureFileSync	= path=> this.#em.invoke('ensureFileSync', path);
+		this.readFileSync	= path=> this.#em.invoke('readFileSync', path);
+		this.writeFileSync	= (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> this.#em.invoke('writeFileSync', path, data, o);
+		this.appendFile		= (path: string, data: string)=> this.#em.invoke('appendFile', path, data);
+		this.outputFile		= (path: string, data: string)=> this.#em.invoke('outputFile', path, data);
+	
 		await this.run();
+
+
+
+		const hdlIpcBtn = document.getElementById('ipcHandler');
+		if (hdlIpcBtn) hdlIpcBtn.addEventListener('click', ()=> {
+			this.sendTST('ping');
+		});
+		ipc.on('ready', (_e, arg)=> {
+console.log(`fn:SysApp.ts line:30 ready arg:${arg}`);
+		})
+		this.#em.send('ping', 'pong')
 	}
 	#hInfo:  HINFO = {
 		getAppPath	: '',
@@ -52,13 +72,13 @@ export class SysApp extends SysNode {
 		arch		: '',
 	};
 
-	override	fetch = (url: string)=> fetch(url, {cache: 'no-store'});
+	sendTST(mes: string) {
+console.log(`fn:SysApp.ts line:41 B? sendTST:${mes}`);
+		this.#em.send('ping', mes)
+	}
 
-	override	ensureFileSync	= to_app.ensureFileSync;
-	protected override	readFileSync	= to_app.readFileSync;
-	protected override	writeFileSync	= to_app.writeFileSync;
-	override	appendFile		= to_app.appendFile;
-	override	outputFile		= to_app.outputFile;
+
+	override	fetch = (url: string)=> fetch(url, {cache: 'no-store'});
 
 	protected 	override $path_userdata		= '';
 	protected	override $path_downloads	= '';
@@ -74,12 +94,12 @@ export class SysApp extends SysNode {
 			: this.#hInfo.userData.replaceAll('\\', '/') +'/';
 
 		this.flushSub = ()=> {
-			to_app.flush(JSON.parse(JSON.stringify(this.data)));
+			this.#em.invoke('flush', JSON.parse(JSON.stringify(this.data)));
 		}	// 関数や undefined を無視してくれるので、structuredClone() よりいい動作
 		this.#setStore()
 		.then(async ()=> {
 			const first = hTmp['const.sn.isFirstBoot']
-			= await to_app.Store_isEmpty();
+			= await this.#em.invoke('Store_isEmpty');
 			if (first) {
 				// データがない（初回起動）場合の処理
 				this.data.sys = data.sys;
@@ -89,7 +109,7 @@ export class SysApp extends SysNode {
 			}
 			else {
 				// データがある場合の処理
-				const store = await to_app.Store_get();
+				const store = await this.#em.invoke('Store_get', );
 				this.data.sys = store.sys;
 				this.data.mark = store.mark;
 				this.data.kidoku = store.kidoku;
@@ -101,9 +121,9 @@ export class SysApp extends SysNode {
 			const y = (this.data.sys as any)['const.sn.nativeWindow.y'] ?? 0;
 			const w = (this.data.sys as any)['const.sn.nativeWindow.w'] ?? CmnLib.stageW;
 			const h = (this.data.sys as any)['const.sn.nativeWindow.h'] ?? CmnLib.stageH;
-			to_app.inited(this.cfg.oCfg, {c: first, x, y, w, h});
+			this.#em.invoke('inited', this.cfg.oCfg, {c: first, x, y, w, h});
 
-			to_app.on('save_win_inf', (_e: IpcRendererEvent, {x, y, w, h, scrw, scrh}: SAVE_WIN_INF)=> {
+			this.#em.invoke('on', 'save_win_inf', (_e: IpcRendererEvent, {x, y, w, h, scrw, scrh}: SAVE_WIN_INF)=> {
 				this.val.setVal_Nochk('sys', 'const.sn.nativeWindow.x', x);
 				this.val.setVal_Nochk('sys', 'const.sn.nativeWindow.y', y);
 				this.val.setVal_Nochk('sys', 'const.sn.nativeWindow.w', w);
@@ -121,7 +141,7 @@ export class SysApp extends SysNode {
 			comp(this.data);
 		});
 	}
-	#setStore = ()=> to_app.Store({
+	#setStore = ()=> this.#em.invoke('Store', {
 		cwd	: this.$path_userdata +'storage',
 		name: this.arg.crypto ?'data_' :'data',
 		encryptionKey: this.arg.crypto ?this.stk() :undefined,
@@ -144,11 +164,11 @@ export class SysApp extends SysNode {
 	override init(hTag: IHTag, appPixi: Application, val: IVariable, main: IMain): Promise<void>[] {
 		const ret = super.init(hTag, appPixi, val, main);
 
-		to_app.on('shutdown', (_e: IpcRendererEvent)=> main.destroy());
+		this.#em.invoke('on', 'shutdown', (_e: IpcRendererEvent)=> main.destroy());
 
 		const ev = new Event('click');
-		to_app.on('fire', (_e: IpcRendererEvent, KEY: string)=> this.fire(KEY, ev));
-		//to_app.on('call', (_e: IpcRendererEvent, fn: string, label: string)=> main.resumeByJumpOrCall({fn, label}));	// 実験・保留コード。セキュリティ懸念
+		this.#em.invoke('on', 'fire', (_e: IpcRendererEvent, KEY: string)=> this.fire(KEY, ev));
+		//this.#em.invoke('on', 'call', (_e: IpcRendererEvent, fn: string, label: string)=> main.resumeByJumpOrCall({fn, label}));	// 実験・保留コード。セキュリティ懸念
 
 		return ret;
 	}
@@ -184,22 +204,22 @@ export class SysApp extends SysNode {
 	override copyBMFolder	= async (from: number, to: number)=> {
 		const path_from = `${this.$path_userdata}storage/${from}/`;
 		const path_to = `${this.$path_userdata}storage/${to}/`;
-		if (! await to_app.existsSync(path_from)) return;	// 使ってない場合もある
+		if (! await this.#em.invoke('existsSync', path_from)) return;	// 使ってない場合もある
 
-		to_app.copySync(path_from, path_to);
+		this.#em.invoke('copySync', path_from, path_to);
 	};
 	override eraseBMFolder	= async (place: number)=> {
-		await to_app.removeSync(`${this.$path_userdata}storage/${place}/`);
+		await this.#em.invoke('removeSync', `${this.$path_userdata}storage/${place}/`);
 	};
 
 	// アプリの終了
-	protected override readonly	close = ()=> {to_app.win_close(); return false}
+	protected override readonly	close = ()=> {this.#em.invoke('win_close', ); return false}
 
 	// プレイデータをエクスポート
 	protected override readonly	_export = ()=> {
-		to_app.zip(
+		this.#em.invoke('zip', 
 			this.$path_userdata +'storage/',
-			this.$path_downloads + (this.crypto ?'' :'no_crypto_')
+			this.$path_downloads + (this.arg.crypto ?'' :'no_crypto_')
 			+ this.cfg.getNs() + getDateStr('-', '_', '') +'.spd',
 		);
 		if (CmnLib.debugLog) console.log('プレイデータをエクスポートしました');
@@ -223,10 +243,10 @@ export class SysApp extends SysNode {
 		})
 		.then(async (inp: string)=> {
 			this.flush = ()=> {};
-			to_app.unzip(inp, this.$path_userdata +'storage/');
+			this.#em.invoke('unzip', inp, this.$path_userdata +'storage/');
 
 			await this.#setStore();
-			const o = await to_app.Store_get();
+			const o = await this.#em.invoke('Store_get', );
 			this.data.sys = o.sys;
 			this.data.mark = o.mark;
 			this.data.kidoku = o.kidoku;
@@ -246,17 +266,17 @@ export class SysApp extends SysNode {
 		const {url} = hArg;
 		if (! url) throw '[navigate_to] urlは必須です';
 
-		to_app.navigate_to(url);
+		this.#em.invoke('navigate_to', url);
 
 		return false;
 	}
 	// タイトル指定
-	protected override titleSub(title: string) {to_app.win_setTitle(title)}
+	protected override titleSub(title: string) {this.#em.invoke('win_setTitle', title)}
 
 	// 全画面状態切替
 	protected override readonly	tglFlscr_sub = async ()=>
-	to_app.setSimpleFullScreen(
-		this.isFullScr = ! await to_app.isSimpleFullScreen()
+	this.#em.invoke('setSimpleFullScreen', 
+		this.isFullScr = ! await this.#em.invoke('isSimpleFullScreen', )
 	);
 
 	// 更新チェック
@@ -308,7 +328,7 @@ export class SysApp extends SysNode {
 				message	: `アプリ【${this.cfg.oCfg.book.title}】に更新があります。\nダウンロードしますか？`,
 				detail	: `現在 NOW ver ${appver}\n新規 NEW ver ${netver}`,
 			};
-			const {response} = await to_app.showMessageBox(mbo);
+			const {response} = await this.#em.invoke('showMessageBox', mbo);
 			if (response > 0) return;
 
 			// アプリダウンロード
@@ -334,7 +354,7 @@ export class SysApp extends SysNode {
 
 					mbo.message = `CPU = ${this.#hInfo.arch}\nに対応するファイルが見つかりません。同じOSのファイルをすべてダウンロードしますか？`;
 					mbo.detail = a.length +' 個ファイルがあります'+ d;
-					const {response} = await to_app.showMessageBox(mbo);
+					const {response} = await this.#em.invoke('showMessageBox', mbo);
 					if (response > 0) return;
 
 					await Promise.allSettled(a);
@@ -362,7 +382,7 @@ export class SysApp extends SysNode {
 			mbo.buttons!.pop();
 			mbo.message = `アプリ【${this.cfg.oCfg.book.title}】の更新パッケージを\nダウンロードしました`;
 //			mbo.message = `アプリ【${this.cfg.oCfg.book.title}】の更新パッケージを\nダウンロードしました`+ (isOk ?'' :'が、破損しています。\n開発元に連絡してください');
-			to_app.showMessageBox(mbo);
+			this.#em.invoke('showMessageBox', mbo);
 		})();
 
 		return false;
@@ -388,7 +408,7 @@ export class SysApp extends SysNode {
 		const y = argChk_Num(hArg, 'y', Number(this.val.getVal('sys:const.sn.nativeWindow.y', 0)));
 		const w = argChk_Num(hArg, 'w', Number(this.val.getVal('sys:const.sn.nativeWindow.w', CmnLib.stageW)));
 		const h = argChk_Num(hArg, 'h', Number(this.val.getVal('sys:const.sn.nativeWindow.h', CmnLib.stageH)));
-		to_app.window(argChk_Boolean(hArg, 'centering', false), x, y, CmnLib.stageW, CmnLib.stageH);
+		this.#em.invoke('window', argChk_Boolean(hArg, 'centering', false), x, y, CmnLib.stageW, CmnLib.stageH);
 		this.val.setVal_Nochk('sys', 'const.sn.nativeWindow.x', x);
 		this.val.setVal_Nochk('sys', 'const.sn.nativeWindow.y', y);
 		this.val.setVal_Nochk('sys', 'const.sn.nativeWindow.w', w);
@@ -399,7 +419,7 @@ export class SysApp extends SysNode {
 	}
 
 	override capturePage(fn: string, w: number, h: number, fnc: ()=> void) {
-		to_app.capturePage(fn, w, h).then(()=> fnc());
+		this.#em.invoke('capturePage', fn, w, h).then(()=> fnc());
 	}
 
 }

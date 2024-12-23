@@ -7,16 +7,20 @@
 
 import type {HPlugin, IPlugin, IPluginInitArg} from './sn/CmnInterface';
 export type {HPlugin, IPlugin, IPluginInitArg};
-import {HINFO, TAG_WINDOW} from './preload';
-import {T_CFG} from './sn/ConfigBase';
+
+import type {HINFO, T_IpcEvents, T_IpcRendererEvent, TAG_WINDOW} from './preload';
+import type {T_CFG} from './sn/ConfigBase';
 import {CmnLib} from "./sn/CmnLib";
 
 import {BrowserWindow, ipcMain, app, dialog, MessageBoxOptions, shell, Size, screen} from 'electron';
 import Store from 'electron-store';
 import AdmZip from 'adm-zip';
 import {existsSync, readFileSync, WriteFileOptions, writeFileSync, appendFile, copySync, removeSync, ensureFileSync, outputFile, ensureDirSync} from 'fs-extra';
+import {IpcListener, IpcEmitter} from '@electron-toolkit/typed-ipc/main'
 
 
+	// console.log はテンプレの VSCode に出る
+	// 変更時反映は再度 app_dev 必要
 export class appMain {
 	static	initRenderer(preload: string, version: string): BrowserWindow {
 		let bw: BrowserWindow;
@@ -57,9 +61,6 @@ export class appMain {
 			throw 'initRenderer error';
 		}
 
-		bw.on('ready-to-show', ()=> bw.show());		//TODO: 4test
-		ipcMain.on('ping', ()=> console.log('pong'));//TODO: 4test
-
 		return bw;
 	}
 
@@ -85,26 +86,28 @@ export class appMain {
 		// console.log = (arg: any)=> this.bw.webContents.send('log', arg);
 			// 有効にするとエラーにもならず終了
 
+console.log(`fn:appMain.ts line:85 ver:${version}`);	//TODO: 4test
 		bw.webContents.on('devtools-opened', ()=> this.#evDevtoolsOpened());
-		ipcMain.handle('openDevTools', ()=> bw.webContents.openDevTools());
+		const ipc = new IpcListener<T_IpcEvents>;
+		ipc.handle('openDevTools', ()=> bw.webContents.openDevTools());
 
 		this.#hInfo.getVersion = version;
-		ipcMain.handle('getInfo', ()=> this.#hInfo);
-		ipcMain.handle('inited', (_, c: T_CFG, tagW: TAG_WINDOW)=> this.#inited(c, tagW));
+		ipc.handle('getInfo', ()=> this.#hInfo);
+		ipc.handle('inited', (_, c: T_CFG, tagW: TAG_WINDOW)=> this.#inited(c, tagW));
 
-		ipcMain.handle('existsSync', (_, fn: string)=> existsSync(fn));
-		ipcMain.handle('copySync', (_, path_from: string, path_to: string)=> copySync(path_from, path_to));
-		ipcMain.handle('removeSync', (_, fn: string)=> removeSync(fn));
-		ipcMain.handle('ensureFileSync', (_, fn: string)=> ensureFileSync(fn));
-		ipcMain.handle('readFileSync', (_, path: string)=> readFileSync(path, {encoding: 'utf8'}));
-		ipcMain.handle('writeFileSync', (_, path: string, data: string | NodeJS.ArrayBufferView, o: WriteFileOptions)=> writeFileSync(path, data, o));
-		ipcMain.handle('appendFile', (_, path: string, data: string | Uint8Array)=> appendFile(path, data).catch(err=> console.log(err)));
-		ipcMain.handle('outputFile', (_, path: string, data: string | NodeJS.ArrayBufferView)=> outputFile(path, data).catch(err=> console.log(err)));
+		ipc.handle('existsSync', (_, fn: string)=> existsSync(fn));
+		ipc.handle('copySync', (_, path_from: string, path_to: string)=> copySync(path_from, path_to));
+		ipc.handle('removeSync', (_, fn: string)=> removeSync(fn));
+		ipc.handle('ensureFileSync', (_, fn: string)=> ensureFileSync(fn));
+		ipc.handle('readFileSync', (_, path: string)=> readFileSync(path, {encoding: 'utf8'}));
+		ipc.handle('writeFileSync', (_, path: string, data: string | NodeJS.ArrayBufferView, o?: WriteFileOptions)=> writeFileSync(path, data, o));
+		ipc.handle('appendFile', (_, path: string, data: string | Uint8Array)=> appendFile(path, data).catch(err=> console.log(err)));
+		ipc.handle('outputFile', (_, path: string, data: string | NodeJS.ArrayBufferView)=> outputFile(path, data).catch(err=> console.log(err)));
 
-		ipcMain.handle('win_close', ()=> bw.close());
-		ipcMain.handle('win_setTitle', (_, title: string)=> bw.setTitle(title));
+		ipc.handle('win_close', ()=> bw.close());
+		ipc.handle('win_setTitle', (_, title: string)=> bw.setTitle(title));
 
-		ipcMain.handle('showMessageBox', (_, o: MessageBoxOptions)=> dialog.showMessageBox(o));
+		ipc.handle('showMessageBox', (_, o: MessageBoxOptions)=> dialog.showMessageBox(o));
 
 		ipcMain.handle('capturePage', (_, fn: string, width: number, height: number)=> bw.webContents.capturePage()
 		.then(ni=> {
@@ -169,6 +172,16 @@ export class appMain {
 		bw.on('resize', ()=> this.#onMove());
 
 		this.#chgDsp();	// 必須
+
+
+
+		const em = new IpcEmitter<T_IpcRendererEvent>;
+		ipc.on('ping', (e, arg)=> {
+console.log(`fn:appMain.ts line:94 B ping:${arg}`);
+			em.send(e.sender, 'ready', true)
+		})
+		//TODO: 4test
+		bw.on('ready-to-show', ()=> bw.show());
 	}
 
 	#numAspectRatio	= 0;
