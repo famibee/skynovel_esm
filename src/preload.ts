@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
-	Copyright (c) 2021-2024 Famibee (famibee.blog38.fc2.com)
+	Copyright (c) 2021-2025 Famibee (famibee.blog38.fc2.com)
 
 	This software is released under the MIT License.
 	http://opensource.org/licenses/mit-license.php
@@ -17,20 +17,13 @@ export	type	TAG_WINDOW	= {
 	h	: number;
 };
 
-export	type	SAVE_WIN_INF	= {
-	c	: boolean;
-	x	: number;
-	y	: number;
-	w	: number;
-	h	: number;
+export	type	SAVE_WIN_INF	= TAG_WINDOW & {
 	scrw: number;
 	scrh: number;
 };
 
 
 export	type	T_IpcEvents	= {
-	ping: [string] // listener event map
-} | {
 	openDevTools	: ()=> void;
 
 	getInfo		: ()=> HINFO,
@@ -53,23 +46,18 @@ export	type	T_IpcEvents	= {
 
 	showMessageBox	: (o: MessageBoxOptions)=> MessageBoxReturnValue;
 
-	capturePage	: (fn: string, w: number, h: number)=> Promise<void>;
+	capturePage	: (fn: string, w: number, h: number)=> void;
 	navigate_to	: (url: string)=> void;
 
-	Store	: (o: object)=> Promise<void>;
-	flush	: (o: object)=> Promise<void>;
-	Store_isEmpty	: ()=> Promise<boolean>;
-	Store_get		: ()=> Promise<any>;
+	Store	: (o: object)=> void;
+	flush	: (o: object)=> void;
+	Store_isEmpty	: ()=> boolean;
+	Store_get		: ()=> any;
 
 	zip		: (inp: string, out: string)=> void;
 	unzip	: (inp: string, out: string)=> void;
+};
 
-	// メイン → レンダラー
-	on: (channel: string, callback: Function) => void;
-
-
-	'say-hello'	: ()=> string, // handler event map
-}
 	export	type	HINFO	= {
 		getAppPath	: string;
 		isPackaged	: boolean;
@@ -88,8 +76,4 @@ export	type	T_IpcRendererEvent = {
 	save_win_inf: [SAVE_WIN_INF];
 	shutdown	: [];
 	fire		: [string];
-
-
-	ready: [boolean];
-
 }

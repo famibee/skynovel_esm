@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
-	Copyright (c) 2018-2024 Famibee (famibee.blog38.fc2.com)
+	Copyright (c) 2018-2025 Famibee (famibee.blog38.fc2.com)
 
 	This software is released under the MIT License.
 	http://opensource.org/licenses/mit-license.php
@@ -97,6 +97,7 @@ export interface IFncHook {(type: string, o: any): void};
 // =============== Main
 export interface IMain {
 	errScript(mes: string, isThrow? :boolean): void;
+	cvs			: HTMLCanvasElement;
 	resume(fnc?: ()=> void): void;
 	resumeByJumpOrCall(hArg: HArg): void;
 	stop(): void;

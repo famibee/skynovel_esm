@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
-	Copyright (c) 2018-2024 Famibee (famibee.blog38.fc2.com)
+	Copyright (c) 2018-2025 Famibee (famibee.blog38.fc2.com)
 
 	This software is released under the MIT License.
 	http://opensource.org/licenses/mit-license.php
@@ -14,7 +14,6 @@ import {TxtLayer} from './TxtLayer';
 import {EventListenerCtn} from './EventListenerCtn';
 import {Button} from './Button';
 import {FocusMng} from './FocusMng';
-import {Main} from './Main';
 import type {SoundMng} from './SoundMng';
 import type {Config} from './Config';
 import {SysBase} from './SysBase';
@@ -31,7 +30,8 @@ export class EventMng implements IEvtMng {
 
 	#rs	: ReadState;
 
-	constructor(private readonly cfg: Config, private readonly hTag: IHTag, readonly appPixi: Application, private readonly main: IMain, readonly layMng: LayerMng, readonly val: IVariable, sndMng: SoundMng, private readonly scrItr: ScriptIterator, readonly sys: SysBase) {
+	constructor(private readonly cfg: Config, private readonly hTag: IHTag, readonly appPixi: Application, private readonly main: IMain, private readonly layMng: LayerMng, private readonly val: IVariable, sndMng: SoundMng, private readonly scrItr: ScriptIterator, private readonly sys: SysBase) {
+// console.log(`fn:EventMng.ts line:34 %o`, appPixi.stage);
 		//	イベント
 		hTag.clear_event	= o=> ReadState.clear_event(o);	// イベントを全消去
 		// enable_event		// LayerMng.ts内で定義		//イベント有無の切替
@@ -114,9 +114,7 @@ export class EventMng implements IEvtMng {
 .sn_hint[data-popper-placement^='right']	> .sn_hint_ar {left: -4px;}
 `);
 
-		for (const v of Array.from(document.getElementsByClassName('sn_hint'))) v.parentElement?.removeChild(v);
-			// ギャラリーリロード用初期化
-		Main.cvs.parentElement?.insertAdjacentHTML('beforeend', `
+		this.main.cvs.parentElement?.insertAdjacentHTML('beforeend', `
 <div class="sn_hint" role="tooltip">
 	<span>Dummy</span>
 	<div class="sn_hint_ar" data-popper-arrow></div>
@@ -136,7 +134,7 @@ export class EventMng implements IEvtMng {
 			}
 		});
 		this.#elc.add(window, 'keydown', e=> this.#ev_keydown(e));
-		this.#elc.add(Main.cvs, 'contextmenu', e=> this.#ev_contextmenu(e));
+		this.#elc.add(this.main.cvs, 'contextmenu', e=> this.#ev_contextmenu(e));
 
 		// 言語切り替え通知
 		const fncUpdNavLang = ()=> val.setVal_Nochk('tmp', 'const.sn.navigator.language', navigator.language);
@@ -164,10 +162,10 @@ export class EventMng implements IEvtMng {
 
 		let procWheel4wle = (_elc: EventListenerCtn, _onIntr: ()=> void)=> {};
 		if ('WheelEvent' in window) {
-			this.#elc.add(Main.cvs, 'wheel', e=> this.#ev_wheel(e), {passive: true});
+			this.#elc.add(this.main.cvs, 'wheel', e=> this.#ev_wheel(e), {passive: true});
 			this.#resvFlameEvent4Wheel = win=> this.#elc.add(win, 'wheel', e=> this.#ev_wheel(e), {passive: true});
 
-			procWheel4wle = (elc: EventListenerCtn, fnc: ()=> void)=> elc.add(Main.cvs, 'wheel', e=> {
+			procWheel4wle = (elc: EventListenerCtn, fnc: ()=> void)=> elc.add(this.main.cvs, 'wheel', e=> {
 				//if (! e.isTrusted) return;
 				if (e['isComposing']) return; // サポートしてない環境でもいける書き方
 				if (e.deltaY <= 0) return;
@@ -220,7 +218,7 @@ export class EventMng implements IEvtMng {
 					((! cmp || cmp instanceof Container) ?globalThis :cmp)
 					.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
 				}
-				else Main.cvs.dispatchEvent(new Event('contextmenu'));
+				else this.main.cvs.dispatchEvent(new Event('contextmenu'));
 			});
 			gamepad.start();
 
@@ -292,6 +290,8 @@ export class EventMng implements IEvtMng {
 	}
 
 	destroy() {
+		for (const v of Array.from(document.getElementsByClassName('sn_hint'))) v.parentElement?.removeChild(v);	// ギャラリーリロード用初期化
+
 		this.#rs.destroy();
 		this.#fcs.destroy();
 		this.#elc.clear();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
-	Copyright (c) 2018-2024 Famibee (famibee.blog38.fc2.com)
+	Copyright (c) 2018-2025 Famibee (famibee.blog38.fc2.com)
 
 	This software is released under the MIT License.
 	http://opensource.org/licenses/mit-license.php
@@ -20,7 +20,7 @@ import {Application, type IApplicationOptions, utils} from 'pixi.js';
 const	SN_ID	= 'skynovel';
 
 export class Main implements IMain {
-	static	cvs	: HTMLCanvasElement;
+	cvs			: HTMLCanvasElement;
 
 	#hTag		: IHTag		= Object.create(null);	// タグ処理辞書
 
@@ -55,17 +55,24 @@ export class Main implements IMain {
 			const p = cvs.parentNode!;
 			this.#aDest.unshift(()=> p.appendChild(clone_cvs));
 		}
+		else {	// 自動的に作ってくれるが、どうも appendChild に遅延があるので
+			const c = document.createElement('canvas');
+			c.id = SN_ID;
+			hApp.view = c;
+			document.body.appendChild(c);
+			this.#aDest.unshift(()=> document.body.removeChild(c));
+		}
 
 		const app = new Application(hApp);
 		this.#aDest.unshift(()=> {
 			utils.clearTextureCache();
 			this.sys.destroy();
-			app.destroy(true);
+			app.destroy(false);	// remove canvas from DOM が非同期なのでウチがやる
 		});
 
-		Main.cvs = app.view;
-		Main.cvs.id = SN_ID +'_act';
-		if (! cvs) document.body.appendChild(Main.cvs);
+		this.cvs = app.view;
+		this.cvs.id = SN_ID +'_act';
+		if (! cvs) document.body.appendChild(this.cvs);
 
 
 		const cc = document.createElement('canvas')?.getContext('2d');
@@ -134,6 +141,8 @@ export class Main implements IMain {
 	destroy() {
 		if (this.#destroyed) return;	// destroy()連打対策
 		this.#destroyed = true;
+
+		this.cvs.parentElement?.removeChild(this.cvs);	// remove canvas from DOM
 		for (const f of this.#aDest) f();
 		this.#aDest = [];
 	}

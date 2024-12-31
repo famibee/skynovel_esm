@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
-	Copyright (c) 2021-2024 Famibee (famibee.blog38.fc2.com)
+	Copyright (c) 2021-2025 Famibee (famibee.blog38.fc2.com)
 
 	This software is released under the MIT License.
 	http://opensource.org/licenses/mit-license.php
@@ -12,11 +12,11 @@ import type {HINFO, T_IpcEvents, T_IpcRendererEvent, TAG_WINDOW} from './preload
 import type {T_CFG} from './sn/ConfigBase';
 import {CmnLib} from "./sn/CmnLib";
 
-import {BrowserWindow, ipcMain, app, dialog, MessageBoxOptions, shell, Size, screen} from 'electron';
+import {app, BrowserWindow, dialog, screen, shell, type MessageBoxOptions, type Size} from 'electron';
+import {appendFile, copySync, ensureDirSync, ensureFileSync, existsSync, outputFile, readFileSync, removeSync, WriteFileOptions, writeFileSync} from 'fs-extra';
+import {IpcListener, IpcEmitter} from '@electron-toolkit/typed-ipc/main'
 import Store from 'electron-store';
 import AdmZip from 'adm-zip';
-import {existsSync, readFileSync, WriteFileOptions, writeFileSync, appendFile, copySync, removeSync, ensureFileSync, outputFile, ensureDirSync} from 'fs-extra';
-import {IpcListener, IpcEmitter} from '@electron-toolkit/typed-ipc/main'
 
 
 	// console.log はテンプレの VSCode に出る
@@ -39,17 +39,15 @@ export class appMain {
 				show		: false,	// ウインドウ位置（とサイズ）決定時に表示
 				minWidth	: 300,
 				minHeight	: 300,
-				width: 900,		//TODO: 4test
-				height: 670,	//TODO: 4test
 				acceptFirstMouse: true,
 				maximizable		: false,// Macで最大化ボタンでフルスクリーンにしない
 				webPreferences	: {
+					// XSS対策としてnodeモジュールをレンダラープロセスで使えなくする
+					// nodeIntegration		: false,
+					// レンダラープロセスに公開するAPIのファイル
+					// contextIsolation	: true,
 					preload,
 					sandbox: false,
-					// // XSS対策としてnodeモジュールをレンダラープロセスで使えなくする
-					// nodeIntegration		: false,
-					// // レンダラープロセスに公開するAPIのファイル
-					// contextIsolation	: true,
 				},
 			});
 			const am = new appMain(bw, version);
@@ -110,7 +108,7 @@ export class appMain {
 
 		ipc.handle('showMessageBox', (_, o: MessageBoxOptions)=> dialog.showMessageBox(o));
 
-		ipcMain.handle('capturePage', (_, fn: string, width: number, height: number)=> bw.webContents.capturePage()
+		ipc.handle('capturePage', (_, fn: string, width: number, height: number)=> bw.webContents.capturePage()
 		.then(ni=> {
 			ensureFileSync(fn);	// 【必須】ディレクトリ、なければ作る
 
@@ -118,20 +116,20 @@ export class appMain {
 			const d = (fn.endsWith('.png')) ?c.toPNG() :c.toJPEG(80);
 			writeFileSync(fn, d);
 		}));
-		ipcMain.handle('navigate_to', (_, url: string)=> shell.openExternal(url));
+		ipc.handle('navigate_to', (_, url: string)=> shell.openExternal(url));
 
 		let	st: any;
-		ipcMain.handle('Store', (_, o)=> {st = new Store(o); return});	// return必要、Storeをcloneしてしまうので
-		ipcMain.handle('flush', (_, o)=> {st.store = o; return});
-		ipcMain.handle('Store_isEmpty', ()=> st.size === 0);
-		ipcMain.handle('Store_get', ()=> st.store);
+		ipc.handle('Store', (_, o)=> {st = new Store(o); return});	// return必要、Storeをcloneしてしまうので
+		ipc.handle('flush', (_, o)=> {st.store = o; return});
+		ipc.handle('Store_isEmpty', ()=> st.size === 0);
+		ipc.handle('Store_get', ()=> st.store);
 
-		ipcMain.handle('zip', (_, inp: string, out: string)=> {
+		ipc.handle('zip', (_, inp: string, out: string)=> {
 			const zip = new AdmZip;
 			zip.addLocalFolder(inp);
 			zip.writeZip(out);
 		});
-		ipcMain.handle('unzip', (_, inp: string, out: string)=> {
+		ipc.handle('unzip', (_, inp: string, out: string)=> {
 			removeSync(out);
 			ensureDirSync(out);	// ディレクトリ、なければ作る
 
@@ -139,9 +137,9 @@ export class appMain {
 			zip.extractAllTo(out, true);
 		});
 
-		ipcMain.handle('isSimpleFullScreen', ()=> bw.simpleFullScreen);
+		ipc.handle('isSimpleFullScreen', ()=> bw.simpleFullScreen);
 		if (CmnLib.isWin) {
-			ipcMain.handle('setSimpleFullScreen', (_, b: boolean)=> {
+			ipc.handle('setSimpleFullScreen', (_, b: boolean)=> {
 				this.#isMovingWin = true;
 				bw.setSimpleFullScreen(b);	// これだけで #onMove 発生
 				if (! b) {
@@ -161,27 +159,18 @@ export class appMain {
 				this.#window(false, this.#winX, this.#winY, this.#cvsW, this.#cvsH);
 			});
 		}
-		else ipcMain.handle('setSimpleFullScreen', (_, b: boolean)=> {
+		else ipc.handle('setSimpleFullScreen', (_, b: boolean)=> {
 			bw.setSimpleFullScreen(b);
 			if (b) return;
 
 			bw.setContentSize(this.#cvsW, this.#cvsH);
 		});
-		ipcMain.handle('window', (_, c: boolean, x: number, y: number, w: number, h: number)=> this.#window(c, x, y, w, h));
+		ipc.handle('window', (_, c: boolean, x: number, y: number, w: number, h: number)=> this.#window(c, x, y, w, h));
 
 		bw.on('move', ()=> this.#onMove());
 		bw.on('resize', ()=> this.#onMove());
 
 		this.#chgDsp();	// 必須
-
-
-
-// 		ipc.on('ping', (e, arg)=> {
-// console.log(`fn:appMain.ts line:94 B ping:${arg}`);
-// 			this.#em.send(e.sender, 'ready', true)
-// 		})
-		//TODO: 4test
-		bw.on('ready-to-show', ()=> bw.show());
 	}
 
 	#numAspectRatio	= 0;

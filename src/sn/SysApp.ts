@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
-	Copyright (c) 2018-2024 Famibee (famibee.blog38.fc2.com)
+	Copyright (c) 2018-2025 Famibee (famibee.blog38.fc2.com)
 
 	This software is released under the MIT License.
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import type {HINFO, SAVE_WIN_INF, T_IpcEvents, T_IpcRendererEvent} from '../preload';
 import {SysNode} from './SysNode';
 import {CmnLib, getDateStr, argChk_Boolean, argChk_Num, uint} from './CmnLib';
 import type {IHTag, ITag} from './Grammar';
@@ -13,9 +12,10 @@ import type {IVariable, IData4Vari, IMain, T_SysBaseParams, T_SysBaseLoadedParam
 import {Main} from './Main';
 import {DebugMng} from './DebugMng';
 
+import {Application} from 'pixi.js';
+import type {HINFO, SAVE_WIN_INF, T_IpcEvents, T_IpcRendererEvent} from '../preload';
 import type {IpcRendererEvent, MessageBoxOptions} from 'electron/renderer';
 import {IpcListener, IpcEmitter} from '@electron-toolkit/typed-ipc/renderer'
-import {Application} from 'pixi.js';
 
 
 // console.log はアプリのコンソールに出る
@@ -24,7 +24,7 @@ export class SysApp extends SysNode {
 	#ipc	= new IpcListener<T_IpcRendererEvent>;
 
 	constructor(...[hPlg = {}, arg = {cur: 'prj/', crypto: false, dip: ''}]: T_SysBaseParams) {	// DOMContentLoaded は呼び出し側でやる
-		super(hPlg, arg)
+		super(hPlg, arg);
 
 		queueMicrotask(async ()=> this.loaded(hPlg, arg));
 	}
@@ -42,25 +42,7 @@ export class SysApp extends SysNode {
 		CmnLib.isDbg = Boolean(this.#hInfo.env['SKYNOVEL_DBG']) && ! CmnLib.isPackaged;	// 配布版では無効
 		if (CmnLib.isDbg) this.extPort = uint(this.#hInfo.env['SKYNOVEL_PORT'] ?? '3776');
 
-
-		this.ensureFileSync	= path=> this.#em.invoke('ensureFileSync', path);
-		this.readFileSync	= path=> this.#em.invoke('readFileSync', path);
-		this.writeFileSync	= (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> this.#em.invoke('writeFileSync', path, data, o);
-		this.appendFile		= (path: string, data: string)=> this.#em.invoke('appendFile', path, data);
-		this.outputFile		= (path: string, data: string)=> this.#em.invoke('outputFile', path, data);
-	
 		await this.run();
-
-
-
-// 		const hdlIpcBtn = document.getElementById('ipcHandler');
-// 		if (hdlIpcBtn) hdlIpcBtn.addEventListener('click', ()=> {
-// 			this.sendTST('ping');
-// 		});
-// 		ipc.on('ready', (_e, arg)=> {
-// console.log(`fn:SysApp.ts line:30 ready arg:${arg}`);
-// 		})
-// 		this.#em.send('ping', 'pong')
 	}
 	#hInfo:  HINFO = {
 		getAppPath	: '',
@@ -73,8 +55,13 @@ export class SysApp extends SysNode {
 		arch		: '',
 	};
 
-
 	override	fetch = (url: string)=> fetch(url, {cache: 'no-store'});
+
+	override	ensureFileSync	= (path: string)=> this.#em.invoke('ensureFileSync', path);
+	protected override	readFileSync	= (path: string)=> this.#em.invoke('readFileSync', path);
+	protected override	writeFileSync	= (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> this.#em.invoke('writeFileSync', path, data, o);
+	override	appendFile		= (path: string, data: string)=> this.#em.invoke('appendFile', path, data);
+	override	outputFile		= (path: string, data: string)=> this.#em.invoke('outputFile', path, data);
 
 	protected 	override $path_userdata		= '';
 	protected	override $path_downloads	= '';
@@ -146,13 +133,7 @@ export class SysApp extends SysNode {
 
 	#main: Main;
 	protected override async run() {
-		if (this.#main) {
-			const ms_late = 10;	// NOTE: リソース解放待ち用・魔法数字
-			this.#main.destroy();
-			await new Promise(rs=> setTimeout(rs, ms_late));
-				// clearTimeout()不要と判断
-		}
-
+		if (this.#main) this.#main.destroy();
 		this.#main = new Main(this);
 	}
 
@@ -173,7 +154,7 @@ export class SysApp extends SysNode {
 	override cvsResize() {
 		super.cvsResize();
 
-		const cvs = Main.cvs;
+		const cvs = this.main.cvs;
 		const ps = cvs.parentElement!.style;
 		const s = cvs.style;
 		if (this.isFullScr) {

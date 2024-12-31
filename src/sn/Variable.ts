@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
-	Copyright (c) 2018-2024 Famibee (famibee.blog38.fc2.com)
+	Copyright (c) 2018-2025 Famibee (famibee.blog38.fc2.com)
 
 	This software is released under the MIT License.
 	http://opensource.org/licenses/mit-license.php
@@ -15,10 +15,11 @@ import {INI_STYPAGE, playbackPage} from './ReadState';
 
 import platform from 'platform';
 
+
 export class Variable implements IVariable {
 	#hScopes	: {[name: string]: any}	= {sys:{}, save:{}, tmp:{}, mp:{}};
-	#hSave	: any	= this.#hScopes.save;
-	#hTmp	: any	= this.#hScopes.tmp;
+	#hSave		= this.#hScopes.save;
+	#hTmp		= this.#hScopes.tmp;
 
 
 	constructor(private readonly cfg: Config, hTag: IHTag) {

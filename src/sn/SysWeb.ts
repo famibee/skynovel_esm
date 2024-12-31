@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
-	Copyright (c) 2018-2024 Famibee (famibee.blog38.fc2.com)
+	Copyright (c) 2018-2025 Famibee (famibee.blog38.fc2.com)
 
 	This software is released under the MIT License.
 	http://opensource.org/licenses/mit-license.php
@@ -68,13 +68,7 @@ export class SysWeb extends SysBase {
 		await this.run();
 	}
 	protected	override run = async ()=> {
-		if (this.#main) {
-			const ms_late = 10;	// NOTE: ギャラリーでのえもふり/Live 2D用・魔法数字
-			this.#main.destroy();
-			await new Promise(rs=> setTimeout(rs, ms_late));
-				// clearTimeout()不要と判断
-		}
-
+		if (this.#main) this.#main.destroy();
 		this.#main = new Main(this);
 	}
 	stop() {
@@ -89,7 +83,7 @@ export class SysWeb extends SysBase {
 		await super.loadPath(hPathFn2Exts, cfg);
 
 		const fn = this.arg.cur +'path.json';
-		const res = await fetch(fn);
+		const res = await this.fetch(fn);
 		if (! res.ok) throw Error(res.statusText);
 
 		const src = await res.text();
@@ -188,7 +182,7 @@ export class SysWeb extends SysBase {
 		super.cvsResize();
 
 		if (this.isFullScr) {
-			const s = Main.cvs.style;
+			const s = this.main.cvs.style;
 			s.width = s.height = '';	// ブラウザ版のセンタリングに必須
 		}
 	}

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
-	Copyright (c) 2018-2024 Famibee (famibee.blog38.fc2.com)
+	Copyright (c) 2018-2025 Famibee (famibee.blog38.fc2.com)
 
 	This software is released under the MIT License.
 	http://opensource.org/licenses/mit-license.php
@@ -7,7 +7,7 @@
 
 import {CmnLib} from './CmnLib';
 import type {SysBase} from './SysBase';
-import {ConfigBase, SEARCH_PATH_ARG_EXT, T_CFG} from './ConfigBase';
+import {ConfigBase, SEARCH_PATH_ARG_EXT, type T_CFG} from './ConfigBase';
 
 
 export class Config extends ConfigBase {
@@ -23,7 +23,7 @@ export class Config extends ConfigBase {
 	}
 
 	protected	constructor(override readonly sys: SysBase) {super(sys)}
-	override	async load(oCfg: T_CFG) {		// test用に public
+	protected	override	async load(oCfg: T_CFG) {
 		await super.load(oCfg);
 
 		CmnLib.stageW = oCfg.window.width;

@@ -7,18 +7,11 @@ export type TAG_WINDOW = {
     w: number;
     h: number;
 };
-export type SAVE_WIN_INF = {
-    c: boolean;
-    x: number;
-    y: number;
-    w: number;
-    h: number;
+export type SAVE_WIN_INF = TAG_WINDOW & {
     scrw: number;
     scrh: number;
 };
 export type T_IpcEvents = {
-    ping: [string];
-} | {
     openDevTools: () => void;
     getInfo: () => HINFO;
     inited: (oCfg: T_CFG, tagW: TAG_WINDOW) => void;
@@ -36,16 +29,14 @@ export type T_IpcEvents = {
     win_close: () => void;
     win_setTitle: (title: string) => void;
     showMessageBox: (o: MessageBoxOptions) => MessageBoxReturnValue;
-    capturePage: (fn: string, w: number, h: number) => Promise<void>;
+    capturePage: (fn: string, w: number, h: number) => void;
     navigate_to: (url: string) => void;
-    Store: (o: object) => Promise<void>;
-    flush: (o: object) => Promise<void>;
-    Store_isEmpty: () => Promise<boolean>;
-    Store_get: () => Promise<any>;
+    Store: (o: object) => void;
+    flush: (o: object) => void;
+    Store_isEmpty: () => boolean;
+    Store_get: () => any;
     zip: (inp: string, out: string) => void;
     unzip: (inp: string, out: string) => void;
-    on: (channel: string, callback: Function) => void;
-    'say-hello': () => string;
 };
 export type HINFO = {
     getAppPath: string;
@@ -64,6 +55,5 @@ export type T_IpcRendererEvent = {
     save_win_inf: [SAVE_WIN_INF];
     shutdown: [];
     fire: [string];
-    ready: [boolean];
 };
 //# sourceMappingURL=preload.d.ts.map
