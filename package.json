@@ -1,6 +1,6 @@
 {
 	"name": "@famibee/skynovel_esm",
-	"version": "1.61.10",
+	"version": "1.61.16",
 	"description": "js novelgame framework",
 	"author": "miyazawa famibee",
 	"publisher": "famibee",
@@ -9,7 +9,8 @@
 	"types": "./dist/web.d.ts",
 	"type": "module",
 	"files": [
-		"dist"
+		"dist",
+		"dist_app"
 	],
 	"engines": {
 		"node": ">=22.12"
@@ -17,9 +18,9 @@
 	"exports": {
 		".": "./dist/web.js",
 		"./web": "./dist/web.js",
-		"./appMain": "./dist/appMain.js",
-		"./preload": "./dist/preload.js",
-		"./app": "./dist/app.js"
+		"./appMain": "./dist_app/appMain.js",
+		"./preload": "./dist_app/preload.js",
+		"./app": "./dist_app/app.js"
 	},
 	"dependencies": {
 		"@electron-toolkit/typed-ipc": "^1.0.2",
@@ -39,7 +40,7 @@
 		"xml2js": "^0.6.2"
 	},
 	"devDependencies": {
-		"@happy-dom/global-registrator": "^16.2.9",
+		"@happy-dom/global-registrator": "^16.3.0",
 		"@semantic-release/changelog": "^6.0.3",
 		"@semantic-release/git": "^10.0.1",
 		"@types/adm-zip": "^0.5.7",
