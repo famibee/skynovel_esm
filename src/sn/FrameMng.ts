@@ -181,7 +181,7 @@ export class FrameMng implements IGetFrm {
 				res.data = r;
 				if (r instanceof HTMLImageElement) res.type = LoaderResource.TYPE.IMAGE;
 			} catch (e) {
-				FrameMng.#main.errScript(`GrpLayer loadPic ロード失敗です fn:${res.name} ${e}`, false)
+				FrameMng.#main.errScript(`FrameMng loadPic ロード失敗です fn:${res.name} ${e}`, false)
 			}
 			next();
 		});

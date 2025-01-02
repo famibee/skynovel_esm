@@ -2023,7 +2023,7 @@ class $ {
         }
         u.data = m, m instanceof HTMLImageElement && (u.type = B.TYPE.IMAGE);
       } catch (m) {
-        $.#n.errScript(`GrpLayer loadPic ロード失敗です fn:${u.name} ${m}`, !1);
+        $.#n.errScript(`FrameMng loadPic ロード失敗です fn:${u.name} ${m}`, !1);
       }
       h();
     }), c.load((u, h) => {
