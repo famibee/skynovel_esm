@@ -444,10 +444,6 @@ const REG_FN = /^[^\/\.]+$|[^\/]+(?=\.)/;
 function getFn(a) {
   return (a.match(REG_FN) ?? [""])[0];
 }
-const REG_EXT = /\.([^\.]+)$/;
-function getExt(a) {
-  return (a.match(REG_EXT) ?? ["", ""])[1];
-}
 class CmnLib {
   static stageW = 0;
   static stageH = 0;
@@ -22095,17 +22091,16 @@ export {
   Text as H,
   initStyle as I,
   argChk_Color as J,
-  getExt as K,
+  parseColor as K,
   Loader as L,
-  parseColor as M,
-  PROTOCOL_DL as N,
-  autoDetectRenderer as O,
+  PROTOCOL_DL as M,
+  autoDetectRenderer as N,
+  Filter as O,
   PROTOCOL_USERDATA as P,
-  Filter as Q,
+  SysWeb as Q,
   Rectangle as R,
   SEARCH_PATH_ARG_EXT as S,
   Ticker as T,
-  SysWeb as U,
   argChk_Boolean as a,
   argChk_Num as b,
   LoaderResource as c,
