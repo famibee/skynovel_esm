@@ -7,7 +7,7 @@
 
 import type {T_CFG} from './sn/ConfigBase';
 
-import {type MessageBoxOptions, type MessageBoxReturnValue} from 'electron';
+import type {MessageBoxOptions, MessageBoxReturnValue} from 'electron';
 
 export	type	TAG_WINDOW	= {
 	c	: boolean;
@@ -33,7 +33,7 @@ export	type	T_IpcEvents	= {
 	copySync	: (path_from: string, path_to: string)=> void;
 	removeSync	: (path: string)=> void;
 	ensureFileSync	: (path: string)=> void;
-	readFileSync: (path: string)=> string;
+	readFileSync: (path: string, encoding: BufferEncoding)=> string;
 	writeFileSync	: (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> void;
 	appendFile		: (path: string, data: string)=> void;
 	outputFile		: (path: string, data: string)=> void;

@@ -20491,6 +20491,7 @@ ${e.text || `(text is ${e.text})`}
     DebugMng.#r.innerHTML += `<span style='${r}'>${e}</span><br/>`, DebugMng.#r.hidden = !1;
   };
 }
+const PROTOCOL_USERDATA = "userdata:/", PROTOCOL_DL = "downloads:/";
 class Config extends ConfigBase {
   constructor(e) {
     super(e), this.sys = e;
@@ -20505,7 +20506,7 @@ class Config extends ConfigBase {
     await super.load(e), CmnLib.stageW = e.window.width, CmnLib.stageH = e.window.height, CmnLib.debugLog = e.debug.debugLog;
   }
   searchPath(e, t = SEARCH_PATH_ARG_EXT.DEFAULT) {
-    return e.startsWith("downloads:/") ? this.sys.path_downloads + e.slice(11) : e.startsWith("userdata:/") ? this.sys.path_userdata + "storage/" + e.slice(10) : super.searchPath(e, t);
+    return e.startsWith(PROTOCOL_DL) ? this.sys.path_downloads + e.slice(11) : e.startsWith(PROTOCOL_USERDATA) ? this.sys.path_userdata + "storage/" + e.slice(10) : super.searchPath(e, t);
   }
 }
 class AnalyzeTagArg {
@@ -22097,12 +22098,14 @@ export {
   getExt as K,
   Loader as L,
   parseColor as M,
-  autoDetectRenderer as N,
-  Filter as O,
-  SysWeb as P,
+  PROTOCOL_DL as N,
+  autoDetectRenderer as O,
+  PROTOCOL_USERDATA as P,
+  Filter as Q,
   Rectangle as R,
   SEARCH_PATH_ARG_EXT as S,
   Ticker as T,
+  SysWeb as U,
   argChk_Boolean as a,
   argChk_Num as b,
   LoaderResource as c,

@@ -58,7 +58,7 @@ export class SysApp extends SysNode {
 	override	fetch = (url: string)=> fetch(url, {cache: 'no-store'});
 
 	override	ensureFileSync	= (path: string)=> this.#em.invoke('ensureFileSync', path);
-	protected override	readFileSync	= (path: string)=> this.#em.invoke('readFileSync', path);
+	override	readFileSync	= (path: string, encoding: BufferEncoding = 'utf8')=> this.#em.invoke('readFileSync', path, encoding);
 	protected override	writeFileSync	= (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> this.#em.invoke('writeFileSync', path, data, o);
 	override	appendFile		= (path: string, data: string)=> this.#em.invoke('appendFile', path, data);
 	override	outputFile		= (path: string, data: string)=> this.#em.invoke('outputFile', path, data);

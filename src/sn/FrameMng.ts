@@ -5,7 +5,7 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import {CmnLib, type IEvtMng, argChk_Boolean, argChk_Num, getExt} from './CmnLib';
+import {CmnLib, type IEvtMng, argChk_Boolean, argChk_Num} from './CmnLib';
 import {CmnTween} from './CmnTween';
 import type {IHTag, HArg} from './Grammar';
 import type {IVariable, IMain, IGetFrm} from './CmnInterface';
@@ -13,6 +13,7 @@ import type {SysBase} from './SysBase';
 import {Config} from './Config';
 import {SEARCH_PATH_ARG_EXT} from './ConfigBase';
 import {disableEvent, enableEvent} from './ReadState';
+import {SysApp} from './SysApp';
 
 import {Application, Loader, LoaderResource} from 'pixi.js';
 
@@ -25,6 +26,24 @@ export class FrameMng implements IGetFrm {
 		FrameMng.#cfg = cfg;
 		FrameMng.#sys = sys;
 		FrameMng.#main = main;
+
+		const sysApp = sys as SysApp;
+		if (sysApp) FrameMng.use4ViteElectron = (path: string, ld: Loader)=> {
+			ld.use(async (res, next)=> {
+				try {
+					// const re = await FrameMng.#sys.fetch(path);
+						// fetchだとローカルファイルを返さない？
+					const base64 = await sysApp.readFileSync(path, 'base64');
+
+					const img = new Image;
+					img.src = `data:image/${path.endsWith('.png') ?'png' :'jpeg'};base64,${base64}`;
+					res.data = img;
+				} catch (e) {
+					FrameMng.#main.errScript(`FrameMng use ロード失敗です fn:${res.name} ${e}`, false)
+				}
+				next();
+			});
+		}
 	}
 
 	constructor(hTag: IHTag, private readonly appPixi: Application, private readonly val: IVariable) {
@@ -173,7 +192,11 @@ export class FrameMng implements IGetFrm {
 		const path = FrameMng.#cfg.searchPath(srcNoPrm, SEARCH_PATH_ARG_EXT.SP_GSM);
 		const ld2 = (new Loader)
 		.add({name: src, url: path, xhrType: LoaderResource.XHR_RESPONSE_TYPE.BUFFER,});
-		if (FrameMng.#sys.arg.crypto && getExt(path) === 'bin') ld2.use(async (res, next)=> {
+
+		// === vite-electron 用コード ===
+		if (src.startsWith('userdata:')) FrameMng.use4ViteElectron(path, ld2);
+		else
+		if (FrameMng.#sys.arg.crypto && path.endsWith('.bin')) ld2.use(async (res, next)=> {
 			try {
 				const r = await FrameMng.#sys.decAB(res.data);
 				if (res.extension !== 'bin') {next(); return}
@@ -185,10 +208,11 @@ export class FrameMng implements IGetFrm {
 			}
 			next();
 		});
+
 		ld2.load((_ldr, hRes)=> {
 			for (const [s2, {data: {src}}] of Object.entries(hRes)) {
 				const u2 = this.#hEncImgOUrl[s2] = src
-				+ (src.startsWith('blob:') ?'' :(Prm ? '?': '')+ Prm);
+				+ (src.startsWith('blob:') || src.startsWith('data:') ?'' :(Prm ? '?'+ Prm: ''));
 				const ri = this.#hARetImg[s2];
 				if (ri) for (const i of ri) {
 					i.src = u2;
@@ -201,6 +225,8 @@ export class FrameMng implements IGetFrm {
 	}
 	static	#hARetImg		: {[src: string]: HTMLImageElement[]}	= {};
 	static	#hEncImgOUrl	: {[src: string]: string}				= {};
+		// === vite-electron 用コード ===
+		static use4ViteElectron(_path: string, _ld: Loader) {}
 
 
 	cvsResize() {	// NOTE: フォントサイズはどう変更すべきか

@@ -1,6 +1,4 @@
-import { HPlugin, IPlugin, IPluginInitArg } from './sn/CmnInterface';
 import { BrowserWindow } from 'electron';
-export type { HPlugin, IPlugin, IPluginInitArg };
 export declare class appMain {
     #private;
     private readonly bw;

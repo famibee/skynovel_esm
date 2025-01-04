@@ -1,6 +1,6 @@
-import { a as R, q as ot, L as Y, r as Nt, S as G, c as B, i as ut, s as W, D as M, f as Et, R as U, v as bt, w as O, b as g, x as V, E as _t, C as E, y as K, j, z, u as L, F as St, o as lt, H as Rt, I as Pt, k as st, J as wt, K as Tt, M as Ft, g as mt, N as Ot, O as It } from "./app2.js";
+import { a as R, q as ot, L as Y, r as Et, S as G, c as B, i as ut, s as W, D as M, f as St, R as U, v as _t, w as O, b as g, x as V, E as wt, C as E, y as K, j, z, u as L, F as Rt, o as lt, H as Pt, I as Tt, k as st, J as xt, K as Ft, P as Ot, M as mt, g as yt, N as It, O as Bt } from "./app2.js";
 import { C as F } from "./CmnTween.js";
-import { e as q, d as X, R as yt, T as Bt } from "./ReadState.js";
+import { e as q, d as X, R as bt, T as Vt } from "./ReadState.js";
 import { R as ht } from "./RubySpliter.js";
 class Q {
   constructor(t, e, s, i, n, o, a, l) {
@@ -72,7 +72,7 @@ class ct {
   static replaceToken(t) {
   }
 }
-class Vt extends ct {
+class jt extends ct {
   constructor(t, e) {
     super("#29e", !0);
   }
@@ -154,7 +154,7 @@ class _ {
         fn: m,
         dx: 0,
         dy: 0,
-        blendmode: Nt.NORMAL
+        blendmode: Et.NORMAL
       }, y = h === 0 ? e : (v) => {
         v.x = f, v.y = r, v.blendMode = p;
       };
@@ -224,7 +224,7 @@ class _ {
       s();
       return;
     }
-    const o = Et(i.image), a = _.#i.searchPath(o, G.SP_GSM);
+    const o = St(i.image), a = _.#i.searchPath(o, G.SP_GSM);
     new Y().use((l, c) => {
       this.#n.decAB(l.data).then((u) => {
         l.data = u, u instanceof HTMLImageElement && (l.type = B.TYPE.IMAGE, URL.revokeObjectURL(u.src)), c();
@@ -246,7 +246,7 @@ class _ {
   static #$(t, e) {
     const s = _.#h[t];
     if (s) {
-      const o = new bt(s.aTex);
+      const o = new _t(s.aTex);
       return o.animationSpeed = s.meta.animationSpeed ?? 1, o.play(), o;
     }
     if (t in ot) return O.from(t);
@@ -292,7 +292,7 @@ class _ {
   //	static	clearFace2Name(): void {SpritesMng.hFace = {}}
 }
 class H extends V {
-  static #i = new _t();
+  static #i = new wt();
   static #e;
   static init(t, e, s, i, n, o) {
     H.#e = s, _.init(e, o, i, t, n);
@@ -300,7 +300,7 @@ class H extends V {
   static destroy() {
     H.#i.clear(), _.destroy();
   }
-  #n = new Vt(this.ctn, this);
+  #n = new jt(this.ctn, this);
   constructor() {
     super(), E.isDbg && (this.#o = (t) => this.#n.setSp(t), this.cvsResize = () => {
       super.cvsResize(), this.#n.cvsResize();
@@ -388,7 +388,7 @@ class H extends V {
     if (this.#t === "") return !1;
     const t = this.ctn.children;
     return this.#t.split(",").some(
-      (e, s) => t[s] instanceof bt || _.getHFn2VElm(e)
+      (e, s) => t[s] instanceof _t || _.getHFn2VElm(e)
     );
   }
   clearLay(t) {
@@ -426,8 +426,8 @@ class H extends V {
   //showDesignCastChildren() {}
   dump = () => super.dump() + `, "pic":"${this.#t}"`;
 }
-const Z = "、。，．）］｝〉」』】〕”〟ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ！？!?‼⁉・ーゝゞヽヾ々", it = "［（｛〈「『【〔“〝", nt = "─‥…", rt = Z, xt = new RegExp(`[${Z}]`), jt = new RegExp(`[${it}]`), Dt = new RegExp(`[${nt}]`), Ht = xt;
-class Wt {
+const Z = "、。，．）］｝〉」』】〕”〟ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ！？!?‼⁉・ーゝゞヽヾ々", it = "［（｛〈「『【〔“〝", nt = "─‥…", rt = Z, gt = new RegExp(`[${Z}]`), Dt = new RegExp(`[${it}]`), Ht = new RegExp(`[${nt}]`), Wt = gt;
+class zt {
   #i = Z;
   #e = it;
   #n = nt;
@@ -444,10 +444,10 @@ class Wt {
   get ぶら下げ() {
     return this.#o;
   }
-  #t = xt;
-  #c = jt;
-  #d = Dt;
-  #m = Ht;
+  #t = gt;
+  #c = Dt;
+  #d = Ht;
+  #m = Wt;
   break_fixed = !1;
   break_fixed_left = 0;
   break_fixed_top = 0;
@@ -629,7 +629,7 @@ class Wt {
 class k extends j {
   constructor(t, e, s) {
     super(), this.ctn = t, this.canFocus = e, this.sys = s, this.#t.classList.add("sn_tx"), this.#t.style.position = "absolute", k.#e.view.parentElement.appendChild(this.#t), this.addChild(this.#c), this.addChild(this.#d), this.#d.name = "grpDbgMasume", this.noticeCompTxt = s.isApp && k.#i.oCfg.debug.dumpHtm ? () => {
-      yt.noticeCompTxt();
+      bt.noticeCompTxt();
       const i = this.#t.innerHTML;
       if (i === "") return;
       const { fn: n, ln: o } = k.#o.nowScrFnLn(), a = `dumpHtm ${t.name.slice(0, -7).replaceAll(":", "=")}(fn=${n} line=${o})`;
@@ -641,7 +641,7 @@ $1
 `).replaceAll(/<(br|\/span)>/g, `<$1>
 `)}`
       );
-    } : () => yt.noticeCompTxt();
+    } : () => bt.noticeCompTxt();
   }
   static #i;
   static #e;
@@ -672,7 +672,7 @@ $1
     "margin-right": 0,
     "margin-top": 0
   };
-  #r = new Wt();
+  #r = new zt();
   noticeCompTxt = () => {
   };
   //	readonly	#idc	:TxtLayDesignCast;
@@ -985,18 +985,18 @@ $1
         T.key = `lnk=[${y}] ` + this.name;
         const P = new O();
         this.#J(P, T, w, C, r, N ?? {});
-        const I = T.style ?? "", at = I + (T.style_hover ?? ""), gt = I + (T.style_clicked ?? ""), A = T.r_style ?? "", kt = A + (T.r_style_hover ?? ""), vt = A + (T.r_style_clicked ?? ""), ft = Array.from(S.getElementsByTagName("rt"));
+        const I = T.style ?? "", at = I + (T.style_hover ?? ""), kt = I + (T.style_clicked ?? ""), A = T.r_style ?? "", vt = A + (T.r_style_hover ?? ""), $t = A + (T.r_style_clicked ?? ""), ft = Array.from(S.getElementsByTagName("rt"));
         for (const et of ft) et.dataset.st_r_bk = et.style.cssText;
-        const $t = S.style.cssText, tt = (et, Ct) => {
-          S.style.cssText = $t + et;
-          for (const pt of ft) pt.style.cssText = pt.dataset.st_r_bk + Ct;
+        const Ct = S.style.cssText, tt = (et, Nt) => {
+          S.style.cssText = Ct + et;
+          for (const pt of ft) pt.style.cssText = pt.dataset.st_r_bk + Nt;
         };
         R(T, "enabled", !0) ? k.#n.button(
           T,
           P,
           () => tt(I, A),
-          () => this.canFocus() ? (tt(at, kt), !0) : !1,
-          () => tt(gt, vt)
+          () => this.canFocus() ? (tt(at, vt), !0) : !1,
+          () => tt(kt, $t)
         ) : tt(
           I + (T.style_disable ?? "color: gray;"),
           A + (T.r_style_disable ?? "color: gray;")
@@ -1036,7 +1036,7 @@ $1
     ) : t.position.set(i.x, i.y);
     const a = {
       sp: t,
-      tw: new Bt(t).to({ alpha: 1, x: i.x, y: i.y, width: i.width, height: i.height, angle: 0 }, o.wait ?? 0).easing(n).delay((s.wait ?? 0) + (e.delay ?? 0)).onComplete(() => {
+      tw: new Vt(t).to({ alpha: 1, x: i.x, y: i.y, width: i.width, height: i.height, angle: 0 }, o.wait ?? 0).easing(n).delay((s.wait ?? 0) + (e.delay ?? 0)).onComplete(() => {
         a.tw = void 0;
       }).start()
     };
@@ -1252,7 +1252,7 @@ class D extends j {
       return;
     }
     if (!t.text) throw "textまたはpic属性は必須です";
-    const n = g(t, "height", 30), o = new St({
+    const n = g(t, "height", 30), o = new Rt({
       align: "center",
       dropShadow: !0,
       dropShadowAlpha: 0.7,
@@ -1271,7 +1271,7 @@ class D extends j {
     } catch (h) {
       throw h instanceof SyntaxError ? new Error(lt(t, "style", h.message)) : "fn:Button.ts style";
     }
-    const a = new Rt(t.text ?? "", o);
+    const a = new Pt(t.text ?? "", o);
     a.alpha = g(t, "alpha", a.alpha), a.width = g(t, "width", 100), a.height = t.height = n, this.setText = (h) => a.text = h, this.#t = {
       ...this.#t,
       type: "text",
@@ -1373,7 +1373,7 @@ class x extends V {
   static #n;
   static #o;
   static init(t, e, s, i, n, o) {
-    x.#i = t, k.init(t, o), x.#e = s, x.#o = i, x.#n = n, s.setDoRecProc(x.chgDoRec), e.autowc = (a) => x.#y(a), e.autowc({ enabled: !1, text: "", time: 0 }), e.ch_in_style = (a) => x.#t(a), e.ch_out_style = (a) => x.#c(a), k.initChStyle(), Pt(), st(
+    x.#i = t, k.init(t, o), x.#e = s, x.#o = i, x.#n = n, s.setDoRecProc(x.chgDoRec), e.autowc = (a) => x.#y(a), e.autowc({ enabled: !1, text: "", time: 0 }), e.ch_in_style = (a) => x.#t(a), e.ch_out_style = (a) => x.#c(a), k.initChStyle(), Tt(), st(
       t.matchPath(".+", G.FONT).flatMap((a) => Object.values(a).map((l) => `
 @font-face {
 	font-family: '${l}';
@@ -1581,7 +1581,7 @@ class x extends V {
         return this.#w = t.b_pic, this.#p && (this.ctn.removeChild(this.#p), this.#p.destroy()), this.#B = new _(this.#w, this.ctn, (i) => {
           this.#p = i, i.name = "back(pic)", i.visible = s > 0, i.alpha = s, this.#l.setMySize(i.width, i.height), this.ctn.setChildIndex(i, 0), e(!0);
         }), this.#B.ret;
-    } else "b_color" in t && (this.#h = wt(t, "b_color", 0), this.#p && (this.ctn.removeChild(this.#p), this.#p.destroy()), this.#w = "", this.ctn.addChildAt(
+    } else "b_color" in t && (this.#h = xt(t, "b_color", 0), this.#p && (this.ctn.removeChild(this.#p), this.#p.destroy()), this.#w = "", this.ctn.addChildAt(
       (this.#p = new z()).beginFill(this.#h).lineStyle(void 0).drawRect(0, 0, this.#l.getWidth, this.#l.getHeight).endFill(),
       0
     ), this.#p.name = "back(color)");
@@ -1930,6 +1930,18 @@ class $ {
   static #n;
   static init(t, e, s) {
     $.#i = t, $.#e = e, $.#n = s;
+    const i = e;
+    i && ($.use4ViteElectron = (n, o) => {
+      o.use(async (a, l) => {
+        try {
+          const c = await i.readFileSync(n, "base64"), u = new Image();
+          u.src = `data:image/${n.endsWith(".png") ? "png" : "jpeg"};base64,${c}`, a.data = u;
+        } catch (c) {
+          $.#n.errScript(`FrameMng use ロード失敗です fn:${a.name} ${c}`, !1);
+        }
+        l();
+      });
+    });
   }
   #o;
   setEvtMng(t) {
@@ -2014,7 +2026,7 @@ class $ {
     }
     this.#y[t] = [e];
     const [o = "", a = ""] = t.split("?"), l = $.#i.searchPath(o, G.SP_GSM), c = new Y().add({ name: t, url: l, xhrType: B.XHR_RESPONSE_TYPE.BUFFER });
-    $.#e.arg.crypto && Tt(l) === "bin" && c.use(async (u, h) => {
+    t.startsWith("userdata:") ? $.use4ViteElectron(l, c) : $.#e.arg.crypto && l.endsWith(".bin") && c.use(async (u, h) => {
       try {
         const m = await $.#e.decAB(u.data);
         if (u.extension !== "bin") {
@@ -2028,7 +2040,7 @@ class $ {
       h();
     }), c.load((u, h) => {
       for (const [m, { data: { src: f } }] of Object.entries(h)) {
-        const r = this.#h[m] = f + (f.startsWith("blob:") ? "" : (a ? "?" : "") + a), p = this.#y[m];
+        const r = this.#h[m] = f + (f.startsWith("blob:") || f.startsWith("data:") ? "" : a ? "?" + a : ""), p = this.#y[m];
         if (p) for (const d of p)
           d.src = r, s && (d.onload = () => s(d));
         delete this.#y[m];
@@ -2037,6 +2049,9 @@ class $ {
   }
   static #y = {};
   static #h = {};
+  // === vite-electron 用コード ===
+  static use4ViteElectron(t, e) {
+  }
   cvsResize() {
     for (const [t, e] of Object.entries(this.#t)) {
       const s = "const.sn.frm." + t, i = Number(this.val.getVal(s + ".x")), n = Number(this.val.getVal(s + ".y")), o = Number(this.val.getVal(s + ".width")), a = Number(this.val.getVal(s + ".height"));
@@ -2193,7 +2208,7 @@ class J {
   #n = new j();
   #o;
   #t;
-  #c = new _t();
+  #c = new wt();
   cvsResizeDesign() {
   }
   #d = {
@@ -2258,7 +2273,7 @@ class J {
   //	//	システム
   //MARK: スナップショット
   #p(t) {
-    const e = t.fn ? t.fn.startsWith("userdata:/") ? t.fn : `downloads:/${t.fn + mt("-", "_", "", "_")}.png` : `downloads:/snapshot${mt("-", "_", "", "_")}.png`, s = this.cfg.searchPath(e), i = g(t, "width", E.stageW), n = g(t, "height", E.stageH);
+    const e = t.fn ? t.fn.startsWith(Ot) ? t.fn : `${mt + t.fn + yt("-", "_", "", "_")}.png` : `${mt}snapshot${yt("-", "_", "", "_")}.png`, s = this.cfg.searchPath(e), i = g(t, "width", E.stageW), n = g(t, "height", E.stageH);
     return this.#w(t, s, i, n);
   }
   #w = () => !1;
@@ -2281,7 +2296,7 @@ class J {
   }
   #I(t, e, s, i) {
     X();
-    const n = wt(t, "b_color", this.#t), o = Ot({
+    const n = xt(t, "b_color", this.#t), o = It({
       width: s,
       height: i,
       backgroundAlpha: n > 16777216 && e.endsWith(".png") ? 0 : 1,
@@ -2508,7 +2523,7 @@ void main() {
       vague: g(t, "vague", 0.04),
       tick: 0
     };
-    this.#b.filters = [new It(
+    this.#b.filters = [new Bt(
       void 0,
       p ?? J.#H,
       b
@@ -2834,13 +2849,13 @@ void main() {
     })), e;
   }
 }
-const Yt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const Xt = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   LayerMng: J
 }, Symbol.toStringTag, { value: "Module" }));
 export {
   D as B,
-  Yt as L,
+  Xt as L,
   x as T
 };
 //# sourceMappingURL=LayerMng.js.map

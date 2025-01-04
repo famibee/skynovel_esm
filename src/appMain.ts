@@ -5,9 +5,6 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import type {HPlugin, IPlugin, IPluginInitArg} from './sn/CmnInterface';
-export type {HPlugin, IPlugin, IPluginInitArg};
-
 import type {HINFO, T_IpcEvents, T_IpcRendererEvent, TAG_WINDOW} from './preload';
 import type {T_CFG} from './sn/ConfigBase';
 import {CmnLib} from "./sn/CmnLib";
@@ -28,10 +25,6 @@ export class appMain {
 
 		try {
 			Store.initRenderer();
-
-			// process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
-			// 2018/05/08
-			// disable security-warnings not working · Issue #11970 · electron/electron https://github.com/electron/electron/issues/11970
 
 			bw = new BrowserWindow({
 			//	...o,
@@ -98,7 +91,7 @@ export class appMain {
 		ipc.handle('copySync', (_, path_from: string, path_to: string)=> copySync(path_from, path_to));
 		ipc.handle('removeSync', (_, fn: string)=> removeSync(fn));
 		ipc.handle('ensureFileSync', (_, fn: string)=> ensureFileSync(fn));
-		ipc.handle('readFileSync', (_, path: string)=> readFileSync(path, {encoding: 'utf8'}));
+		ipc.handle('readFileSync', (_, path: string, encoding: BufferEncoding)=> readFileSync(path, encoding));
 		ipc.handle('writeFileSync', (_, path: string, data: string | NodeJS.ArrayBufferView, o?: WriteFileOptions)=> writeFileSync(path, data, o));
 		ipc.handle('appendFile', (_, path: string, data: string | Uint8Array)=> appendFile(path, data).catch(err=> console.log(err)));
 		ipc.handle('outputFile', (_, path: string, data: string | NodeJS.ArrayBufferView)=> outputFile(path, data).catch(err=> console.log(err)));
