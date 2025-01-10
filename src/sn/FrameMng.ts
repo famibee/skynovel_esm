@@ -10,12 +10,12 @@ import {CmnTween} from './CmnTween';
 import type {IHTag, HArg} from './Grammar';
 import type {IVariable, IMain, IGetFrm} from './CmnInterface';
 import type {SysBase} from './SysBase';
-import {Config} from './Config';
+import {type Config, PROTOCOL_USERDATA} from './Config';
 import {SEARCH_PATH_ARG_EXT} from './ConfigBase';
 import {disableEvent, enableEvent} from './ReadState';
-import {SysApp} from './SysApp';
+import type {SysApp} from './SysApp';
 
-import {Application, Loader, LoaderResource} from 'pixi.js';
+import {type Application, Loader, LoaderResource} from 'pixi.js';
 
 
 export class FrameMng implements IGetFrm {
@@ -194,7 +194,7 @@ export class FrameMng implements IGetFrm {
 		.add({name: src, url: path, xhrType: LoaderResource.XHR_RESPONSE_TYPE.BUFFER,});
 
 		// === vite-electron 用コード ===
-		if (src.startsWith('userdata:')) FrameMng.use4ViteElectron(path, ld2);
+		if (src.startsWith(PROTOCOL_USERDATA)) FrameMng.use4ViteElectron(path, ld2);
 		else
 		if (FrameMng.#sys.arg.crypto && path.endsWith('.bin')) ld2.use(async (res, next)=> {
 			try {

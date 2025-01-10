@@ -1,4 +1,4 @@
-import { a as R, q as ot, L as Y, r as Et, S as G, c as B, i as ut, s as W, D as M, f as St, R as U, v as _t, w as O, b as g, x as V, E as wt, C as E, y as K, j, z, u as L, F as Rt, o as lt, H as Pt, I as Tt, k as st, J as xt, K as Ft, P as Ot, M as mt, g as yt, N as It, O as Bt } from "./web2.js";
+import { a as R, q as ot, L as Y, r as St, S as G, c as B, i as ut, s as W, D as M, f as Rt, R as U, v as _t, w as O, b as g, x as V, E as wt, C as E, y as K, j, z, u as L, F as Pt, o as lt, H as Tt, I as Ft, k as st, J as xt, P as gt, K as Ot, M as mt, g as yt, N as It, O as Bt } from "./web2.js";
 import { C as F } from "./CmnTween.js";
 import { e as q, d as X, R as bt, T as Vt } from "./ReadState.js";
 import { R as ht } from "./RubySpliter.js";
@@ -154,7 +154,7 @@ class _ {
         fn: m,
         dx: 0,
         dy: 0,
-        blendmode: Et.NORMAL
+        blendmode: St.NORMAL
       }, y = h === 0 ? e : (v) => {
         v.x = f, v.y = r, v.blendMode = p;
       };
@@ -224,7 +224,7 @@ class _ {
       s();
       return;
     }
-    const o = St(i.image), a = _.#i.searchPath(o, G.SP_GSM);
+    const o = Rt(i.image), a = _.#i.searchPath(o, G.SP_GSM);
     new Y().use((l, c) => {
       this.#n.decAB(l.data).then((u) => {
         l.data = u, u instanceof HTMLImageElement && (l.type = B.TYPE.IMAGE, URL.revokeObjectURL(u.src)), c();
@@ -426,7 +426,7 @@ class H extends V {
   //showDesignCastChildren() {}
   dump = () => super.dump() + `, "pic":"${this.#t}"`;
 }
-const Z = "、。，．）］｝〉」』】〕”〟ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ！？!?‼⁉・ーゝゞヽヾ々", it = "［（｛〈「『【〔“〝", nt = "─‥…", rt = Z, gt = new RegExp(`[${Z}]`), Dt = new RegExp(`[${it}]`), Ht = new RegExp(`[${nt}]`), Wt = gt;
+const Z = "、。，．）］｝〉」』】〕”〟ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ！？!?‼⁉・ーゝゞヽヾ々", it = "［（｛〈「『【〔“〝", nt = "─‥…", rt = Z, kt = new RegExp(`[${Z}]`), Dt = new RegExp(`[${it}]`), Ht = new RegExp(`[${nt}]`), Wt = kt;
 class zt {
   #i = Z;
   #e = it;
@@ -444,7 +444,7 @@ class zt {
   get ぶら下げ() {
     return this.#o;
   }
-  #t = gt;
+  #t = kt;
   #c = Dt;
   #d = Ht;
   #m = Wt;
@@ -985,18 +985,18 @@ $1
         T.key = `lnk=[${y}] ` + this.name;
         const P = new O();
         this.#J(P, T, w, C, r, N ?? {});
-        const I = T.style ?? "", at = I + (T.style_hover ?? ""), kt = I + (T.style_clicked ?? ""), A = T.r_style ?? "", vt = A + (T.r_style_hover ?? ""), $t = A + (T.r_style_clicked ?? ""), ft = Array.from(S.getElementsByTagName("rt"));
+        const I = T.style ?? "", at = I + (T.style_hover ?? ""), vt = I + (T.style_clicked ?? ""), A = T.r_style ?? "", $t = A + (T.r_style_hover ?? ""), Ct = A + (T.r_style_clicked ?? ""), ft = Array.from(S.getElementsByTagName("rt"));
         for (const et of ft) et.dataset.st_r_bk = et.style.cssText;
-        const Ct = S.style.cssText, tt = (et, Nt) => {
-          S.style.cssText = Ct + et;
-          for (const pt of ft) pt.style.cssText = pt.dataset.st_r_bk + Nt;
+        const Nt = S.style.cssText, tt = (et, Et) => {
+          S.style.cssText = Nt + et;
+          for (const pt of ft) pt.style.cssText = pt.dataset.st_r_bk + Et;
         };
         R(T, "enabled", !0) ? k.#n.button(
           T,
           P,
           () => tt(I, A),
-          () => this.canFocus() ? (tt(at, vt), !0) : !1,
-          () => tt(kt, $t)
+          () => this.canFocus() ? (tt(at, $t), !0) : !1,
+          () => tt(vt, Ct)
         ) : tt(
           I + (T.style_disable ?? "color: gray;"),
           A + (T.r_style_disable ?? "color: gray;")
@@ -1252,7 +1252,7 @@ class D extends j {
       return;
     }
     if (!t.text) throw "textまたはpic属性は必須です";
-    const n = g(t, "height", 30), o = new Rt({
+    const n = g(t, "height", 30), o = new Pt({
       align: "center",
       dropShadow: !0,
       dropShadowAlpha: 0.7,
@@ -1271,7 +1271,7 @@ class D extends j {
     } catch (h) {
       throw h instanceof SyntaxError ? new Error(lt(t, "style", h.message)) : "fn:Button.ts style";
     }
-    const a = new Pt(t.text ?? "", o);
+    const a = new Tt(t.text ?? "", o);
     a.alpha = g(t, "alpha", a.alpha), a.width = g(t, "width", 100), a.height = t.height = n, this.setText = (h) => a.text = h, this.#t = {
       ...this.#t,
       type: "text",
@@ -1373,7 +1373,7 @@ class x extends V {
   static #n;
   static #o;
   static init(t, e, s, i, n, o) {
-    x.#i = t, k.init(t, o), x.#e = s, x.#o = i, x.#n = n, s.setDoRecProc(x.chgDoRec), e.autowc = (a) => x.#y(a), e.autowc({ enabled: !1, text: "", time: 0 }), e.ch_in_style = (a) => x.#t(a), e.ch_out_style = (a) => x.#c(a), k.initChStyle(), Tt(), st(
+    x.#i = t, k.init(t, o), x.#e = s, x.#o = i, x.#n = n, s.setDoRecProc(x.chgDoRec), e.autowc = (a) => x.#y(a), e.autowc({ enabled: !1, text: "", time: 0 }), e.ch_in_style = (a) => x.#t(a), e.ch_out_style = (a) => x.#c(a), k.initChStyle(), Ft(), st(
       t.matchPath(".+", G.FONT).flatMap((a) => Object.values(a).map((l) => `
 @font-face {
 	font-family: '${l}';
@@ -2026,7 +2026,7 @@ class $ {
     }
     this.#y[t] = [e];
     const [o = "", a = ""] = t.split("?"), l = $.#i.searchPath(o, G.SP_GSM), c = new Y().add({ name: t, url: l, xhrType: B.XHR_RESPONSE_TYPE.BUFFER });
-    t.startsWith("userdata:") ? $.use4ViteElectron(l, c) : $.#e.arg.crypto && l.endsWith(".bin") && c.use(async (u, h) => {
+    t.startsWith(gt) ? $.use4ViteElectron(l, c) : $.#e.arg.crypto && l.endsWith(".bin") && c.use(async (u, h) => {
       try {
         const m = await $.#e.decAB(u.data);
         if (u.extension !== "bin") {
@@ -2189,7 +2189,7 @@ class J {
       delete r.visible, r.id = "break", r.pic = "breakpage";
       const p = encodeURIComponent(JSON.stringify(r));
       this.#u("grp｜" + p);
-    }), this.#t = Ft(String(t.oCfg.init.bg_color));
+    }), this.#t = Ot(String(t.oCfg.init.bg_color));
     const h = new z();
     h.beginFill(this.#t, 1).lineStyle(0, this.#t).drawRect(0, 0, E.stageW, E.stageH).endFill(), this.#e.addChild(h.clone()), this.#n.addChild(h), this.#n.visible = !1, this.#e.name = "page:A", this.#n.name = "page:B", this.#i = s.stage, this.#i.addChild(this.#n), this.#i.addChild(this.#e), this.#i.addChild(this.#N), this.#i.addChild(this.#b), this.#i.name = "stage";
     const m = (r, p) => {
@@ -2273,7 +2273,7 @@ class J {
   //	//	システム
   //MARK: スナップショット
   #p(t) {
-    const e = t.fn ? t.fn.startsWith(Ot) ? t.fn : `${mt + t.fn + yt("-", "_", "", "_")}.png` : `${mt}snapshot${yt("-", "_", "", "_")}.png`, s = this.cfg.searchPath(e), i = g(t, "width", E.stageW), n = g(t, "height", E.stageH);
+    const e = t.fn ? t.fn.startsWith(gt) ? t.fn : `${mt + t.fn + yt("-", "_", "", "_")}.png` : `${mt}snapshot${yt("-", "_", "", "_")}.png`, s = this.cfg.searchPath(e), i = g(t, "width", E.stageW), n = g(t, "height", E.stageH);
     return this.#w(t, s, i, n);
   }
   #w = () => !1;
