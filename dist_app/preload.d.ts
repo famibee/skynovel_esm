@@ -1,5 +1,5 @@
 import { T_CFG } from './sn/ConfigBase';
-import { MessageBoxOptions, MessageBoxReturnValue } from 'electron';
+import { MessageBoxOptions, MessageBoxReturnValue, OpenDialogOptions, OpenDialogReturnValue } from 'electron/renderer';
 export type TAG_WINDOW = {
     c: boolean;
     x: number;
@@ -29,14 +29,15 @@ export type T_IpcEvents = {
     win_close: () => void;
     win_setTitle: (title: string) => void;
     showMessageBox: (o: MessageBoxOptions) => MessageBoxReturnValue;
+    showOpenDialog: (o: OpenDialogOptions) => OpenDialogReturnValue;
     capturePage: (fn: string, w: number, h: number) => void;
     navigate_to: (url: string) => void;
     Store: (o: object) => void;
     flush: (o: object) => void;
     Store_isEmpty: () => boolean;
     Store_get: () => any;
-    zip: (inp: string, out: string) => void;
-    unzip: (inp: string, out: string) => void;
+    zip: (inp: string, out: string) => Promise<void>;
+    unzip: (inp: string, out: string) => Promise<void>;
 };
 export type HINFO = {
     getAppPath: string;

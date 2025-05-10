@@ -198,29 +198,30 @@ export class SysApp extends SysNode {
 			this.$path_userdata +'storage/',
 			this.$path_downloads + (this.arg.crypto ?'' :'no_crypto_')
 			+ this.cfg.getNs() + getDateStr('-', '_', '') +'.spd',
-		);
-		if (CmnLib.debugLog) console.log('プレイデータをエクスポートしました');
-		this.fire('sn:exported', new Event('click'));
+		).then(()=> {
+			if (CmnLib.debugLog) console.log('プレイデータをエクスポートしました');
+			this.fire('sn:exported', new Event('click'));	// 末尾に処理
+		});
 
 		return false;
 	}
 
 	// プレイデータをインポート
 	protected override readonly	_import = ()=> {
-		const flush = this.flush;
-		new Promise((rs: (inp: string)=> void, rj)=> {
-			const inp = document.createElement('input');
-			inp.type = 'file';
-			inp.accept = '.spd, text/plain';
-			inp.onchange = ()=> {
-				const f = inp.files?.[0];
-				if (f) rs(f.path); else rj()
-			};
-			inp.click();
-		})
-		.then(async (inp: string)=> {
+		this.#em.invoke('showOpenDialog', {
+			title	: 'play data import',
+			filters	: [{name: 'sn import', extensions: ['spd']}],
+			properties: [
+				'openFile',	// - ファイルを選択するのを許可します。
+				// openDirectory - ディレクトリを選択するのを許可します。
+				// multiSelections - 複数のパスを選択するのを許可します。
+			],
+		}).then(async ({canceled, filePaths: [inp]})=> {
+			if (canceled) return;
+
+			const flush = this.flush;
 			this.flush = ()=> {};
-			this.#em.invoke('unzip', inp, this.$path_userdata +'storage/');
+			this.#em.invoke('unzip', inp!, this.$path_userdata +'storage/');
 
 			await this.#setStore();
 			const o = await this.#em.invoke('Store_get', );
@@ -233,7 +234,8 @@ export class SysApp extends SysNode {
 
 			if (CmnLib.debugLog) console.log('プレイデータをインポートしました');
 			this.fire('sn:imported', new Event('click'));
-		});
+		})
+		.catch(e=> console.log(`[import] err: ${e}`));
 
 		return false;
 	}
