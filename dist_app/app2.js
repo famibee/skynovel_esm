@@ -18605,6 +18605,7 @@ class f_ extends dr {
       throw n;
     }
   }
+  // === vite-electron 用コード ===
   async readFileSync(t, e) {
     return "";
   }
@@ -19117,6 +19118,7 @@ class b_ {
   }
 }
 class O_ extends f_ {
+  // === vite-electron 用コード ===
   #t = new y_();
   #e = new b_();
   constructor(...[t = {}, e = { cur: "prj/", crypto: !1, dip: "" }]) {
@@ -19137,6 +19139,7 @@ class O_ extends f_ {
   };
   fetch = (t) => fetch(t, { cache: "no-store" });
   ensureFileSync = (t) => this.#t.invoke("ensureFileSync", t);
+  // === vite-electron 用コード ===
   readFileSync = (t, e = "utf8") => this.#t.invoke("readFileSync", t, e);
   writeFileSync = (t, e, r) => this.#t.invoke("writeFileSync", t, e, r);
   appendFile = (t, e) => this.#t.invoke("appendFile", t, e);

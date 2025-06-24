@@ -47,6 +47,7 @@ export class SysNode extends SysBase {
 		} catch (e) {throw e}
 	};
 
+	// === vite-electron 用コード ===
 	protected	async readFileSync(_path: string, _encoding: BufferEncoding): Promise<string> {return ''};
 	protected	async writeFileSync(_path: string, _data: string | NodeJS.ArrayBufferView, _o?: object) {}
 

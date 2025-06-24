@@ -27,6 +27,7 @@ export class FrameMng implements IGetFrm {
 		FrameMng.#sys = sys;
 		FrameMng.#main = main;
 
+		// === vite-electron 用コード ===
 		const sysApp = sys as SysApp;
 		if (sysApp) FrameMng.use4ViteElectron = (path: string, ld: Loader)=> {
 			ld.use(async (res, next)=> {

@@ -33,6 +33,7 @@ export	type	T_IpcEvents	= {
 	copySync	: (path_from: string, path_to: string)=> void;
 	removeSync	: (path: string)=> void;
 	ensureFileSync	: (path: string)=> void;
+	// === vite-electron 用コード ===
 	readFileSync: (path: string, encoding: BufferEncoding)=> string;
 	writeFileSync	: (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> void;
 	appendFile		: (path: string, data: string)=> void;

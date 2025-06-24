@@ -92,6 +92,7 @@ export class appMain {
 		ipc.handle('copySync', (_, path_from: string, path_to: string)=> copySync(path_from, path_to));
 		ipc.handle('removeSync', (_, fn: string)=> removeSync(fn));
 		ipc.handle('ensureFileSync', (_, fn: string)=> ensureFileSync(fn));
+		// === vite-electron 用コード ===
 		ipc.handle('readFileSync', (_, path: string, encoding: BufferEncoding)=> readFileSync(path, encoding));
 		ipc.handle('writeFileSync', (_, path: string, data: string | NodeJS.ArrayBufferView, o?: WriteFileOptions)=> writeFileSync(path, data, o));
 		ipc.handle('appendFile', (_, path: string, data: string | Uint8Array)=> appendFile(path, data).catch(err=> console.log(err)));

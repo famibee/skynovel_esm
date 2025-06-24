@@ -20,6 +20,7 @@ import {IpcListener, IpcEmitter} from '@electron-toolkit/typed-ipc/renderer'
 
 // console.log はアプリのコンソールに出る
 export class SysApp extends SysNode {
+	// === vite-electron 用コード ===
 	#em		= new IpcEmitter<T_IpcEvents>;
 	#ipc	= new IpcListener<T_IpcRendererEvent>;
 
@@ -58,6 +59,7 @@ export class SysApp extends SysNode {
 	override	fetch = (url: string)=> fetch(url, {cache: 'no-store'});
 
 	override	ensureFileSync	= (path: string)=> this.#em.invoke('ensureFileSync', path);
+	// === vite-electron 用コード ===
 	override	readFileSync	= (path: string, encoding: BufferEncoding = 'utf8')=> this.#em.invoke('readFileSync', path, encoding);
 	protected override	writeFileSync	= (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> this.#em.invoke('writeFileSync', path, data, o);
 	override	appendFile		= (path: string, data: string)=> this.#em.invoke('appendFile', path, data);
