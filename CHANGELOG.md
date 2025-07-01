@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/famibee/skynovel_esm/compare/v1.0.0...v1.1.0) (2025-07-01)
+
+
+### Features
+
+* バージョン上げ ([f7ec3b0](https://github.com/famibee/skynovel_esm/commit/f7ec3b008089e133a2f61c1e54ddaab1a133a08e))
+* バージョン上げ2 ([8fa32f6](https://github.com/famibee/skynovel_esm/commit/8fa32f6a9df88c0c5ef5074607b2d38aa2a8cd4b))
+
 # 1.0.0 (2025-07-01)
 
 
