@@ -26,6 +26,15 @@ jobs:
         bun install
         bun test
 
+    - name: Import bot's GPG key for signing commits
+      id: import-gpg
+      uses: crazy-max/ghaction-import-gpg@v6
+      with:
+        gpg_private_key: ${{secrets.GPG_PRIVATE_KEY}}
+        passphrase: ${{secrets.PASSPHRASE}}
+        git_user_signingkey: true
+        git_commit_gpgsign: true
+
     - name: 📜 Semantic Release
       run: npm run semantic-release
       env:
@@ -46,7 +55,7 @@ jobs:
       - name: 📜 Fetch the latest tag
         id: latest_tag
         run: |
-          export LATEST_TAG="$(curl -fsi "https://github.com/${GITHUB_REPOSITORY}/releases/latest" | awk -F/ '/^(L|l)ocation:/ {print $(NF)}')"
+          export LATEST_TAG="$(curl -fsi "https://github.com/famibee/${GITHUB_REPOSITORY}/releases/latest" | awk -F/ '/^(L|l)ocation:/ {print $(NF)}')"
           echo "::set-output name=latest_tag::${LATEST_TAG}"
       - uses: actions/checkout@v4
         with:
