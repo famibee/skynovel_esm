@@ -1,0 +1,68 @@
+name: "Release package"
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup
+      uses: oven-sh/setup-bun@v2
+      with:
+        registry-url: https://npm.pkg.github.com/
+    - name: 🔧 Setup node 4 Semantic Release
+      uses: actions/setup-node@v4
+      with:
+        registry-url: https://npm.pkg.github.com/
+        node-version: 'lts/*'
+
+    - name: 📦 Install dependencies
+      run: |
+        bun install
+        bun test
+
+    - name: 📜 Semantic Release
+      run: npm run semantic-release
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+    - name: 📦 Publish to NPM Registry (in Gihhub ?)
+      run: bunx can-npm-publish --verbose && bun publish || echo "Does not publish"
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  publish-npm:
+    needs: build
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📜 Fetch the latest tag
+        id: latest_tag
+        run: |
+          export LATEST_TAG="$(curl -fsi "https://github.com/${GITHUB_REPOSITORY}/releases/latest" | awk -F/ '/^(L|l)ocation:/ {print $(NF)}')"
+          echo "::set-output name=latest_tag::${LATEST_TAG}"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{steps.latest_tag.outputs.latest_tag}}
+      - run: git log
+
+      - name: 🔧 Setup
+        uses: oven-sh/setup-bun@v2
+        with:
+          registry-url: https://registry.npmjs.org/
+          scope: '@famibee'
+
+      - name: 📦 Install dependencies
+        run: bun install
+
+      - name: 📦 Publish to NPM Registry
+        run: bunx can-npm-publish --verbose && bun publish --access=public || echo "Does not publish"
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
