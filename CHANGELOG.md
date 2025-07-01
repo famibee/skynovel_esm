@@ -1,3 +1,12 @@
+# 1.0.0 (2025-07-01)
+
+
+### Bug Fixes
+
+* リファクタリング：forEach 削除（for や for of に変更） ([d906a5d](https://github.com/famibee/skynovel_esm/commit/d906a5d8eda7f5e3b245453342486db7b337c78b))
+* 一文中の[l]後〜次の[l]でクリック待ちが表示されず、ワンクリックして表示される場合がある件 ([38f85cf](https://github.com/famibee/skynovel_esm/commit/38f85cf73c7d7cbf27415e4cc2c5c5c9828dddd5))
+* 画像表示でキャッシュの掛かり方によって表示されなくなる件 ([07761b6](https://github.com/famibee/skynovel_esm/commit/07761b66bbfc9a9d7e536c88e70b1142d01060b9))
+
 ## v1.61.21
 - fix: 画像表示でキャッシュの掛かり方によって表示されなくなる件
 	- 立ち絵の差分が一部表示されない事がある件
