@@ -1,3 +1,17 @@
+# [1.2.0](https://github.com/famibee/skynovel_esm/compare/v1.1.0...v1.2.0) (2025-07-02)
+
+
+### Features
+
+* @semantic-release/git のマニュアルを参考に ([290de2c](https://github.com/famibee/skynovel_esm/commit/290de2c2bb71a684d11e8edf332489b65e01d507))
+* @semantic-release/git のマニュアルを参考に2 ([a5538f6](https://github.com/famibee/skynovel_esm/commit/a5538f6ab186957e5519c5c06a15a39108f046f5))
+* ghaction-import-gpg 記述追加 ([13f6e89](https://github.com/famibee/skynovel_esm/commit/13f6e898b0c083df52b094ff9bafa7fb561fc25b))
+* ghaction-import-gpg 記述追加2 ([4e43e59](https://github.com/famibee/skynovel_esm/commit/4e43e596add971f669ad8ae17512e043060f8e39))
+* ghaction-import-gpg 記述追加3 ([ecf9b7b](https://github.com/famibee/skynovel_esm/commit/ecf9b7b104317da417401bef49904ca7a69b1cfe))
+* ghaction-import-gpg 記述追加4 ([8482cf2](https://github.com/famibee/skynovel_esm/commit/8482cf233f93430bc0981a223d340005c993d377))
+* バージョン上げ3 ([9d83930](https://github.com/famibee/skynovel_esm/commit/9d83930df3287308edfac82b1d687c7e889b1893))
+* ひとまずリリース ([881bd62](https://github.com/famibee/skynovel_esm/commit/881bd629e551867a72bbd7f6b6b0d866c85eb8f0))
+
 #
 # [1.1.0](https://github.com/famibee/skynovel_esm/compare/v1.0.0...v1.1.0) (2025-07-01)
 
