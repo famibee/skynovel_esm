@@ -3,32 +3,11 @@
 
 ### Features
 
-* @semantic-release/git のマニュアルを参考に ([290de2c](https://github.com/famibee/skynovel_esm/commit/290de2c2bb71a684d11e8edf332489b65e01d507))
-* @semantic-release/git のマニュアルを参考に2 ([a5538f6](https://github.com/famibee/skynovel_esm/commit/a5538f6ab186957e5519c5c06a15a39108f046f5))
-* ghaction-import-gpg 記述追加 ([13f6e89](https://github.com/famibee/skynovel_esm/commit/13f6e898b0c083df52b094ff9bafa7fb561fc25b))
-* ghaction-import-gpg 記述追加2 ([4e43e59](https://github.com/famibee/skynovel_esm/commit/4e43e596add971f669ad8ae17512e043060f8e39))
-* ghaction-import-gpg 記述追加3 ([ecf9b7b](https://github.com/famibee/skynovel_esm/commit/ecf9b7b104317da417401bef49904ca7a69b1cfe))
-* ghaction-import-gpg 記述追加4 ([8482cf2](https://github.com/famibee/skynovel_esm/commit/8482cf233f93430bc0981a223d340005c993d377))
-* バージョン上げ3 ([9d83930](https://github.com/famibee/skynovel_esm/commit/9d83930df3287308edfac82b1d687c7e889b1893))
 * ひとまずリリース ([881bd62](https://github.com/famibee/skynovel_esm/commit/881bd629e551867a72bbd7f6b6b0d866c85eb8f0))
-
-#
-# [1.1.0](https://github.com/famibee/skynovel_esm/compare/v1.0.0...v1.1.0) (2025-07-01)
-
-
-### Features
-
-* バージョン上げ ([f7ec3b0](https://github.com/famibee/skynovel_esm/commit/f7ec3b008089e133a2f61c1e54ddaab1a133a08e))
-* バージョン上げ2 ([8fa32f6](https://github.com/famibee/skynovel_esm/commit/8fa32f6a9df88c0c5ef5074607b2d38aa2a8cd4b))
-
-# 1.0.0 (2025-07-01)
-
-
-### Bug Fixes
-
 * リファクタリング：forEach 削除（for や for of に変更） ([d906a5d](https://github.com/famibee/skynovel_esm/commit/d906a5d8eda7f5e3b245453342486db7b337c78b))
 * 一文中の[l]後〜次の[l]でクリック待ちが表示されず、ワンクリックして表示される場合がある件 ([38f85cf](https://github.com/famibee/skynovel_esm/commit/38f85cf73c7d7cbf27415e4cc2c5c5c9828dddd5))
 * 画像表示でキャッシュの掛かり方によって表示されなくなる件 ([07761b6](https://github.com/famibee/skynovel_esm/commit/07761b66bbfc9a9d7e536c88e70b1142d01060b9))
+
 
 ## v1.61.21
 - fix: 画像表示でキャッシュの掛かり方によって表示されなくなる件
