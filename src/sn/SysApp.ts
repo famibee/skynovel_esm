@@ -58,7 +58,7 @@ export class SysApp extends SysNode {
 
 	// === vite-electron 用コード ===
 	#fetch2web = (url: string)=> this.#em.invoke('fetch', url);
-	// override	fetch = (url: string)=> fetch(url, {cache: 'no-store'});
+	#fetchAb2web = (url: string)=> this.#em.invoke('fetchAb', url);
 
 	override	ensureFileSync	= (path: string)=> this.#em.invoke('ensureFileSync', path);
 	// === vite-electron 用コード ===
@@ -275,20 +275,20 @@ export class SysApp extends SysNode {
 
 			// バージョン更新チェック
 			let netver = '';
-			const resIdxJS = await this.#fetch2web(url +'_index.json');
-			if (resIdxJS.ok) {
+			const o = await this.#fetch2web(url +'_index.json');
+			if (o.ok) {
 				if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] _index.jsonを取得しました`, 'D');
-				oIdx = await resIdxJS.json();
+				oIdx = JSON.parse(o.txt);
 				netver = oIdx.version;
 			}
 			else {
-				const resYml = await this.#fetch2web(url +`latest${CmnLib.isMac ?'-mac' :''}.yml`);
-				if (! resYml.ok) {
-					if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] [update_check] .ymlが見つかりません`);
+				const o = await this.#fetch2web(url +`latest${CmnLib.isMac ?'-mac' :''}.yml`);
+				if (! o.ok) {
+					if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] .ymlが見つかりません`);
 					return;
 				}
 				if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] .ymlを取得しました`, 'D');
-				sYml = await resYml.text();
+				sYml = o.txt;
 				const mv = /version: (.+)/.exec(sYml);
 				const mv2 = mv?.[1];
 				if (! mv2) throw `[update_check] .yml に version が見つかりません`;
@@ -316,7 +316,7 @@ export class SysApp extends SysNode {
 
 			// アプリダウンロード
 			if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] アプリダウンロード開始`, 'D');
-			if (resIdxJS.ok) {
+			if (o.ok) {
 				const key = this.#hInfo.platform +'_'+ this.#hInfo.arch;
 			//	const key = this.#hInfo.platform +'_@'+ this.#hInfo.arch;
 					// アーキテクチャがない場合の動作テスト
@@ -372,8 +372,8 @@ export class SysApp extends SysNode {
 	}
 	async	#dl_app(url: string, urlApp: string, fn: string) {
 		if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] アプリファイルDL試行... url=${url + urlApp}`, 'D');
-		const res = await this.#fetch2web(url + urlApp);
-		if (! res.ok) {
+		const o = await this.#fetchAb2web(url + urlApp);
+		if (! o.ok) {
 			if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] アプリファイルが見つかりません url=${url + fn}`);
 			return;
 		}
@@ -381,8 +381,7 @@ export class SysApp extends SysNode {
 		const pathDL = this.#hInfo.downloads +'/'+ fn;
 		if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] pathDL=${pathDL}`, 'D');
 
-		const ab = await res.arrayBuffer();
-		await this.writeFileSync(pathDL, new DataView(ab));	//o
+		await this.writeFileSync(pathDL, new DataView(o.ab));
 	}
 
 	// アプリウインドウ設定

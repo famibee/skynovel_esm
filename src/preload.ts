@@ -22,6 +22,15 @@ export	type	SAVE_WIN_INF	= TAG_WINDOW & {
 	scrh: number;
 };
 
+export	type	T_FETCH		= {
+	ok	: boolean;
+	txt	: string;
+};
+export	type	T_FETCH_AB	= {
+	ok	: boolean;
+	ab	: ArrayBuffer;
+};
+
 
 export	type	T_IpcEvents	= {
 	openDevTools	: ()=> void;
@@ -30,7 +39,8 @@ export	type	T_IpcEvents	= {
 	inited		: (oCfg: T_CFG, tagW: TAG_WINDOW)=> void;
 
 	// === vite-electron 用コード ===
-	fetch		: (path: string)=> Response;
+	fetch		: (path: string)=> T_FETCH;
+	fetchAb		: (path: string)=> T_FETCH_AB;
 
 	existsSync	: (path: string)=> boolean;
 	copySync	: (path_from: string, path_to: string)=> void;
@@ -59,8 +69,8 @@ export	type	T_IpcEvents	= {
 	Store_isEmpty	: ()=> boolean;
 	Store_get		: ()=> any;
 
-	zip		: (inp: string, out: string)=> Promise<void>;
-	unzip	: (inp: string, out: string)=> Promise<void>;
+	zip		: (inp: string, out: string)=> void;
+	unzip	: (inp: string, out: string)=> void;
 };
 
 	export	type	HINFO	= {

@@ -1,3 +1,6 @@
+- fix: [update_check] 前回修正でデータが main -> render 間で受け渡せてなかった件
+
+
 ## [1.2.1](https://github.com/famibee/skynovel_esm/compare/v1.2.0...v1.2.1) (2025-07-12)
 
 

@@ -89,7 +89,21 @@ export class appMain {
 		ipc.handle('inited', (_, c: T_CFG, tagW: TAG_WINDOW)=> this.#inited(c, tagW));
 
 		// === vite-electron 用コード ===
-		ipc.handle('fetch', (_, url: string)=> fetch(url, {cache: 'no-store'}));
+		ipc.handle('fetch', async (_, url: string)=> {
+			const o = await fetch(url, {cache: 'no-store'});
+			return {
+				ok	: o.ok,
+				txt	: await o.text(),
+			};
+		});
+		ipc.handle('fetchAb', async (_, url: string)=> {
+			const o = await fetch(url, {cache: 'no-store'});
+			return {
+				ok	: o.ok,
+				ab	: await o.arrayBuffer(),
+			};
+		});
+		// ipc.handle('fetch', (_, url: string)=> fetch(url, {cache: 'no-store'}));
 
 		ipc.handle('existsSync', (_, path: string)=> existsSync(path));
 		ipc.handle('copySync', (_, path_from: string, path_to: string)=> copySync(path_from, path_to));
