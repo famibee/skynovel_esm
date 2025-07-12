@@ -29,6 +29,9 @@ export	type	T_IpcEvents	= {
 	getInfo		: ()=> HINFO,
 	inited		: (oCfg: T_CFG, tagW: TAG_WINDOW)=> void;
 
+	// === vite-electron 用コード ===
+	fetch		: (path: string)=> Response;
+
 	existsSync	: (path: string)=> boolean;
 	copySync	: (path_from: string, path_to: string)=> void;
 	removeSync	: (path: string)=> void;

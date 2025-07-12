@@ -56,7 +56,9 @@ export class SysApp extends SysNode {
 		arch		: '',
 	};
 
-	override	fetch = (url: string)=> fetch(url, {cache: 'no-store'});
+	// === vite-electron 用コード ===
+	#fetch2web = (url: string)=> this.#em.invoke('fetch', url);
+	// override	fetch = (url: string)=> fetch(url, {cache: 'no-store'});
 
 	override	ensureFileSync	= (path: string)=> this.#em.invoke('ensureFileSync', path);
 	// === vite-electron 用コード ===
@@ -273,14 +275,14 @@ export class SysApp extends SysNode {
 
 			// バージョン更新チェック
 			let netver = '';
-			const resIdxJS = await this.fetch(url +'_index.json');
+			const resIdxJS = await this.#fetch2web(url +'_index.json');
 			if (resIdxJS.ok) {
 				if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] _index.jsonを取得しました`, 'D');
 				oIdx = await resIdxJS.json();
 				netver = oIdx.version;
 			}
 			else {
-				const resYml = await this.fetch(url +`latest${CmnLib.isMac ?'-mac' :''}.yml`);
+				const resYml = await this.#fetch2web(url +`latest${CmnLib.isMac ?'-mac' :''}.yml`);
 				if (! resYml.ok) {
 					if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] [update_check] .ymlが見つかりません`);
 					return;
@@ -370,7 +372,7 @@ export class SysApp extends SysNode {
 	}
 	async	#dl_app(url: string, urlApp: string, fn: string) {
 		if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] アプリファイルDL試行... url=${url + urlApp}`, 'D');
-		const res = await this.fetch(url + urlApp);
+		const res = await this.#fetch2web(url + urlApp);
 		if (! res.ok) {
 			if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] アプリファイルが見つかりません url=${url + fn}`);
 			return;

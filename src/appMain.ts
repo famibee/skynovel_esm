@@ -88,10 +88,13 @@ export class appMain {
 		ipc.handle('getInfo', ()=> this.#hInfo);
 		ipc.handle('inited', (_, c: T_CFG, tagW: TAG_WINDOW)=> this.#inited(c, tagW));
 
-		ipc.handle('existsSync', (_, fn: string)=> existsSync(fn));
+		// === vite-electron 用コード ===
+		ipc.handle('fetch', (_, url: string)=> fetch(url, {cache: 'no-store'}));
+
+		ipc.handle('existsSync', (_, path: string)=> existsSync(path));
 		ipc.handle('copySync', (_, path_from: string, path_to: string)=> copySync(path_from, path_to));
-		ipc.handle('removeSync', (_, fn: string)=> removeSync(fn));
-		ipc.handle('ensureFileSync', (_, fn: string)=> ensureFileSync(fn));
+		ipc.handle('removeSync', (_, path: string)=> removeSync(path));
+		ipc.handle('ensureFileSync', (_, path: string)=> ensureFileSync(path));
 		// === vite-electron 用コード ===
 		ipc.handle('readFileSync', (_, path: string, encoding: BufferEncoding)=> readFileSync(path, encoding));
 		ipc.handle('writeFileSync', (_, path: string, data: string | NodeJS.ArrayBufferView, o?: WriteFileOptions)=> writeFileSync(path, data, o));
@@ -104,13 +107,13 @@ export class appMain {
 		ipc.handle('showMessageBox', (_, o: MessageBoxOptions)=> dialog.showMessageBox(bw, o));
 		ipc.handle('showOpenDialog', (_, o: OpenDialogOptions)=> dialog.showOpenDialog(bw, o));
 
-		ipc.handle('capturePage', (_, fn: string, width: number, height: number)=> bw.webContents.capturePage()
+		ipc.handle('capturePage', (_, path: string, width: number, height: number)=> bw.webContents.capturePage()
 		.then(ni=> {
-			ensureFileSync(fn);	// 【必須】ディレクトリ、なければ作る
+			ensureFileSync(path);	// 【必須】ディレクトリ、なければ作る
 
 			const c = ni.resize({width, height, quality: 'best'});
-			const d = (fn.endsWith('.png')) ?c.toPNG() :c.toJPEG(80);
-			writeFileSync(fn, d);
+			const d = (path.endsWith('.png')) ?c.toPNG() :c.toJPEG(80);
+			writeFileSync(path, d);
 		}));
 		ipc.handle('navigate_to', (_, url: string)=> shell.openExternal(url));
 

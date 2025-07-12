@@ -6,7 +6,6 @@ export declare class SysApp extends SysNode {
     #private;
     constructor(...[hPlg, arg]: T_SysBaseParams);
     protected loaded(...[hPlg, arg]: T_SysBaseLoadedParams): Promise<void>;
-    fetch: (url: string) => Promise<Response>;
     ensureFileSync: (path: string) => Promise<void>;
     readFileSync: (path: string, encoding?: BufferEncoding) => Promise<string>;
     protected writeFileSync: (path: string, data: string | NodeJS.ArrayBufferView, o?: object) => Promise<void>;

@@ -1,3 +1,7 @@
+- fix: [update_check] で CSP(Content Security Policy) エラーになるため、この処理での fetch だけ Main process で行うように
+	- (非ESM ver 1.61.21 相当)
+
+
 # [1.2.0](https://github.com/famibee/skynovel_esm/compare/v1.1.0...v1.2.0) (2025-07-02)
 
 
