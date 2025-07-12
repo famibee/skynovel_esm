@@ -1,3 +1,11 @@
+## [1.2.1](https://github.com/famibee/skynovel_esm/compare/v1.2.0...v1.2.1) (2025-07-12)
+
+
+### Bug Fixes
+
+* [update_check] で CSP(Content Security Policy) エラーになるため、この処理での fetch だけ Main process で行うように ([d79c5ef](https://github.com/famibee/skynovel_esm/commit/d79c5efae3b7cd29fb02aa06961b976bdfe1489f))
+* [update_check] で CSP(その二) ([11dca8c](https://github.com/famibee/skynovel_esm/commit/11dca8c677878989021433b166f0730ceb371447))
+
 - fix: [update_check] で CSP(Content Security Policy) エラーになるため、この処理での fetch だけ Main process で行うように
 	- (非ESM ver 1.61.21 相当)
 
