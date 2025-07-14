@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/famibee/skynovel_esm/compare/v1.2.2...v1.2.3) (2025-07-14)
+
+
+### Bug Fixes
+
+* SKYNovel cjs v1.61.22 相当更新 ([30a3d3d](https://github.com/famibee/skynovel_esm/commit/30a3d3d7368c41f238e6b71c1abc3a50cf16e1dd))
+
 -fix: SKYNovel cjs v1.61.22 相当更新
 -fix(src/appMain.ts): win版でウインドウ右部分に空白ができてしまう件
 -fix(src/appMain.ts): 終了→再度アプリ起動でウインドウ位置とサイズが復帰しない件
