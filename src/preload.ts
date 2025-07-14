@@ -61,7 +61,7 @@ export	type	T_IpcEvents	= {
 	showMessageBox	: (o: MessageBoxOptions)=> MessageBoxReturnValue;
 	showOpenDialog	: (o: OpenDialogOptions)=> OpenDialogReturnValue;
 
-	capturePage	: (fn: string, w: number, h: number)=> void;
+	capturePage	: (path: string, w: number, h: number)=> void;
 	navigate_to	: (url: string)=> void;
 
 	Store	: (o: object)=> void;
