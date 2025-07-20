@@ -1,3 +1,6 @@
+-fix(src/sn/TxtLayer.ts): 文字レイヤ背景の単色塗りに b_alpha が効かなかった件
+
+
 ## [1.2.3](https://github.com/famibee/skynovel_esm/compare/v1.2.2...v1.2.3) (2025-07-14)
 
 
