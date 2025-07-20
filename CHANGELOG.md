@@ -1,3 +1,11 @@
+## [1.2.4](https://github.com/famibee/skynovel_esm/compare/v1.2.3...v1.2.4) (2025-07-20)
+
+
+### Bug Fixes
+
+* **src/sn/TxtLayer.ts:** 文字レイヤ背景の単色塗りに b_alpha が効かなかった件 ([7f12b82](https://github.com/famibee/skynovel_esm/commit/7f12b82931650d69e8082060f6126ce344201b3f))
+* **src/sn/TxtLayer.ts:** 文字レイヤ背景の単色塗りに b_alpha が効かなかった件2 ([7590028](https://github.com/famibee/skynovel_esm/commit/75900288dd8f2d4fb5c9f15e605b30aaa25f3b3f))
+
 -fix(src/sn/TxtLayer.ts): 文字レイヤ背景の単色塗りに b_alpha が効かなかった件
 
 
