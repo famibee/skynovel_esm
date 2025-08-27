@@ -12,7 +12,7 @@ import type {IVariable, IMain, IGetFrm} from './CmnInterface';
 import type {SysBase} from './SysBase';
 import {type Config, PROTOCOL_USERDATA} from './Config';
 import {SEARCH_PATH_ARG_EXT} from './ConfigBase';
-import {disableEvent, enableEvent} from './ReadState';
+import {Reading} from './Reading';
 import type {SysApp} from './SysApp';
 
 import {type Application, Loader, LoaderResource} from 'pixi.js';
@@ -105,7 +105,8 @@ export class FrameMng implements IGetFrm {
 			rct.height *FrameMng.#sys.cvsScale
 		}"></iframe>`);
 
-		disableEvent();
+		const RPN_ADD_FRAME = Reading.procID +`add_frame id:${id}`;
+		Reading.beginProc(RPN_ADD_FRAME);
 		const url = FrameMng.#cfg.searchPath(src, SEARCH_PATH_ARG_EXT.HTML);
 		const ld = (new Loader)
 		.add({name: src, url, xhrType: LoaderResource.XHR_RESPONSE_TYPE.TEXT});
@@ -130,7 +131,7 @@ export class FrameMng implements IGetFrm {
 			.replaceAll(
 				/\s(?:src|href)=(["'])(\S+?)\1/g,	// 【\s】が大事、data-src弾く
 				(m, br, v)=> v.startsWith('../')
-				? m.replace('../', path_pa_pa)
+				? path_pa_pa + m.slice(3)
 				: m.replace('./', '')	// 「./」は無視
 					.replace(br, br + path_parent)
 			);
@@ -141,6 +142,8 @@ export class FrameMng implements IGetFrm {
 			);
 
 			f.onload = ()=> {	// 一度変数に入れてここで設定するのはFirefox対応。ifrm.onloadが二度呼ばれる！
+				Reading.endProc(RPN_ADD_FRAME);
+
 				// 組み込み変数
 				this.val.setVal_Nochk('tmp', vn, true);
 				this.val.setVal_Nochk('tmp', vn +'.alpha', a);
@@ -154,14 +157,11 @@ export class FrameMng implements IGetFrm {
 				this.val.setVal_Nochk('tmp', vn +'.visible', v);
 
 				const win = f.contentWindow!;
-				this.#evtMng.resvFlameEvent(win);
+				this.#evtMng.resvFlameEvent(<HTMLBodyElement>win.document.body);
 				// sn_repRes()をコール。引数は画像ロード処理差し替えメソッド
 				((win as any).sn_repRes)?.((i: HTMLImageElement)=> FrameMng.#loadPic2Img(i.dataset.src ?? '', i));
-
-				enableEvent();
 			};
 		});
-
 		return true;
 	}
 	#hDisabled	: {[id: string]: boolean}	= {};
@@ -209,7 +209,6 @@ export class FrameMng implements IGetFrm {
 			}
 			next();
 		});
-
 		ld2.load((_ldr, hRes)=> {
 			for (const [s2, {data: {src}}] of Object.entries(hRes)) {
 				const u2 = this.#hEncImgOUrl[s2] = src
@@ -254,8 +253,8 @@ export class FrameMng implements IGetFrm {
 		if (! this.val.getVal(`tmp:${vn}`)) throw `frame【${id}】が読み込まれていません`;
 		if (! var_name) throw 'var_nameは必須です';
 
-		const win: Window = f.contentWindow!;
-		if (! win.hasOwnProperty(var_name)) throw `frame【${id}】に変数/関数【${var_name}】がありません。変数は var付きにして下さい`;
+		const win = f.contentWindow!;
+		if (! Object.hasOwn(win, var_name)) throw `frame【${id}】に変数/関数【${var_name}】がありません。変数は var付きにして下さい`;
 
 		const v = (win as any)[var_name];
 		// var変数 / 関数実行の戻り値 -> 組み込み変数

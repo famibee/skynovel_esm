@@ -794,7 +794,7 @@ function Ue() {
     return i(g, p, h, $);
   }
   function s(g, p) {
-    return p.ino && p.dev && p.ino === g.ino && p.dev === g.dev;
+    return p.ino !== void 0 && p.dev !== void 0 && p.ino === g.ino && p.dev === g.dev;
   }
   function d(g, p) {
     const w = t.resolve(g).split(t.sep).filter((l) => l), $ = t.resolve(p).split(t.sep).filter((l) => l);

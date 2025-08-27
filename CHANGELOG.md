@@ -1,3 +1,6 @@
+-feat: SKYNovel cjs v1.62.0 相当更新
+
+
 ## [1.2.4](https://github.com/famibee/skynovel_esm/compare/v1.2.3...v1.2.4) (2025-07-20)
 
 

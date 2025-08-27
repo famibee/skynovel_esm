@@ -206,7 +206,7 @@ export class SysApp extends SysNode {
 			+ this.cfg.getNs() + getDateStr('-', '_', '') +'.spd',
 		).then(()=> {
 			if (CmnLib.debugLog) console.log('プレイデータをエクスポートしました');
-			this.fire('sn:exported', new Event('click'));	// 末尾に処理
+			this.fire('sn:exported', new MouseEvent('click'));	// 末尾に処理
 		});
 
 		return false;
@@ -239,7 +239,7 @@ export class SysApp extends SysNode {
 			this.val.updateData(o);
 
 			if (CmnLib.debugLog) console.log('プレイデータをインポートしました');
-			this.fire('sn:imported', new Event('click'));
+			this.fire('sn:imported', new MouseEvent('click'));
 		})
 		.catch(e=> console.log(`[import] err: ${e}`));
 

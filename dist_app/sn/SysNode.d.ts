@@ -8,7 +8,6 @@ export declare class SysNode extends SysBase {
     init(hTag: IHTag, appPixi: Application, val: IVariable, main: IMain): Promise<void>[];
     readonly isApp = true;
     savePic(path: string, data_url: string): Promise<void>;
-    protected readFileSync(_path: string, _encoding: BufferEncoding): Promise<string>;
     protected writeFileSync(_path: string, _data: string | NodeJS.ArrayBufferView, _o?: object): Promise<void>;
 }
 //# sourceMappingURL=SysNode.d.ts.map
