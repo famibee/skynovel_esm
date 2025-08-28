@@ -3,7 +3,7 @@ import { IHTag } from './Grammar';
 import { IVariable, IMain, IGetFrm } from './CmnInterface';
 import { SysBase } from './SysBase';
 import { Config } from './Config';
-import { Application } from 'pixi.js';
+import { Application, Loader } from 'pixi.js';
 export declare class FrameMng implements IGetFrm {
     #private;
     private readonly appPixi;
@@ -15,6 +15,7 @@ export declare class FrameMng implements IGetFrm {
     hideAllFrame(): void;
     restoreAllFrame(): void;
     getFrmDisabled(id: string): boolean;
+    static use4ViteElectron(_path: string, _ld: Loader): void;
     cvsResize(): void;
 }
 //# sourceMappingURL=FrameMng.d.ts.map
