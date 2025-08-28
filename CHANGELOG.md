@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/famibee/skynovel_esm/compare/v1.3.0...v1.3.1) (2025-08-28)
+
+
+### Bug Fixes
+
+* ビルド ([6333c9d](https://github.com/famibee/skynovel_esm/commit/6333c9dc141ffd6c129102e54e7e0f60f2b4d78d))
+* ビルド2 ([0b85893](https://github.com/famibee/skynovel_esm/commit/0b85893e410bf1bfa083da53f0df33b4a5621748))
+
 # [1.3.0](https://github.com/famibee/skynovel_esm/compare/v1.2.4...v1.3.0) (2025-08-27)
 
 
