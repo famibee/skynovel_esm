@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/famibee/skynovel_esm/compare/v1.3.1...v1.3.2) (2025-08-31)
+
+
+### Bug Fixes
+
+* **src/sn/EventMng.ts:** 下矢印キーでの読み進めで一度しか効かず、読み進められない件 ([b9f0312](https://github.com/famibee/skynovel_esm/commit/b9f0312be97009402e5bbc2eb0ba2cf25e80283f))
+
 - fix(src/sn/EventMng.ts): 下矢印キーでの読み進めで一度しか効かず、読み進められない件
 	- イベントダブリ弾き機構のミス。
 - fix(src/sn/EventMng.ts): 矢印キー押下時にページが移動するので preventDefault() を行うように
