@@ -10183,9 +10183,8 @@ class Mc {
   #n = 0;
   openDevTools = () => {
   };
-  #f = () => {
-  };
-  //TODO: #evDevtoolsOpened = ()=> this.bw.webContents.closeDevTools();	// 開こうとしたら閉じる
+  #f = () => this.bw.webContents.closeDevTools();
+  // 開こうとしたら閉じる
   #p(t, o) {
     const { width: n, height: f } = t.window, { c: a, x: r, y: u, w: i } = o;
     this.#n = n / f;

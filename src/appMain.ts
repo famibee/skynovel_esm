@@ -189,8 +189,7 @@ export class appMain {
 
 	#numAspectRatio	= 0;
 	openDevTools	= ()=> {};
-	#evDevtoolsOpened = ()=> {};
-	//TODO: #evDevtoolsOpened = ()=> this.bw.webContents.closeDevTools();	// 開こうとしたら閉じる
+	#evDevtoolsOpened = ()=> this.bw.webContents.closeDevTools();	// 開こうとしたら閉じる
 	#inited(oCfg: T_CFG, rctW: TAG_WINDOW) {
 		const {width, height} = oCfg.window;
 		const {c, x, y, w} = rctW;

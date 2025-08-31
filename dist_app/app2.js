@@ -23969,7 +23969,7 @@ class yg {
 <div class="sn_hint" role="tooltip">
 	<span>Dummy</span>
 	<div class="sn_hint_ar" data-popper-arrow></div>
-</div>`), this.#v = document.querySelector(".sn_hint"), this.#_ = this.#v.querySelector("span"), this.#p = mg(this.#f, this.#v), this.#v.hidden = !0, i.stage.interactive = !0, this.#t.add(document.body, Ce, (y) => this.#o(y)), this.#t.add(n.cvs, "contextmenu", (y) => {
+</div>`), this.#v = document.querySelector(".sn_hint"), this.#_ = this.#v.querySelector("span"), this.#p = mg(this.#f, this.#v), this.#v.hidden = !0, i.stage.interactive = !0, this.#t.add(document.body, Ce, (y) => this.#o(y)), this.#t.add(document.body, "keyup", () => j.resetFired()), this.#t.add(n.cvs, "contextmenu", (y) => {
       const b = this.#h(y) + "rightclick";
       D.fire(b, y, !0), y.preventDefault();
     });
@@ -24113,7 +24113,7 @@ class yg {
   #r = (t) => {
   };
   #o(t) {
-    t.isComposing || (t.key in this.#a && (this.#a[t.key] = t.repeat ? 2 : 1), D.fire(Bi.modKey(t) + t.key, t, !0));
+    t.isComposing || (t.key in this.#a && (this.#a[t.key] = t.repeat ? 2 : 1), t.preventDefault(), D.fire(Bi.modKey(t) + t.key, t, !0));
   }
   #h(t) {
     return (t.altKey ? "alt+" : "") + (t.ctrlKey ? "ctrl+" : "") + (t.metaKey ? "meta+" : "") + (t.shiftKey ? "shift+" : "");
@@ -27237,7 +27237,7 @@ class b0 extends d0 {
   init(t, e, i, n) {
     const s = super.init(t, e, i, n);
     this.#e.on("shutdown", (a) => n.destroy());
-    const o = new Event("click");
+    const o = new MouseEvent("click");
     return this.#e.on("fire", (a, h) => this.fire(h, o)), s;
   }
   cvsResize() {

@@ -149,7 +149,7 @@ export class SysApp extends SysNode {
 
 		this.#ipc.on('shutdown', (_e: IpcRendererEvent)=> main.destroy());
 
-		const ev = new Event('click');
+		const ev = new MouseEvent('click');
 		this.#ipc.on('fire', (_e: IpcRendererEvent, KEY: string)=> this.fire(KEY, ev));
 		//this.#ipc.on('call', (_e: IpcRendererEvent, fn: string, label: string)=> main.resumeByJumpOrCall({fn, label}));	// 実験・保留コード。セキュリティ懸念
 

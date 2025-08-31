@@ -25754,7 +25754,7 @@ class EventMng {
 <div class="sn_hint" role="tooltip">
 	<span>Dummy</span>
 	<div class="sn_hint_ar" data-popper-arrow></div>
-</div>`), this.#v = document.querySelector(".sn_hint"), this.#g = this.#v.querySelector("span"), this.#p = createPopper(this.#c, this.#v), this.#v.hidden = !0, r.stage.interactive = !0, this.#e.add(document.body, EVNM_KEY, (q) => this.#o(q)), this.#e.add(o.cvs, "contextmenu", (q) => {
+</div>`), this.#v = document.querySelector(".sn_hint"), this.#g = this.#v.querySelector("span"), this.#p = createPopper(this.#c, this.#v), this.#v.hidden = !0, r.stage.interactive = !0, this.#e.add(document.body, EVNM_KEY, (q) => this.#o(q)), this.#e.add(document.body, "keyup", () => ReadingState.resetFired()), this.#e.add(o.cvs, "contextmenu", (q) => {
       const Z = this.#h(q) + "rightclick";
       Reading.fire(Z, q, !0), q.preventDefault();
     });
@@ -25898,7 +25898,7 @@ class EventMng {
   #i = (t) => {
   };
   #o(t) {
-    t.isComposing || (t.key in this.#a && (this.#a[t.key] = t.repeat ? 2 : 1), Reading.fire(SysBase.modKey(t) + t.key, t, !0));
+    t.isComposing || (t.key in this.#a && (this.#a[t.key] = t.repeat ? 2 : 1), t.preventDefault(), Reading.fire(SysBase.modKey(t) + t.key, t, !0));
   }
   #h(t) {
     return (t.altKey ? "alt+" : "") + (t.ctrlKey ? "ctrl+" : "") + (t.metaKey ? "meta+" : "") + (t.shiftKey ? "shift+" : "");

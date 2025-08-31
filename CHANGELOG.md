@@ -1,3 +1,9 @@
+- fix(src/sn/EventMng.ts): 下矢印キーでの読み進めで一度しか効かず、読み進められない件
+	- イベントダブリ弾き機構のミス。
+- fix(src/sn/EventMng.ts): 矢印キー押下時にページが移動するので preventDefault() を行うように
+-fix: SKYNovel cjs v1.62.1 相当更新
+
+
 ## [1.3.1](https://github.com/famibee/skynovel_esm/compare/v1.3.0...v1.3.1) (2025-08-28)
 
 
