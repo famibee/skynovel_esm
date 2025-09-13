@@ -1,3 +1,7 @@
+- fix: クラス import に影響が出ていた定数の記述を EventMng -> CmnLib に変更
+- fix: プラグイン初期化時に await が抜けていたのを修正
+
+
 ## [1.3.2](https://github.com/famibee/skynovel_esm/compare/v1.3.1...v1.3.2) (2025-08-31)
 
 
