@@ -1,3 +1,10 @@
+## [1.3.4](https://github.com/famibee/skynovel_esm/compare/v1.3.3...v1.3.4) (2025-09-20)
+
+
+### Bug Fixes
+
+* [wait_tsy] の chk_exist_tw 属性を廃止 ([e511cf1](https://github.com/famibee/skynovel_esm/commit/e511cf122e924e806befc6255d1e9b1fac4aaf83))
+
 - fix: [wait_tsy] の chk_exist_tw 属性を廃止
 	- [tsy]〜文字表示＆待ち＋[wait_tsy chk_exist_tw=true] という状況で、[tsy]のアニメが先に終り文字表示がゆっくり終了した場合、必ずエラーになってしまうため。
 
