@@ -69,6 +69,8 @@ export interface IEvtMng {
 	resvFlameEvent(body: HTMLBodyElement): void;
 }
 
+
+
 export	function argChk_Num(hash: any, name: string, def: number): number {
 	const v = hash[name];
 	if (! (name in hash)) {
