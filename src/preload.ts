@@ -5,9 +5,11 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
+import type {T_HINFO} from './appMain_cmn';
 import type {T_CFG} from './sn/ConfigBase';
 
 import type {MessageBoxOptions, MessageBoxReturnValue, OpenDialogOptions, OpenDialogReturnValue} from 'electron/renderer';
+import {readFile} from 'fs-extra';
 
 export	type	TAG_WINDOW	= {
 	c	: boolean;
@@ -17,9 +19,11 @@ export	type	TAG_WINDOW	= {
 	h	: number;
 };
 
-export	type	SAVE_WIN_INF	= TAG_WINDOW & {
-	scrw: number;
-	scrh: number;
+export	type	SAVE_WIN_INF	= {
+	x	: number;
+	y	: number;
+	w	: number;
+	h	: number;
 };
 
 export	type	T_FETCH		= {
@@ -35,7 +39,7 @@ export	type	T_FETCH_AB	= {
 export	type	T_IpcEvents	= {
 	openDevTools	: ()=> void;
 
-	getInfo		: ()=> HINFO,
+	getInfo		: ()=> T_HINFO;
 	inited		: (oCfg: T_CFG, tagW: TAG_WINDOW)=> void;
 
 	// === vite-electron 用コード ===
@@ -43,14 +47,14 @@ export	type	T_IpcEvents	= {
 	fetchAb		: (path: string)=> T_FETCH_AB;
 
 	existsSync	: (path: string)=> boolean;
-	copySync	: (path_from: string, path_to: string)=> void;
-	removeSync	: (path: string)=> void;
-	ensureFileSync	: (path: string)=> void;
+	copy		: (path_from: string, path_to: string)=> void;
+	remove		: (path: string)=> void;
+	ensureFile	: (path: string)=> void;
 	// === vite-electron 用コード ===
-	readFileSync: (path: string, encoding: BufferEncoding)=> string;
-	writeFileSync	: (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> void;
-	appendFile		: (path: string, data: string)=> void;
-	outputFile		: (path: string, data: string)=> void;
+	readFile	: (path: string, encoding: Parameters<typeof readFile>[1])=> string;
+	writeFile	: (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> void;
+	appendFile	: (path: string, data: string)=> void;
+	outputFile	: (path: string, data: string)=> void;
 
 	window	: (centering: boolean, x: number, y: number, w: number, h: number)=> void;
 	isSimpleFullScreen	: ()=> boolean;
@@ -65,27 +69,19 @@ export	type	T_IpcEvents	= {
 	navigate_to	: (url: string)=> void;
 
 	Store	: (o: object)=> void;
-	flush	: (o: object)=> void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	flush	: (o: any)=> void;
 	Store_isEmpty	: ()=> boolean;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Store_get		: ()=> any;
 
 	zip		: (inp: string, out: string)=> void;
 	unzip	: (inp: string, out: string)=> void;
 };
 
-	export	type	HINFO	= {
-		getAppPath	: string;
-		isPackaged	: boolean;
-		downloads	: string;
-		userData	: string;
-		getVersion	: string;
-		env			: {[name: string]: any};
-		platform	: string;
-		arch		: string;
-	}
-
 //Renderer ipc events
 export	type	T_IpcRendererEvent = {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	log: [any];
 
 	save_win_inf: [SAVE_WIN_INF];
