@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/famibee/skynovel_esm/compare/v1.3.4...v1.4.0) (2025-10-28)
+
+
+### Features
+
+* ESLint 導入、一部指摘無効化しつつも全ソースクリンナップ完了 ([bb27d26](https://github.com/famibee/skynovel_esm/commit/bb27d26173f07df73d1a4abe446ca05a3f21e73d))
+
 - feat: ESLint 導入、一部指摘無効化しつつも全ソースクリンナップ完了
 	- @eslint/js: configs.recommended
 	- typescript-eslint: configs.strictTypeChecked
