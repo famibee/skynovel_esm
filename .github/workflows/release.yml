@@ -56,7 +56,7 @@ jobs:
 
     - name: 📦 Publish to NPM Registry (Gihhub)
       run: |
-        bun publish --registry @famibee:https://npm.pkg.github.com/ --verbose true
+        bun publish --registry https://npm.pkg.github.com/ --verbose true
         # bun publish
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
