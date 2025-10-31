@@ -20,6 +20,7 @@ jobs:
 
     - name: 🔧 Setup bun
       uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+
     - name: 🔧 Get node_modules cache
       id: cache-restore
       uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
@@ -28,8 +29,6 @@ jobs:
         key: ${{runner.os}}-bun-${{hashFiles('bun.lock')}}
     - name: 📦 Install dependencies
       if: steps.cache-restore.outputs.cache-hit != 'true'
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       run: bun install --frozen-lockfile
 
     - run: bun test
@@ -56,7 +55,7 @@ jobs:
 
     - name: 📦 Publish to NPM Registry (Gihhub)
       run: |
-        bun publish --registry https://npm.pkg.github.com/ --verbose true
+        bun publish --registry https://npm.pkg.github.com --verbose true
         # bun publish
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
