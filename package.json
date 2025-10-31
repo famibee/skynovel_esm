@@ -103,6 +103,7 @@
 		]
 	},
 	"publishConfig": {
+		"scope": "@famibee",
 		"tag": "latest",
 		"access": "public",
 		"provenance": true
