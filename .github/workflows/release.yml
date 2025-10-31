@@ -20,6 +20,8 @@ jobs:
 
     - name: 🔧 Setup bun
       uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+      with:
+        registry-url: https://npm.pkg.github.com/
 
     - name: 🔧 Get node_modules cache
       id: cache-restore
@@ -55,7 +57,7 @@ jobs:
 
     - name: 📦 Publish to NPM Registry (Gihhub)
       run: |
-        bun publish --registry https://npm.pkg.github.com --verbose true
+        bun publish --verbose true
         # bun publish
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
