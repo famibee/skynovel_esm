@@ -1,3 +1,10 @@
+## [1.5.11](https://github.com/famibee/skynovel_esm/compare/v1.5.10...v1.5.11) (2025-10-31)
+
+
+### Bug Fixes
+
+* npmjs でも bun publish できる？10 ([708ae1d](https://github.com/famibee/skynovel_esm/commit/708ae1db01239cb3923acd1744511d6917c75440))
+
 ## [1.5.10](https://github.com/famibee/skynovel_esm/compare/v1.5.9...v1.5.10) (2025-10-31)
 
 
