@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/famibee/skynovel_esm/compare/v1.5.0...v1.5.1) (2025-10-31)
+
+
+### Bug Fixes
+
+* npmjs にも公開 ([3b6984b](https://github.com/famibee/skynovel_esm/commit/3b6984b47febf34abedd4d894c134bc4ab1af9b1))
+
 - fix: npmjs にも公開
 
 
