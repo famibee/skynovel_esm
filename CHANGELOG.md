@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/famibee/skynovel_esm/compare/v1.4.0...v1.5.0) (2025-10-31)
+
+
+### Features
+
+* release.yml 手直し ([119cfb2](https://github.com/famibee/skynovel_esm/commit/119cfb2784758f8f83ffb2a620f8411b1b7dff95))
+
 - feat: release.yml 手直し
 	- actions のバージョンアップ
 	- npm Trusted Publishing で npm パッケージ公開に移行
