@@ -59,7 +59,7 @@ export class SysApp extends SysNode {
 
 		this.$path_downloads = this.#hInfo.downloads.replaceAll('\\', '/') +'/';
 
-		CmnLib.isDbg = Boolean(this.#hInfo.env.SKYNOVEL_DBG && ! CmnLib.isPackaged);	// 配布版では無効
+		CmnLib.isDbg = Boolean(this.#hInfo.env.SKYNOVEL_DBG) && ! CmnLib.isPackaged;	// 配布版では無効
 		if (CmnLib.isDbg) this.extPort = uint(this.#hInfo.env.SKYNOVEL_PORT ?? '3776');
 
 		await this.run();

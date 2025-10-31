@@ -5,73 +5,61 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  pub4gh:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for OIDC
+      contents: write
+      issues: write
+      pull-requests: write
+      packages: write
+
     steps:
     - name: 📥 Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-    # - name: Import bot's GPG key for signing commits
-    #   uses: crazy-max/ghaction-import-gpg@v6
-    #   with:
-    #     gpg_private_key: ${{secrets.GPG_PRIVATE_KEY}}
-    #     passphrase: ${{secrets.PASSPHRASE}}
-    #     git_config_global: true
-    #     git_user_signingkey: true
-    #     git_commit_gpgsign: true
-
-    - name: 🔧 Setup
-      uses: oven-sh/setup-bun@v2
+    - name: 🔧 Setup bun
+      uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
       with:
         registry-url: https://npm.pkg.github.com/
-    - name: 🔧 Setup node 4 Semantic Release
-      uses: actions/setup-node@v4
+
+    - name: 🔧 Get node_modules cache
+      id: cache-restore
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+      with:
+        path: node_modules
+        key: ${{runner.os}}-bun-${{hashFiles('bun.lock')}}
+    - name: 📦 Install dependencies
+      if: steps.cache-restore.outputs.cache-hit != 'true'
+      run: bun install --frozen-lockfile
+
+    - run: bun test
+
+    - name: 🔧 Setup node 4 Semantic Release (内部で使用、削除不可)
+      uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
       with:
         registry-url: https://npm.pkg.github.com/
         node-version: 'lts/*'
+        cache: npm
+        cache-dependency-path: package-lock.json
 
-    - name: 📦 Install dependencies
-      run: |
-        bun install
-        bun test
-
-    - name: 📜 Semantic Release
-      run: npm run semantic-release
+    - name: 🔧 get-next-version
+      run: npx semantic-release --dry-run
+      id: srdr
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+
+    - name: 📜 Semantic Release
+      run: bun run semantic-release
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-    - name: 📦 Publish to NPM Registry (in Gihhub ?)
+    - name: 📦 Publish to NPM Registry (Gihhub)
       run: bunx can-npm-publish --verbose && bun publish || echo "Does not publish"
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-  publish-npm:
-    needs: build
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📜 Fetch the latest tag
-        id: latest_tag
-        run: |
-          export LATEST_TAG="$(curl -fsi "https://github.com/famibee/${GITHUB_REPOSITORY}/releases/latest" | awk -F/ '/^(L|l)ocation:/ {print $(NF)}')"
-          echo "::set-output name=latest_tag::${LATEST_TAG}"
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{steps.latest_tag.outputs.latest_tag}}
-      - run: git log
-
-      - name: 🔧 Setup
-        uses: oven-sh/setup-bun@v2
-        with:
-          registry-url: https://registry.npmjs.org/
-          scope: '@famibee'
-
-      - name: 📦 Install dependencies
-        run: bun install
-
-      - name: 📦 Publish to NPM Registry
-        run: bunx can-npm-publish --verbose && bun publish --access=public || echo "Does not publish"
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+    outputs:
+      nr-published: ${{steps.srdr.outputs.new-release-published}}
+      nr-git-tag: ${{steps.srdr.outputs.new-release-git-tag}}

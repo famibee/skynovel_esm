@@ -18279,7 +18279,7 @@ class He {
   elc = new lv();
   async loaded(...[t]) {
     const e = t.snsys_pre;
-    return delete t.snsys_pre, await e?.init({
+    return delete t.snsys_pre, e?.init({
       getInfo: this.#r,
       addTag: () => {
       },
@@ -19162,7 +19162,7 @@ class M_ extends a_ {
     super(t, e), this.loaded(t, e);
   }
   async loaded(...[t, e]) {
-    await super.loaded(t, e), this.#e = await this.#t.invoke("getInfo"), j.isPackaged = this.#e.isPackaged, this.#r.on("log", (r, n) => console.info("main: %o", n)), this.$path_downloads = this.#e.downloads.replaceAll("\\", "/") + "/", j.isDbg = !!(this.#e.env.SKYNOVEL_DBG && !j.isPackaged), j.isDbg && (this.extPort = _t(this.#e.env.SKYNOVEL_PORT ?? "3776")), await this.run();
+    await super.loaded(t, e), this.#e = await this.#t.invoke("getInfo"), j.isPackaged = this.#e.isPackaged, this.#r.on("log", (r, n) => console.info("main: %o", n)), this.$path_downloads = this.#e.downloads.replaceAll("\\", "/") + "/", j.isDbg = !!this.#e.env.SKYNOVEL_DBG && !j.isPackaged, j.isDbg && (this.extPort = _t(this.#e.env.SKYNOVEL_PORT ?? "3776")), await this.run();
   }
   #e = {
     getAppPath: "",

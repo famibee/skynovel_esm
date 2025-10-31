@@ -1,3 +1,15 @@
+- feat: release.yml 手直し
+	- actions のバージョンアップ
+	- npm Trusted Publishing で npm パッケージ公開に移行
+	- secrets.NPM_TOKEN への依存削除
+	- npmjs へのリリースが止まっていたのを回復（cjs版のみ）
+	- GitHub ActionsのSHA Pinを行った
+		- また、GitHubリポジトリの"Require actions to be pinned to a full-length commit SHA”を有効に
+	- actions/setup-nodeで cache
+	- node_modulesで cache
+- fix: その他細かい手直し
+
+
 # [1.4.0](https://github.com/famibee/skynovel_esm/compare/v1.3.4...v1.4.0) (2025-10-28)
 
 
