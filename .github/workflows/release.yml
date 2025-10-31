@@ -105,5 +105,4 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: 📦 Publish to NPM Registry (npmjs)
-        run: npx can-npm-publish --verbose && npm publish || echo "❌️ Does not publish"
-        # run: bunx can-npm-publish --verbose && bun publish || echo "❌️ Does not publish"
+        run: bunx can-npm-publish --verbose && bun publish || echo "❌️ Does not publish"
