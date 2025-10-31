@@ -50,4 +50,5 @@ jobs:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
     - name: 📦 Publish to NPM Registry
-      run: bun publish --registry https://npm.pkg.github.com/ || echo "ok."
+      run: npm publish --registry https://npm.pkg.github.com/ || echo "ok."
+      # run: bun publish --registry https://npm.pkg.github.com/ || echo "ok."
