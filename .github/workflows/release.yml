@@ -59,7 +59,9 @@ jobs:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
     - name: 📦 Publish to NPM Registry (Gihhub)
-      run: bun publish
+      run: |
+        bun publish --dry-run
+        # bun publish
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
