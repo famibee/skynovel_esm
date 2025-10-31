@@ -20,8 +20,6 @@ jobs:
 
     - name: 🔧 Setup bun
       uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
-      with:
-        registry-url: https://npm.pkg.github.com/
 
     - name: 🔧 Get node_modules cache
       id: cache-restore
@@ -56,7 +54,9 @@ jobs:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
     - name: 📦 Publish to NPM Registry (Gihhub)
-      run: bunx can-npm-publish --verbose && bun publish || echo "Does not publish"
+      run: |
+        bun publish --registry https://npm.pkg.github.com/ --dry-run
+        bun publish --registry https://npm.pkg.github.com/
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
@@ -83,8 +83,6 @@ jobs:
 
       - name: 🔧 Setup bun
         uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
-        with:
-          registry-url: https://registry.npmjs.org/
 
       - name: 🔧 Get node_modules cache
         id: cache-restore
@@ -105,4 +103,6 @@ jobs:
           cache-dependency-path: package-lock.json
 
       - name: 📦 Publish to NPM Registry (npmjs)
-        run: bunx can-npm-publish --verbose && bun publish || echo "❌️ Does not publish"
+        run: |
+          bun publish --registry https://registry.npmjs.org/ --dry-run
+          bun publish --registry https://registry.npmjs.org/
