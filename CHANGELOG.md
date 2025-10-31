@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/famibee/skynovel_esm/compare/v1.5.20...v1.6.0) (2025-10-31)
+
+
+### Features
+
+* release.yml 手直し2 ([29a2435](https://github.com/famibee/skynovel_esm/commit/29a2435c74e810a6f1edf768a74a24107d0826ac))
+
 - feat: release.yml 手直し
 
 
