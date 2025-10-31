@@ -56,10 +56,12 @@ jobs:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
     - name: 📦 Publish to NPM Registry (Gihhub)
-      # x run: bunx can-npm-publish --verbose && bun publish
-      # run: bunx can-npm-publish --verbose && bun publish || echo "Does not publish"
-      run: bun publish
       # run: bun publish || echo "ok."
+      run: bun publish --verbose
+      # xxx run: bun publish
+      # run: bun publish || echo "ok."
+      # xxx run: bunx can-npm-publish --verbose && bun publish
+      # run: bunx can-npm-publish --verbose && bun publish || echo "Does not publish"
         # bun publish --registry https://npm.pkg.github.com --verbose true
         # bun publish
       env:
