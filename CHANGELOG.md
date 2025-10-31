@@ -1,3 +1,11 @@
+## [1.6.1](https://github.com/famibee/skynovel_esm/compare/v1.6.0...v1.6.1) (2025-10-31)
+
+
+### Bug Fixes
+
+* updateできない1 ([ae0eb9c](https://github.com/famibee/skynovel_esm/commit/ae0eb9c1d087f0daad6d9c6113ae94098d5ac085))
+* updateできない2 ([2766b65](https://github.com/famibee/skynovel_esm/commit/2766b652b733f83be5eb8462de19e42119f78764))
+
 # [1.6.0](https://github.com/famibee/skynovel_esm/compare/v1.5.20...v1.6.0) (2025-10-31)
 
 
