@@ -1,3 +1,10 @@
+## [1.7.2](https://github.com/famibee/skynovel_esm/compare/v1.7.1...v1.7.2) (2025-11-01)
+
+
+### Bug Fixes
+
+* semantic-release1 ([b339602](https://github.com/famibee/skynovel_esm/commit/b339602cf2224e8702d036a9102921c6a03d2d9b))
+
 ## [1.7.1](https://github.com/famibee/skynovel_esm/compare/v1.7.0...v1.7.1) (2025-11-01)
 
 
