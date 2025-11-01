@@ -8,10 +8,12 @@
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/famibee/skynovel_esm?color=brightgreen)
 ![GitHub last commit](https://img.shields.io/github/last-commit/famibee/skynovel_esm)
-![Release package](https://github.com/famibee/skynovel_esm/workflows/Release%20package/badge.svg)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/famibee/skynovel_esm)
+![Release package](https://github.com/famibee/skynovel_esm/workflows/Release%20package/badge.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/famibee/skynovel_esm)
+
+[![npm version](https://badge.fury.io/js/@famibee%2Fskynovel_esm.svg)](https://badge.fury.io/js/@famibee%2Fskynovel_esm)
 ![npm type definitions](https://img.shields.io/npm/types/@famibee/skynovel_esm)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
