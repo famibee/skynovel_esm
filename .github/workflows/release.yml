@@ -40,8 +40,6 @@ jobs:
       with:
         registry-url: https://npm.pkg.github.com/
         node-version: 'lts/*'
-        cache: npm
-        cache-dependency-path: package-lock.json
 
     - name: 🔧 get-next-version
       run: npx semantic-release --dry-run
@@ -101,8 +99,6 @@ jobs:
         with:
           registry-url: https://registry.npmjs.org/
           node-version: 'lts/*'
-          cache: npm
-          cache-dependency-path: package-lock.json
 
       - name: 📦 Publish to NPM Registry (npmjs)
         run: npx can-npm-publish --verbose && npm publish || echo "❌️ Does not publish"
