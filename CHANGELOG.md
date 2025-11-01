@@ -1,3 +1,10 @@
+## [1.6.9](https://github.com/famibee/skynovel_esm/compare/v1.6.8...v1.6.9) (2025-11-01)
+
+
+### Bug Fixes
+
+* updateできない11-2c一本化の試み2 ([ba34cd7](https://github.com/famibee/skynovel_esm/commit/ba34cd78a692dc17aff5ab2efad6a9b5d3ad66e1))
+
 ## [1.6.8](https://github.com/famibee/skynovel_esm/compare/v1.6.7...v1.6.8) (2025-11-01)
 
 
