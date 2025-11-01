@@ -20,8 +20,6 @@ jobs:
 
     - name: 🔧 Setup bun
       uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
-      # with:
-      #   registry-url: https://npm.pkg.github.com/
 
     - name: 🔧 Get node_modules cache
       id: cache-restore
@@ -38,7 +36,7 @@ jobs:
     - name: 🔧 Setup node 4 Semantic Release (内部で使用、削除不可)
       uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
       with:
-        registry-url: https://npm.pkg.github.com/
+        # registry-url: https://npm.pkg.github.com/
         node-version: 'lts/*'
 
     - name: 🔧 get-next-version
@@ -55,7 +53,6 @@ jobs:
 
     - name: 📦 Publish to NPM Registry (Gihhub)
       run: bunx can-npm-publish --verbose && bun publish --registry https://npm.pkg.github.com/ || echo "Does not publish"
-      # run: bunx can-npm-publish --verbose && bun publish || echo "Does not publish"
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
@@ -82,8 +79,6 @@ jobs:
 
       - name: 🔧 Setup bun
         uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
-        # with:
-        #   registry-url: https://registry.npmjs.org/
 
       - name: 🔧 Get node_modules cache
         id: cache-restore
@@ -98,9 +93,10 @@ jobs:
       - name: 🔧 Setup node 4 Semantic Release
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          registry-url: https://registry.npmjs.org/
+          # registry-url: https://registry.npmjs.org/
           node-version: 'lts/*'
 
       - name: 📦 Publish to NPM Registry (npmjs)
-        run: npx can-npm-publish --verbose && npm publish || echo "❌️ Does not publish"
+        run: npx can-npm-publish --verbose && bun publish --registry https://registry.npmjs.org/ || echo "❌️ Does not publish"
+        # run: npx can-npm-publish --verbose && npm publish || echo "❌️ Does not publish"
         # run: bunx can-npm-publish --verbose && bun publish || echo "❌️ Does not publish"
