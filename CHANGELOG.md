@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/famibee/skynovel_esm/compare/v1.6.10...v1.7.0) (2025-11-01)
+
+
+### Features
+
+* release.yml 手直し3、bun update 確認 ([38c9247](https://github.com/famibee/skynovel_esm/commit/38c9247ae27e4ed976afdefe09b0cf54c30ce9c1))
+
 - feat: release.yml 手直し3、bun update 確認
 
 ：（試行錯誤中の過程に付き省略）
