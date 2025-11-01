@@ -33,11 +33,6 @@ jobs:
 
     - run: bun test
 
-    - name: 🔧 Setup node 4 Semantic Release (内部で使用、削除不可)
-      uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
-      with:
-        node-version: 'lts/*'
-
     - name: 📜 Semantic Release
       run: bunx semantic-release
       env:
