@@ -1,3 +1,10 @@
+## [1.7.4](https://github.com/famibee/skynovel_esm/compare/v1.7.3...v1.7.4) (2025-11-02)
+
+
+### Bug Fixes
+
+* 画像から生成するタイプの [button] を含む[trans]が終了しなくなる件 ([be4937d](https://github.com/famibee/skynovel_esm/commit/be4937d605712bca52cb96502b3aa2e9c9303e3c))
+
 - fix: 画像から生成するタイプの [button] を含む[trans]が終了しなくなる件
 
 
