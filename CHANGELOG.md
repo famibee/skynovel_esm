@@ -1,3 +1,6 @@
+- fix: 画像から生成するタイプの [button] を含む[trans]が終了しなくなる件
+
+
 ## [1.7.3](https://github.com/famibee/skynovel_esm/compare/v1.7.2...v1.7.3) (2025-11-01)
 
 
