@@ -1,3 +1,6 @@
+- fix: 暗号化画像のロード処理が終了しない件
+
+
 ## [1.7.4](https://github.com/famibee/skynovel_esm/compare/v1.7.3...v1.7.4) (2025-11-02)
 
 
