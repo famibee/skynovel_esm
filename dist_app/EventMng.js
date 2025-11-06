@@ -1,5 +1,6 @@
-import { E as se, C as ht, f as G, g as it, h as Ee, j as Te, k as Oe, S as ke, e as J, l as _e, m as Lt, n as Me } from "./app2.js";
-import { T as Se, B as Jt } from "./LayerMng.js";
+import { E as se, o as ht, I as G, d as it, x as Ee, b as Te, J as Oe, K as ke, e as J, M as _e, S as Lt, N as Me } from "./app2.js";
+import { T as Se } from "./TxtLayer.js";
+import { Button as Jt } from "./Button.js";
 import { R as D, a as k } from "./Reading.js";
 class De {
   #e = [];
@@ -1150,7 +1151,7 @@ try {
   }));
 } catch {
 }
-class Fi {
+class Vi {
   constructor(t, e, n, r, s, l, o, a, u) {
     if (this.cfg = t, this.hTag = e, this.appPixi = n, this.main = r, this.layMng = s, this.val = l, this.scrItr = a, this.sys = u, e.clear_event = (c) => D.clear_event(c), e.event = (c) => this.#b(c), e.set_cancel_skip = () => !1, e.set_focus = (c) => this.#w(c), o.setEvtMng(this), a.setOtherObj(this, s), Se.setEvtMng(this, u, a), s.setEvtMng(this), k.setFcs(this.#t), u.setFire((c, f) => k.fire(c, f)), it.isDbg) {
       const c = {
@@ -1583,6 +1584,6 @@ class Fi {
   };
 }
 export {
-  Fi as EventMng
+  Vi as EventMng
 };
 //# sourceMappingURL=EventMng.js.map

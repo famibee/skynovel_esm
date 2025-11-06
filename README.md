@@ -28,7 +28,7 @@
 
 WebGL NovelGame framework by PixiJS
 
-![logo.svg](https://raw.githubusercontent.com/famibee/skynovel_esm/master/test/icon.svg)
+![logo.svg](test/logo.png)
 
 [CHANGELOG.md](CHANGELOG.md)
 
