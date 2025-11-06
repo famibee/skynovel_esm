@@ -1,3 +1,10 @@
+## [1.7.6](https://github.com/famibee/skynovel_esm/compare/v1.7.5...v1.7.6) (2025-11-06)
+
+
+### Bug Fixes
+
+* アプリ版の「初回」ウインドウ初期値が 300x300 になる件 ([eb4b370](https://github.com/famibee/skynovel_esm/commit/eb4b370f182eedd6ff08d3b225d2984cf79090ee))
+
 - fix: アプリ版の「初回」ウインドウ初期値が 300x300 になる件
 - fix: アプリ版の「二回目」起動時にウインドウ位置が (0, 0) になる件
 - fix: 初期化の流れをリファクタリング
