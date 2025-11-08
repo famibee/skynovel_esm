@@ -18,18 +18,18 @@ function An(i = "/", t = " ", e = ":", r = "") {
   return String(n.getFullYear()) + i + String(100 + n.getMonth() + 1).slice(1, 3) + i + String(100 + n.getDate()).slice(1, 3) + t + String(100 + n.getHours()).slice(1, 3) + e + String(100 + n.getMinutes()).slice(1, 3) + (r === "" ? "" : r + String(n.getMilliseconds()));
 }
 const ia = "/* SKYNovel */";
-function Wv() {
+function $v() {
   const i = document.getElementsByTagName("head")[0], t = i.children.length;
   for (let e = t - 1; e >= 0; --e) {
     const r = i.children[e];
     r instanceof HTMLStyleElement && r.innerText.startsWith(ia) && i.removeChild(r);
   }
 }
-function $v(i) {
+function Zv(i) {
   const t = document.createElement("style");
   t.innerHTML = ia + i, document.getElementsByTagName("head")[0].appendChild(t);
 }
-const Zv = "pointerdown", qv = "pointerdown", co = "keydown", Jv = "compChIn";
+const qv = "pointerdown", Jv = "pointerdown", co = "keydown", Kv = "compChIn";
 function U(i, t, e) {
   const r = i[t];
   if (!(t in i)) {
@@ -58,12 +58,12 @@ function po(i) {
   if (e === "#000000") throw `色名前 ${i} が異常です`;
   return parseInt(e.slice(1), 16);
 }
-function Kv(i, t, e) {
+function Qv(i, t, e) {
   const r = i[t];
   return r ? i[t] = po(String(r)) : (i[t] = e, e);
 }
 const vo = /JSON at position (\d+)$/;
-function Qv(i, t = "", e = "") {
+function t_(i, t = "", e = "") {
   const r = (vo.exec(e) ?? ["", ""])[1];
   return `[${i[":タグ名"]}] ${t} 属性の解析エラー : ${e}
 ${// eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
@@ -71,7 +71,7 @@ ${// eslint-disable-next-line @typescript-eslint/restrict-template-expressions, 
 ${"^".padStart(Number(r))}` : ""}`;
 }
 const _o = /^[^/.]+$|[^/]+(?=\.)/;
-function t_(i) {
+function e_(i) {
   return (_o.exec(i) ?? [""])[0];
 }
 class L {
@@ -94,7 +94,7 @@ class L {
   static isDarkMode = !1;
   static cc4ColorName;
 }
-function e_() {
+function r_() {
   return {
     "sn.userFnTail": "",
     "const.sn.autowc.enabled": !1,
@@ -175,7 +175,7 @@ function na() {
     // バック不透明度。テキストウインドウの背景の濃度。0.0で透明、1.0で不透明
   };
 }
-function r_() {
+function i_() {
   return {
     "const.Date.getDateStr": () => An(),
     // 変数参照時の日時を返す
@@ -507,7 +507,7 @@ typeof setImmediate == "function" && function(i) {
 gt._unhandledRejectionFn = function(t) {
   typeof console < "u" && console && console.warn("Possible Unhandled Promise Rejection:", t);
 };
-var i_ = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {};
+var n_ = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {};
 function Cn(i) {
   return i && i.__esModule && Object.prototype.hasOwnProperty.call(i, "default") ? i.default : i;
 }
@@ -1372,7 +1372,7 @@ var Ne = {
 B.RETINA_PREFIX = /@([0-9\.]+)x/;
 B.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = !1;
 var zi = !1, hs = "6.5.10";
-function n_() {
+function s_() {
   zi = !0;
 }
 function ko(i) {
@@ -1666,7 +1666,7 @@ Deprecated since v` + i), console.warn(r))), fs[t] = !0;
   }
 }
 var cs = {}, Ft = /* @__PURE__ */ Object.create(null), ee = /* @__PURE__ */ Object.create(null);
-function s_() {
+function a_() {
   var i;
   for (i in Ft)
     delete Ft[i];
@@ -14760,7 +14760,7 @@ function zp(i, t) {
   }
   i.prototype = t === null ? Object.create(t) : (e.prototype = t.prototype, new e());
 }
-var a_ = (
+var o_ = (
   /** @class */
   function(i) {
     zp(t, i);
@@ -17896,7 +17896,8 @@ class zv {
     return window.electron.ipcRenderer.once(t, e);
   }
 }
-class h_ extends Be {
+const Xv = "doc_crypto";
+class u_ extends Be {
   constructor(...[t = {}, e = { cur: "prj/", crypto: !1, dip: "" }]) {
     super(t, e), this.loaded(t, e);
   }
@@ -18028,7 +18029,7 @@ class h_ extends Be {
     return L.debugLog && W.myTrace(`[update_check] url=${e}`, "D"), this.#r(e + "_index.json").then(async (r) => {
       const n = {
         title: "アプリ更新",
-        icon: this.#e.getAppPath + "/app/icon.png",
+        icon: this.#e.getAppPath + `/${this.arg.crypto ? Xv : "doc"}/icon.png`,
         buttons: ["OK", "Cancel"],
         defaultId: 0,
         cancelId: 1,
@@ -18114,7 +18115,7 @@ class h_ extends Be {
     await this.ensureFile(t), await this.writeFile(t, r), L.debugLog && console.log(`画像ファイル ${t} を保存しました`);
   }
 }
-const { BlurFilter: Xv, ColorMatrixFilter: xt, NoiseFilter: Yv } = Xp;
+const { BlurFilter: Yv, ColorMatrixFilter: xt, NoiseFilter: Vv } = Xp;
 class Lt {
   layname = "";
   name_ = "";
@@ -18208,7 +18209,7 @@ class Lt {
   static hBldFilter = {
     // https://pixijs.download/v6.5.10/docs/PIXI.filters.BlurFilter.html
     blur: (t) => {
-      const e = new Xv(
+      const e = new Yv(
         U(t, "strength", 8),
         // 強さ
         U(t, "quality", 4),
@@ -18221,7 +18222,7 @@ class Lt {
       return e.blurX = ft(U(t, "blur_x", 2)), e.blurY = ft(U(t, "blur_y", 2)), e.repeatEdgePixels = ct(t, "repeat_edge_pixels", !1), e;
     },
     // https://pixijs.download/v6.5.10/docs/PIXI.filters.NoiseFilter.html
-    noise: (t) => new Yv(
+    noise: (t) => new Vv(
       // ノイズエフェクト
       U(t, "noise", 0.5),
       // 適用するノイズの量。この値は (0, 1] の範囲内
@@ -18542,32 +18543,32 @@ export {
   Yp as E,
   pe as F,
   Qr as G,
-  a_ as H,
+  o_ as H,
   co as I,
-  qv as J,
+  Jv as J,
   Be as K,
   qr as L,
-  Zv as M,
-  Qv as N,
+  qv as M,
+  t_ as N,
   it as O,
   oo as P,
-  Wv as Q,
-  Jv as R,
+  $v as Q,
+  Kv as R,
   Bn as S,
   At as T,
   Ge as U,
   ja as V,
   Ft as W,
   j as X,
-  h_ as Y,
-  t_ as a,
-  s_ as b,
-  i_ as c,
+  u_ as Y,
+  e_ as a,
+  a_ as b,
+  n_ as c,
   L as d,
   ct as e,
-  e_ as f,
+  r_ as f,
   Cn as g,
-  r_ as h,
+  i_ as h,
   Ee as i,
   na as j,
   U as k,
@@ -18578,12 +18579,12 @@ export {
   po as p,
   An as q,
   jv as r,
-  n_ as s,
-  Kv as t,
+  s_ as s,
+  Qv as t,
   ft as u,
   uc as v,
   Pe as w,
-  $v as x,
+  Zv as x,
   fe as y,
   V as z
 };

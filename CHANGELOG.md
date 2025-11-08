@@ -1,3 +1,7 @@
+- fix: ESM版で [update_check] でアイコンが表示されなかった件を修正
+- fix: 手直し
+
+
 ## [1.7.6](https://github.com/famibee/skynovel_esm/compare/v1.7.5...v1.7.6) (2025-11-06)
 
 

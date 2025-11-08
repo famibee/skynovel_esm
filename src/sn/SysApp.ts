@@ -21,6 +21,8 @@ import {IpcListener, IpcEmitter} from '@electron-toolkit/typed-ipc/renderer'
 import type {readFile} from 'fs-extra';
 
 
+const	FLD_CRYPT_DOC	= 'doc_crypto';
+
 type T_upd__index_json_pkg = {
 	[pkg_name: string]: {
 		path	: string;
@@ -76,8 +78,8 @@ export class SysApp extends SysBase {
 	};
 
 	// === vite-electron 用コード ===
-	#em		= new IpcEmitter<T_IpcEvents>;
-	#ipc	= new IpcListener<T_IpcRendererEvent>;
+	readonly	#em		= new IpcEmitter<T_IpcEvents>;
+	readonly	#ipc	= new IpcListener<T_IpcRendererEvent>;
 
 	override use4ViteElectron(src: string, path: string, ld: Loader, main: T_Main) {
 		if (! src.startsWith(PROTOCOL_USERDATA)) return false;
@@ -93,17 +95,17 @@ export class SysApp extends SysBase {
 
 		return true;
 	}
-	#fetch2web = (url: string)=> this.#em.invoke('fetch', url);
-	#fetchAb2web = (url: string)=> this.#em.invoke('fetchAb', url);
+	readonly	#fetch2web = (url: string)=> this.#em.invoke('fetch', url);
+	readonly	#fetchAb2web = (url: string)=> this.#em.invoke('fetchAb', url);
 
-	override	ensureFile	= (path: string)=> this.#em.invoke('ensureFile', path);
+	override	readonly	ensureFile	= (path: string)=> this.#em.invoke('ensureFile', path);
 	// === vite-electron 用コード ===
 	protected	async readFile(path: string, encoding: Parameters<typeof readFile>[1]) {
 		return this.#em.invoke('readFile', path, encoding);
 	}
-	protected	writeFile	= (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> this.#em.invoke('writeFile', path, data, o);
-	override	appendFile	= (path: string, data: string)=> this.#em.invoke('appendFile', path, data);
-	override	outputFile	= (path: string, data: string)=> this.#em.invoke('outputFile', path, data);
+	protected	readonly	writeFile	= (path: string, data: string | NodeJS.ArrayBufferView, o?: object)=> this.#em.invoke('writeFile', path, data, o);
+	override	readonly	appendFile	= (path: string, data: string)=> this.#em.invoke('appendFile', path, data);
+	override	readonly	outputFile	= (path: string, data: string)=> this.#em.invoke('outputFile', path, data);
 
 	override readonly	isApp = true;
 	protected 	override $path_userdata		= '';
@@ -167,7 +169,7 @@ export class SysApp extends SysBase {
 // console.log(`fn:SysApp.ts to_app.inited(${x},${y},${w},${h})`);
 		await this.#em.invoke('inited', this.cfg.oCfg, {c: first, x, y, w, h});
 	}
-	#setStore = ()=> this.#em.invoke('Store', {
+	readonly	#setStore = ()=> this.#em.invoke('Store', {
 		cwd	: this.$path_userdata +'storage',
 		name: this.arg.crypto ?'data_' :'data',
 		encryptionKey: this.arg.crypto ?this.stk() :undefined,
@@ -217,14 +219,14 @@ export class SysApp extends SysBase {
 	}
 
 
-	override copyBMFolder	= (from: number, to: number)=> {
+	override readonly copyBMFolder = (from: number, to: number)=> {
 		const path_from = `${this.$path_userdata}storage/${String(from)}/`;
 		const path_to = `${this.$path_userdata}storage/${String(to)}/`;
 		void this.#em.invoke('existsSync', path_from).then(async v=> {
 			if (v)  await this.#em.invoke('copy', path_from, path_to);
 		});
 	};
-	override eraseBMFolder	= (place: number)=> {
+	override readonly eraseBMFolder = (place: number)=> {
 		void this.#em.invoke('remove', `${this.$path_userdata}storage/${String(place)}/`);
 	};
 
@@ -311,7 +313,9 @@ export class SysApp extends SysBase {
 		.then(async o=> {
 			const mbo: MessageBoxOptions = {
 				title	: 'アプリ更新',
-				icon	: this.#hInfo.getAppPath +'/app/icon.png',
+				icon	: this.#hInfo.getAppPath +`/${
+					this.arg.crypto ?FLD_CRYPT_DOC :'doc'
+				}/icon.png`,
 				buttons	: ['OK', 'Cancel'],
 				defaultId	: 0,
 				cancelId	: 1,

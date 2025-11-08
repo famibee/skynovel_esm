@@ -9,7 +9,7 @@ import type {T_HINFO} from './appMain_cmn';
 import type {T_CFG} from './sn/ConfigBase';
 
 import type {MessageBoxOptions, MessageBoxReturnValue, OpenDialogOptions, OpenDialogReturnValue} from 'electron/renderer';
-import {readFile} from 'fs-extra';
+import type {readFile} from 'fs-extra';
 
 export	type	TAG_WINDOW	= {
 	c	: boolean;
