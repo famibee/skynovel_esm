@@ -1,3 +1,7 @@
+- fix(src/sn/Reading.ts): 下キーなど押しっぱなしスキップが効かない件
+	- v1.3.0 (2025-08-27)【SKYNovel cjs v1.62.0 相当更新】でのデグレード
+
+
 ## [1.7.8](https://github.com/famibee/skynovel_esm/compare/v1.7.7...v1.7.8) (2025-11-14)
 
 
