@@ -1,3 +1,10 @@
+## [1.7.8](https://github.com/famibee/skynovel_esm/compare/v1.7.7...v1.7.8) (2025-11-14)
+
+
+### Bug Fixes
+
+* **src/sn/ScriptIterator.ts:** Fスキップ時に処理の流れが狂う場合がある件 ([9a29406](https://github.com/famibee/skynovel_esm/commit/9a294065558618a3c080fa455799eeaa29631ace))
+
 - fix(src/sn/ScriptIterator.ts): Fスキップ時に処理の流れが狂う場合がある件
 	- スキップ時の [wt] で同期的にトランス終了させるよう
 	- キー押しっぱなしスキップなどでの処理が動いていなかった
