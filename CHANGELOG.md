@@ -1,3 +1,10 @@
+## [1.7.10](https://github.com/famibee/skynovel_esm/compare/v1.7.9...v1.7.10) (2025-11-16)
+
+
+### Bug Fixes
+
+* **src/sn/LayerMng.ts:** [quake] 後の [wq] で一度クリックしないと次へ進まない件 ([391e450](https://github.com/famibee/skynovel_esm/commit/391e45052c64f252d8ed6d3fc5dd13c7259b74ed))
+
 - fix(src/sn/LayerMng.ts): [quake] 後の [wq] で一度クリックしないと次へ進まない件
 
 
