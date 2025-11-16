@@ -1,3 +1,6 @@
+- fix(src/sn/LayerMng.ts): [quake] 後の [wq] で一度クリックしないと次へ進まない件
+
+
 ## [1.7.9](https://github.com/famibee/skynovel_esm/compare/v1.7.8...v1.7.9) (2025-11-14)
 
 
