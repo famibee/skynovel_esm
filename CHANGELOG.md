@@ -1,3 +1,6 @@
+- fix(src/sn/SndBuf.ts): 再生完了した際に、状態変化させていなかったケースがあった件
+
+
 ## [1.7.10](https://github.com/famibee/skynovel_esm/compare/v1.7.9...v1.7.10) (2025-11-16)
 
 
