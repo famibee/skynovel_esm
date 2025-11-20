@@ -1,3 +1,10 @@
+## [1.7.11](https://github.com/famibee/skynovel_esm/compare/v1.7.10...v1.7.11) (2025-11-20)
+
+
+### Bug Fixes
+
+* **src/sn/SndBuf.ts:** 再生完了した際に、状態変化させていなかったケースがあった件 ([24b214e](https://github.com/famibee/skynovel_esm/commit/24b214edaf6a3d54d0a83eb08dd1b4b5c4c5f0c3))
+
 - fix(src/sn/SndBuf.ts): 再生完了した際に、状態変化させていなかったケースがあった件
 
 
