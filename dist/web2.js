@@ -90,6 +90,10 @@ class CmnLib {
   static hDip = {};
   static isDbg = !1;
   static isPackaged = !1;
+  static needClick2Play() {
+    return "AudioContext" in globalThis ? (CmnLib.#t = new globalThis.AudioContext(), CmnLib.needClick2Play = () => CmnLib.#t.state === "suspended") : CmnLib.needClick2Play = () => !1, CmnLib.needClick2Play();
+  }
+  static #t;
   static isDarkMode = !1;
   static cc4ColorName;
 }
@@ -241,7 +245,7 @@ function creTMP_DATA() {
     // 円周率
     "const.sn.navigator.language": "jp",
     // ユーザーが最優先に設定している言語設定
-    "const.sn.needClick2Play": typeof globalThis > "u" ? () => !1 : () => new globalThis.AudioContext().state === "suspended",
+    "const.sn.needClick2Play": !1,
     // ブラウザ実行で、クリックされるまで音声再生が差し止められている状態か。なにかクリックされれば falseになる
     "const.sn.platform": CmnLib.platform,
     // 環境による
@@ -19403,7 +19407,7 @@ class SysBase {
       r.init().then(() => {
         s = "sys", s += String(r.getVal("sys:TextLayer.Back.Alpha", 1)), s = "kidoku", r.saveKidoku();
       }).catch((o) => console.error(`セーブデータ（${s}）が壊れています。一度クリアする必要があります(b) %o`, o))
-    ), e.close = (o) => this.close(o), e.export = (o) => this._export(o), e.import = (o) => this._import(o), e.navigate_to = (o) => this.navigate_to(o), e.title = (o) => this.title(o), e.toggle_full_screen = (o) => this.#m(o), e.update_check = (o) => this.update_check(o), e.window = (o) => this.window(o), e.title({ text: this.cfg.oCfg.book.title || "SKYNovel" }), r.defTmp("const.sn.isApp", () => this.isApp), r.defTmp("const.sn.isDbg", () => CmnLib.isDbg), r.defTmp("const.sn.isPackaged", () => CmnLib.isPackaged), r.defTmp("const.sn.displayState", () => this.isFullScr), r.setVal_Nochk("sys", "const.sn.cfg.ns", this.cfg.oCfg.save_ns), r.flush(), CmnLib.isDbg && this.attach_debug(this.main), [
+    ), e.close = (o) => this.close(o), e.export = (o) => this._export(o), e.import = (o) => this._import(o), e.navigate_to = (o) => this.navigate_to(o), e.title = (o) => this.title(o), e.toggle_full_screen = (o) => this.#m(o), e.update_check = (o) => this.update_check(o), e.window = (o) => this.window(o), e.title({ text: this.cfg.oCfg.book.title || "SKYNovel" }), r.defTmp("const.sn.isApp", () => this.isApp), r.defTmp("const.sn.isDbg", () => CmnLib.isDbg), r.defTmp("const.sn.isPackaged", () => CmnLib.isPackaged), r.defTmp("const.sn.needClick2Play", () => CmnLib.needClick2Play()), r.defTmp("const.sn.displayState", () => this.isFullScr), r.setVal_Nochk("sys", "const.sn.cfg.ns", this.cfg.oCfg.save_ns), r.flush(), CmnLib.isDbg && this.attach_debug(this.main), [
       ...a,
       ...Object.values(this.hPlg).map((o) => o.init({
         getInfo: this.#i,
