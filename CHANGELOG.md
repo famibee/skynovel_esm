@@ -1,3 +1,10 @@
+## [1.7.12](https://github.com/famibee/skynovel_esm/compare/v1.7.11...v1.7.12) (2025-11-21)
+
+
+### Bug Fixes
+
+* 特定のケースで音声再生終了イベントも発生しないため、タイマーで擬似的に発生させるように ([fdbd72c](https://github.com/famibee/skynovel_esm/commit/fdbd72cf4d75e5ff9b99b78363807e30fbd3b683))
+
 - fix: 特定のケースで音声再生終了イベントも発生しないため、タイマーで擬似的に発生させるように
 	- タブのミュート中や AudioContext.state === 'suspended' の場合は再生もされないので再生終了イベントも発生しない
 
