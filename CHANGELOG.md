@@ -1,3 +1,10 @@
+## [1.7.13](https://github.com/famibee/skynovel_esm/compare/v1.7.12...v1.7.13) (2025-11-22)
+
+
+### Bug Fixes
+
+* sys:const.sn.aPageLog が巨大になりすぎセーブデータを圧迫する件 ([dd6f5c0](https://github.com/famibee/skynovel_esm/commit/dd6f5c09cc88dc10059c145cd02f63d10b94e409))
+
 - fix: sys:const.sn.aPageLog が巨大になりすぎセーブデータを圧迫する件
 	- 内容は配列で、（一つの要素）.mark.hSave['const.sn.sLog'] が 5.9MB 程度のサイズになっていた。しかしページ移動処理・状態で無くてもいいモノだった。
 		- 5.9MB x 64配列要素個だった。これを '[]'（4文字） x 配列要素個に。
