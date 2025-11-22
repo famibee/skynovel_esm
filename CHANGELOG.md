@@ -1,3 +1,10 @@
+- fix: sys:const.sn.aPageLog が巨大になりすぎセーブデータを圧迫する件
+	- 内容は配列で、（一つの要素）.mark.hSave['const.sn.sLog'] が 5.9MB 程度のサイズになっていた。しかしページ移動処理・状態で無くてもいいモノだった。
+		- 5.9MB x 64配列要素個だった。これを '[]'（4文字） x 配列要素個に。
+	- たまにエラーが出ていた
+		- Uncaught (in promise) QuotaExceededError: Failed to execute 'setItem' on 'Storage': Setting the value of ...
+
+
 ## [1.7.12](https://github.com/famibee/skynovel_esm/compare/v1.7.11...v1.7.12) (2025-11-21)
 
 
