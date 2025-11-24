@@ -1,3 +1,10 @@
+## [1.7.14](https://github.com/famibee/skynovel_esm/compare/v1.7.13...v1.7.14) (2025-11-24)
+
+
+### Bug Fixes
+
+* **src/sn/SndBuf.ts:** fade 系が機能していなかった件 ([ba7a0d7](https://github.com/famibee/skynovel_esm/commit/ba7a0d798eb1b90e12221ac370c3316d510e4916))
+
 - fix(src/sn/SndBuf.ts): fade 系が機能していなかった件
 - fix(src/sn/FrameMng.ts): [tsy_frame] を手直し
 
