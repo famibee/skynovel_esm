@@ -1,3 +1,10 @@
+## [1.7.15](https://github.com/famibee/skynovel_esm/compare/v1.7.14...v1.7.15) (2025-11-25)
+
+
+### Bug Fixes
+
+* **src/sn/FocusMng.ts:** フレームを非表示にした場合など、フォーカスを失った場合はメインキャンバスにフォーカスを移動させるように ([91a48f2](https://github.com/famibee/skynovel_esm/commit/91a48f2308af3acfc264698ac87ac3eba7b7c3be))
+
 -fix(src/sn/FocusMng.ts): フレームを非表示にした場合など、フォーカスを失った場合はメインキャンバスにフォーカスを移動させるように
 
 
