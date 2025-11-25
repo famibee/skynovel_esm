@@ -1,3 +1,6 @@
+-fix(src/sn/FocusMng.ts): フレームを非表示にした場合など、フォーカスを失った場合はメインキャンバスにフォーカスを移動させるように
+
+
 ## [1.7.14](https://github.com/famibee/skynovel_esm/compare/v1.7.13...v1.7.14) (2025-11-24)
 
 
