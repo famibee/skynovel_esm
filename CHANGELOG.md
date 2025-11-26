@@ -1,3 +1,10 @@
+## [1.7.16](https://github.com/famibee/skynovel_esm/compare/v1.7.15...v1.7.16) (2025-11-26)
+
+
+### Bug Fixes
+
+* @typescript-eslint/restrict-template-expressions 無効化を使わないように ([ded25c2](https://github.com/famibee/skynovel_esm/commit/ded25c21de78a3046b37b6de1f5c378a732fc322))
+
 - fix: @typescript-eslint/restrict-template-expressions 無効化を使わないように
 
 
