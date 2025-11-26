@@ -14104,7 +14104,7 @@ const Ql = /* @__PURE__ */ nf(wp);
 class Et {
   constructor(t, f) {
     this.bw = t, this.version = f;
-    const s = Et.#r;
+    const s = Et.#n;
     this.#i = process.platform === "win32", t.webContents.on("devtools-opened", () => this.#f()), s.handle("openDevTools", () => t.webContents.openDevTools()), this.#h.getVersion = f, s.handle("getInfo", () => this.#h), s.handle("inited", (i, r, a) => this.#p(r, a)), s.handle("fetch", async (i, r) => {
       const a = await fetch(r, { cache: "no-store" });
       return {
@@ -14134,10 +14134,10 @@ class Et {
       await be.remove(a), await be.ensureDir(a), new Ql(r).extractAllTo(a, !0);
     }), s.handle("isSimpleFullScreen", () => t.simpleFullScreen), this.#i ? (s.handle("setSimpleFullScreen", (i, r) => {
       this.#e = () => {
-      }, t.setSimpleFullScreen(r), r || (t.setPosition(this.#u, this.#l), t.setContentSize(this.#o, this.#a)), this.#e = () => this.#t();
+      }, t.setSimpleFullScreen(r), r || (t.setPosition(this.#u, this.#l), t.setContentSize(this.#o, this.#a)), this.#e = () => this.#r();
     }), t.on("enter-full-screen", () => {
       this.#e = () => {
-      }, t.setContentSize(this.#s.width, this.#s.height), this.#e = () => this.#t();
+      }, t.setContentSize(this.#t.width, this.#t.height), this.#e = () => this.#r();
     }), t.on("leave-full-screen", () => {
       this.#c(!1, this.#u, this.#l, this.#o, this.#a);
     })) : s.handle("setSimpleFullScreen", (i, r) => {
@@ -14145,9 +14145,9 @@ class Et {
     }), s.handle("window", (i, r, a, o, l, c) => this.#c(r, a, o, l, c)), t.on("move", () => this.#e()), t.on("resize", () => this.#e()), this.#m();
   }
   static init(t) {
-    Et.#r = t, ql.initRenderer();
+    Et.#n = t, ql.initRenderer();
   }
-  static #r;
+  static #n;
   #i;
   // import {os} from 'platform'; は動作しない
   #h = {
@@ -14169,9 +14169,9 @@ class Et {
   //MARK: Renderer からの初期化通知を受けて
   #p(t, f) {
     const { width: s, height: d } = t.window, { c: i, x: r, y: a, w: o } = f;
-    this.#n = s / d;
-    const l = o === s ? d : o / this.#n;
-    if (this.#i || this.bw.setAspectRatio(this.#n), this.#c(i, r, a, o, l), this.bw.show(), this.#e = () => this.#t(), t.debug.devtool) {
+    this.#s = s / d;
+    const l = o === s ? d : o / this.#s;
+    if (this.#i || this.bw.setAspectRatio(this.#s), this.#c(i, r, a, o, l), this.bw.show(), this.#e = () => this.#r(), t.debug.devtool) {
       this.#f = () => {
       }, this.openDevTools = () => this.bw.webContents.openDevTools({
         mode: "detach"
@@ -14184,18 +14184,18 @@ class Et {
       this.bw.webContents.closeDevTools(), this.bw.setTitle("DevToolは禁止されています。許可する場合は【プロジェクト設定】の【devtool】をONに。"), this.sendShutdown();
     };
   }
-  #n = 0;
+  #s = 0;
   #f = () => this.bw.webContents.closeDevTools();
   // 開こうとしたら閉じる
   //MARK: 現時点でウインドウが存在するデスクトップでの情報取得
   #m() {
     const t = lo.getCursorScreenPoint(), f = lo.getDisplayNearestPoint(t);
-    this.#s = f.workAreaSize;
+    this.#t = f.workAreaSize;
   }
-  #s;
+  #t;
   #e = () => {
   };
-  #t() {
+  #r() {
     if (this.#d) return;
     this.#e = () => {
     };
@@ -14204,23 +14204,23 @@ class Et {
       this.#d = void 0;
       const [i = 0, r = 0] = this.bw.getPosition(), [a = 0, o = 0] = this.bw.getContentSize();
       if (t !== i || f !== r || s !== a || d !== o) {
-        this.#t();
+        this.#r();
         return;
       }
-      this.#e = () => this.#t();
+      this.#e = () => this.#r();
       let l = a, c = o;
-      this.#i && (s === a ? c = a / this.#n : l = o * this.#n), this.#c(!1, i, r, l, c);
+      this.#i && (s === a ? c = a / this.#s : l = o * this.#s), this.#c(!1, i, r, l, c);
     }, 1e3 / 60 * 10);
   }
   #d = void 0;
   #c(t, f, s, d, i) {
     if (this.bw.simpleFullScreen) return;
-    this.#e = () => {
+    console.log(`fn:appMain.ts window c:${String(t)} (${String(f)},${String(s)},${String(d)},${String(i)}) scr(${String(this.#t.width)},${String(this.#t.height)})`), this.#e = () => {
     };
-    const r = this.#u = Math.round(t ? (this.#s.width - d) * 0.5 : f), a = this.#l = Math.round(t ? (this.#s.height - i) * 0.5 : s);
+    const r = this.#u = Math.round(t ? (this.#t.width - d) * 0.5 : f), a = this.#l = Math.round(t ? (this.#t.height - i) * 0.5 : s);
     this.bw.setPosition(r, a);
     const o = this.#o = Math.round(d), l = this.#a = Math.round(i);
-    this.bw.setContentSize(o, l), t || this.#m(), this.sendSaveWinInf({ x: r, y: a, w: o, h: l }), this.#e = () => this.#t();
+    this.bw.setContentSize(o, l), t || this.#m(), this.sendSaveWinInf({ x: r, y: a, w: o, h: l }), this.#e = () => this.#r();
   }
   sendShutdown() {
   }
@@ -14292,12 +14292,12 @@ class bf extends Et {
     }
     return s;
   }
-  #r = new Rp();
+  #n = new Rp();
   sendShutdown() {
-    this.#r.send(this.bw.webContents, "shutdown");
+    this.#n.send(this.bw.webContents, "shutdown");
   }
   sendSaveWinInf(t) {
-    this.#r.send(this.bw.webContents, "save_win_inf", t);
+    this.#n.send(this.bw.webContents, "save_win_inf", t);
   }
 }
 export {

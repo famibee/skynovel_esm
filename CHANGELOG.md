@@ -1,3 +1,6 @@
+- fix: @typescript-eslint/restrict-template-expressions 無効化を使わないように
+
+
 ## [1.7.15](https://github.com/famibee/skynovel_esm/compare/v1.7.14...v1.7.15) (2025-11-25)
 
 
