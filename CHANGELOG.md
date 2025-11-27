@@ -1,3 +1,6 @@
+- fix: フォーカスを失った場合、ブラウザ版では globalThis（v1.7.14頃の動作）、アプリ版はメインCanvas にフォーカスを移動させるように
+
+
 ## [1.7.16](https://github.com/famibee/skynovel_esm/compare/v1.7.15...v1.7.16) (2025-11-26)
 
 
