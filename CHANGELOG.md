@@ -1,3 +1,10 @@
+## [1.7.17](https://github.com/famibee/skynovel_esm/compare/v1.7.16...v1.7.17) (2025-11-27)
+
+
+### Bug Fixes
+
+* フォーカスを失った場合、ブラウザ版では globalThis（v1.7.14頃の動作）、アプリ版はメインCanvas にフォーカスを移動させるように ([abcce57](https://github.com/famibee/skynovel_esm/commit/abcce57b1c3e6088a5d9befb7db59d4d267368a9))
+
 - fix: フォーカスを失った場合、ブラウザ版では globalThis（v1.7.14頃の動作）、アプリ版はメインCanvas にフォーカスを移動させるように
 
 
