@@ -1,7 +1,7 @@
-import { B as c, E as m, d as h, e as _, k as p, y as f, w as u, H as v } from "./app2.js";
+import { B as c, d as h, e as m, k as p, y as f, w as u, H as _ } from "./app2.js";
 import { S as a } from "./SpritesMng.js";
 import { a as d } from "./Reading.js";
-class b {
+class v {
   //	static	readonly	#alzTagArg	= new AnalyzeTagArg;
   constructor(t, s = !1) {
     this.bg_col = t, this.isLay = s;
@@ -38,7 +38,7 @@ class b {
   static replaceToken(t) {
   }
 }
-class k extends b {
+class b extends v {
   constructor(t, s) {
     super("#29e", !0);
   }
@@ -46,15 +46,14 @@ class k extends b {
   }
 }
 class r extends c {
-  static #f = new m();
   static #r;
   static init(t, s, e, i, o, l) {
     r.#r = e, a.init(s, l, i, t, o);
   }
   static destroy() {
-    r.#f.clear(), a.destroy();
+    a.destroy();
   }
-  #e = new k(this.ctn, this);
+  #e = new b(this.ctn, this);
   constructor() {
     super(), h.isDbg && (this.#o = (t) => this.#e.setSp(t), this.cvsResize = () => {
       super.cvsResize(), this.#e.cvsResize();
@@ -76,7 +75,7 @@ class r extends c {
     if (this.#e.sethArg(t), !e)
       return super.lay(t), this.ctn.children.length > 0 && this.setPos(t), this.#i = "", this.#s = this.#n = i, s(!1), !1;
     const o = "fn" in t, l = "face" in t;
-    return this.clearLay({ clear_filter: _(t, "clear_filter", !0) }), o && (this.#i = e), l && (this.#n = i), super.lay(t), t.dx = 0, t.dy = 0, this.#c.destroy(), this.#c = new a(
+    return this.clearLay({ clear_filter: m(t, "clear_filter", !0) }), o && (this.#i = e), l && (this.#n = i), super.lay(t), t.dx = 0, t.dy = 0, this.#c.destroy(), this.#c = new a(
       this.#s = e + (i ? "," + i : ""),
       this.ctn,
       (n) => {
@@ -147,7 +146,7 @@ class r extends c {
     if (this.#s === "") return !1;
     const t = this.ctn.children;
     return this.#s.split(",").some(
-      (s, e) => t[e] instanceof v || a.getHFn2VElm(s)
+      (s, e) => t[e] instanceof _ || a.getHFn2VElm(s)
     );
   }
   clearLay(t) {
@@ -185,13 +184,13 @@ class r extends c {
   //showDesignCastChildren() {}
   dump = () => super.dump() + `, "pic":"${this.#s}"`;
 }
-const x = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const F = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   GrpLayer: r
 }, Symbol.toStringTag, { value: "Module" }));
 export {
-  b as D,
+  v as D,
   r as G,
-  x as a
+  F as a
 };
 //# sourceMappingURL=GrpLayer.js.map
