@@ -1,3 +1,10 @@
+## [1.7.18](https://github.com/famibee/skynovel_esm/compare/v1.7.17...v1.7.18) (2025-11-30)
+
+
+### Bug Fixes
+
+* メモリリーク修正 ([bf2ba0b](https://github.com/famibee/skynovel_esm/commit/bf2ba0b3ba95609797afef87b7c10207242e65f4))
+
 - fix: メモリリーク修正
 	- src/sn/Button.ts
 	- src/sn/SpritesMng.ts
