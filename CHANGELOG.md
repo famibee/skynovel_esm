@@ -1,3 +1,6 @@
+- docs: 【SKYNovel 開発者向け情報】にPSDから立ち絵素材を生成する機能について解説を追記
+
+
 ## [1.7.18](https://github.com/famibee/skynovel_esm/compare/v1.7.17...v1.7.18) (2025-11-30)
 
 
