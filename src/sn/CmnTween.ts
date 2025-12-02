@@ -10,13 +10,11 @@ import type {TArg} from './Grammar';
 import type {Layer} from './Layer';
 import {Reading} from './Reading';
 
-import {Tween, Easing, removeAll, update} from '@tweenjs/tween.js'
-import type {Application} from 'pixi.js';
+import {Tween, Easing, Group} from '@tweenjs/tween.js'
 
 
 type ITwInf = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	tw		: Tween<any> | undefined;
+	tw		: Tween | undefined;
 	onEnd?	: ()=> void;
 }
 
@@ -27,24 +25,42 @@ const PID_HD_TW	= 'tsy nm:';
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class CmnTween {
 	static	#hTwInf	: {[tw_nm: string]: ITwInf}	= {};
-
 	static	#evtMng	: IEvtMng;
-	static	#appPixi: Application;
-	static	init(evtMng: IEvtMng, appPixi: Application) {
-		this.#hTwInf = {};
-		this.#evtMng = evtMng;
-		this.#appPixi = appPixi;
+	static	init(evtMng: IEvtMng) {
+		CmnTween.#hTwInf = {};
+		CmnTween.#evtMng = evtMng;
 
-		this.#appPixi.ticker.add(this.#fncTicker);	// TWEEN 更新
+		CmnTween.addGrp(CmnTween.#grp);
+
+		// TWEEN 更新
+		function loop(time: number) {
+			for (const g of CmnTween.#aGroup) g.update(time);
+			CmnTween.#req(loop);
+		}
+		CmnTween.#req(loop);
 	}
-	static	#fncTicker = ()=> update();
+	static	#req	: (cb: FrameRequestCallback)=> number
+					= cb=> requestAnimationFrame(cb);
+
+	static	readonly	#grp = new Group;
+
+	static	#aGroup	: Group[]	= [];
+	static	addGrp(g: Group) {CmnTween.#aGroup.push(g)}
+
 	static	destroy() {
-		this.stopAllTw();
-		this.#appPixi.ticker.remove(this.#fncTicker);
+		CmnTween.#req = ()=> 0;
+		CmnTween.stopAllTw();
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static	setTwProp(tw: Tween<any>, hArg: TArg): Tween<any> {
+	// トゥイーン全停止
+	static	stopAllTw() {
+		CmnTween.#hTwInf = {};
+		for (const g of CmnTween.#aGroup) g.removeAll();
+		CmnTween.#aGroup = [];
+	}
+
+
+	static	setTwProp(tw: Tween, hArg: TArg): Tween {
 		const repeat = argChk_Num(hArg, 'repeat', 1);
 		return tw.delay(argChk_Num(hArg, 'delay', 0))
 		.easing(this.ease(hArg.ease))
@@ -135,12 +151,8 @@ export class CmnTween {
 	}
 
 
-	// トゥイーン全停止
-	static	stopAllTw() {this.#hTwInf = {}; removeAll()}
-
-
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static	tween(tw_nm: string, hArg: TArg, hNow: any, hTo: any, onUpdate: (d: any)=> void, onComplete: ()=> void, onEnd: ()=> void, start = true): Tween<any> {
+	static	tween(tw_nm: string, hArg: TArg, hNow: any, hTo: any, onUpdate: (d: any)=> void, onComplete: ()=> void, onEnd: ()=> void, start = true): Tween {
 		const time = this.#evtMng.isSkipping ?0 :argChk_Num(hArg, 'time', NaN);
 		const tw = new Tween(hNow)
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -148,6 +160,8 @@ export class CmnTween {
 		.onUpdate(d=> onUpdate(d));
 		this.setTwProp(tw, hArg);
 		this.#hTwInf[tw_nm] = {tw, onEnd};
+
+		CmnTween.#grp.add(tw);
 
 		const {path} = hArg;
 		let twLast = tw;
@@ -177,6 +191,8 @@ export class CmnTween {
 				.to(hTo2, time);
 				this.setTwProp(twNew, hArg);
 				twLast.chain(twNew);
+				// いらないかも？
+				// CmnTween.#grp.add(twNew);
 
 				twLast = twNew;
 			}

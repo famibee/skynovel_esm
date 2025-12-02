@@ -1,6 +1,6 @@
 import { B as c, d as h, e as m, k as p, y as f, w as u, H as _ } from "./app2.js";
 import { S as a } from "./SpritesMng.js";
-import { a as d } from "./Reading.js";
+import { a as d } from "./CmnTween.js";
 class v {
   //	static	readonly	#alzTagArg	= new AnalyzeTagArg;
   constructor(t, s = !1) {
