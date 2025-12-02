@@ -44,9 +44,7 @@
 ## example
 
 - [機能ギャラリー 'sample gallery'](https://famibee.github.io/SKYNovel_gallery/)
-- [Novelgame(Yoko-gaki) sample project「初音館にて」](https://github.com/famibee/SKYNovel_esm_hatsune)
-- [Novelgame(Tate-gaki) sample project「桜の樹の下には」](https://github.com/famibee/SKYNovel_esm_uc)
-- [simple sample project](https://github.com/famibee/SKYNovel_esm_sample)
+- [Novelgame(Tate-gaki) sample project「桜の樹の下には」](https://github.com/famibee/tmp_esm_uc)
 
 ---
 ## api (method)
