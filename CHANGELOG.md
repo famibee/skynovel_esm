@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/famibee/skynovel_esm/compare/v1.7.18...v1.8.0) (2025-12-02)
+
+
+### Features
+
+* ライブラリ更新、最新 @tweenjs/tween.js@25.0.0 へ ([052592b](https://github.com/famibee/skynovel_esm/commit/052592bc033af011d525fe53ebba743df3e68570))
+
 - feat: ライブラリ更新、最新 @tweenjs/tween.js@25.0.0 へ
 	- src/sn/CmnTween.ts
 	- src/sn/Reading.ts
