@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/famibee/skynovel_esm/compare/v1.8.0...v1.9.0) (2025-12-17)
+
+
+### Features
+
+* ライブラリ更新・最新 howler@2.2.4 へ、howler への対応 ([08e3867](https://github.com/famibee/skynovel_esm/commit/08e3867dd977e49ed3f117dd8c7984e80be3fad7))
+
 - update: ライブラリ更新・最新 howler@2.2.4 へ
 - feat: howler への対応
 - update: (cjs版)ライブラリ更新、最新 electron-store@11.0.2 へ
