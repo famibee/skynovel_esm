@@ -1,4 +1,4 @@
-- update: ライブラリ更新、最新 howler@2.2.4 へ
+- update: ライブラリ更新・最新 howler@2.2.4 へ
 - feat: howler への対応
 - update: (cjs版)ライブラリ更新、最新 electron-store@11.0.2 へ
 - change!(src/sn/SndBuf.ts): [ws canskip=true] でのクリックで音を止めるように
