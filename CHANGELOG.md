@@ -1,3 +1,6 @@
+- chore!: conventionalcommits によりコミットメッセージtype後の!をbreaking changeとして認識するように
+
+
 # [1.9.0](https://github.com/famibee/skynovel_esm/compare/v1.8.0...v1.9.0) (2025-12-17)
 
 
