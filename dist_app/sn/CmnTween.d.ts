@@ -14,7 +14,7 @@ export declare class CmnTween {
     static readonly aLayerPrpNm: (keyof Layer)[];
     static cnvTweenArg(hArg: TArg, lay: any): TArg;
     static tween(tw_nm: string, hArg: TArg, hNow: any, hTo: any, onUpdate: (d: any) => void, onComplete: () => void, onEnd: () => void, start?: boolean): Tween;
-    static wt(_hArg: TArg): boolean;
+    static wt(hArg: TArg): boolean;
     static stopEndTrans(): void;
     static wait_tsy(hArg: TArg): boolean;
     static stop_tsy(hArg: TArg): boolean;

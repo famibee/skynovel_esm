@@ -51,10 +51,10 @@
 
 (making...)
 
-- [タグリファレンス](https://famibee.github.io/SKYNovel_esm/tag.html)
-- [マクロ・プラグイン](https://famibee.github.io/SKYNovel_esm/macro_plg.html)
-- [開発者向け情報](https://famibee.github.io/SKYNovel_esm/dev.html)
-	- [組み込み変数](https://famibee.github.io/SKYNovel_esm/dev.html#reserve_value_save)
+- [タグリファレンス](https://famibee.github.io/skynovel_esm/tag.html)
+- [マクロ・プラグイン](https://famibee.github.io/skynovel_esm/macro_plg.html)
+- [開発者向け情報](https://famibee.github.io/skynovel_esm/dev.html)
+	- [組み込み変数](https://famibee.github.io/skynovel_esm/dev.html#reserve_value_save)
 
 ---
 ## 拡張機能 / Extension
@@ -66,5 +66,5 @@
 ---
 ## Famibee is ?
 - [WebSite : 電子演劇部](https://famibee.blog.fc2.com/)
-- [Github](https://github.com/famibee/SKYNovel_esm)
+- [Github](https://github.com/famibee/skynovel_esm)
 - Twitter ([famibee](https://twitter.com/famibee))

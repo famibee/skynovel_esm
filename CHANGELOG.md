@@ -1,3 +1,32 @@
+- update: ライブラリ更新、最新 howler@2.2.4 へ
+- feat: howler への対応
+- update: (cjs版)ライブラリ更新、最新 electron-store@11.0.2 へ
+- change!(src/sn/SndBuf.ts): [ws canskip=true] でのクリックで音を止めるように
+	- クリックキャンセルしなかった場合と状況を合わせる
+- remove!(src/sn/SndBuf.ts): [stopfadese] ほぼ使わないし、タグを廃止（機能無し）に
+- fix(src/sn/SndBuf.ts): [fadese volume=0.2 time=2000][wf] で音量がゼロになっていた件
+- fix(src/sn/CmnTween.ts): ギャラリーでプロジェクト切り替え時、[tsy] が始動しない件
+- fix(src/sn/CmnTween.ts): [wait_tsy] 中にイベントを受け付けるように
+	- ギャラリー（トゥイーンアニメ）で「MouseOn...」 [button] のマウスホバー系イベント onenter・onleave が発生しなくなっていた
+	- [wait] は ひとまずイベント待ちはしない方向で
+	- [waitclick] は内部的に [s] と同様
+- fix(src/sn/EventMng.ts): ボタンクリックでマウスクリックも発火イベント処理していた件
+- fix: クリックキャンセル無効の処理を手直し
+	- [wt][wait_tsy][wv][wf][ws]
+- refactor(src/sn/SndBuf.ts): 登場人物が三つも居てややこしい
+	- 情報をすべて持つ SndBuf と、ストラテジーパターンの ISndState に
+- chore: tsconfig.json の exactOptionalPropertyTypes を true に
+	- それにより発現したエラー・警告を解消
+- update(package.json): vite を 8.0.0-beta.1 に
+- build(src/build.ts): vite v8 対応に
+- chore(.github/workflows/release.yml): github actions 更新
+- chore(.github/workflows/codeql-analysis.yml): github actions 更新
+	- actions/checkout v5.0.0 -> v6.0.1
+	- actions/cache v4.3.0 -> v5.0.1
+	- actions/setup-node v6.0.0 -> v6.1.0
+	- github/codeql-action v3.31.0 -> v4.31.8
+
+
 # [1.8.0](https://github.com/famibee/skynovel_esm/compare/v1.7.18...v1.8.0) (2025-12-02)
 
 
