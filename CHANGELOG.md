@@ -25,6 +25,8 @@
 	- actions/cache v4.3.0 -> v5.0.1
 	- actions/setup-node v6.0.0 -> v6.1.0
 	- github/codeql-action v3.31.0 -> v4.31.8
+- **BREAKING CHANGE**: [ws canskip=true] でのクリックで音を止めるように
+- **BREAKING CHANGE**: [stopfadese] タグを廃止（機能無し）に
 
 
 # [1.8.0](https://github.com/famibee/skynovel_esm/compare/v1.7.18...v1.8.0) (2025-12-02)
