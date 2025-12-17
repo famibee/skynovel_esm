@@ -1,3 +1,16 @@
+## [2.0.0](https://github.com/famibee/skynovel_esm/compare/v1.9.0...v2.0.0) (2025-12-17)
+
+### ⚠ BREAKING CHANGES
+
+* conventionalcommits によりコミットメッセージtype後の!をbreaking changeとして認識するように
+
+### Miscellaneous Chores
+
+* conventionalcommits によりコミットメッセージtype後の!をbreaking changeとして認識するように ([c5f7795](https://github.com/famibee/skynovel_esm/commit/c5f7795341661dcf989a524f47bbcc1e379cc197))
+
+
+# [2.0.0](https://github.com/famibee/skynovel_esm/compare/v1.9.0...v2.0.0) (2025-12-17)
+
 - chore!: conventionalcommits によりコミットメッセージtype後の!をbreaking changeとして認識するように
 
 

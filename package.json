@@ -1,6 +1,6 @@
 {
 	"name": "@famibee/skynovel_esm",
-	"version": "1.9.0",
+	"version": "2.0.0",
 	"description": "webgl novelgame framework",
 	"author": "miyazawa famibee",
 	"publisher": "famibee",
@@ -92,7 +92,12 @@
 	},
 	"release": {
 		"plugins": [
-			["@semantic-release/commit-analyzer", { "preset": "conventionalcommits" }],
+			[
+				"@semantic-release/commit-analyzer",
+				{
+					"preset": "conventionalcommits"
+				}
+			],
 			[
 				"@semantic-release/release-notes-generator",
 				{
