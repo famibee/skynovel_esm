@@ -552,7 +552,7 @@ var LayerMng = class C {
 		this.#M.filters = [new Filter(void 0, M ?? C.#O, F)];
 		let I = CmnTween.tween(TW_NM_TRANS, e, F, { tick: 1 }, () => {}, P, () => {}, !N);
 		return N ? new SpritesMng(N, void 0, (e) => {
-			F.rule = e.texture, e.destroy(), I.start(), w.add(A);
+			F.rule = e.texture, e.destroy(), w.add(A), I.start();
 		}, (e) => {
 			e && this.main.resume();
 		}).ret : (w.add(A), !1);
