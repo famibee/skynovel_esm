@@ -1,3 +1,9 @@
+## [2.0.1](https://github.com/famibee/skynovel_esm/compare/v2.0.0...v2.0.1) (2025-12-18)
+
+### Bug Fixes
+
+* **src/sn/CmnTween.ts:** ロード直後にトゥイーン管理情報までクリアしていた件 ([e4bfaf2](https://github.com/famibee/skynovel_esm/commit/e4bfaf2b2ed255454b1c74ca32123b367db598d3))
+
 - fix(src/sn/CmnTween.ts): ロード直後にトゥイーン管理情報までクリアしていた件
 - update: ライブラリ更新（vite@8.0.0-beta.3）
 
