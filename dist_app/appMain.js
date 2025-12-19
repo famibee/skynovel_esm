@@ -829,8 +829,10 @@ var __create = Object.create, __defProp = Object.defineProperty, __getOwnPropDes
 			if (r.code === "EINVAL" || r.code === "UNKNOWN") return c.symlink(f, u);
 			throw r;
 		}
-		if (d.dereference && (m = l.resolve(process.cwd(), m)), p.isSrcSubdir(f, m)) throw Error(`Cannot copy '${f}' to a subdirectory of itself, '${m}'.`);
-		if (p.isSrcSubdir(m, f)) throw Error(`Cannot overwrite '${m}' with '${f}'.`);
+		if (d.dereference && (m = l.resolve(process.cwd(), m)), f !== m) {
+			if (p.isSrcSubdir(f, m)) throw Error(`Cannot copy '${f}' to a subdirectory of itself, '${m}'.`);
+			if (p.isSrcSubdir(m, f)) throw Error(`Cannot overwrite '${m}' with '${f}'.`);
+		}
 		return await c.unlink(u), c.symlink(f, u);
 	}
 	s.exports = h;
@@ -907,8 +909,10 @@ var __create = Object.create, __defProp = Object.defineProperty, __getOwnPropDes
 				if (r.code === "EINVAL" || r.code === "UNKNOWN") return c.symlinkSync(p, u);
 				throw r;
 			}
-			if (d.dereference && (r = l.resolve(process.cwd(), r)), f.isSrcSubdir(p, r)) throw Error(`Cannot copy '${p}' to a subdirectory of itself, '${r}'.`);
-			if (f.isSrcSubdir(r, p)) throw Error(`Cannot overwrite '${r}' with '${p}'.`);
+			if (d.dereference && (r = l.resolve(process.cwd(), r)), p !== r) {
+				if (f.isSrcSubdir(p, r)) throw Error(`Cannot copy '${p}' to a subdirectory of itself, '${r}'.`);
+				if (f.isSrcSubdir(r, p)) throw Error(`Cannot overwrite '${r}' with '${p}'.`);
+			}
 			return O(p, u);
 		} else return c.symlinkSync(p, u);
 	}
