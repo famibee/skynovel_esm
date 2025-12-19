@@ -1,3 +1,9 @@
+## [2.0.2](https://github.com/famibee/skynovel_esm/compare/v2.0.1...v2.0.2) (2025-12-19)
+
+### Bug Fixes
+
+* **src/sn/RubySpliter.ts:** ルビ解析正規表現リテラルが出力jsで壊れていた件 ([0c82e51](https://github.com/famibee/skynovel_esm/commit/0c82e51fc667ff7c3a166677103dcf4c5058b6fe))
+
 - fix(src/sn/RubySpliter.ts): ルビ解析正規表現リテラルが出力jsで壊れていた件
 
 
