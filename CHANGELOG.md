@@ -1,3 +1,19 @@
+- fix(SysWeb, build.ts): store.js依存を排除、リビルドを軽量化
+- refactor(SysWeb): store.js依存を排除しlocalStorageの薄いラッパーに置き換え（eval警告解消）
+	- store.js (9年更新なし) のjson2.js内evalによるビルド警告を解消
+	- src/sn/localStore.ts を新規追加し、SysWebのstore呼び出しをそのまま置換
+	- package.json から store / @types/store を削除
+- perf(src/build.ts): --watch時はvite-plugin-dtsを無効化してリビルドを軽量化
+- test(test/CmnTween.test.ts): stopAllTw()のロード時挙動・tw_nm優先順位・tweenライフサイクルの回帰テストを追加
+- build(.github/workflows/release.yml): Actionsを最新版に更新しfetch-depth・concurrencyを追加
+	- actions/checkout v6.0.1 -> v7.0.0
+	- oven-sh/setup-bun v2.0.2 -> v2.2.0
+	- actions/cache v5.0.1 -> v5.0.4
+	- actions/setup-node v6.1.0 -> v6.4.0
+	- checkoutにfetch-depth: 0を追加（semantic-releaseのコミット履歴解析に必須）
+	- concurrencyグループを追加し同時リリースを防止
+
+
 ## [2.0.2](https://github.com/famibee/skynovel_esm/compare/v2.0.1...v2.0.2) (2025-12-19)
 
 ### Bug Fixes
