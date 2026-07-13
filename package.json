@@ -73,7 +73,7 @@
 		"docs": "vite docs/ --open /tag.html",
 		"rebuild": "bun pm cache rm && bun watch",
 		"release:prepare": "commit-and-tag-version --preset conventionalcommits --skip.tag --skip.commit",
-		"publish": "bun run release:prepare && git add package.json CHANGELOG.md && git commit -m \"chore(release): $(node -p \"require('./package.json').version\")\" && git push"
+		"release:local": "bun run release:prepare && git add package.json CHANGELOG.md && git commit -m \"chore(release): $(node -p \"require('./package.json').version\")\" && git push"
 	},
 	"keywords": [
 		"novelgame",
