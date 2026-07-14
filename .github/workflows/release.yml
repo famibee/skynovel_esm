@@ -1,18 +1,15 @@
-name: "Publish"
+name: "Publish npm"
 
 on:
   push:
-    branches: [ main ]
+    tags: [ 'v*.*.*' ]
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # Required for OIDC
-      contents: write
-      issues: write
-      pull-requests: write
-      packages: write
+      id-token: write  # Required for npm provenance (OIDC)
+      contents: write  # Required to create a GitHub Release
 
     steps:
     - name: 📥 Checkout
@@ -34,15 +31,17 @@ jobs:
     - name: 🔎 Test
       run: bun test
 
-    - name: 🔧 Setup node 4 Semantic Release (内部で使用、削除不可)
+    - name: 🔧 Setup node 4 npm publish
       uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
       with:
         node-version: 'lts/*'
 
-    - name: 🔧 Setup lib 4 Semantic Release
-      run: bun i -D --no-save conventional-changelog-conventionalcommits
+    - name: 🚀 Publish to npm
+      run: npm publish --access public
 
-    - name: 📜 Semantic Release
-      uses: cycjimmy/semantic-release-action@b12c8f6015dc215fe37bc154d4ad456dd3833c90 # v6.0.0
+    - name: 🏷️ Create GitHub Release
+      uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf0f # v2.4.1
+      with:
+        generate_release_notes: true
       env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

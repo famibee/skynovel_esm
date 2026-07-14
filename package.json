@@ -70,7 +70,8 @@
 		"test": "bun test --only-failures",
 		"testw": "bun test --only-failures --watch",
 		"docs": "vite docs/ --open /tag.html",
-		"rebuild": "bun pm cache rm && bun watch"
+		"rebuild": "bun pm cache rm && bun watch",
+		"release": "bunx semantic-release --no-ci"
 	},
 	"keywords": [
 		"novelgame",
@@ -99,8 +100,6 @@
 				}
 			],
 			"@semantic-release/changelog",
-			"@semantic-release/npm",
-			"@semantic-release/github",
 			"@semantic-release/git"
 		]
 	},
