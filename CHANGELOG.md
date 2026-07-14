@@ -1,3 +1,5 @@
+## [2.0.8](https://github.com/famibee/skynovel_esm/compare/v2.0.7...v2.0.8) (2026-07-14)
+
 - fix(package.json, release.yml): リリーストラブル1（戻す）
 
 
