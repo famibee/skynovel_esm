@@ -18,6 +18,28 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.7](https://github.com/famibee/skynovel_esm/compare/v2.0.6...v2.0.7) (2026-07-14)
+
+## [2.0.5](https://github.com/famibee/skynovel_esm/compare/v2.0.4...v2.0.5) (2026-7-13)
+
+- fix(package.json): リリース時Semantic Releaseエラーについて3
+
+
+## [2.0.4](https://github.com/famibee/skynovel_esm/compare/v2.0.2...v2.0.3) (2026-7-13)
+
+- fix(package.json): リリース時Semantic Releaseエラーについて2
+
+
+## [2.0.3](https://github.com/famibee/skynovel_esm/compare/v2.0.2...v2.0.3) (2026-7-13)
+
+- fix(SysWeb, build.ts, release.yml): store.js依存を排除、リビルドを軽量化、リリースymlを更新 · famibee/skynovel_esm@5bfea64
+- fix(package.json): リリース時Semantic Releaseエラーについて
+
+
+# Changelog
+
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
 ## [2.0.6](https://github.com/famibee/skynovel_esm/compare/v2.0.5...v2.0.6) (2026-07-13)
 
 
