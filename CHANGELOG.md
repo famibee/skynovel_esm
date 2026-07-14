@@ -1,3 +1,6 @@
+- fix(package.json, release.yml): リリーストラブル1（戻す）
+
+
 ## [2.0.5](https://github.com/famibee/skynovel_esm/compare/v2.0.4...v2.0.5) (2026-7-13)
 
 - fix(package.json): リリース時Semantic Releaseエラーについて3
