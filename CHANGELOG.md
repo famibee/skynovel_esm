@@ -1,3 +1,6 @@
+- fix: 旧態依然7/15b
+
+
 ## [2.0.13](https://github.com/famibee/skynovel_esm/compare/v2.0.12...v2.0.13) (2026-07-15)
 
 ## [2.0.11](https://github.com/famibee/skynovel_esm/compare/v2.0.10...v2.0.11) (2026-07-15)
