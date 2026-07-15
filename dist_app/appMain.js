@@ -1537,7 +1537,7 @@ function Ie(e, t) {
 	return !0;
 }
 //#endregion
-//#region node_modules/conf/node_modules/env-paths/index.js
+//#region node_modules/env-paths/index.js
 var R = m.homedir(), Le = m.tmpdir(), { env: Re } = s, ze = (e) => {
 	let t = c.join(R, "Library");
 	return {
