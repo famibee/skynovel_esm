@@ -1,3 +1,5 @@
+## [2.0.13](https://github.com/famibee/skynovel_esm/compare/v2.0.12...v2.0.13) (2026-07-15)
+
 ## [2.0.11](https://github.com/famibee/skynovel_esm/compare/v2.0.10...v2.0.11) (2026-07-15)
 
 ## [2.0.10](https://github.com/famibee/skynovel_esm/compare/v2.0.9...v2.0.10) (2026-07-15)
