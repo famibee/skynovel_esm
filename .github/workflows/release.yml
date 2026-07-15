@@ -2,7 +2,7 @@ name: "Publish npm"
 
 on:
   push:
-    branches: [ main ]
+    tags: ['v*.*.*']
 
 jobs:
   publish:
@@ -40,7 +40,7 @@ jobs:
       run: npm publish --access public
 
     - name: 🏷️ Create GitHub Release
-      uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf0f # v2.4.1
+      uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
       with:
         generate_release_notes: true
       env:
