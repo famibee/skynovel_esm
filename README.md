@@ -2,7 +2,7 @@
 	<img src="test/logo.png" alt="logo" width="120">
 </p>
 
-<h1 align="center">SKYNovel (ESM ver) </h1>
+<h1 align="center">SKYNovel (ESM ver)</h1>
 
 <p align="center"><em>WebGL NovelGame framework by PixiJS</em></p>
 <br />
