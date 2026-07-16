@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- test2
 
 
+## [2.0.16](https://github.com/famibee/skynovel_esm/compare/v2.0.15...v2.0.16) (2026-07-16)
+
+
+### Bug Fixes
+
+* Keep a Changelog形式のヘッダーを追加 ([f469014](https://github.com/famibee/skynovel_esm/commit/f469014502191e882059bbd76fce6da24f204134))
+* Keep a Changelog形式のヘッダーを追加2 ([0fc2dca](https://github.com/famibee/skynovel_esm/commit/0fc2dca88b341d4a2dcd472a68e6b022d0e1758f))
+
 ## [2.0.14](https://github.com/famibee/skynovel_esm/compare/skynovel_esm-v2.0.13...skynovel_esm-v2.0.14) (2026-07-16)
 
 
