@@ -3,7 +3,8 @@
 	"release-type": "node",
 	"packages": {
 		".": {
-			"package-name": "@famibee/skynovel_esm"
+			"package-name": "@famibee/skynovel_esm",
+			"bootstrap-sha": "274199e365978d135926f7df7d5289d4efca934b"
 		}
 	}
 }
