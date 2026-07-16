@@ -1,3 +1,4 @@
+- fix: release-please動作確認用のダミー修正
 - fix: 旧態依然7/15c GH_TOKEN
 - fix: 旧態依然7/15b
 
