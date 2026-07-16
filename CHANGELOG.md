@@ -1,8 +1,3 @@
-- fix: release-please動作確認用のダミー修正
-- fix: 旧態依然7/15c GH_TOKEN
-- fix: 旧態依然7/15b
-
-
 ## [2.0.14](https://github.com/famibee/skynovel_esm/compare/skynovel_esm-v2.0.13...skynovel_esm-v2.0.14) (2026-07-16)
 
 

@@ -5,7 +5,8 @@
 	"release-type": "node",
 	"packages": {
 		".": {
-			"package-name": "@famibee/skynovel_esm"
+			"package-name": "@famibee/skynovel_esm",
+			"include-component-in-tag": false
 		}
 	}
 }
