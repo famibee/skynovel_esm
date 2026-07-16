@@ -5,6 +5,13 @@
 
 * release-please動作確認用のダミー修正 ([377f716](https://github.com/famibee/skynovel_esm/commit/377f7168674f4e78824707b038195f252cd701e9))
 
+## [2.0.15](https://github.com/famibee/skynovel_esm/compare/v2.0.14...v2.0.15) (2026-07-16)
+
+
+### Bug Fixes
+
+* レビュー通過後に自動マージ、include-component-in-tag: false追加 ([587b69a](https://github.com/famibee/skynovel_esm/commit/587b69a8dc77a2a10bf7fb3c4bd237d77176b8b0))
+
 ## [2.0.13](https://github.com/famibee/skynovel_esm/compare/v2.0.12...v2.0.13) (2026-07-15)
 
 ## [2.0.11](https://github.com/famibee/skynovel_esm/compare/v2.0.10...v2.0.11) (2026-07-15)
