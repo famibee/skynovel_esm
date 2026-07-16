@@ -3,6 +3,13 @@
 - fix: 旧態依然7/15b
 
 
+## [2.0.14](https://github.com/famibee/skynovel_esm/compare/skynovel_esm-v2.0.13...skynovel_esm-v2.0.14) (2026-07-16)
+
+
+### Bug Fixes
+
+* release-please動作確認用のダミー修正 ([377f716](https://github.com/famibee/skynovel_esm/commit/377f7168674f4e78824707b038195f252cd701e9))
+
 ## [2.0.13](https://github.com/famibee/skynovel_esm/compare/v2.0.12...v2.0.13) (2026-07-15)
 
 ## [2.0.11](https://github.com/famibee/skynovel_esm/compare/v2.0.10...v2.0.11) (2026-07-15)
