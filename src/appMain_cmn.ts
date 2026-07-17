@@ -11,7 +11,9 @@ import type {T_CFG} from './sn/ConfigBase';
 import type {BrowserWindow, MessageBoxOptions, OpenDialogOptions, Size} from 'electron/main';
 import {app, dialog, screen, shell} from 'electron';
 
-import {appendFile, copy, ensureFile, existsSync, outputFile, remove, WriteFileOptions, writeFile, readFile, ensureDir} from 'fs-extra';
+import {existsSync, type WriteFileOptions} from 'node:fs';
+import {appendFile, readFile, writeFile} from 'node:fs/promises';
+import {copy, ensureFile, ensureDir, outputFile, remove} from 'fs-extra/esm';
 import Store from 'electron-store';
 import AdmZip from 'adm-zip';
 

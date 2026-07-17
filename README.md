@@ -18,9 +18,8 @@
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/famibee/skynovel_esm?color=brightgreen)
 ![GitHub last commit](https://img.shields.io/github/last-commit/famibee/skynovel_esm)
 ![npm type definitions](https://img.shields.io/npm/types/@famibee/skynovel_esm)
-[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/famibee/skynovel_esm)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/famibee/skynovel_esm)](https://www.npmjs.com/package/@famibee/skynovel_esm)
 ![Release package](https://github.com/famibee/skynovel_esm/workflows/Release%20package/badge.svg)
 ![GitHub Release Date](https://img.shields.io/github/release-date/famibee/skynovel_esm)
 
@@ -41,6 +40,16 @@
 - コンセプトスライド（機能ギャラリー内に含めました）
 - [開発者向け情報 Information for developers](https://famibee.github.io/skynovel_esm/dev.html)
 
+## Install
+
+- 通常はテンプレートから開発するので以下は使用しません。VSCode拡張機能からゲーム開発開始できます
+
+```bash
+npm i @famibee/skynovel_esm
+```
+npm: https://www.npmjs.com/package/@famibee/skynovel_esm
+
+---
 ## example
 
 - [機能ギャラリー 'sample gallery'](https://famibee.github.io/SKYNovel_gallery/)

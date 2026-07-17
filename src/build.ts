@@ -80,6 +80,9 @@ aP.push(build({
 			external: [
 				'electron',
 				'electron-devtools-installer',
+				'fs-extra/esm',
+				'electron-store',
+				'adm-zip',
 				...builtinModules.flatMap(p=> [p, `node:${p}`]),
 			],
 			output,
