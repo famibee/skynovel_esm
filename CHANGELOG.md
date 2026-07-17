@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- test2
 
 
+## [2.0.17](https://github.com/famibee/skynovel_esm/compare/v2.0.16...v2.0.17) (2026-07-17)
+
+
+### Bug Fixes
+
+* **appMain:** fs-extra の名前付きimportがCJS/ESM相互運用で解決できない問題を修正 ([d2f0a78](https://github.com/famibee/skynovel_esm/commit/d2f0a783218affcbceab6d0c7b539eab3482ee31))
+
 ## [2.0.16](https://github.com/famibee/skynovel_esm/compare/v2.0.15...v2.0.16) (2026-07-16)
 
 
