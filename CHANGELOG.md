@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- test2
 
 
+## [2.0.18](https://github.com/famibee/skynovel_esm/compare/v2.0.17...v2.0.18) (2026-07-19)
+
+
+### Bug Fixes
+
+* **net:** DEP0169警告解消のためsocket.io-clientを標準WebSocketに置き換え ([3fd2331](https://github.com/famibee/skynovel_esm/commit/3fd2331496a090481116586cc496845485da092e))
+
 ## [2.0.17](https://github.com/famibee/skynovel_esm/compare/v2.0.16...v2.0.17) (2026-07-17)
 
 
