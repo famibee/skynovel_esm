@@ -13,7 +13,8 @@
 
 		/* Output */
 		"sourceMap": true,
-		"outDir": "dist/",
+		"rootDir": ".",
+		"outDir": "./dist",
 		"declaration": true,
 		"declarationMap": true,
 		"removeComments": true,
@@ -44,6 +45,11 @@
 		"noUnusedParameters": true,	// 使っていない仮引数をエラーに
 								// ただし引数名の先頭にアンダースコアを付けると回避できる
 		"exactOptionalPropertyTypes": true,	// オプションプロパティにundefined 禁止
+
+		"skipLibCheck": true,	// node_modules の .d.ts は型チェックしない
+			// @pixi/text の ModernContext2D が CanvasRenderingContext2D と噛み合わず、
+			// こちらでは直せない。**.d.ts 出力の成否が終了コードで分からなくなる**ので落とす
+			// （tsconfig.dts.json もこれを継承する）
 
 		"forceConsistentCasingInFileNames": true,	// import時にファイルパスの文字列で大文字小文字を区別するか
 		//"isolatedDeclarations": true,	// 変数や関数をエクスポート時、ユーザーに明示的な型注釈を求める（トランスパイラ向け）

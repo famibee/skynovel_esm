@@ -1,5 +1,5 @@
-import { SAVE_WIN_INF } from './preload';
-import { BrowserWindow } from 'electron/main';
+import type { SAVE_WIN_INF } from './preload';
+import type { BrowserWindow } from 'electron/main';
 export type T_ipc_appMain_cmn = {
     handle(channel: string, listener: (e: unknown, ...args: any[]) => any | Promise<any>): void;
     on(channel: string, listener: (e: unknown, ...args: any[]) => void): void;
@@ -27,4 +27,3 @@ export declare class appMain_cmn {
     protected sendSaveWinInf(_arg: SAVE_WIN_INF): void;
     openDevTools: () => void;
 }
-//# sourceMappingURL=appMain_cmn.d.ts.map

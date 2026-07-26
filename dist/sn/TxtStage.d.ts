@@ -1,11 +1,11 @@
-import { IEvtMng } from './CmnLib';
-import { TArg } from './Grammar';
-import { Config } from './Config';
-import { IMakeDesignCast } from './LayerMng';
-import { SysBase } from './SysBase';
-import { T_RP_Hyphenation } from './Hyphenation';
-import { ScriptIterator } from './ScriptIterator';
-import { T_cmdTxt_JSON } from './TxtLayer';
+import { type IEvtMng } from './CmnLib';
+import type { TArg } from './Grammar';
+import type { Config } from './Config';
+import type { IMakeDesignCast } from './LayerMng';
+import type { SysBase } from './SysBase';
+import type { T_RP_Hyphenation } from './Hyphenation';
+import type { ScriptIterator } from './ScriptIterator';
+import type { T_cmdTxt_JSON } from './TxtLayer';
 import { Container, Sprite, Renderer, Application } from 'pixi.js';
 import { Group } from '@tweenjs/tween.js';
 export type T_InfTxLay = {
@@ -90,4 +90,3 @@ export declare class TxtStage extends Container {
     destroy(): void;
 }
 export {};
-//# sourceMappingURL=TxtStage.d.ts.map

@@ -1,7 +1,8 @@
 import { SysBase } from './SysBase';
-import { T_HTag, TTag } from './Grammar';
-import { T_Variable, T_Data4Vari, T_SysBaseParams, T_SysBaseLoadedParams, T_H_TMP_DATA } from './CmnInterface';
-import { Application } from 'pixi.js';
+import type { T_HTag, TTag } from './Grammar';
+import type { T_Variable, T_Data4Vari, T_SysBaseParams, T_SysBaseLoadedParams, T_H_TMP_DATA } from './CmnInterface';
+import type { Application } from 'pixi.js';
+import 'devtools-detect';
 export declare class SysWeb extends SysBase {
     #private;
     constructor(...[hPlg, arg]: T_SysBaseParams);
@@ -19,4 +20,3 @@ export declare class SysWeb extends SysBase {
     appendFile(path: string, data: string): Promise<void>;
     outputFile(path: string, data: string): Promise<void>;
 }
-//# sourceMappingURL=SysWeb.d.ts.map

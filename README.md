@@ -58,8 +58,6 @@ npm: https://www.npmjs.com/package/@famibee/skynovel_esm
 ---
 ## api (method)
 
-(making...)
-
 - [タグリファレンス](https://famibee.github.io/skynovel_esm/tag.html)
 - [マクロ・プラグイン](https://famibee.github.io/skynovel_esm/macro_plg.html)
 - [開発者向け情報](https://famibee.github.io/skynovel_esm/dev.html)

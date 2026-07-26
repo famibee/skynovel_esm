@@ -1,9 +1,9 @@
-import { T_HTag, TTag } from './Grammar';
-import { T_Variable, T_SysBase, T_Data4Vari, T_LayerFactory, T_Main, T_Fire, T_FncHook, T_SysBaseLoadedParams, T_HPlugin, T_H_TMP_DATA } from './CmnInterface';
+import type { T_HTag, TTag } from './Grammar';
+import type { T_Variable, T_SysBase, T_Data4Vari, T_LayerFactory, T_Main, T_Fire, T_FncHook, T_SysBaseLoadedParams, T_HPlugin, T_H_TMP_DATA } from './CmnInterface';
 import { EventListenerCtn } from './EventListenerCtn';
-import { T_Config, T_SysRoots, T_HSysBaseArg } from './ConfigBase';
-import { Main } from './Main';
-import { Application, Loader } from 'pixi.js';
+import type { T_Config, T_SysRoots, T_HSysBaseArg } from './ConfigBase';
+import type { Main } from './Main';
+import type { Application, Loader } from 'pixi.js';
 export declare class SysBase implements T_SysRoots, T_SysBase {
     #private;
     private readonly hPlg;
@@ -77,4 +77,3 @@ export declare class SysBase implements T_SysRoots, T_SysBase {
     appendFile(_path: string, _data: string): Promise<void>;
     outputFile(_path: string, _data: string): Promise<void>;
 }
-//# sourceMappingURL=SysBase.d.ts.map

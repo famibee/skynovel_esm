@@ -1,14 +1,14 @@
-import { TArg } from './Grammar';
-import { T_PropParser } from './CmnInterface';
-import { SysBase } from './SysBase';
-import { ScriptIterator } from './ScriptIterator';
-import { HPage } from './LayerMng';
-import { HPRM } from './AnalyzeTagArg';
-import { TxtStage } from './TxtStage';
-import { Button } from './Button';
-import { GrpLayer } from './GrpLayer';
-import { Config } from './Config';
-import { Application, Text, Sprite } from 'pixi.js';
+import type { TArg } from './Grammar';
+import type { T_PropParser } from './CmnInterface';
+import type { SysBase } from './SysBase';
+import type { ScriptIterator } from './ScriptIterator';
+import type { HPage } from './LayerMng';
+import type { HPRM } from './AnalyzeTagArg';
+import type { TxtStage } from './TxtStage';
+import type { Button } from './Button';
+import type { GrpLayer } from './GrpLayer';
+import type { Config } from './Config';
+import type { Application, Text, Sprite } from 'pixi.js';
 export declare class DesignCast {
     readonly bg_col: string;
     readonly isLay: boolean;
@@ -50,4 +50,3 @@ export declare class TxtBtnDesignCast extends BtnDesignCast {
 export declare class PicBtnDesignCast extends BtnDesignCast {
     setSp(_sp: Sprite): void;
 }
-//# sourceMappingURL=DesignCast.d.ts.map

@@ -1,4 +1,4 @@
-import { SysBase } from './SysBase';
+import type { SysBase } from './SysBase';
 import { Container } from 'pixi.js';
 export declare class FocusMng {
     #private;
@@ -12,4 +12,3 @@ export declare class FocusMng {
     getFocus(): Container | HTMLElement | null;
     blur(): void;
 }
-//# sourceMappingURL=FocusMng.d.ts.map

@@ -1,6 +1,6 @@
-import { TArg } from './Grammar';
-import { T_Main } from './CmnInterface';
-import { SysBase } from './SysBase';
+import type { TArg } from './Grammar';
+import type { T_Main } from './CmnInterface';
+import type { SysBase } from './SysBase';
 export declare class Main implements T_Main {
     #private;
     private readonly sys;
@@ -14,4 +14,3 @@ export declare class Main implements T_Main {
     readonly stop: () => void;
     setLoop(isLoop: boolean, mes?: string): void;
 }
-//# sourceMappingURL=Main.d.ts.map

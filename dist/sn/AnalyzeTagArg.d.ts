@@ -25,4 +25,3 @@ export declare class AnalyzeTagArg {
     get hPrm(): HPRM;
     get isKomeParam(): boolean;
 }
-//# sourceMappingURL=AnalyzeTagArg.d.ts.map

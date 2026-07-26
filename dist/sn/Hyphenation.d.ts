@@ -1,5 +1,5 @@
-import { TArg } from './Grammar';
-import { Rectangle } from 'pixi.js';
+import type { TArg } from './Grammar';
+import type { Rectangle } from 'pixi.js';
 export type IChRect = {
     ch: string;
     rect: Rectangle;
@@ -39,4 +39,3 @@ export declare class Hyphenation {
         ins: number;
     };
 }
-//# sourceMappingURL=Hyphenation.d.ts.map

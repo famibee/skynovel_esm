@@ -1,13 +1,13 @@
-import { SysBase } from './SysBase';
-import { Layer, T_RecordPlayBack_lay } from './Layer';
-import { IEvtMng } from './CmnLib';
-import { T_HTag, TArg } from './Grammar';
-import { T_Variable } from './CmnInterface';
-import { T_RP_layTxtStage } from './TxtStage';
-import { Config } from './Config';
-import { IMakeDesignCast } from './LayerMng';
-import { ScriptIterator } from './ScriptIterator';
-import { T_LOG } from './Log';
+import type { SysBase } from './SysBase';
+import { Layer, type T_RecordPlayBack_lay } from './Layer';
+import { type IEvtMng } from './CmnLib';
+import type { T_HTag, TArg } from './Grammar';
+import type { T_Variable } from './CmnInterface';
+import { type T_RP_layTxtStage } from './TxtStage';
+import type { Config } from './Config';
+import type { IMakeDesignCast } from './LayerMng';
+import type { ScriptIterator } from './ScriptIterator';
+import type { T_LOG } from './Log';
 import { Renderer, Application } from 'pixi.js';
 export type T_RP_layTxt = T_RecordPlayBack_lay & {
     enabled: boolean;
@@ -85,20 +85,20 @@ export declare class TxtLayer extends Layer {
         b_alpha_isfixed: boolean;
         ffs: string;
         txs: {
-            infTL: import('./TxtStage').T_InfTxLay;
+            infTL: import("./TxtStage").T_InfTxLay;
             cssText: string;
             left: number;
             ch_filter: any[] | undefined;
             fi_easing: string;
             fo_easing: string;
-            hyph: import('./Hyphenation').T_RP_Hyphenation;
+            hyph: import("./Hyphenation").T_RP_Hyphenation;
         };
         strNoFFS: string;
         btns: string[];
         name: string;
         idx: number;
         alpha: number;
-        blendMode: import('pixi.js').BLEND_MODES;
+        blendMode: import("pixi.js").BLEND_MODES;
         rotation: number;
         scale_x: number;
         scale_y: number;
@@ -120,4 +120,3 @@ export declare class TxtLayer extends Layer {
     showDesignCastChildren(): void;
     dump(): string;
 }
-//# sourceMappingURL=TxtLayer.d.ts.map

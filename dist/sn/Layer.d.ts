@@ -1,6 +1,7 @@
-import { TArg } from './Grammar';
-import { IMakeDesignCast } from './LayerMng';
-import { DisplayObject, Container, AbstractRenderer, Filter, BLEND_MODES, Sprite } from 'pixi.js';
+import type { TArg } from './Grammar';
+import type { IMakeDesignCast } from './LayerMng';
+import type { DisplayObject, Container, AbstractRenderer, Filter } from 'pixi.js';
+import { BLEND_MODES, Sprite } from 'pixi.js';
 export type T_RecordPlayBack_lay = {
     name: string;
     idx: number;
@@ -83,4 +84,3 @@ export declare class Layer {
     static setXYByPos(base: DisplayObject, pos: string, ret: DisplayObject): void;
     static setXYCenter(dsp: DisplayObject): void;
 }
-//# sourceMappingURL=Layer.d.ts.map

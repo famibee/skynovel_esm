@@ -1,9 +1,9 @@
-import { T_HSysBaseArg, T_SEARCHPATH } from './ConfigBase';
-import { TArg, TTag } from './Grammar';
-import { Areas, T_H_Areas } from './Areas';
-import { T_H_VAL_MP } from './CallStack';
-import { Layer, T_RecordPlayBack_lay } from './Layer';
-import { DisplayObject, RenderTexture } from 'pixi.js';
+import type { T_HSysBaseArg, T_SEARCHPATH } from './ConfigBase';
+import type { TArg, TTag } from './Grammar';
+import type { Areas, T_H_Areas } from './Areas';
+import type { T_H_VAL_MP } from './CallStack';
+import type { Layer, T_RecordPlayBack_lay } from './Layer';
+import type { DisplayObject, RenderTexture } from 'pixi.js';
 export type T_PRequired<T, K extends keyof T> = T & {
     [P in K]-?: T[P];
 };
@@ -224,4 +224,3 @@ export type T_Page = {
 };
 export type T_PutCh = (ch: string, ruby: string) => void;
 export type T_NoticeChgVolume = (vol: number) => void;
-//# sourceMappingURL=CmnInterface.d.ts.map

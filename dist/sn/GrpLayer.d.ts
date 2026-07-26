@@ -1,11 +1,11 @@
-import { Layer, T_RecordPlayBack_lay } from './Layer';
-import { TArg } from './Grammar';
-import { T_Main, T_Variable } from './CmnInterface';
-import { Config } from './Config';
-import { SysBase } from './SysBase';
-import { SoundMng } from './SoundMng';
-import { IMakeDesignCast } from './LayerMng';
-import { Application } from 'pixi.js';
+import { Layer, type T_RecordPlayBack_lay } from './Layer';
+import type { TArg } from './Grammar';
+import type { T_Main, T_Variable } from './CmnInterface';
+import type { Config } from './Config';
+import type { SysBase } from './SysBase';
+import type { SoundMng } from './SoundMng';
+import type { IMakeDesignCast } from './LayerMng';
+import { type Application } from 'pixi.js';
 export type T_RP_layGrp = T_RecordPlayBack_lay & {
     sBkFn: string;
     sBkFace: string;
@@ -29,7 +29,7 @@ export declare class GrpLayer extends Layer {
         name: string;
         idx: number;
         alpha: number;
-        blendMode: import('pixi.js').BLEND_MODES;
+        blendMode: import("pixi.js").BLEND_MODES;
         rotation: number;
         scale_x: number;
         scale_y: number;
@@ -46,4 +46,3 @@ export declare class GrpLayer extends Layer {
     showDesignCast(): void;
     readonly dump: () => string;
 }
-//# sourceMappingURL=GrpLayer.d.ts.map

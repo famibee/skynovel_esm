@@ -1,8 +1,8 @@
-import { IEvtMng } from './CmnLib';
-import { T_Variable, T_Main } from './CmnInterface';
-import { Config } from './Config';
-import { SysBase } from './SysBase';
-import { TArg } from './Grammar';
+import { type IEvtMng } from './CmnLib';
+import type { T_Variable, T_Main } from './CmnInterface';
+import type { Config } from './Config';
+import type { SysBase } from './SysBase';
+import type { TArg } from './Grammar';
 export declare const BUF_BGM = "BGM";
 export declare const BUF_SE = "SE";
 export declare function xchgbuf({ buf: buf1, buf2 }: TArg): void;
@@ -39,4 +39,3 @@ type ISndState = {
     wf(hArg: TArg): boolean;
 };
 export {};
-//# sourceMappingURL=SndBuf.d.ts.map

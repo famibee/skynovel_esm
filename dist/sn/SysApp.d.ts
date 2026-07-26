@@ -1,8 +1,8 @@
 import { SysBase } from './SysBase';
-import { T_HTag, TTag } from './Grammar';
-import { T_Variable, T_Data4Vari, T_Main, T_SysBaseParams, T_SysBaseLoadedParams, T_H_TMP_DATA } from './CmnInterface';
-import { Application, Loader } from 'pixi.js';
-import { readFile } from 'fs-extra';
+import type { T_HTag, TTag } from './Grammar';
+import type { T_Variable, T_Data4Vari, T_Main, T_SysBaseParams, T_SysBaseLoadedParams, T_H_TMP_DATA } from './CmnInterface';
+import type { Application, Loader } from 'pixi.js';
+import type { readFile } from 'fs-extra';
 export declare class SysApp extends SysBase {
     #private;
     constructor(...[hPlg, arg]: T_SysBaseParams);
@@ -32,4 +32,3 @@ export declare class SysApp extends SysBase {
     capturePage(path: string, w: number, h: number, fnc: () => void): void;
     savePic(path: string, data_url: string): Promise<void>;
 }
-//# sourceMappingURL=SysApp.d.ts.map

@@ -1,10 +1,10 @@
 import { Config } from './Config';
-import { IEvtMng } from './CmnLib';
-import { T_Main, T_Variable } from './CmnInterface';
-import { SysBase } from './SysBase';
-import { SoundMng } from './SoundMng';
-import { TArg } from './Grammar';
-import { Sprite, Container } from 'pixi.js';
+import { type IEvtMng } from './CmnLib';
+import type { T_Main, T_Variable } from './CmnInterface';
+import type { SysBase } from './SysBase';
+import type { SoundMng } from './SoundMng';
+import type { TArg } from './Grammar';
+import { Sprite, type Container } from 'pixi.js';
 type IFncCompSpr = (sp: Sprite) => void;
 export declare class SpritesMng {
     #private;
@@ -24,4 +24,3 @@ export declare class SpritesMng {
     static add_face(hArg: TArg): boolean;
 }
 export {};
-//# sourceMappingURL=SpritesMng.d.ts.map

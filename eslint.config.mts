@@ -1,3 +1,9 @@
+// ※現状このリポジトリのESLintは動かない（塩漬け）。typescript-eslintが
+//	TypeScript 7 非対応と明示的にthrowするため
+//	（https://github.com/typescript-eslint/typescript-eslint/issues/10940 ）。TS 7.1対応待ち。
+//	`@typescript/typescript6` は `import ts6 from '@typescript/typescript6'` と明示的に
+//	書けるツールにしか効かず、`require('typescript')`決め打ちのtypescript-eslintには届かない
+
 import {defineConfig, globalIgnores} from 'eslint/config'
 import js from '@eslint/js'
 import jest from 'eslint-plugin-jest'

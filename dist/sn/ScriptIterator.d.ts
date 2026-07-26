@@ -1,10 +1,10 @@
-import { T_HTag, TArg } from './Grammar';
-import { T_Main, T_Variable, T_Mark, T_PropParser } from './CmnInterface';
-import { Config } from './Config';
-import { EventMng } from './EventMng';
-import { LayerMng } from './LayerMng';
-import { SoundMng } from './SoundMng';
-import { SysBase } from './SysBase';
+import type { T_HTag, TArg } from './Grammar';
+import type { T_Main, T_Variable, T_Mark, T_PropParser } from './CmnInterface';
+import type { Config } from './Config';
+import type { EventMng } from './EventMng';
+import type { LayerMng } from './LayerMng';
+import type { SoundMng } from './SoundMng';
+import type { SysBase } from './SysBase';
 declare const enum SndProcOnLoad {
     MINIMAL_STOP = 0,
     NO_TOUCH = 1,
@@ -54,4 +54,3 @@ export declare class ScriptIterator {
     replace(idx: number, val: string): void;
 }
 export {};
-//# sourceMappingURL=ScriptIterator.d.ts.map

@@ -1,8 +1,8 @@
-import { TArg } from './Grammar';
-import { T_Variable } from './CmnInterface';
-import { Layer } from './Layer';
-import { SysBase } from './SysBase';
-import { Container } from 'pixi.js';
+import type { TArg } from './Grammar';
+import type { T_Variable } from './CmnInterface';
+import type { Layer } from './Layer';
+import type { SysBase } from './SysBase';
+import type { Container } from 'pixi.js';
 export declare class Pages {
     #private;
     readonly cls: string;
@@ -23,4 +23,3 @@ export declare class Pages {
     get back(): Layer;
     transPage(aPrm: Promise<void>[]): void;
 }
-//# sourceMappingURL=Pages.d.ts.map

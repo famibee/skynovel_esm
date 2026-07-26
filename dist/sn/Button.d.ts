@@ -1,7 +1,7 @@
-import { IEvtMng } from './CmnLib';
-import { TArg } from './Grammar';
-import { Config } from './Config';
-import { IMakeDesignCast } from './LayerMng';
+import { type IEvtMng } from './CmnLib';
+import type { TArg } from './Grammar';
+import type { Config } from './Config';
+import type { IMakeDesignCast } from './LayerMng';
 import { Container, Rectangle } from 'pixi.js';
 export declare class Button extends Container {
     #private;
@@ -20,4 +20,3 @@ export declare class Button extends Container {
     cvsResize(): void;
     normal: () => void;
 }
-//# sourceMappingURL=Button.d.ts.map

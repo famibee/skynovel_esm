@@ -1,6 +1,6 @@
-import { T_HTag } from './Grammar';
-import { SysBase } from './SysBase';
-import { ScriptIterator } from './ScriptIterator';
+import type { T_HTag } from './Grammar';
+import type { SysBase } from './SysBase';
+import type { ScriptIterator } from './ScriptIterator';
 export type T_TRACE = (txt: string, lvl?: 'D' | 'W' | 'F' | 'E' | 'I' | 'ET') => void;
 export declare class DebugMng {
     #private;
@@ -11,4 +11,3 @@ export declare class DebugMng {
     static myTrace: T_TRACE;
     static strPos: () => string;
 }
-//# sourceMappingURL=DebugMng.d.ts.map

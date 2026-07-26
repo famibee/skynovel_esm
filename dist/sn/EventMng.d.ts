@@ -1,12 +1,12 @@
-import { IEvtMng } from './CmnLib';
-import { T_HTag, TArg } from './Grammar';
-import { T_Variable, T_Main } from './CmnInterface';
-import { LayerMng } from './LayerMng';
-import { ScriptIterator } from './ScriptIterator';
-import { SoundMng } from './SoundMng';
-import { Config } from './Config';
+import { type IEvtMng } from './CmnLib';
+import type { T_HTag, TArg } from './Grammar';
+import type { T_Variable, T_Main } from './CmnInterface';
+import type { LayerMng } from './LayerMng';
+import type { ScriptIterator } from './ScriptIterator';
+import type { SoundMng } from './SoundMng';
+import type { Config } from './Config';
 import { SysBase } from './SysBase';
-import { Container, Application } from 'pixi.js';
+import { Container, type Application } from 'pixi.js';
 export declare class EventMng implements IEvtMng {
     #private;
     private readonly cfg;
@@ -26,4 +26,3 @@ export declare class EventMng implements IEvtMng {
     cvsResize(): void;
     get isSkipping(): boolean;
 }
-//# sourceMappingURL=EventMng.d.ts.map

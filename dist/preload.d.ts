@@ -1,7 +1,7 @@
-import { T_HINFO } from './appMain_cmn';
-import { T_CFG } from './sn/ConfigBase';
-import { MessageBoxOptions, MessageBoxReturnValue, OpenDialogOptions, OpenDialogReturnValue } from 'electron/renderer';
-import { readFile } from 'fs-extra';
+import type { T_HINFO } from './appMain_cmn';
+import type { T_CFG } from './sn/ConfigBase';
+import type { MessageBoxOptions, MessageBoxReturnValue, OpenDialogOptions, OpenDialogReturnValue } from 'electron/renderer';
+import type { readFile } from 'fs-extra';
 export type TAG_WINDOW = {
     c: boolean;
     x: number;
@@ -59,4 +59,3 @@ export type T_IpcRendererEvent = {
     shutdown: [];
     fire: [string];
 };
-//# sourceMappingURL=preload.d.ts.map

@@ -1,7 +1,7 @@
-import { T_H_VAL_MP } from './CallStack';
-import { T_HTag } from './Grammar';
-import { T_Variable, T_fncSetVal, T_ProcVal, T_SysBase, T_Data4Vari, T_Mark, Scope, T_VAL_DATA, T_VAL_BSNU } from './CmnInterface';
-import { Config } from './Config';
+import { type T_H_VAL_MP } from './CallStack';
+import type { T_HTag } from './Grammar';
+import type { T_Variable, T_fncSetVal, T_ProcVal, T_SysBase, T_Data4Vari, T_Mark, Scope, T_VAL_DATA, T_VAL_BSNU } from './CmnInterface';
+import type { Config } from './Config';
 import { Areas } from './Areas';
 export declare class Variable implements T_Variable {
     #private;
@@ -46,4 +46,3 @@ export declare class Variable implements T_Variable {
     get tagCh_msecWait_Kidoku(): number;
     defValTrg(name: string, fnc: T_fncSetVal): void;
 }
-//# sourceMappingURL=Variable.d.ts.map

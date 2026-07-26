@@ -12,4 +12,3 @@ export declare class Areas {
     get count(): number;
     toString(): string;
 }
-//# sourceMappingURL=Areas.d.ts.map

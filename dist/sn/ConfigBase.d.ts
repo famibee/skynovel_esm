@@ -107,4 +107,3 @@ export declare class ConfigBase implements T_Config {
     matchPath(fnptn: string, extptn?: SEARCH_PATH_ARG_EXT): readonly T_Exts[];
     addPath(fn: string, h_exts: T_Exts): void;
 }
-//# sourceMappingURL=ConfigBase.d.ts.map

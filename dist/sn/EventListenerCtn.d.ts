@@ -10,4 +10,3 @@ export declare class EventListenerCtn {
     get isEmpty(): boolean;
 }
 export {};
-//# sourceMappingURL=EventListenerCtn.d.ts.map

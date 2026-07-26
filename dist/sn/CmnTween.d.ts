@@ -1,6 +1,6 @@
-import { IEvtMng } from './CmnLib';
-import { TArg } from './Grammar';
-import { Layer } from './Layer';
+import { type IEvtMng } from './CmnLib';
+import type { TArg } from './Grammar';
+import type { Layer } from './Layer';
 import { Tween, Group } from '@tweenjs/tween.js';
 export declare const TW_NM_TRANS = "trans\n";
 export declare class CmnTween {
@@ -21,4 +21,3 @@ export declare class CmnTween {
     static pause_tsy(hArg: TArg): boolean;
     static resume_tsy(hArg: TArg): boolean;
 }
-//# sourceMappingURL=CmnTween.d.ts.map

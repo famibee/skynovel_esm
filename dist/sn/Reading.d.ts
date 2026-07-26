@@ -1,11 +1,11 @@
-import { TArg, T_HTag } from './Grammar';
-import { T_Evt2Fnc, T_HEvt2Fnc, T_Main, T_Mark, T_Variable } from './CmnInterface';
-import { Config } from './Config';
-import { ScriptIterator } from './ScriptIterator';
-import { LayerMng } from './LayerMng';
-import { EventMng } from './EventMng';
-import { FocusMng } from './FocusMng';
-import { SoundMng } from './SoundMng';
+import type { TArg, T_HTag } from './Grammar';
+import type { T_Evt2Fnc, T_HEvt2Fnc, T_Main, T_Mark, T_Variable } from './CmnInterface';
+import type { Config } from './Config';
+import type { ScriptIterator } from './ScriptIterator';
+import type { LayerMng } from './LayerMng';
+import type { EventMng } from './EventMng';
+import type { FocusMng } from './FocusMng';
+import type { SoundMng } from './SoundMng';
 import { EventListenerCtn } from './EventListenerCtn';
 type IPageLog = {
     key: string;
@@ -90,4 +90,3 @@ export declare class Reading {
     static cancelAutoSkip(): void;
 }
 export {};
-//# sourceMappingURL=Reading.d.ts.map

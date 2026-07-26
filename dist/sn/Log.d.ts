@@ -1,6 +1,6 @@
-import { T_HTag } from './Grammar';
-import { T_Variable } from './CmnInterface';
-import { T_CFG } from './ConfigBase';
+import type { T_HTag } from './Grammar';
+import type { T_Variable } from './CmnInterface';
+import type { T_CFG } from './ConfigBase';
 export type T_LOG = {
     recText: (txt: string) => void;
     pagebreak: () => void;
@@ -15,4 +15,3 @@ export declare class Log implements T_LOG {
     pagebreak(): void;
     playback(): void;
 }
-//# sourceMappingURL=Log.d.ts.map

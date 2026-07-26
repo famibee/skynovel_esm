@@ -1,14 +1,14 @@
-import { IEvtMng } from './CmnLib';
-import { T_HTag, TArg } from './Grammar';
-import { T_Variable, T_Main, T_HPage, T_GetFrm, T_PropParser } from './CmnInterface';
+import { type IEvtMng } from './CmnLib';
+import type { T_HTag, TArg } from './Grammar';
+import type { T_Variable, T_Main, T_HPage, T_GetFrm, T_PropParser } from './CmnInterface';
 import { Pages } from './Pages';
 import { TxtLayer } from './TxtLayer';
-import { Config } from './Config';
-import { ScriptIterator } from './ScriptIterator';
-import { SysBase } from './SysBase';
-import { SoundMng } from './SoundMng';
+import { type Config } from './Config';
+import type { ScriptIterator } from './ScriptIterator';
+import type { SysBase } from './SysBase';
+import type { SoundMng } from './SoundMng';
 import { DesignCast } from './DesignCast';
-import { Application } from 'pixi.js';
+import { type Application } from 'pixi.js';
 export type IMakeDesignCast = (idc: DesignCast) => void;
 export type HPage = {
     [ln: string]: Pages;
@@ -42,4 +42,3 @@ export declare class LayerMng implements T_GetFrm {
     record(): any;
     playback($hPages: T_HPage): Promise<void>[];
 }
-//# sourceMappingURL=LayerMng.d.ts.map

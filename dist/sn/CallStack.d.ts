@@ -1,5 +1,5 @@
-import { T_HEvt2Fnc } from './CmnInterface';
-import { TArg } from './Grammar';
+import type { T_HEvt2Fnc } from './CmnInterface';
+import type { TArg } from './Grammar';
 export type T_H_VAL_MP = {
     'const.sn.macro': string;
     'const.sn.me_call_scriptFn': string;
@@ -20,4 +20,3 @@ export declare class CallStack {
     constructor(fn?: string, idx?: number, csArg?: ICallStackArg);
     readonly toString: () => string;
 }
-//# sourceMappingURL=CallStack.d.ts.map

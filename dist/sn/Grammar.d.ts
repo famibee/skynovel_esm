@@ -1,4 +1,4 @@
-import { T_Config } from './ConfigBase';
+import { type T_Config } from './ConfigBase';
 export type TArg = {
     ':タグ名'?: string;
     canskip?: boolean;
@@ -288,4 +288,3 @@ export declare class Grammar {
     testTagEndLetml(tkn: string): boolean;
     testNoTxt(ch: string): boolean;
 }
-//# sourceMappingURL=Grammar.d.ts.map
