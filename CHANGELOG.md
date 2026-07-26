@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- test2
 
 
+## [2.0.19](https://github.com/famibee/skynovel_esm/compare/v2.0.18...v2.0.19) (2026-07-26)
+
+
+### Bug Fixes
+
+* **build:** 型定義(.d.ts)をtscで出し、dist/一箇所へ集約 ([7988e15](https://github.com/famibee/skynovel_esm/commit/7988e15b196f144b9786446dd32d85511ed4dd56))
+
 ## [2.0.18](https://github.com/famibee/skynovel_esm/compare/v2.0.17...v2.0.18) (2026-07-19)
 
 
