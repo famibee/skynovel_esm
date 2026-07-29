@@ -15,7 +15,7 @@
 import {expect, type Page} from '@playwright/test';
 import type {T_TARGET} from './app/probe';
 
-export type T_PRJ = 'leak' | 'crypto';
+export type T_PRJ = 'leak' | 'crypto' | 'sound';
 
 // 文字レイヤ本体。TxtStage は canvas の親（＝body）へ直に足すので、位置ではなくクラスで拾う。
 //	表裏ページぶん存在し、裏は空なので「中身のある物」を採る
@@ -127,4 +127,41 @@ export async function blobLive(page: Page): Promise<number> {
 // Howler._howls の件数。unload()でしか減らないので、解放漏れがそのまま出る
 export async function howls(page: Page): Promise<number> {
 	return page.evaluate(()=> (<any>globalThis).__probe.howls() as number);
+}
+
+
+// ---- 音声（prj_sound）用 -----------------------------------------------------
+
+// 生きている Howl の設定値。src はファイル名だけ、sprite は start_ms/end_ms/ret_ms の反映結果
+export type T_HOWL = {
+	src		: string;
+	loop	: boolean;
+	rate	: number;
+	stereo?	: number;
+	volume	: number;
+	duration: number;
+	playing	: boolean;
+	sprite	: Record<string, number[]>;
+};
+
+// シナリオの任意ラベルへ飛び、そこが [s] で止まるまで待つ。
+//	元のギャラリーがボタンで選ばせていた各項目を、テストから直接呼ぶための入口
+export async function jump(page: Page, label: string) {
+	await page.evaluate(l=> {(<any>globalThis).__sn.jump(l)}, label);
+	await waitMes(page, `OK${label.slice(1)}`);	// 各項目は OK+ラベル名 を出して [s] で止まる
+}
+
+// 組み込み変数を読む（'save:const.sn.sound.SE.fn' のようにスコープ付きで）
+export async function val(page: Page, nm: string): Promise<unknown> {
+	return page.evaluate(n=> (<any>globalThis).__sn.val(n) as unknown, nm);
+}
+
+// 生きている Howl 一覧
+export async function howlList(page: Page): Promise<T_HOWL[]> {
+	return page.evaluate(()=> (<any>globalThis).__sn.howls() as T_HOWL[]);
+}
+
+// Howler のグローバル音量（sys:sn.sound.global_volume が反映される）
+export async function glbVolume(page: Page): Promise<number> {
+	return page.evaluate(()=> (<any>globalThis).__sn.glbVolume() as number);
 }

@@ -1,0 +1,190 @@
+; ***** 音声まわりの自動テスト用シナリオ（sound.e2e.ts が使用）*****
+;	元はギャラリー <SKYNovel_gallery/public/prj/sound/> のボタン駆動の手動テスト。
+;	E2Eではボタンを押す代わりに、テスト側が __sn.jump('*ラベル') で各項目へ飛ぶ
+;	（Main.resumeByJumpOrCall と同じ経路）。各項目は [s] で止まるので、
+;	そこまで進んだ時点の状態を検証する。
+;
+;	音源は尺で区別できる： snd=4秒 / snd2=2秒 / f_*=1秒
+
+[add_lay layer=mes class=txt]
+[current layer=mes]
+はじめ。[s]
+
+
+; ---- 単発再生（非ループ）----
+*play
+	[er]
+	[playse fn=snd]
+	OKplay[s]
+
+*play_stop
+	[er]
+	[playse fn=snd]
+	[stopse]
+	OKplay_stop[s]
+
+; [ws]は再生終了まで待つ。待っている間は [s] へ到達しない
+*ws
+	[er]
+	[playse fn=snd]
+	ws...[ws]
+	OKws[s]
+
+; ループ再生に [ws] は効かない（素通りする）
+*ws_loop
+	[er]
+	[playse fn=snd loop=true]
+	[ws]
+	OKws_loop[s]
+
+
+; ---- 連続再生（ループ）----
+*loop
+	[er]
+	[playse fn=snd loop=true]
+	OKloop[s]
+
+*loop_stop
+	[er]
+	[playse fn=snd loop=true]
+	[stopse]
+	OKloop_stop[s]
+
+*stop_allse
+	[er]
+	[playse fn=snd buf=SE loop=true]
+	[playse fn=snd2 buf=SE2 loop=true]
+	[stop_allse]
+	OKstop_allse[s]
+
+
+; ---- フェード ----
+*fade
+	[er]
+	[playse fn=snd loop=true]
+	[fadese volume=0.2 time=200]
+	[wf]
+	OKfade[s]
+
+*fadeout
+	[er]
+	[playse fn=snd loop=true]
+	[fadeoutse time=200]
+	[wf]
+	OKfadeout[s]
+
+; time=0 は即時反映（フェードを挟まない）
+*fade_now
+	[er]
+	[playse fn=snd loop=true]
+	[fadese volume=0.5 time=0]
+	OKfade_now[s]
+
+
+; ---- 音量（[volume]は基準音量 sys: を変える）----
+*volume
+	[er]
+	[playse fn=snd loop=true]
+	[volume volume=0.5]
+	OKvolume[s]
+
+
+; ---- VOICE 再生中に BGM を絞る（vol_mul_talking）----
+*downBGM
+	[er]
+&sys:sn.sound.BGM.vol_mul_talking = 0.2
+	[playse buf=BGM fn=snd loop=true]
+	[playse buf=VOICE fn=snd2]
+	OKdownBGM[s]
+
+*downBGM_end
+	[er]
+&sys:sn.sound.BGM.vol_mul_talking = 0.2
+	[playse buf=BGM fn=snd loop=true]
+	[playse buf=VOICE fn=snd2]
+	[stopse buf=VOICE]
+	OKdownBGM_end[s]
+
+
+; ---- バッファ交換 ----
+*xchgbuf
+	[er]
+	[playse fn=snd buf=SE loop=true]
+	[playse fn=snd2 buf=SE2 loop=true]
+	[xchgbuf buf=SE buf2=SE2]
+	OKxchgbuf[s]
+
+
+; ---- 同じ buf に重ねて [playse]（前のは止まる）----
+*playplay
+	[er]
+	[playse fn=snd buf=SE loop=true]
+	[playse fn=snd2 buf=SE loop=true]
+	OKplayplay[s]
+
+
+; ---- パン ----
+*pan_l
+	[er]
+	[playse fn=snd loop=true pan=-1]
+	OKpan_l[s]
+*pan_r
+	[er]
+	[playse fn=snd loop=true pan=1]
+	OKpan_r[s]
+
+
+; ---- 再生速度 ----
+*speed
+	[er]
+	[playse fn=snd loop=true speed=2]
+	OKspeed[s]
+
+
+; ---- start_ms / end_ms / ret_ms（sprite になる）----
+*s2L
+	[er]
+	[playse fn=snd start_ms=2000 loop=true]
+	OKs2L[s]
+*e3L
+	[er]
+	[playse fn=snd end_ms=3000 loop=true]
+	OKe3L[s]
+*eM1L
+	[er]
+	[playse fn=snd end_ms=-1500 loop=true]
+	OKeM1L[s]
+*s1e3L
+	[er]
+	[playse fn=snd start_ms=1000 end_ms=3000 loop=true]
+	OKs1e3L[s]
+*r2L
+	[er]
+	[playse fn=snd ret_ms=2000 loop=true]
+	OKr2L[s]
+*s1e3r2L
+	[er]
+	[playse fn=snd start_ms=1000 end_ms=3000 ret_ms=2000 loop=true]
+	OKs1e3r2L[s]
+
+
+; ---- 形式別 ----
+*fmt_m4a	[er][playse fn=f_m4a]OKfmt_m4a[s]
+*fmt_ogg	[er][playse fn=f_ogg]OKfmt_ogg[s]
+*fmt_aac	[er][playse fn=f_aac]OKfmt_aac[s]
+*fmt_flac	[er][playse fn=f_flac]OKfmt_flac[s]
+*fmt_wav	[er][playse fn=f_wav]OKfmt_wav[s]
+
+
+; ---- しおり（BGM復元）----
+;	[load]は const.sn.loopPlaying を見てループ音を鳴らし直す
+*save
+	[er]
+	[playse fn=snd buf=BGM loop=true]
+	[save place=1]
+	[stop_allse]
+	OKsave[s]
+*load
+	[er]
+	[load place=1]
+	OKload[s]

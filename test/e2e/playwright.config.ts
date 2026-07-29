@@ -31,6 +31,11 @@ export default defineConfig({
 	// リーク検査は「計装カウンタの増減」を見るため、1テスト＝1ページで完結させる。
 	//	並列でも別コンテキストなので干渉しない
 	fullyParallel	: true,
+	// ただし**同時実行数は絞る**。ワーカーごとにブラウザが1つ起き、そのそれぞれが
+	//	PixiJS の WebGL コンテキストと（暗号化テストでは）動画デコードを抱えるため、
+	//	既定（CPU数の半分＝この機で8）だと資源が足りず Main の作り直しが完了しない。
+	//	実測：8で leak_crypto が必ず落ち、3・5では全通過。所要時間はほぼ変わらない
+	workers			: process.env.CI ? 2 : 4,
 	forbidOnly		: Boolean(process.env.CI),
 	retries			: process.env.CI ? 2 : 0,
 	reporter		: process.env.CI ? 'github' : 'list',
