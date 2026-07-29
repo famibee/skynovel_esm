@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- test2
 
 
+## [2.0.20](https://github.com/famibee/skynovel_esm/compare/v2.0.19...v2.0.20) (2026-07-29)
+
+
+### Bug Fixes
+
+* **mem:** リソースの解放漏れと、音声の二重再生・偽エラーを修正 ([2cdaf8e](https://github.com/famibee/skynovel_esm/commit/2cdaf8e474de187dd589ae30cf830d5632b6ca0e))
+
 ## [2.0.19](https://github.com/famibee/skynovel_esm/compare/v2.0.18...v2.0.19) (2026-07-26)
 
 
