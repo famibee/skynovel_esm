@@ -192,3 +192,64 @@ it('stopAllTw_does_not_kill_future_tweens (destroy()との違いの確認)', ()=
 	expect(completed).toBe(true);
 	expect(hNow.x).toBe(100);
 });
+
+
+// ==== rAFループのライフサイクル ====
+//	E2E（test/e2e/leak.e2e.ts）でも Main の作り直しで確かめられるが、
+//	多重化そのものは rAF を差し替えれば此処で完結するのでブラウザは要らない
+describe('rAFループ', ()=> {
+	// 予約されたコールバックを握れるよう rAF を差し替える
+	function stubRaf() {
+		const org = {req: globalThis.requestAnimationFrame, cancel: globalThis.cancelAnimationFrame};
+		const hCb = new Map<number, FrameRequestCallback>();
+		let id = 0;
+		globalThis.requestAnimationFrame = cb=> {hCb.set(++id, cb); return id};
+		globalThis.cancelAnimationFrame = i=> {hCb.delete(i)};
+		return {
+			hCb,
+			restore: ()=> {
+				globalThis.requestAnimationFrame = org.req;
+				globalThis.cancelAnimationFrame = org.cancel;
+			},
+		};
+	}
+
+	it('init_schedules_one_loop', ()=> {
+		const {hCb, restore} = stubRaf();
+		try {
+			CmnTween.destroy();		// beforeEach ぶんを畳んでから測る
+			CmnTween.init(stubEvtMng);
+			expect(hCb.size).toBe(1);
+		}
+		finally {restore()}
+	});
+
+	it('destroy_cancels_pending_raf', ()=> {
+		const {hCb, restore} = stubRaf();
+		try {
+			CmnTween.destroy();
+			CmnTween.init(stubEvtMng);
+			CmnTween.destroy();
+			expect(hCb.size).toBe(0);	// 予約を取り消さないと1件残る
+		}
+		finally {restore()}
+	});
+
+	it('destroy_init_does_not_multiply_loops', ()=> {
+		const {hCb, restore} = stubRaf();
+		try {
+			CmnTween.destroy();
+			CmnTween.init(stubEvtMng);
+
+			// Main の作り直し（本家 SysBase.run()）に相当。
+			//	destroy()が予約を取り消していないと、古い loop が残ったまま
+			//	init()で #req が本物に戻り、発火時に自分を再スケジュールして倍々に増える
+			for (let i=0; i<3; ++i) {
+				CmnTween.destroy();
+				CmnTween.init(stubEvtMng);
+				expect(hCb.size).toBe(1);
+			}
+		}
+		finally {restore()}
+	});
+});

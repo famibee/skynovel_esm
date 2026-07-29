@@ -1,0 +1,36 @@
+; ***** リソースリーク検査用シナリオ（leak.e2e.ts が使用）*****
+;	画像・フォント等の外部資材に依存させない。音だけは Howl の生存を数えるため実在させる
+[add_lay layer=mes class=txt]
+[current layer=mes]
+はじめ。[p]
+
+; --- SndBuf：ロード完了前に次の[playbgm]が来る競合 ---
+;	#playse は先に #stopse するので、StLoading の最中に停止が入る。
+;	直す前は StStop が Howl を受け取れず unload されないまま、その後 onload が
+;	StPlaying で状態を上書きして復活していた。
+;	**ループ再生**にするのが要点。非ループだと復活後に再生が終わって onend →
+;	stopse → unload となり、結果的に解放されてしまって差が出ない。
+;	ループは o.onend を張らないので、復活すると永久に鳴り続け永久に残る。
+;	ロードを遅くするのはテスト側（page.route で wav を遅延）の役目
+[playbgm fn=se join=false]
+[playbgm fn=se join=false]
+[playbgm fn=se join=false]
+[playbgm fn=se join=false]
+[playbgm fn=se join=false]
+[playbgm fn=se join=false]
+[stopbgm]
+おと。[p]
+
+; --- EventMng：dom=イベントの登録と削除 ---
+;	del で #elc から外れなければ、繰り返すたびに #dom-a のリスナが増える
+[event key='dom=#dom-a' label=*hit]
+[event key='dom=#dom-a' del=true]
+[event key='dom=#dom-a' label=*hit]
+[event key='dom=#dom-a' del=true]
+[event key='dom=#dom-a' label=*hit]
+[event key='dom=#dom-a' del=true]
+どむ。[p]
+おわり。[s]
+
+*hit
+[return]

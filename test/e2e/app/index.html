@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<title>SKYNovel E2E fixture</title>
+	<style>body {margin: 0; background: #222}</style>
+</head>
+<body>
+	<!-- Main.#init はこのidのcanvasを探して使う。無ければ自前で作ってbodyに足す -->
+	<canvas id="skynovel"></canvas>
+	<!-- SysWeb.loaded が click を繋ぐ。押すと sys.run()＝Mainの破棄と再生成。
+	     CmnTween の rAF ループが多重化しないかの検査に使う -->
+	<button id="reload" data-reload>reload</button>
+	<!-- [event key='dom=#dom-a'] の相手。
+	     dom= セレクタはメイン文書に対して解決される（本家 Reading.ts:97） -->
+	<div id="dom-a">a</div>
+	<script type="module" src="./main.ts"></script>
+</body>
+</html>
