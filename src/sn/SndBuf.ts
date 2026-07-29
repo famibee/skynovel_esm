@@ -61,12 +61,17 @@ export	function xchgbuf({buf: buf1 = BUF_SE, buf2 = BUF_SE}: TArg) {
 	val.setVal_Nochk('save', n1 +'fn', f2);
 	val.setVal_Nochk('save', n2 +'fn', f1);
 
-	if (buf1 in hLP !== buf2 in hLP) {	// 演算子の優先順位確認済
-		if (buf1 in hLP)
-				// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-				{delete hLP[buf1]; hLP[buf2] = f1}
+	// ループ再生中の記録も入れ替える。
+	//	以前は「片方だけがループ中」の時しか更新しておらず、両方ループ中だと
+	//	hLP が交換前のまま取り残されていた。[load]の BGM 復元はこれを読むので、
+	//	しおりから戻すと音が入れ替わってしまう
+	const in1 = buf1 in hLP;
+	const in2 = buf2 in hLP;
+	if (in1 || in2) {
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-		else	{delete hLP[buf2]; hLP[buf1] = f2}
+		if (in2) hLP[buf1] = f2; else delete hLP[buf1];
+		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+		if (in1) hLP[buf2] = f1; else delete hLP[buf2];
 		val.setVal_Nochk('save', 'const.sn.loopPlaying', JSON.stringify(hLP));
 	}
 	val.flush();

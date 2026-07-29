@@ -871,7 +871,9 @@ function _(e, n) {
 function v({ buf: e = "SE", buf2: t = "SE" }) {
 	if (e === t) throw `[xchgbuf] buf:${e} が同じ値です`;
 	let n = "const.sn.sound." + e + ".", r = Number(u.getVal("save:" + n + "volume")), i = String(u.getVal("save:" + n + "fn")), a = "const.sn.sound." + t + ".", o = Number(u.getVal("save:" + a + "volume")), s = String(u.getVal("save:" + a + "fn"));
-	u.setVal_Nochk("save", n + "volume", o), u.setVal_Nochk("save", a + "volume", r), u.setVal_Nochk("save", n + "fn", s), u.setVal_Nochk("save", a + "fn", i), e in m != t in m && (e in m ? (delete m[e], m[t] = i) : (delete m[t], m[e] = s), u.setVal_Nochk("save", "const.sn.loopPlaying", JSON.stringify(m))), u.flush();
+	u.setVal_Nochk("save", n + "volume", o), u.setVal_Nochk("save", a + "volume", r), u.setVal_Nochk("save", n + "fn", s), u.setVal_Nochk("save", a + "fn", i);
+	let c = e in m, l = t in m;
+	(c || l) && (l ? m[e] = s : delete m[e], c ? m[t] = i : delete m[t], u.setVal_Nochk("save", "const.sn.loopPlaying", JSON.stringify(m))), u.flush();
 }
 var y = class e {
 	hArg;
