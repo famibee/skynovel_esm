@@ -170,6 +170,14 @@ export class SndBuf {
 			Reading.beginProc(RPN_LOADED);
 			cmn_loaded = ()=> Reading.endProc(RPN_LOADED);
 		}
+		// ロード完了通知。成否や停止済みを問わず必ず一度は呼ぶ事。
+		// [しおり読込]は此処で解決する Promise を allSettled()で待つので、
+		// 呼ばないと解放漏れの代わりにスクリプトが再開しなくなる
+		this.#notifyLoaded = ()=> {
+			this.#notifyLoaded = ()=> { /* empty */ };	// 二重通知を防ぐ
+			cmn_loaded();
+			hArg.fnc?.();	// なにか使ってたっけ？
+		};
 		const src = SndBuf.#cfg.searchPath(fn, SEARCH_PATH_ARG_EXT.SOUND);
 // console.log(`fn:SndBuf.ts constructor fn:${fn} src:${src}:`);
 		const o: T_PRequired<HowlOptions, 'onload'> = {
@@ -180,12 +188,22 @@ export class SndBuf {
 			autoplay: true,
 			rate	: argChk_Num(hArg, 'speed', 1),
 			onload	: ()=> {	// 暗号化ファイルでも src 経由なので来る
-				cmn_loaded();
-				hArg.fnc?.();	// なにか使ってたっけ？
-				this.stt = new StPlaying(this, this.#snd);
+				this.#notifyLoaded();
+				const snd = this.#snd;
+				if (! snd || this.#stopped) return;
+					// ロード完了前に stopse された。StStop を上書きして
+					// 復活・自動再生しないよう、ここで打ち切る
+
+				this.stt = new StPlaying(this, snd);
 			},
 			onloaderror	: (_, e)=> {
-				cmn_loaded();
+				this.#notifyLoaded();
+				if (this.#stopped) return;
+					// 停止済み。howler は unload()で _sounds が空になると、
+					// デコードが成功していても loaderror を出す（howler.js:2468）。
+					// こちらが捨てた音なので、エラーとして見せてはいけない
+
+				this.unload();	// Howler._howls に残り続けるので
 				errScript(`SndBuf ロード失敗です fn:${fn} ${String(e)}`, false);
 			},
 		};
@@ -205,8 +223,10 @@ export class SndBuf {
 			const old = o.onload!;
 			o.onload = id=> {
 				old(id);
+				const snd = this.#snd;
+				if (! snd || this.#stopped) return;
 
-				const d_ms = this.#snd.duration() *1000;
+				const d_ms = snd.duration() *1000;
 				if (d_ms <= start_ms) errScript(`[${hArg[':タグ名'] ?? ''}] 音声ファイル再生時間:${String(d_ms)} <= ret_ms:${String(ret_ms)} は異常値です`);
 				// end_ms
 				// 正の値は「冒頭から何ms目を終端とするか」
@@ -226,7 +246,7 @@ export class SndBuf {
 				if (d_ms <= start_ms) errScript(`[${hArg[':タグ名'] ?? ''}] 音声ファイル再生時間:${String(d_ms)} <= start_ms:${String(start_ms)} は異常値です`);
 				if (end_ms !== MAX_END_MS && d_ms <= end) errScript(`[${hArg[':タグ名'] ?? ''}] 音声ファイル再生時間:${String(d_ms)} <= end_ms:${String(end_ms)} は異常値です`);
 
-				this.#snd.play('一周目');
+				snd.play('一周目');
 			}
 
 			// 特殊な二周目にする場合の処理
@@ -235,7 +255,7 @@ export class SndBuf {
 
 				let onend = ()=> {	// もう一箇所の【o.onend =】と住み分けしてる
 					onend = ()=> { /* empty */ };
-					this.#snd.play('二周目');
+					this.#snd?.play('二周目');
 				};
 				o.onend = ()=> onend();	// ループ時、ループ終了のたびに発火
 			}
@@ -255,35 +275,72 @@ export class SndBuf {
 
 			const abView = new Uint8Array(ab);
 			const blob = new Blob([abView], {type: 'music/mp3'});
-			const src = URL.createObjectURL(blob);
-			o.src = src;
+			this.#oUrl = URL.createObjectURL(blob);
+			o.src = this.#oUrl;
 			o.format = 'mp3';
-			o.onplay = ()=> URL.revokeObjectURL(src);
+			o.onplay = ()=> this.#revokeOUrl();
 			this.#play(o);
+		})
+		.catch((e: unknown)=> {
+			this.#notifyLoaded();	// 例外時も通知しないと待ち続けてしまう
+			errScript(`SndBuf ロード失敗です d3 fn:${fn} ${String(e)}`, false);
 		});
 	}
+	#notifyLoaded	= ()=> { /* empty */ };
 
-	#snd	: Howl;
+	// ロード中・fetch 待ちの間に stopse された事を示す。
+	// これを見ないと、解放後に Howl が生成・再生されてしまう
+	#stopped	= false;
+	#oUrl		= '';
+	#revokeOUrl() {
+		if (! this.#oUrl) return;
+
+		URL.revokeObjectURL(this.#oUrl);	// 未再生（自動再生ブロック・ロード
+		this.#oUrl = '';					// 失敗）でも Blob を解放する為
+	}
+	#tidFakeEnd	: NodeJS.Timeout | undefined = undefined;
+
+	// Howl を確実に解放する。Howler._howls は unload()でしか除去されず、
+	// 放置すると解放されないまま蓄積するので、停止経路は必ずここを通す
+	unload() {
+		this.#stopped = true;
+		if (this.#tidFakeEnd) {clearTimeout(this.#tidFakeEnd); this.#tidFakeEnd = undefined}
+		this.#snd?.unload();
+		this.#snd = undefined;
+		this.#revokeOUrl();
+	}
+
+	#snd	: Howl | undefined = undefined;
 	#play(o: HowlOptions) {
+		if (this.#stopped) {	// fetch 完了前に stopse された。もう生成しない。
+			this.#revokeOUrl();	// onload が来ないので此処で通知する
+			this.#notifyLoaded();
+			return;
+		}
+
 		const snd = this.#snd = new Howl(o);
 		if (this.pan !== 0) snd.stereo(this.pan);
 
 		// タブのミュート中や AudioContext.state === 'suspended' の場合は
 		//	再生もされないので再生終了イベントも発生しないため、タイマーで擬似的に発生させる
-		if (! this.loop && CmnLib.needClick2Play()) {
+		if (! this.loop && CmnLib.needClick2Play()) snd.once('load', ()=> {
+			if (this.#stopped) return;
 // console.log(`fn:SndBuf.ts needClick2Play d:${String(snd.duration())}`);
-			setTimeout(()=> o.onend?.(0), (
-				snd.duration()
-				-this.start_ms
-				-(this.end_ms <= 0
-					// 負の値は「末尾から何ms手前を終端とするか」
-					? this.end_ms
-					// 正の値は「冒頭から何ms目を終端とするか」
-					: this.end_ms === MAX_END_MS
-					? 0		// ありえない巨大定数 = 音声ファイルの末端
-					: snd.duration() -this.end_ms)
-			) *1000);
-		}
+
+			// duration()はロード完了までは 0 を返すので、必ず 'load'後に読む事。
+			// また秒と ms が混ざらないよう、すべて ms に揃えて計算する
+			const d_ms = snd.duration() *1000;
+			const end_ms
+				= this.end_ms === MAX_END_MS
+				? d_ms					// ありえない巨大定数 = 音声ファイルの末端
+				: this.end_ms <= 0
+				? d_ms +this.end_ms		// 負の値は「末尾から何ms手前を終端とするか」
+				: this.end_ms;			// 正の値は「冒頭から何ms目を終端とするか」
+			this.#tidFakeEnd = setTimeout(()=> {
+				this.#tidFakeEnd = undefined;
+				o.onend?.(0);
+			}, Math.max(0, end_ms -this.start_ms));
+		});
 	}
 
 
@@ -292,8 +349,8 @@ export class SndBuf {
 	readonly	fade= (hArg: TArg)=> this.stt.fade(hArg);
 	readonly	wf	= (hArg: TArg)=> this.stt.wf(hArg);	// 戻り値必須
 
-	get	volume() {return this.#snd.volume()}
-	set volume(v: number) {this.#snd.volume(v)}
+	get	volume() {return this.#snd?.volume() ?? 0}	// ロード完了前・解放後は
+	set volume(v: number) {this.#snd?.volume(v)}	// #snd 未生成なので
 }
 
 
@@ -326,12 +383,12 @@ class StPlaying implements ISndState {
 	constructor(private readonly sb: SndBuf, private readonly snd: Howl) {}
 	onend()  {this.stopse()}	// ok
 	onfade() { /* empty */ }	// ok
-	stopse() {this.sb.stt = new StStop(this.sb, this.snd)}	// ok
+	stopse() {this.sb.stt = new StStop(this.sb)}	// ok
 	ws(hArg: TArg) {			// ok
 		const {sb} = this;
 		if (sb.loop) return false;
 
-		sb.stt = new StWaitingStop(sb, this.snd);
+		sb.stt = new StWaitingStop(sb);
 		const canskip = argChk_Boolean(hArg, 'canskip', false);
 		const fnc = argChk_Boolean(hArg, 'stop', true)
 			? ()=> sb.stt.stopse()
@@ -358,14 +415,14 @@ class StPlaying implements ISndState {
 		const {sb, snd} = this;
 		if (time === 0 && delay === 0 || evtMng.isSkipping) {
 			snd.volume(vol);
-			if (stop) sb.stt = new StStop(sb, snd);
+			if (stop) sb.stt = new StStop(sb);
 			return;
 		}
 
 		snd.fade(snd.volume(), vol, time)
 		.once('fade', ()=> {
 			sb.stt.onfade();
-			if (stop) sb.stt = new StStop(sb, snd);
+			if (stop) sb.stt = new StStop(sb);
 		});
 
 		sb.stt = new StFade(sb, stop, snd);
@@ -375,11 +432,11 @@ class StPlaying implements ISndState {
 
 // [ws]
 class StWaitingStop implements ISndState {
-	constructor(private readonly sb: SndBuf, private readonly snd: Howl) {}
+	constructor(private readonly sb: SndBuf) {}
 	onend()  {this.stopse()}	// ok
 	onfade() { /* empty */ }	// ok
 	stopse() {					// ok
-		this.sb.stt = new StStop(this.sb, this.snd);
+		this.sb.stt = new StStop(this.sb);
 		Reading.notifyEndProc(this.sb.procID +'ws');
 	}
 	ws =()=> false;				// ok
@@ -395,7 +452,7 @@ class StFade implements ISndState {
 		if (this.stopOnFade) this.stopse();
 		else this.sb.stt = new StPlaying(this.sb, this.snd);
 	}
-	stopse() {this.sb.stt = new StStop(this.sb, this.snd)}
+	stopse() {this.sb.stt = new StStop(this.sb)}
 	ws =()=> false;				// ok
 	fade()   { /* empty */ }	// ok
 	wf(hArg: TArg) {			// ok
@@ -421,7 +478,7 @@ class StWaitingFade implements ISndState {
 
 		Reading.notifyEndProc(this.sb.procID +'wf');
 	}
-	stopse() {this.sb.stt = new StStop(this.sb, this.snd)}	// ok
+	stopse() {this.sb.stt = new StStop(this.sb)}	// ok
 
 	ws =()=> false;				// ok
 	fade()   { /* empty */ }	// ok
@@ -430,14 +487,15 @@ class StWaitingFade implements ISndState {
 
 // [stopse]
 class StStop implements ISndState {
-	constructor(sb: SndBuf, snd?: Howl) {
+	constructor(sb: SndBuf) {
 		// セーブデータ系情報更新
 		if (sb.loop) delLoopPlay(sb.buf);
 		const vn = 'const.sn.sound.'+ sb.buf +'.';
 		val.setVal_Nochk('tmp', vn +'playing', false);
 		val.flush();
 
-		snd?.unload();
+		sb.unload();	// ロード中・fetch 待ちでも確実に解放する為、
+						// 引数の Howl ではなく SndBuf 側に任せる
 
 		if (sb.buf !== BUF_VOICE) return;
 		const b = getSndBuf(BUF_BGM);

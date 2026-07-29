@@ -925,6 +925,9 @@ var y = class e {
 			let e = s + ` loaded buf:${r} fn:${o}`;
 			a.beginProc(e), D = () => a.endProc(e);
 		}
+		this.#n = () => {
+			this.#n = () => {}, D(), n.fnc?.();
+		};
 		let O = e.#e.searchPath(o, i.SOUND), k = {
 			src: O,
 			volume: E,
@@ -933,10 +936,12 @@ var y = class e {
 			autoplay: !0,
 			rate: t(n, "speed", 1),
 			onload: () => {
-				D(), n.fnc?.(), this.stt = new x(this, this.#n);
+				this.#n();
+				let e = this.#s;
+				!e || this.#r || (this.stt = new x(this, e));
 			},
 			onloaderror: (e, t) => {
-				D(), d(`SndBuf ロード失敗です fn:${o} ${String(t)}`, !1);
+				this.#n(), !this.#r && (this.unload(), d(`SndBuf ロード失敗です fn:${o} ${String(t)}`, !1));
 			}
 		};
 		if (S || (k.onend = () => this.stt.onend()), v > 0 || y !== l || b > 0) {
@@ -951,32 +956,56 @@ var y = class e {
 			}, r = k.onload;
 			if (k.onload = (i) => {
 				r(i);
-				let a = this.#n.duration() * 1e3;
-				a <= v && d(`[${n[":タグ名"] ?? ""}] 音声ファイル再生時間:${String(a)} <= ret_ms:${String(b)} は異常値です`), y < 0 ? (e[1] = a + y - v, t[1] = a + y - b) : y === l && (e[1] = a - v, t[1] = a - b);
-				let o = e[1] + v;
-				o <= v && d(`[${n[":タグ名"] ?? ""}] end_ms:${String(y)}(${String(o)}) >= start_ms:${String(v)} は異常値です`), o <= b && d(`[${n[":タグ名"] ?? ""}] end_ms:${String(y)}(${String(o)}) <= ret_ms:${String(b)} は異常値です`), a <= v && d(`[${n[":タグ名"] ?? ""}] 音声ファイル再生時間:${String(a)} <= start_ms:${String(v)} は異常値です`), y !== l && a <= o && d(`[${n[":タグ名"] ?? ""}] 音声ファイル再生時間:${String(a)} <= end_ms:${String(y)} は異常値です`), this.#n.play("一周目");
+				let a = this.#s;
+				if (!a || this.#r) return;
+				let o = a.duration() * 1e3;
+				o <= v && d(`[${n[":タグ名"] ?? ""}] 音声ファイル再生時間:${String(o)} <= ret_ms:${String(b)} は異常値です`), y < 0 ? (e[1] = o + y - v, t[1] = o + y - b) : y === l && (e[1] = o - v, t[1] = o - b);
+				let s = e[1] + v;
+				s <= v && d(`[${n[":タグ名"] ?? ""}] end_ms:${String(y)}(${String(s)}) >= start_ms:${String(v)} は異常値です`), s <= b && d(`[${n[":タグ名"] ?? ""}] end_ms:${String(y)}(${String(s)}) <= ret_ms:${String(b)} は異常値です`), o <= v && d(`[${n[":タグ名"] ?? ""}] 音声ファイル再生時間:${String(o)} <= start_ms:${String(v)} は異常値です`), y !== l && o <= s && d(`[${n[":タグ名"] ?? ""}] 音声ファイル再生時間:${String(o)} <= end_ms:${String(y)} は異常値です`), a.play("一周目");
 			}, S && b > 0) {
 				delete k.loop;
 				let e = () => {
-					e = () => {}, this.#n.play("二周目");
+					e = () => {}, this.#s?.play("二周目");
 				};
 				k.onend = () => e();
 			}
 		}
 		if (!O.endsWith(".bin")) {
-			this.#r(k);
+			this.#c(k);
 			return;
 		}
 		e.#t.fetch(O).then(async (t) => {
 			t.ok || d(`SndBuf ロード失敗です d1 fn:${o} ${t.statusText}`, !0);
-			let n = await t.arrayBuffer(), r = await e.#t.decAB(n).catch((e) => d(`SndBuf ロード失敗です d2 fn:${o} ${String(e)}`, !1)), i = new Uint8Array(r), a = new Blob([i], { type: "music/mp3" }), s = URL.createObjectURL(a);
-			k.src = s, k.format = "mp3", k.onplay = () => URL.revokeObjectURL(s), this.#r(k);
+			let n = await t.arrayBuffer(), r = await e.#t.decAB(n).catch((e) => d(`SndBuf ロード失敗です d2 fn:${o} ${String(e)}`, !1)), i = new Uint8Array(r), a = new Blob([i], { type: "music/mp3" });
+			this.#i = URL.createObjectURL(a), k.src = this.#i, k.format = "mp3", k.onplay = () => this.#a(), this.#c(k);
+		}).catch((e) => {
+			this.#n(), d(`SndBuf ロード失敗です d3 fn:${o} ${String(e)}`, !1);
 		});
 	}
-	#n;
-	#r(e) {
-		let t = this.#n = new s.Howl(e);
-		this.pan !== 0 && t.stereo(this.pan), !this.loop && r.needClick2Play() && setTimeout(() => e.onend?.(0), (t.duration() - this.start_ms - (this.end_ms <= 0 ? this.end_ms : this.end_ms === l ? 0 : t.duration() - this.end_ms)) * 1e3);
+	#n = () => {};
+	#r = !1;
+	#i = "";
+	#a() {
+		this.#i &&= (URL.revokeObjectURL(this.#i), "");
+	}
+	#o = void 0;
+	unload() {
+		this.#r = !0, this.#o &&= (clearTimeout(this.#o), void 0), this.#s?.unload(), this.#s = void 0, this.#a();
+	}
+	#s = void 0;
+	#c(e) {
+		if (this.#r) {
+			this.#a(), this.#n();
+			return;
+		}
+		let t = this.#s = new s.Howl(e);
+		this.pan !== 0 && t.stereo(this.pan), !this.loop && r.needClick2Play() && t.once("load", () => {
+			if (this.#r) return;
+			let n = t.duration() * 1e3, r = this.end_ms === l ? n : this.end_ms <= 0 ? n + this.end_ms : this.end_ms;
+			this.#o = setTimeout(() => {
+				this.#o = void 0, e.onend?.(0);
+			}, Math.max(0, r - this.start_ms));
+		});
 	}
 	stopse() {
 		this.stt.stopse();
@@ -985,10 +1014,10 @@ var y = class e {
 	fade = (e) => this.stt.fade(e);
 	wf = (e) => this.stt.wf(e);
 	get volume() {
-		return this.#n.volume();
+		return this.#s?.volume() ?? 0;
 	}
 	set volume(e) {
-		this.#n.volume(e);
+		this.#s?.volume(e);
 	}
 }, b = class {
 	sb;
@@ -1016,12 +1045,12 @@ var y = class e {
 	}
 	onfade() {}
 	stopse() {
-		this.sb.stt = new T(this.sb, this.snd);
+		this.sb.stt = new T(this.sb);
 	}
 	ws(e) {
 		let { sb: t } = this;
 		if (t.loop) return !1;
-		t.stt = new S(t, this.snd);
+		t.stt = new S(t);
 		let r = n(e, "canskip", !1), i = n(e, "stop", !0) ? () => t.stt.stopse() : () => {};
 		return r && p.isSkipping ? (i(), !1) : (a.beginProc(t.procID + "ws", i, !0, r ? i : void 0), !0);
 	}
@@ -1032,26 +1061,25 @@ var y = class e {
 		s && g(r), u.flush();
 		let c = t(e, "time", NaN), l = t(e, "delay", 0), { sb: d, snd: f } = this;
 		if (c === 0 && l === 0 || p.isSkipping) {
-			f.volume(o), s && (d.stt = new T(d, f));
+			f.volume(o), s && (d.stt = new T(d));
 			return;
 		}
 		f.fade(f.volume(), o, c).once("fade", () => {
-			d.stt.onfade(), s && (d.stt = new T(d, f));
+			d.stt.onfade(), s && (d.stt = new T(d));
 		}), d.stt = new C(d, s, f);
 	}
 	wf = () => !1;
 }, S = class {
 	sb;
-	snd;
-	constructor(e, t) {
-		this.sb = e, this.snd = t;
+	constructor(e) {
+		this.sb = e;
 	}
 	onend() {
 		this.stopse();
 	}
 	onfade() {}
 	stopse() {
-		this.sb.stt = new T(this.sb, this.snd), a.notifyEndProc(this.sb.procID + "ws");
+		this.sb.stt = new T(this.sb), a.notifyEndProc(this.sb.procID + "ws");
 	}
 	ws = () => !1;
 	fade() {}
@@ -1070,7 +1098,7 @@ var y = class e {
 		this.stopOnFade ? this.stopse() : this.sb.stt = new x(this.sb, this.snd);
 	}
 	stopse() {
-		this.sb.stt = new T(this.sb, this.snd);
+		this.sb.stt = new T(this.sb);
 	}
 	ws = () => !1;
 	fade() {}
@@ -1096,18 +1124,18 @@ var y = class e {
 		this.stopOnFade ? this.stopse() : this.sb.stt = new x(this.sb, this.snd), a.notifyEndProc(this.sb.procID + "wf");
 	}
 	stopse() {
-		this.sb.stt = new T(this.sb, this.snd);
+		this.sb.stt = new T(this.sb);
 	}
 	ws = () => !1;
 	fade() {}
 	wf = () => !1;
 }, T = class {
-	constructor(e, t) {
+	constructor(e) {
 		e.loop && g(e.buf);
-		let n = "const.sn.sound." + e.buf + ".";
-		if (u.setVal_Nochk("tmp", n + "playing", !1), u.flush(), t?.unload(), e.buf !== c) return;
-		let r = f("BGM");
-		r && (r.volume = Number(u.getVal("save:" + n + "volume", 1, !0)) * Number(u.getVal("sys:" + n + "volume", 1, !0))), h = 1;
+		let t = "const.sn.sound." + e.buf + ".";
+		if (u.setVal_Nochk("tmp", t + "playing", !1), u.flush(), e.unload(), e.buf !== c) return;
+		let n = f("BGM");
+		n && (n.volume = Number(u.getVal("save:" + t + "volume", 1, !0)) * Number(u.getVal("sys:" + t + "volume", 1, !0))), h = 1;
 	}
 	onend() {}
 	onfade() {}

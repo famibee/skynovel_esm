@@ -16,6 +16,7 @@ type IFocusBtn = {
 	btn	: Container | HTMLElement;
 	on	: ()=> boolean;
 	off	: ()=> void;
+	offEvt	: ()=> void;	// add()で張ったリスナの解除。remove()時に必須
 }
 
 
@@ -35,25 +36,22 @@ export class FocusMng {
 //console.log(`fn:FocusMng.ts line:62 ADD idx:${this.aBtn.length} local:${(cmp as HTMLElement).localName} type:${(cmp as HTMLInputElement).type} cmp:%o`, cmp);
 		// 重複チェック
 		if (this.#aBtn.findIndex(b=> b.btn === cmp) >= 0) return;
-		if (cmp instanceof Container) {
-			// フレーム部品に【 if (btn instanceof HTMLElement) 】が上手く使えない
-			cmp.on('pointerdown', ()=> {
-				for (let i=this.#aBtn.length -1; i>=0; --i) {
-					if (this.#aBtn[i]!.btn === cmp) {this.#idx = i; return}
-				}
-				this.#idx = -1;
-			});
-
-			this.#aBtn.push({btn: cmp, on, off});
-			return;
-		}
-
-		this.#elc.add(cmp, 'focus', ()=> {
+		const fncFocus = ()=> {
 			for (let i=this.#aBtn.length -1; i>=0; --i) {
 				if (this.#aBtn[i]!.btn === cmp) {this.#idx = i; return}
 			}
 			this.#idx = -1;
-		});
+		};
+		if (cmp instanceof Container) {
+			// フレーム部品に【 if (btn instanceof HTMLElement) 】が上手く使えない
+			cmp.on('pointerdown', fncFocus);
+
+			this.#aBtn.push({btn: cmp, on, off,
+				offEvt: ()=> {cmp.off('pointerdown', fncFocus)}});
+			return;
+		}
+
+		const offFocus = this.#elc.add(cmp, 'focus', fncFocus);
 
 		let fnc = (_: KeyboardEvent)=> { /* empty */ };
 		let fnc4EnterSwitch: (e: KeyboardEvent)=> boolean
@@ -90,7 +88,7 @@ export class FocusMng {
 				};
 				break;
 		}
-		this.#elc.add(cmp, EVNM_KEY, (e: KeyboardEvent)=> {
+		const offKey = this.#elc.add(cmp, EVNM_KEY, (e: KeyboardEvent)=> {
 			if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown'
 			&& e.key !== 'Enter') return;
 
@@ -105,11 +103,13 @@ export class FocusMng {
 		// spanなどでもフォーカスを持つように
 		if (! cmp.hasAttribute('tabindex')) cmp.tabIndex = 0;
 
-		this.#aBtn.push({btn: cmp, on, off});
+		this.#aBtn.push({btn: cmp, on, off,
+			offEvt: ()=> {offFocus(); offKey()}});
 	}
 	remove(cmp: Container | HTMLElement) {
 		const idx = this.#aBtn.findIndex(b=> b.btn === cmp);
 		if (idx < 0) return;
+		this.#aBtn[idx]!.offEvt();	// リスナも外さないと #elc に溜まり続ける
 		this.#aBtn.splice(idx, 1);
 		if (this.#aBtn.length === 0) this.#idx = -1;
 		else if (idx <= this.#idx) --this.#idx;	// -1 でもOK
@@ -161,6 +161,9 @@ export class FocusMng {
 		if (this.#idx < 0) return null;
 
 		this.#allOff();
+		if (this.#aBtn.length === 0) {this.#idx = -1; return null}
+			// #allOff()が破棄済みを間引くので、空になり得る
+
 		if (this.#idx >= this.#aBtn.length) this.#idx = 0;
 		const b = this.#aBtn[this.#idx]!;
 		return b.on() ?b.btn : null;
@@ -171,10 +174,21 @@ export class FocusMng {
 	#allOff() {
 		for (let i=this.#aBtn.length -1; i>=0; --i) {
 			const b = this.#aBtn[i]!;
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			if (! (b.btn instanceof Container) || b.btn.parent) b.off();
-			else this.#aBtn.splice(i, 1);
+			if (this.#isAlive(b.btn)) {b.off(); continue}
+
+			b.offEvt();	// 破棄済み。リスナごと外さないと掴んだままになる
+			this.#aBtn.splice(i, 1);
 		}
 	}
+		// 表示ツリーから外れた（＝もう使われない）btn か判定する。
+		// Container の親なし判定と同じ方針を HTMLElement にも適用する
+		#isAlive(btn: Container | HTMLElement) {
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			if (btn instanceof Container) return Boolean(btn.parent);
+
+			// フレーム内要素は、iframe が再読込されると isConnected が
+			// true のままなので、文書が生きているかも併せて見る
+			return btn.isConnected && Boolean(btn.ownerDocument.defaultView);
+		}
 
 }

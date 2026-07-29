@@ -12,7 +12,7 @@ var o = class o {
 		this.hPlg = e, this.arg = t;
 	}
 	destroy() {
-		this.elc.clear();
+		this.elc.clear(), this.#e && (clearTimeout(this.#e), this.#e = void 0, this.#t && (this.#t = !1, this.flushSub()));
 	}
 	async loaded(...[e]) {
 		let t = e.snsys_pre;
@@ -177,7 +177,7 @@ var o = class o {
 		t.innerHTML = "/* SKYNovel Dbg */\n.sn_BounceInOut { animation: sn_kfBounceInOut linear 1.5s; }\n@keyframes sn_kfBounceInOut{\n0%	{opacity: 0;	transform: scaleX(0.30) scaleY(0.30);}\n10%	{opacity: 1;	transform: scaleX(1.10) scaleY(1.10);}\n20%	{				transform: scaleX(0.95) scaleY(0.95);}\n30%	{				transform: scaleX(1.00) scaleY(1.00);}\n70%	{opacity: 1;}\n100%{opacity: 0;}\n}\n.sn_BounceIn { animation: sn_kfBounceIn linear 0.3s; }\n@keyframes sn_kfBounceIn{\n0%	{opacity: 0;	transform: scaleX(0.30) scaleY(0.30);}\n50%	{opacity: 1;	transform: scaleX(1.10) scaleY(1.10);}\n100%{				transform: scaleX(0.95) scaleY(0.95);}\n}\n.sn_HopIn { animation: sn_kfHopIn linear 0.8s; }\n@keyframes sn_kfHopIn{\n0%	{transform:	translate(0px,   0px);}\n15% {transform:	translate(0px, -25px);}\n30% {transform:	translate(0px,   0px);}\n45% {transform:	translate(0px, -15px);}\n60% {transform:	translate(0px,   0px);}\n75% {transform:	translate(0px,  -5px);}\n100%{transform:	translate(0px,   0px);}\n}", document.getElementsByTagName("head")[0].appendChild(t), this.addHook((e, t) => this.#d[e]?.(t)), this.#u = new WebSocket(`ws://localhost:${String(this.extPort)}`), this.#u.onmessage = (e) => {
 			let [t, n] = JSON.parse(String(e.data));
 			this.callHook(t, n);
-		}, this.#u.onclose = () => e.setLoop(!0), this.callHook = (e, t) => {
+		}, this.#u.onclose = () => this.main?.setLoop(!0), this.callHook = (e, t) => {
 			for (let n of this.#p) n(e, t);
 		};
 	}
@@ -343,8 +343,12 @@ top: ${String((n.stageH - a) / 2 * this.#a + a * (i.dy ?? 0))}px;`, r.classList.
 		a.onload = () => n(a), a.onerror = (e) => r(Error(e instanceof Event ? e.type : e)), a.src = URL.createObjectURL(i);
 	});
 	#b = (e, t) => new Promise((n, r) => {
-		let i = new Blob([e], { type: t }), a = document.createElement("video");
-		this.elc.add(a, "error", () => r(Error(a.error?.message ?? ""))), this.elc.add(a, "canplay", () => n(a)), a.src = URL.createObjectURL(i);
+		let a = new Blob([e], { type: t }), o = document.createElement("video"), s = new i();
+		s.add(o, "error", () => {
+			s.clear(), r(Error(o.error?.message ?? ""));
+		}), s.add(o, "canplay", () => {
+			s.clear(), n(o);
+		}), o.src = URL.createObjectURL(a);
 	});
 	enc = async (e) => e;
 	stk = () => "";

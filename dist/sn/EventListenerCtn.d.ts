@@ -5,7 +5,7 @@ type IEmitter = utils.EventEmitter | {
 };
 export declare class EventListenerCtn {
     #private;
-    add(ed: IEmitter, type: string, fnc: (e: any) => void, ctx?: AddEventListenerOptions): void;
+    add(ed: IEmitter, type: string, fnc: (e: any) => void, ctx?: AddEventListenerOptions): () => void;
     clear(): void;
     get isEmpty(): boolean;
 }

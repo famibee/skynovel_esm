@@ -23,6 +23,7 @@ export declare class SndBuf {
     static readonly generate: (hArg: TArg, buf: string, join: boolean) => SndBuf;
     stt: ISndState;
     private constructor();
+    unload(): void;
     stopse(): void;
     readonly ws: (hArg: TArg) => boolean;
     readonly fade: (hArg: TArg) => void;

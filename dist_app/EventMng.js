@@ -19,68 +19,69 @@ var g = class {
 	}
 	add(t, n, r) {
 		if (this.#e.findIndex((e) => e.btn === t) >= 0) return;
-		if (t instanceof c) {
-			t.on("pointerdown", () => {
-				for (let e = this.#e.length - 1; e >= 0; --e) if (this.#e[e].btn === t) {
-					this.#t = e;
-					return;
-				}
-				this.#t = -1;
-			}), this.#e.push({
-				btn: t,
-				on: n,
-				off: r
-			});
-			return;
-		}
-		this.#n.add(t, "focus", () => {
+		let i = () => {
 			for (let e = this.#e.length - 1; e >= 0; --e) if (this.#e[e].btn === t) {
 				this.#t = e;
 				return;
 			}
 			this.#t = -1;
-		});
-		let i = (e) => {}, a = t.localName === "button" || t.localName === "a" ? (e) => !e.isTrusted && e.key === "Enter" : (e) => e.key === "Enter", o = t;
-		switch (o.type ?? "") {
+		};
+		if (t instanceof c) {
+			t.on("pointerdown", i), this.#e.push({
+				btn: t,
+				on: n,
+				off: r,
+				offEvt: () => {
+					t.off("pointerdown", i);
+				}
+			});
+			return;
+		}
+		let a = this.#n.add(t, "focus", i), o = (e) => {}, s = t.localName === "button" || t.localName === "a" ? (e) => !e.isTrusted && e.key === "Enter" : (e) => e.key === "Enter", l = t;
+		switch (l.type ?? "") {
 			case "checkbox":
-				i = () => {
-					o.checked = !o.checked;
+				o = () => {
+					l.checked = !l.checked;
 				};
 				break;
 			case "":
-				t.querySelectorAll("input[type]").length > 0 && (i = (e) => this.#r(t, e.key), a = () => !1);
+				t.querySelectorAll("input[type]").length > 0 && (o = (e) => this.#r(t, e.key), s = () => !1);
 				break;
 			case "range":
-				i = (e) => {
-					e.isTrusted || (e.key === "ArrowUp" ? o.stepUp() : o.stepDown());
+				o = (e) => {
+					e.isTrusted || (e.key === "ArrowUp" ? l.stepUp() : l.stepDown());
 				};
 				break;
 			case "text":
 			case "textarea":
-				i = (e) => {
+				o = (e) => {
 					if (e.isTrusted) return;
-					let t = (o.selectionStart ?? 0) + (e.key === "ArrowUp" ? -1 : 1);
-					t < 0 && (t = 0), o.setSelectionRange(t, t);
+					let t = (l.selectionStart ?? 0) + (e.key === "ArrowUp" ? -1 : 1);
+					t < 0 && (t = 0), l.setSelectionRange(t, t);
 				};
 				break;
 		}
-		this.#n.add(t, e, (e) => {
+		let u = this.#n.add(t, e, (e) => {
 			if (!(e.key !== "ArrowUp" && e.key !== "ArrowDown" && e.key !== "Enter")) {
-				if (e.stopImmediatePropagation(), a(e)) {
+				if (e.stopImmediatePropagation(), s(e)) {
 					t.dispatchEvent(new MouseEvent("click"));
 					return;
 				}
-				i(e);
+				o(e);
 			}
-		}, { passive: !0 }), t.hasAttribute("tabindex") || (t.tabIndex = 0), this.#e.push({
+		}, { passive: !0 });
+		t.hasAttribute("tabindex") || (t.tabIndex = 0), this.#e.push({
 			btn: t,
 			on: n,
-			off: r
+			off: r,
+			offEvt: () => {
+				a(), u();
+			}
 		});
 	}
 	remove(e) {
 		let t = this.#e.findIndex((t) => t.btn === e);
-		t < 0 || (this.#e.splice(t, 1), this.#e.length === 0 ? this.#t = -1 : t <= this.#t && --this.#t);
+		t < 0 || (this.#e[t].offEvt(), this.#e.splice(t, 1), this.#e.length === 0 ? this.#t = -1 : t <= this.#t && --this.#t);
 	}
 	#r(e, t) {
 		let n = e.querySelectorAll("input[type]"), r = n.length;
@@ -125,7 +126,8 @@ var g = class {
 	#i = o.debugLog ? (e) => console.log(`👾 <FocusMng idx:${String(e)} btn:%o`, this.#e[e].btn) : () => {};
 	getFocus() {
 		if (this.#t < 0) return null;
-		this.#o(), this.#t >= this.#e.length && (this.#t = 0);
+		if (this.#o(), this.#e.length === 0) return this.#t = -1, null;
+		this.#t >= this.#e.length && (this.#t = 0);
 		let e = this.#e[this.#t];
 		return e.on() ? e.btn : null;
 	}
@@ -136,8 +138,15 @@ var g = class {
 	#o() {
 		for (let e = this.#e.length - 1; e >= 0; --e) {
 			let t = this.#e[e];
-			!(t.btn instanceof c) || t.btn.parent ? t.off() : this.#e.splice(e, 1);
+			if (this.#s(t.btn)) {
+				t.off();
+				continue;
+			}
+			t.offEvt(), this.#e.splice(e, 1);
 		}
+	}
+	#s(e) {
+		return e instanceof c ? !!e.parent : e.isConnected && !!e.ownerDocument.defaultView;
 	}
 }, _ = "bottom", v = "right", y = "left", b = "auto", x = [
 	"top",
@@ -1211,7 +1220,7 @@ var pt = class {
 	#n;
 	#r = /* @__PURE__ */ new Map([[0, ""], [1, "middle"]]);
 	constructor(t, n, i, a, l, u, d, m, _) {
-		if (this.cfg = t, this.hTag = n, this.appPixi = i, this.main = a, this.layMng = l, this.val = u, this.scrItr = m, this.sys = _, n.clear_event = (e) => f.clear_event(e), n.event = (e) => this.#_(e), n.set_cancel_skip = () => !1, n.set_focus = (e) => this.#y(e), this.#t = new g(i.view, _), d.setEvtMng(this), m.setOtherObj(this, l), h.setEvtMng(this, _, m), l.setEvtMng(this), p.setFcs(this.#t), _.setFire((e, t) => p.fire(e, t)), o.isDbg) {
+		if (this.cfg = t, this.hTag = n, this.appPixi = i, this.main = a, this.layMng = l, this.val = u, this.scrItr = m, this.sys = _, n.clear_event = (e) => f.clear_event(e), n.event = (e) => this.#x(e), n.set_cancel_skip = () => !1, n.set_focus = (e) => this.#C(e), this.#t = new g(i.view, _), d.setEvtMng(this), m.setOtherObj(this, l), h.setEvtMng(this, _, m), l.setEvtMng(this), p.setFcs(this.#t), _.setFire((e, t) => p.fire(e, t)), o.isDbg) {
 			let e = { pause: () => {
 				if (!p.isWait) return;
 				let e = {};
@@ -1219,7 +1228,7 @@ var pt = class {
 			} };
 			e.attach = e.stopOnEntry = e.stopOnStep = e.stopOnStepIn = e.stopOnStepOut = e.stopOnBackstep = e.pause, _.addHook((t) => e[t]?.());
 		}
-		r("\n.sn_hint {\n	background-color: #3c3225;\n	color: white;\n	padding: 4px 8px;\n	border-radius: 4px;\n	font-size: 1.2em;\n	z-index: 10000;\n	pointer-events: none;\n	user-select: none;\n}\n\n.sn_hint_ar,\n.sn_hint_ar::before {\n	position: absolute;\n	width: 8px;\n	height: 8px;\n	background: inherit;\n}\n.sn_hint_ar {\n	visibility: hidden;\n}\n.sn_hint_ar::before {\n	visibility: visible;\n	content: '';\n	transform: rotate(45deg);\n}\n\n.sn_hint[data-popper-placement^='top']		> .sn_hint_ar {bottom: -4px;}\n.sn_hint[data-popper-placement^='bottom']	> .sn_hint_ar {top: -4px;}\n.sn_hint[data-popper-placement^='left']		> .sn_hint_ar {right: -4px;}\n.sn_hint[data-popper-placement^='right']	> .sn_hint_ar {left: -4px;}\n"), a.cvs.parentElement?.insertAdjacentHTML("beforeend", "\n<div class=\"sn_hint\" role=\"tooltip\">\n	<span>Dummy</span>\n	<div class=\"sn_hint_ar\" data-popper-arrow></div>\n</div>"), this.#f = document.querySelector(".sn_hint"), this.#p = this.#f.querySelector("span"), this.#m = dt(this.#d, this.#f), this.#f.hidden = !0, i.stage.interactive = !0, this.#e.add(document.body, e, (e) => this.#a(e)), this.#e.add(document.body, "keyup", () => f.resetFired()), this.#e.add(a.cvs, "contextmenu", (e) => {
+		r("\n.sn_hint {\n	background-color: #3c3225;\n	color: white;\n	padding: 4px 8px;\n	border-radius: 4px;\n	font-size: 1.2em;\n	z-index: 10000;\n	pointer-events: none;\n	user-select: none;\n}\n\n.sn_hint_ar,\n.sn_hint_ar::before {\n	position: absolute;\n	width: 8px;\n	height: 8px;\n	background: inherit;\n}\n.sn_hint_ar {\n	visibility: hidden;\n}\n.sn_hint_ar::before {\n	visibility: visible;\n	content: '';\n	transform: rotate(45deg);\n}\n\n.sn_hint[data-popper-placement^='top']		> .sn_hint_ar {bottom: -4px;}\n.sn_hint[data-popper-placement^='bottom']	> .sn_hint_ar {top: -4px;}\n.sn_hint[data-popper-placement^='left']		> .sn_hint_ar {right: -4px;}\n.sn_hint[data-popper-placement^='right']	> .sn_hint_ar {left: -4px;}\n"), a.cvs.parentElement?.insertAdjacentHTML("beforeend", "\n<div class=\"sn_hint\" role=\"tooltip\">\n	<span>Dummy</span>\n	<div class=\"sn_hint_ar\" data-popper-arrow></div>\n</div>"), this.#m = document.querySelector(".sn_hint"), this.#h = this.#m.querySelector("span"), this.#g = dt(this.#p, this.#m), this.#m.hidden = !0, i.stage.interactive = !0, this.#e.add(document.body, e, (e) => this.#a(e)), this.#e.add(document.body, "keyup", () => f.resetFired()), this.#e.add(a.cvs, "contextmenu", (e) => {
 			let t = this.#o(e) + "rightclick";
 			p.fire(t, e, !0), e.preventDefault();
 		});
@@ -1313,10 +1322,10 @@ var pt = class {
 						bubbles: !0
 					}));
 				} else p.fire("middleclick", t, !0);
-			}), n.start();
+			}), !this.#f && (this.#d = n, n.start());
 		}), this.#e.add(document, "keyup", (e) => {
-			e.isComposing || e.key in this.#b && (this.#b[e.key] = 0);
-		}), u.defTmp("const.sn.key.alternate", () => this.#b.Alt > 0), u.defTmp("const.sn.key.command", () => this.#b.Meta > 0), u.defTmp("const.sn.key.control", () => this.#b.Control > 0), u.defTmp("const.sn.key.end", () => this.#b.End > 0), u.defTmp("const.sn.key.escape", () => this.#b.Escape > 0), u.defTmp("const.sn.key.back", () => this.#b.GoBack > 0);
+			e.isComposing || e.key in this.#w && (this.#w[e.key] = 0);
+		}), u.defTmp("const.sn.key.alternate", () => this.#w.Alt > 0), u.defTmp("const.sn.key.command", () => this.#w.Meta > 0), u.defTmp("const.sn.key.control", () => this.#w.Control > 0), u.defTmp("const.sn.key.end", () => this.#w.End > 0), u.defTmp("const.sn.key.escape", () => this.#w.Escape > 0), u.defTmp("const.sn.key.back", () => this.#w.GoBack > 0);
 	}
 	resvFlameEvent(t) {
 		this.#e.add(t, e, (e) => this.#a(e)), this.#e.add(t, "contextmenu", (e) => {
@@ -1333,7 +1342,7 @@ var pt = class {
 	}
 	#i = (e) => {};
 	#a(e) {
-		e.isComposing || (e.key in this.#b && (this.#b[e.key] = e.repeat ? 2 : 1), e.preventDefault(), p.fire(d.modKey(e) + e.key, e, !0));
+		e.isComposing || (e.key in this.#w && (this.#w[e.key] = e.repeat ? 2 : 1), e.preventDefault(), p.fire(d.modKey(e) + e.key, e, !0));
 	}
 	#o(e) {
 		return (e.altKey ? "alt+" : "") + (e.ctrlKey ? "ctrl+" : "") + (e.metaKey ? "meta+" : "") + (e.shiftKey ? "shift+" : "");
@@ -1358,9 +1367,14 @@ var pt = class {
 			this.#c = !1;
 		}, 250);
 	}
+	#d = void 0;
+	#f = !1;
 	destroy() {
+		this.#f = !0;
+		let e = this.#d;
+		e && (e.stop(), globalThis.removeEventListener("error", e.stop), this.#d = void 0);
 		for (let e of Array.from(document.getElementsByClassName("sn_hint"))) e.parentElement?.removeChild(e);
-		this.#n.destroy(), p.destroy(), this.#t.destroy(), this.#e.clear();
+		this.#n.destroy(), p.destroy(), this.#t.destroy(), this.#y.clear(), this.#e.clear();
 	}
 	unButton(e) {
 		this.#t.remove(e);
@@ -1371,13 +1385,13 @@ var pt = class {
 		f.setEvt2Fnc(l, c, () => this.main.resumeByJumpOrCall(e)), t.on(n, (e) => {
 			e.preventDefault?.(), p.fire(c, e, !0);
 		});
-		let d = e.hint ? () => this.#g(e, t) : () => {}, h = () => {
-			r(), this.#f.hidden = !0;
+		let d = e.hint ? () => this.#v(e, t) : () => {}, h = () => {
+			r(), this.#m.hidden = !0;
 		}, g = () => (d(), i());
 		if (t.on("pointerover", g), t.on("pointerout", () => {
 			this.#t.isFocus(t) ? g() : h();
 		}), t.on("pointerdown", () => {
-			this.#f.hidden = !0;
+			this.#m.hidden = !0;
 			let e = this.#t.getFocus();
 			s(), e instanceof m && e.normal();
 		}), t.on("pointerup", o.isMobile ? h : () => {
@@ -1413,57 +1427,65 @@ var pt = class {
 			f.setEvt2Fnc(l, n, () => this.main.resumeByJumpOrCall(r)), t.on("pointerout", (e) => p.fire(n, e));
 		}
 	}
-	#d = { getBoundingClientRect: (e = 0, t = 0) => DOMRect.fromRect({
+	#p = { getBoundingClientRect: (e = 0, t = 0) => DOMRect.fromRect({
 		x: e,
 		y: t,
 		width: 0,
 		height: 0
 	}) };
-	#f;
-	#p;
 	#m;
-	#h = {
+	#h;
+	#g;
+	#_ = {
 		placement: "bottom",
 		modifiers: [{
 			name: "flip",
 			options: { fallbackPlacements: ["top", "bottom"] }
 		}]
 	};
-	#g(e, n) {
+	#v(e, n) {
 		let r = n instanceof m ? n.getBtnBounds() : n.getBounds();
 		if (e[":タグ名"] !== "link") {
 			let e = n.parent.parent;
 			r.x += e.x, r.y += e.y;
 		}
 		if (!e.hint) {
-			this.#f.hidden = !0;
+			this.#m.hidden = !0;
 			return;
 		}
-		this.#f.style.cssText = `position:${this.#f.style.position}; transform:${this.#f.style.transform};` + (e.hint_style ?? ""), this.#p.style.cssText = "", this.#p.textContent = e.hint ?? "", this.#d.getBoundingClientRect = () => DOMRect.fromRect({
+		this.#m.style.cssText = `position:${this.#m.style.position}; transform:${this.#m.style.transform};` + (e.hint_style ?? ""), this.#h.style.cssText = "", this.#h.textContent = e.hint ?? "", this.#p.getBoundingClientRect = () => DOMRect.fromRect({
 			x: this.sys.ofsLeft4elm + r.x * this.sys.cvsScale,
 			y: this.sys.ofsTop4elm + r.y * this.sys.cvsScale,
 			width: r.width,
 			height: r.height
-		}), this.#m.setOptions(e.hint_opt ? {
-			...this.#h,
+		}), this.#g.setOptions(e.hint_opt ? {
+			...this.#_,
 			...JSON.parse(e.hint_opt)
-		} : this.#h).then(async () => {
-			await this.#m.update(), this.#f.hidden = !1;
+		} : this.#_).then(async () => {
+			await this.#g.update(), this.#m.hidden = !1;
 		}).catch((n) => console.error(t(e, "hint_opt", `dispHint 引数 hint_opt エラー ${n instanceof SyntaxError ? n.message : ""}`)));
 	}
 	hideHint() {
-		this.#f.hidden = !0;
+		this.#m.hidden = !0;
 	}
 	cvsResize() {
 		this.hideHint();
 	}
-	#_(t) {
+	#y = /* @__PURE__ */ new Map();
+	#b(e) {
+		let t = this.#y.get(e);
+		if (t) {
+			for (let e of t) e();
+			this.#y.delete(e);
+		}
+	}
+	#x(t) {
 		let n = t.key;
 		if (!n) throw "keyは必須です";
 		let r = n.toLowerCase(), i = a(t, "call", !1), o = a(t, "global", !1), { fn: s, label: c, url: l } = t;
 		if (a(t, "del", !1)) {
 			if (s || c || i || l) throw "fn/label/callとdelは同時指定できません";
-			return f.clear_eventer(n, o, r), !1;
+			return this.#b(n), f.clear_eventer(n, o, r), !1;
 		}
 		if (!s && !c && !l) throw "fn,label,url いずれかは必須です";
 		if (t.fn ??= this.scrItr.scriptFn, n.startsWith("dom=")) {
@@ -1485,22 +1507,24 @@ var pt = class {
 					i = ["input", "change"];
 					break;
 			}
-			let o = i.length;
-			for (let e = 0; e < o; ++e) {
+			this.#b(n);
+			let o = [], s = i.length;
+			for (let e = 0; e < s; ++e) {
 				let t = i[e];
 				r.el.forEach((i) => {
-					this.#e.add(i, t, (e) => {
+					o.push(this.#e.add(i, t, (e) => {
 						if (!p.isWait || this.layMng.getFrmDisabled(r.id) || t === "keydown" && e.key !== "Enter") return;
 						let a = i.dataset;
 						for (let [e, t] of Object.entries(a)) this.val.setVal_Nochk("tmp", `sn.event.domdata.${e}`, t);
 						p.fire(n, e);
-					}), e === 0 && this.#t.add(i, () => this.#v(i) ? (i.focus(), !0) : !1, () => {});
+					})), e === 0 && this.#t.add(i, () => this.#S(i) ? (i.focus(), !0) : !1, () => {});
 				});
 			}
+			this.#y.set(n, o);
 		}
 		return f.setEvt2Fnc(o, r, () => this.main.resumeByJumpOrCall(t)), !1;
 	}
-	#v(e) {
+	#S(e) {
 		if (!e || e.offsetParent === null) return !1;
 		let t = e;
 		do {
@@ -1509,12 +1533,12 @@ var pt = class {
 		} while (t);
 		return !0;
 	}
-	#y(e) {
+	#C(e) {
 		let { add: t, del: n, to: r } = e;
 		if (t?.startsWith("dom=")) {
 			let n = f.getHtmlElmList(t);
 			if (n.el.length === 0 && a(e, "need_err", !0)) throw `HTML内にセレクタ（${n.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
-			return n.el.forEach((e) => this.#t.add(e, () => this.#v(e) ? (e.focus(), !0) : !1, () => {})), !1;
+			return n.el.forEach((e) => this.#t.add(e, () => this.#S(e) ? (e.focus(), !0) : !1, () => {})), !1;
 		}
 		if (n?.startsWith("dom=")) {
 			let t = f.getHtmlElmList(n);
@@ -1536,9 +1560,9 @@ var pt = class {
 		return !1;
 	}
 	get isSkipping() {
-		return p.isSkipping ? !0 : Object.keys(this.#b).some((e) => this.#b[e] === 2);
+		return p.isSkipping ? !0 : Object.keys(this.#w).some((e) => this.#w[e] === 2);
 	}
-	#b = {
+	#w = {
 		Alt: 0,
 		Meta: 0,
 		Control: 0,

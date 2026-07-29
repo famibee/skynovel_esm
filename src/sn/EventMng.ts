@@ -260,6 +260,7 @@ export class EventMng implements IEvtMng {
 					};
 				})=> void)=> void;
 				start	: ()=> void;
+				stop	: ()=> void;
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 			} = new GamepadListener({
 				analog	: false,
@@ -307,6 +308,9 @@ export class EventMng implements IEvtMng {
 				}
 				else Reading.fire('middleclick', <Event><unknown>e, true);
 			});
+			if (this.#destroyed) return;	// import 解決前に destroy された
+
+			this.#gamepad = gamepad;
 			gamepad.start();
 		});
 
@@ -385,12 +389,29 @@ export class EventMng implements IEvtMng {
 		}, 250);
 	}
 
+	// GamepadListener は内部で rAF ループを回し続けるので、
+	// 止めないと Main を作り直すたびに多重に走る
+	#gamepad	: {stop: ()=> void} | undefined = undefined;
+	#destroyed	= false;
+
 	destroy() {
+		this.#destroyed = true;
+		const gp = this.#gamepad;
+		if (gp) {
+			gp.stop();
+			// GamepadListener はコンストラクタで window に error リスナ
+			//（bind 済みの stop 自身）を張り、自分では外さない。
+			// 参照が違えば何も起きないので、実装が変わっても無害
+			globalThis.removeEventListener('error', gp.stop);
+			this.#gamepad = undefined;
+		}
+
 		for (const v of Array.from(document.getElementsByClassName('sn_hint'))) v.parentElement?.removeChild(v);	// ギャラリーリロード用初期化
 
 		this.#tg.destroy();
 		Reading.destroy();
 		this.#fcs.destroy();
+		this.#hOffDomEvt.clear();	// リスナ実体は #elc.clear()で外れる
 		this.#elc.clear();
 	}
 
@@ -540,6 +561,17 @@ export class EventMng implements IEvtMng {
 	cvsResize() {this.hideHint()}
 
 
+	// dom= イベントで張ったリスナの解除関数。del や再登録で外さないと
+	// #elc に溜まり続け、対象の DOM 要素も掴んだままになる
+	readonly	#hOffDomEvt	= new Map<string, (()=> void)[]>();
+	#offDomEvt(rawKeY: string) {
+		const aOff = this.#hOffDomEvt.get(rawKeY);
+		if (! aOff) return;
+
+		for (const off of aOff) off();
+		this.#hOffDomEvt.delete(rawKeY);
+	}
+
 	#event(hArg: TArg): boolean {
 		const rawKeY = hArg.key;
 		if (! rawKeY) throw 'keyは必須です';
@@ -551,6 +583,7 @@ export class EventMng implements IEvtMng {
 		if (argChk_Boolean(hArg, 'del', false)) {
 			if (fn || label || call || url) throw 'fn/label/callとdelは同時指定できません';
 
+			this.#offDomEvt(rawKeY);
 			ReadingState.clear_eventer(rawKeY, glb, key);
 
 			// その他・キーボードイベント
@@ -579,18 +612,21 @@ export class EventMng implements IEvtMng {
 				case 'textarea':	aEv = ['input', 'change'];	break;
 			}
 
+			this.#offDomEvt(rawKeY);	// 同じキーの再登録で多重に張らない
+			const aOff: (()=> void)[] = [];
+
 			const len = aEv.length;
 			for (let i=0; i<len; ++i) {
 				const v = aEv[i]!;
 				g.el.forEach(elm=> {
-					this.#elc.add(elm, v, (e: KeyboardEvent)=> {
+					aOff.push(this.#elc.add(elm, v, (e: KeyboardEvent)=> {
 						if (! Reading.isWait || this.layMng.getFrmDisabled(g.id)) return;
 						if (v === EVNM_KEY && e.key !== 'Enter') return;
 
 						const d = elm.dataset;
 						for (const [k, v] of Object.entries(d)) this.val.setVal_Nochk('tmp', `sn.event.domdata.${k}`, v);
 						Reading.fire(rawKeY, e);
-					});
+					}));
 
 					// フォーカス処理対象として登録
 					if (i === 0) this.#fcs.add(
@@ -604,6 +640,7 @@ export class EventMng implements IEvtMng {
 					);
 				});
 			}
+			this.#hOffDomEvt.set(rawKeY, aOff);
 
 			// return;	// hGlobalEvt2Fnc(hLocalEvt2Fnc)登録もする
 		}

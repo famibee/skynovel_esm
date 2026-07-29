@@ -34,6 +34,7 @@ type IResAniSpr = {
 	meta	: {
 		animationSpeed? :number;
 	};
+	own?	: true;	// aTex を自前生成した（＝破棄の責任を持つ）場合のみ
 }
 
 
@@ -99,8 +100,25 @@ export class SpritesMng {
 
 	static	destroy() {
 		SpritesMng.#hFace	= {};
+
+		// 自前生成した Texture は TextureCache 外なので clearTextureCache()では
+		// 解放されない。baseTexture が全フレームを掴んだままになるので明示破棄する。
+		// スプライトシート由来（own なし）はキャッシュ側の持ち物なので触らない
+		for (const {aTex, own} of Object.values(SpritesMng.#hFn2ResAniSpr)) {
+			if (own) for (const t of aTex) t.destroy();
+		}
 		SpritesMng.#hFn2ResAniSpr	= {};
 		//SpritesMng.#ldrHFn	= {};
+
+		// Main 破棄時のみ動画実体を解放する。再表示に備え要素を残す
+		// stopVideo()とは役割が違うので、こちらでまとめて片付ける
+		for (const hve of Object.values(SpritesMng.#hFn2hve)) {
+			hve.pause();
+			const {src} = hve;
+			hve.removeAttribute('src');
+			hve.load();		// デコーダのバッファを解放させる
+			if (src.startsWith('blob:')) URL.revokeObjectURL(src);
+		}
 		SpritesMng.#hFn2hve	= {};
 	}
 
@@ -334,6 +352,7 @@ export class SpritesMng {
 					)),
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					meta,
+					own	: true,	// ここだけ自前生成。destroy()で破棄する
 				};
 			}
 			next();

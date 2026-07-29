@@ -46,7 +46,15 @@ var g = class g {
 		this.#c = [];
 	}
 	static destroy() {
-		g.#u = {}, g.#d = {}, g.#y = {};
+		g.#u = {};
+		for (let { aTex: e, own: t } of Object.values(g.#d)) if (t) for (let t of e) t.destroy();
+		g.#d = {};
+		for (let e of Object.values(g.#y)) {
+			e.pause();
+			let { src: t } = e;
+			e.removeAttribute("src"), e.load(), t.startsWith("blob:") && URL.revokeObjectURL(t);
+		}
+		g.#y = {};
 	}
 	static #l(e, t, n, r) {
 		if (!e) return !1;
@@ -168,7 +176,8 @@ var g = class g {
 				let { baseTexture: e } = o.from(t), r = Object.values(s);
 				g.#d[n.name] = {
 					aTex: r.map(({ frame: { x: t, y: n, w: r, h: i } }) => new o(e, new c(t, n, r, i))),
-					meta: i
+					meta: i,
+					own: !0
 				};
 			}
 			r();

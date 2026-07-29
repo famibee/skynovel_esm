@@ -376,31 +376,35 @@ var h = "trans\n", g = "tsy nm:", _ = class e {
 	static #e = {};
 	static #t;
 	static init(t) {
-		e.#e = {}, e.#t = t, e.addGrp(e.#r);
+		e.#i(), e.#e = {}, e.#t = t, e.addGrp(e.#a);
 		function n(t) {
-			for (let n of e.#i) n.update(t);
-			e.#n(n);
+			for (let n of e.#o) n.update(t);
+			e.#r = e.#n(n);
 		}
-		e.#n = (e) => requestAnimationFrame(e), e.#n(n);
+		e.#n = (e) => requestAnimationFrame(e), e.#r = e.#n(n);
 	}
-	static #n;
-	static #r = new l();
-	static #i = [];
+	static #n = () => 0;
+	static #r = 0;
+	static #i() {
+		e.#r &&= (cancelAnimationFrame(e.#r), 0), e.#n = () => 0;
+	}
+	static #a = new l();
+	static #o = [];
 	static addGrp(t) {
-		e.#i.push(t);
+		e.#o.push(t);
 	}
 	static destroy() {
-		e.#r.removeAll(), e.#n = () => 0, e.stopAllTw(), e.#i = [];
+		e.#i(), e.#a.removeAll(), e.stopAllTw(), e.#o = [];
 	}
 	static stopAllTw() {
 		e.#e = {};
-		for (let t of e.#i) t.removeAll();
+		for (let t of e.#o) t.removeAll();
 	}
 	static setTwProp(e, n) {
 		let i = t(n, "repeat", 1);
 		return e.delay(t(n, "delay", 0)).easing(this.ease(n.ease)).repeat(i > 0 ? i - 1 : Infinity).yoyo(r(n, "yoyo", !1));
 	}
-	static #a = {
+	static #s = {
 		"Back.In": (e) => s.Back.In(e),
 		"Back.InOut": (e) => s.Back.InOut(e),
 		"Back.Out": (e) => s.Back.Out(e),
@@ -435,7 +439,7 @@ var h = "trans\n", g = "tsy nm:", _ = class e {
 	};
 	static ease(e) {
 		if (!e) return (e) => s.Linear.None(e);
-		let t = this.#a[e];
+		let t = this.#s[e];
 		if (!t) throw "異常なease指定です";
 		return t;
 	}
@@ -468,11 +472,11 @@ var h = "trans\n", g = "tsy nm:", _ = class e {
 		this.setTwProp(f, r), this.#e[n] = {
 			tw: f,
 			onEnd: l
-		}, e.#r.add(f);
+		}, e.#a.add(f);
 		let { path: m } = r, h = f;
 		if (m) {
 			i.debugLog && console.group(`🍝 [${r[":タグ名"] ?? ""}] path=${m}= start(${String(a.x)},${String(a.y)},${String(a.alpha)})`);
-			for (let { groups: e } of m.matchAll(this.#o)) {
+			for (let { groups: e } of m.matchAll(this.#c)) {
 				let { x: t, x2: n, y: o, y2: s, o: c, o2: l, json: u } = e, f = {};
 				if (u) try {
 					f = JSON.parse(u);
@@ -507,7 +511,7 @@ var h = "trans\n", g = "tsy nm:", _ = class e {
 		} else u && f.start();
 		return f;
 	}
-	static #o = /\(\s*(?:(?<x>[-=\d.]+)|(['"])(?<x2>.*?)\2)?(?:\s*,\s*(?:(?<y>[-=\d.]+)|(['"])(?<y2>.*?)\5)?(?:\s*,\s*(?:(?<o>[-=\d.]+)|(['"])(?<o2>.*?)\8))?)?|(?<json>\{[^{}]*})/g;
+	static #c = /\(\s*(?:(?<x>[-=\d.]+)|(['"])(?<x2>.*?)\2)?(?:\s*,\s*(?:(?<y>[-=\d.]+)|(['"])(?<y2>.*?)\5)?(?:\s*,\s*(?:(?<o>[-=\d.]+)|(['"])(?<o2>.*?)\8))?)?|(?<json>\{[^{}]*})/g;
 	static wt(e) {
 		if (!this.#e["trans\n"]?.tw) return !1;
 		let t = () => this.stopEndTrans();
@@ -517,26 +521,26 @@ var h = "trans\n", g = "tsy nm:", _ = class e {
 		this.#e[h]?.tw?.stop().end();
 	}
 	static wait_tsy(e) {
-		let t = this.#s(e), n = this.#e[t]?.tw;
+		let t = this.#l(e), n = this.#e[t]?.tw;
 		if (!n) return !1;
 		let i = () => n.end();
 		return C.beginProc(g + t, i, !0, r(e, "canskip", !0) ? i : void 0), new x(e), !0;
 	}
-	static #s(e) {
+	static #l(e) {
 		let { layer: t = "", id: n, name: r } = e, i = n ? `frm\n${n}` : r ?? t;
 		if (!i) throw "トゥイーンが指定されていません";
 		return i;
 	}
 	static stop_tsy(e) {
-		let t = this.#s(e);
+		let t = this.#l(e);
 		return this.#e[t]?.tw?.stop().end(), !1;
 	}
 	static pause_tsy(e) {
-		let t = this.#s(e);
+		let t = this.#l(e);
 		return this.#e[t]?.tw?.pause(), !1;
 	}
 	static resume_tsy(e) {
-		let t = this.#s(e);
+		let t = this.#l(e);
 		return this.#e[t]?.tw?.resume(), !1;
 	}
 }, v = class e {

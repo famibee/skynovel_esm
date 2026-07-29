@@ -71,6 +71,8 @@ var j = class e {
 	destroy() {
 		for (let e of Object.values(this.#i)) e.parentElement.removeChild(e);
 		this.#i = Object.create(null);
+		for (let t of Object.values(e.#d)) t.startsWith("blob:") && URL.revokeObjectURL(t);
+		e.#d = {}, e.#u = {};
 	}
 	hideAllFrame() {
 		for (let [e, { style: t }] of Object.entries(this.#i)) this.#a[e] = t.display !== "none", t.display = "none";

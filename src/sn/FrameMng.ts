@@ -46,6 +46,14 @@ export class FrameMng implements T_GetFrm {
 		for (const f of Object.values(this.#hIfrm)) f.parentElement!.removeChild(f);
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		this.#hIfrm = Object.create(null);
+
+		// static なので放置すると Main を作り直しても Blob が残り続ける。
+		// iframe ごと除去した後なので、ここでの revoke は安全
+		for (const u of Object.values(FrameMng.#hEncImgOUrl)) {
+			if (u.startsWith('blob:')) URL.revokeObjectURL(u);
+		}
+		FrameMng.#hEncImgOUrl	= {};
+		FrameMng.#hARetImg		= {};
 	}
 
 	hideAllFrame() {	// （表示・非表示を保存しつつ）すべて非表示に

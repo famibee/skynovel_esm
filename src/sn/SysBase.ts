@@ -26,7 +26,17 @@ export class SysBase implements T_SysRoots, T_SysBase {
 
 	constructor(private readonly hPlg: T_HPlugin = {}, public arg: T_HSysBaseArg) {}
 
-	destroy() {this.elc.clear()}
+	destroy() {
+		this.elc.clear();
+
+		// 予約中の遅延保存を取りこぼさずタイマーを畳む。
+		// WebSocket(#sk)は Main より長生きさせる（restart で再利用）ので閉じない
+		if (this.#tidFlush) {
+			clearTimeout(this.#tidFlush);
+			this.#tidFlush = undefined;
+			if (this.#rsvFlush) {this.#rsvFlush = false; this.flushSub()}
+		}
+	}
 
 
 	protected async loaded(...[hPlg,]: T_SysBaseLoadedParams) {
@@ -299,7 +309,7 @@ export class SysBase implements T_SysRoots, T_SysBase {
 
 
 	// デバッガ接続
-	attach_debug(main: T_Main) {
+	attach_debug(_main: T_Main) {
 		this.attach_debug = ()=> { /* empty */ };
 
 		const gs = document.createElement('style');
@@ -341,7 +351,8 @@ export class SysBase implements T_SysRoots, T_SysBase {
 //console.log(`fn:SysBase.ts RSV dbg -> sn type:${type} o:${JSON.stringify(o).slice(0, 150)}`);
 			this.callHook(type, o);
 		};
-		this.#sk.onclose = ()=> main.setLoop(true);
+		this.#sk.onclose = ()=> this.main?.setLoop(true);
+			// #sk は Main より長生きするので、引数の（＝古い）main を掴まない事
 
 		this.callHook = (type, o)=> {
 			for (const fnc of this.#aFncHook) fnc(type, o);
@@ -540,9 +551,12 @@ top: ${String(
 	#genVideo = (ab: ArrayBuffer, type: string): Promise<HTMLVideoElement> => new Promise((rs, rj)=> {
 		const bl = new Blob([ab], {type});
 		const v = document.createElement('video');
-	//	this.elc.add(v, 'loadedmetadata', ()=> console.log(`loadedmetadata duration:${v.duration}`));
-		this.elc.add(v, 'error', ()=> rj(new Error(v.error?.message ?? '')));
-		this.elc.add(v, 'canplay', ()=> rs(v));
+		// 読込ごとの使い捨てリスナなので、寿命の長い this.elc には積まない事。
+		// 積むと動画をデコードする度に2件ずつ増え、video要素も掴んだままになる
+		const elc = new EventListenerCtn;
+	//	elc.add(v, 'loadedmetadata', ()=> console.log(`loadedmetadata duration:${v.duration}`));
+		elc.add(v, 'error', ()=> {elc.clear(); rj(new Error(v.error?.message ?? ''))});
+		elc.add(v, 'canplay', ()=> {elc.clear(); rs(v)});
 		v.src = URL.createObjectURL(bl);
 	});
 

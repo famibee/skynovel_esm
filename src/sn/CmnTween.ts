@@ -27,6 +27,7 @@ export class CmnTween {
 	static	#hTwInf	: {[tw_nm: string]: ITwInf}	= {};
 	static	#evtMng	: IEvtMng;
 	static	init(evtMng: IEvtMng) {
+		CmnTween.#stopLoop();	// 二重 init 対策
 		CmnTween.#hTwInf = {};
 		CmnTween.#evtMng = evtMng;
 
@@ -35,12 +36,19 @@ export class CmnTween {
 		// TWEEN 更新
 		function loop(time: number) {
 			for (const g of CmnTween.#aGroup) g.update(time);
-			CmnTween.#req(loop);
+			CmnTween.#idReq = CmnTween.#req(loop);
 		}
 		CmnTween.#req = cb=> requestAnimationFrame(cb);
-		CmnTween.#req(loop);
+		CmnTween.#idReq = CmnTween.#req(loop);
 	}
-	static	#req	: (cb: FrameRequestCallback)=> number;
+	static	#req	: (cb: FrameRequestCallback)=> number	= ()=> 0;
+	static	#idReq	= 0;
+	static	#stopLoop() {	// 予約済みの rAF を確実に取り消す。
+		// これをしないと destroy()後に発火した古い loop が、再 init()で復活した
+		// #req で自身を再スケジュールしてしまい、rAF ループが多重に走る
+		if (CmnTween.#idReq) {cancelAnimationFrame(CmnTween.#idReq); CmnTween.#idReq = 0}
+		CmnTween.#req = ()=> 0;
+	}
 
 	static	readonly	#grp = new Group;
 
@@ -48,8 +56,8 @@ export class CmnTween {
 	static	addGrp(g: Group) {CmnTween.#aGroup.push(g)}
 
 	static	destroy() {
+		CmnTween.#stopLoop();
 		CmnTween.#grp.removeAll();
-		CmnTween.#req = ()=> 0;
 		CmnTween.stopAllTw();
 		CmnTween.#aGroup = [];
 	}

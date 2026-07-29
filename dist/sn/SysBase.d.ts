@@ -37,7 +37,7 @@ export declare class SysBase implements T_SysRoots, T_SysBase {
     protected isFullScr: boolean;
     cvsResize(): void;
     use4ViteElectron(_src: string, _path: string, _ld: Loader, _main: T_Main): boolean;
-    attach_debug(main: T_Main): void;
+    attach_debug(_main: T_Main): void;
     protected extPort: number;
     end(): void;
     protected toast(nm: string): void;

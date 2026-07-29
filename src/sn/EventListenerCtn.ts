@@ -14,24 +14,35 @@ type IEmitter = utils.EventEmitter | {
 
 
 export class EventListenerCtn {	// リソースリーク対策
-	#aOffEvt: (()=> void)[]	= [];
+	#sOffEvt	= new Set<()=> void>();
 
+	// 戻り値は個別解除関数。add と remove が対になる用途では必ず呼ぶ事。
+	// clear()を待つ作りだと、#sOffEvt が肥大し対象要素も掴んだままになる
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	add(ed: IEmitter, type: string, fnc: (e: any)=> void, ctx: AddEventListenerOptions = {}): void {
+	add(ed: IEmitter, type: string, fnc: (e: any)=> void, ctx: AddEventListenerOptions = {}): ()=> void {
+		let off: ()=> void;
 		if (ed instanceof utils.EventEmitter) {
 			ed.on(type, fnc, ctx);
-			this.#aOffEvt.push(()=> ed.off(type, fnc, ctx));
-			return;
+			off = ()=> {ed.off(type, fnc, ctx)};
 		}
-		ed.addEventListener(type, fnc, ctx);
-		this.#aOffEvt.push(()=> ed.removeEventListener(type, fnc, {capture: ctx.capture ?? false}));
+		else {
+			ed.addEventListener(type, fnc, ctx);
+			off = ()=> {ed.removeEventListener(type, fnc, {capture: ctx.capture ?? false})};
+		}
+		this.#sOffEvt.add(off);
+
+		return ()=> {
+			if (! this.#sOffEvt.delete(off)) return;	// 二重解除・clear()済みを弾く
+
+			off();
+		};
 	}
 
 	clear(): void {
-		for (const f of this.#aOffEvt) f();
-		this.#aOffEvt = [];
+		for (const f of this.#sOffEvt) f();
+		this.#sOffEvt.clear();
 	}
 
-	get	isEmpty() {return this.#aOffEvt.length === 0}
+	get	isEmpty() {return this.#sOffEvt.size === 0}
 
 }
