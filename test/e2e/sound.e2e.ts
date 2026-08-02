@@ -15,7 +15,7 @@
 //	音源は尺で区別できる： snd=4秒 / snd2=2秒 / f_*=1秒
 
 import {expect, test} from '@playwright/test';
-import {glbVolume, gotoSn, howlList, jump, val} from './snPage';
+import {glbVolume, gotoSn, howlList, jump, jumpTo, val} from './snPage';
 
 test.beforeEach(async ({page})=> {await gotoSn(page, 'sound')});
 
@@ -252,4 +252,50 @@ test.describe('音声形式', ()=> {
 			expect(h?.duration).toBeGreaterThan(0.9);	// 1秒の音源
 		});
 	}
+});
+
+
+// [load]は const.sn.loopPlaying を見てループ音を鳴らし直す（SoundMng.playLoopFromSaveObj）。
+//	しおりが指すのは [save] の位置ではなく最後に [record_place] した位置なので、
+//	シナリオ側は保存の直前にそれを置いている。
+//	[load]は保存位置へ戻るため、*save_* 側の目印がそのまま復元後の停止点になる
+test.describe('しおりからのBGM復元', ()=> {
+	test('ループ再生が鳴り直し、しおりに無いバッファは止まる', async ({page})=> {
+		await jump(page, '*save_bgm');
+		expect(await loopPlaying(page)).toEqual({BGM: 'snd'});
+
+		// *load_bgm は [stop_allse]して別の音（SE=snd2）を鳴らしてから [load]する。
+		//	復元が仕事をしていなければ SE が鳴ったままになる
+		await jumpTo(page, '*load_bgm', 'OKsave_bgm');
+
+		const a = await howlList(page);
+		expect(a).toHaveLength(1);
+		expect(a[0]?.src).toBe('snd.mp3');
+		expect(a[0]?.loop).toBe(true);
+		expect(a[0]?.playing).toBe(true);
+		expect(await playing(page, 'BGM')).toBe(true);
+		expect(await playing(page, 'SE')).toBe(false);	// しおりに無いので止まる
+		expect(await loopPlaying(page)).toEqual({BGM: 'snd'});
+	});
+
+	// [xchgbuf]の loopPlaying 取りこぼしが実害を出す経路。
+	//	交換後に保存して戻すと、直す前は SE と SE2 の音が入れ替わって鳴っていた
+	test('[xchgbuf]した状態で保存・復元しても入れ替わらない', async ({page})=> {
+		await jump(page, '*save_xchg');
+		expect(await val(page, 'save:const.sn.sound.SE.fn')).toBe('snd2');
+		expect(await val(page, 'save:const.sn.sound.SE2.fn')).toBe('snd');
+
+		await jumpTo(page, '*load_xchg', 'OKsave_xchg');
+
+		// 復元後の fn は loopPlaying から作り直されるので、これが交換後のままなら
+		//	loopPlaying も正しく交換されていたという事になる
+		expect(await val(page, 'save:const.sn.sound.SE.fn')).toBe('snd2');
+		expect(await val(page, 'save:const.sn.sound.SE2.fn')).toBe('snd');
+		expect(await loopPlaying(page)).toEqual({SE: 'snd2', SE2: 'snd'});
+
+		// 尺で見ても2音とも生きている（snd=4秒 / snd2=2秒）
+		const a = await howlList(page);
+		expect(a.map(h=> h.duration).sort()).toEqual([2, 4]);
+		expect(a.every(h=> h.playing && h.loop)).toBe(true);
+	});
 });

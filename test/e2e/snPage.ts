@@ -151,6 +151,13 @@ export async function jump(page: Page, label: string) {
 	await waitMes(page, `OK${label.slice(1)}`);	// 各項目は OK+ラベル名 を出して [s] で止まる
 }
 
+// ラベルへ飛び、**別の目印**が出るまで待つ。[load]のように「飛んだ先とは違う場所で
+//	止まる」項目用（しおりは [record_place]した位置へ戻るので、保存側の目印が出る）
+export async function jumpTo(page: Page, label: string, mark: string) {
+	await page.evaluate(l=> {(<any>globalThis).__sn.jump(l)}, label);
+	await waitMes(page, mark);
+}
+
 // 組み込み変数を読む（'save:const.sn.sound.SE.fn' のようにスコープ付きで）
 export async function val(page: Page, nm: string): Promise<unknown> {
 	return page.evaluate(n=> (<any>globalThis).__sn.val(n) as unknown, nm);

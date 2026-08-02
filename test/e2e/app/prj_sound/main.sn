@@ -177,14 +177,38 @@
 
 
 ; ---- しおり（BGM復元）----
-;	[load]は const.sn.loopPlaying を見てループ音を鳴らし直す
-*save
+;	[load]は const.sn.loopPlaying を見てループ音を鳴らし直す（SoundMng.playLoopFromSaveObj）。
+;	しおりが指すのは [save] の位置ではなく**最後に [record_place] した位置**なので、
+;	保存の直前に置く。[load]はそこへ戻るので、続き（OK…[s]）が復元後の停止点になる。
+;	テストは *load_* へ飛んで、*save_* 側の目印を待つ
+
+*save_bgm
 	[er]
 	[playse fn=snd buf=BGM loop=true]
+	[record_place]
 	[save place=1]
-	[stop_allse]
-	OKsave[s]
-*load
+	OKsave_bgm[s]
+
+*load_bgm
 	[er]
+	[stop_allse]
+	; 別の音を鳴らしておく。復元が仕事をしていれば、しおりに無いこの buf は止まり
+	;	（SoundMng.playLoopFromSaveObj の [1]）、BGM が鳴り直す
+	[playse fn=snd2 buf=SE loop=true]
 	[load place=1]
-	OKload[s]
+
+; [xchgbuf]してから保存 → 復元。fn だけでなく loopPlaying も交換されていないと、
+;	戻した時に鳴る音が入れ替わる（尺で判別できる： snd=4秒 / snd2=2秒）
+*save_xchg
+	[er]
+	[playse fn=snd buf=SE loop=true]
+	[playse fn=snd2 buf=SE2 loop=true]
+	[xchgbuf buf=SE buf2=SE2]
+	[record_place]
+	[save place=2]
+	OKsave_xchg[s]
+
+*load_xchg
+	[er]
+	[stop_allse]
+	[load place=2]
