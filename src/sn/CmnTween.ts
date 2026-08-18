@@ -10,11 +10,115 @@ import type {TArg} from './Grammar';
 import type {Layer} from './Layer';
 import {Reading, ReadingState_wait4Tag} from './Reading';
 
-import {Tween, Easing, Group} from '@tweenjs/tween.js'
+import {animate, type AnimationPlaybackControls} from 'motion';
+
+
+// @tweenjs/tween.js 相当の薄いラッパー。motionの import はこのファイルに閉じ込める。
+// motionは対象オブジェクトへ直接値を書き込むが、複数プロパティ・複数区間（path）を
+// 動かす際の要点は下記（詳細はTODO.md「@tweenjs/tween.js → motion」参照）：
+//   - motionにカスタムdriverや外部update(time)駆動は無いため、内部rAFに任せる
+//     （＝tween.js版にあった単一rAFループ・Groupは廃止し、各アニメが自走する）
+//   - motionのonUpdateは動かすプロパティごとに個別発火し引数は値のみだが、
+//     ここでは引数を無視して対象オブジェクト自体を渡すことで tween.js と同じ挙動にする
+//     （同一フレーム内の重複発火は最後の1回が勝つだけなので実害なし）
+//   - motionのcomplete()は同期的に効かない（次フレームまで反映が遅延）ため、
+//     end()（同期的即時終了）は自前で「stop→最終値代入→onUpdate→onComplete」を行う
+//   - path（区間アニメ）はmotionにtimeline相当が無いため、区間ごとにTwを作り
+//     完了時に次を start() する形で連結する（chain=属性も同じ仕組みに乗る）
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export class Tw {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	readonly #target: any;
+	#hTo		: {[k: string]: number}	= {};
+	#durationSec= 0;
+	#delaySec	= 0;
+	#ease		: (k: number)=> number	= k=> k;
+	#repeatN	= 0;
+	#yoyo		= false;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	#onUpdateFn	: ((d: any)=> void) | undefined;
+	#onCompleteFn: (()=> void) | undefined;
+	#nextInChain: Tw | undefined;
+	#ctrl		: AnimationPlaybackControls | undefined;
+	#finished	= false;
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	constructor(target: any) {this.#target = target}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	to(hTo: any, time_ms: number): this {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		this.#hTo = hTo;
+		this.#durationSec = Math.max(time_ms, 0) /1000;
+		return this;
+	}
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	onUpdate(fn: (d: any)=> void): this {this.#onUpdateFn = fn; return this}
+	onComplete(fn: ()=> void): this {this.#onCompleteFn = fn; return this}
+	easing(fn: (k: number)=> number): this {this.#ease = fn; return this}
+	delay(ms: number): this {this.#delaySec = ms /1000; return this}
+	repeat(n: number): this {this.#repeatN = n; return this}
+	yoyo(b: boolean): this {this.#yoyo = b; return this}
+	chain(next: Tw): this {this.#nextInChain = next; return this}
+
+	start(): this {
+		if (this.#ctrl) return this;	// 二重start対策（tween.jsの_isPlayingガード相当）
+		this.#ctrl = animate(this.#target, this.#hTo, {
+			duration	: this.#durationSec,
+			delay		: this.#delaySec,
+			ease		: this.#ease,
+			repeat		: this.#repeatN,
+			...this.#yoyo ?{repeatType: 'reverse' as const} :{},
+			onUpdate	: ()=> this.#onUpdateFn?.(this.#target),
+			onComplete	: ()=> this.#fireComplete(),
+		});
+		return this;
+	}
+	#fireComplete() {
+		if (this.#finished) return;
+		this.#finished = true;
+		this.#onCompleteFn?.();
+		this.#nextInChain?.start();
+	}
+	stop(): this {this.#ctrl?.stop(); return this}
+	// 同期的即時終了。自分から連なる残り区間（path）を畳み込んだ最終値を対象へ代入する
+	end(): this {
+		if (this.#finished) return this;
+
+		const fin: {[k: string]: number} = {};
+		let node: Tw | undefined = this;
+		let last: Tw = this;
+		while (node) {
+			Object.assign(fin, node.#hTo);
+			node.#ctrl?.stop();
+			last = node;
+			node = node.#nextInChain;
+		}
+		Object.assign(this.#target, fin);
+		this.#onUpdateFn?.(this.#target);
+
+		this.#finished = true;
+		last.#finished = true;
+		last.#onCompleteFn?.();
+		return this;
+	}
+	// destroy()/stopAllTw() 用。end()と違い、コールバックは一切発火しない黙った停止
+	kill(): void {
+		let node: Tw | undefined = this;
+		while (node) {
+			node.#ctrl?.stop();
+			node.#finished = true;
+			node = node.#nextInChain;
+		}
+	}
+	pause(): this {this.#ctrl?.pause(); return this}
+	resume(): this {this.#ctrl?.play(); return this}
+	isPaused(): boolean {return this.#ctrl?.state === 'paused'}
+}
 
 
 type ITwInf = {
-	tw		: Tween | undefined;
+	tw		: Tw | undefined;
 	onEnd?	: ()=> void;
 }
 
@@ -27,90 +131,115 @@ export class CmnTween {
 	static	#hTwInf	: {[tw_nm: string]: ITwInf}	= {};
 	static	#evtMng	: IEvtMng;
 	static	init(evtMng: IEvtMng) {
-		CmnTween.#stopLoop();	// 二重 init 対策
-		CmnTween.#hTwInf = {};
+		CmnTween.destroy();	// 二重 init 対策
 		CmnTween.#evtMng = evtMng;
-
-		CmnTween.addGrp(CmnTween.#grp);
-
-		// TWEEN 更新
-		function loop(time: number) {
-			for (const g of CmnTween.#aGroup) g.update(time);
-			CmnTween.#idReq = CmnTween.#req(loop);
-		}
-		CmnTween.#req = cb=> requestAnimationFrame(cb);
-		CmnTween.#idReq = CmnTween.#req(loop);
-	}
-	static	#req	: (cb: FrameRequestCallback)=> number	= ()=> 0;
-	static	#idReq	= 0;
-	static	#stopLoop() {	// 予約済みの rAF を確実に取り消す。
-		// これをしないと destroy()後に発火した古い loop が、再 init()で復活した
-		// #req で自身を再スケジュールしてしまい、rAF ループが多重に走る
-		if (CmnTween.#idReq) {cancelAnimationFrame(CmnTween.#idReq); CmnTween.#idReq = 0}
-		CmnTween.#req = ()=> 0;
 	}
 
-	static	readonly	#grp = new Group;
-
-	static	#aGroup	: Group[]	= [];
-	static	addGrp(g: Group) {CmnTween.#aGroup.push(g)}
-
-	static	destroy() {
-		CmnTween.#stopLoop();
-		CmnTween.#grp.removeAll();
-		CmnTween.stopAllTw();
-		CmnTween.#aGroup = [];
-	}
+	static	destroy() {CmnTween.stopAllTw()}
 
 	// トゥイーン全停止
 	static	stopAllTw() {
+		for (const ti of Object.values(CmnTween.#hTwInf)) ti.tw?.kill();
 		CmnTween.#hTwInf = {};
-		for (const g of CmnTween.#aGroup) g.removeAll();
 	}
 
 
-	static	setTwProp(tw: Tween, hArg: TArg): Tween {
+	static	setTwProp(tw: Tw, hArg: TArg): Tw {
 		const repeat = argChk_Num(hArg, 'repeat', 1);
 		return tw.delay(argChk_Num(hArg, 'delay', 0))
 		.easing(this.ease(hArg.ease))
 		.repeat(repeat > 0 ?repeat -1 :Infinity)	// 一度リピート→計二回なので
 		.yoyo(argChk_Boolean(hArg, 'yoyo', false));
 	}
+	// @tweenjs/tween.js の Easing 実装を移植（同ライブラリはMITなので式そのものは流用可）。
+	// motion移行に伴い削除する依存の代わりに、31種の式を自前で持つ
+	static	#bounceOut(k: number): number {
+		if (k < 1 / 2.75) return 7.5625 * k * k;
+		if (k < 2 / 2.75) return 7.5625 * (k -= 1.5 / 2.75) * k + 0.75;
+		if (k < 2.5 / 2.75) return 7.5625 * (k -= 2.25 / 2.75) * k + 0.9375;
+		return 7.5625 * (k -= 2.625 / 2.75) * k + 0.984375;
+	}
 	static	readonly #hEase: {[name: string]: (k: number)=> number}	= {
-		'Back.In'			: k=> Easing.Back.In(k),
-		'Back.InOut'		: k=> Easing.Back.InOut(k),
-		'Back.Out'			: k=> Easing.Back.Out(k),
-		'Bounce.In'			: k=> Easing.Bounce.In(k),
-		'Bounce.InOut'		: k=> Easing.Bounce.InOut(k),
-		'Bounce.Out'		: k=> Easing.Bounce.Out(k),
-		'Circular.In'		: k=> Easing.Circular.In(k),
-		'Circular.InOut'	: k=> Easing.Circular.InOut(k),
-		'Circular.Out'		: k=> Easing.Circular.Out(k),
-		'Cubic.In'			: k=> Easing.Cubic.In(k),
-		'Cubic.InOut'		: k=> Easing.Cubic.InOut(k),
-		'Cubic.Out'			: k=> Easing.Cubic.Out(k),
-		'Elastic.In'		: k=> Easing.Elastic.In(k),
-		'Elastic.InOut'		: k=> Easing.Elastic.InOut(k),
-		'Elastic.Out'		: k=> Easing.Elastic.Out(k),
-		'Exponential.In'	: k=> Easing.Exponential.In(k),
-		'Exponential.InOut'	: k=> Easing.Exponential.InOut(k),
-		'Exponential.Out'	: k=> Easing.Exponential.Out(k),
-		'Linear.None'		: k=> Easing.Linear.None(k),
-		'Quadratic.In'		: k=> Easing.Quadratic.In(k),
-		'Quadratic.InOut'	: k=> Easing.Quadratic.InOut(k),
-		'Quadratic.Out'		: k=> Easing.Quadratic.Out(k),
-		'Quartic.In'		: k=> Easing.Quartic.In(k),
-		'Quartic.InOut'		: k=> Easing.Quartic.InOut(k),
-		'Quartic.Out'		: k=> Easing.Quartic.Out(k),
-		'Quintic.In'		: k=> Easing.Quintic.In(k),
-		'Quintic.InOut'		: k=> Easing.Quintic.InOut(k),
-		'Quintic.Out'		: k=> Easing.Quintic.Out(k),
-		'Sinusoidal.In'		: k=> Easing.Sinusoidal.In(k),
-		'Sinusoidal.InOut'	: k=> Easing.Sinusoidal.InOut(k),
-		'Sinusoidal.Out'	: k=> Easing.Sinusoidal.Out(k),
+		'Back.In'			: k=> {
+			const s = 1.70158;
+			return k === 1 ?1 :k*k*((s+1)*k -s);
+		},
+		'Back.InOut'		: k=> {
+			const s = 1.70158 *1.525;
+			if ((k *= 2) < 1) return 0.5 *(k*k*((s+1)*k -s));
+			return 0.5 *((k -= 2) *k*((s+1)*k +s) +2);
+		},
+		'Back.Out'			: k=> {
+			const s = 1.70158;
+			return k === 0 ?0 :--k*k*((s+1)*k +s) +1;
+		},
+		'Bounce.In'			: k=> 1 -CmnTween.#bounceOut(1 -k),
+		'Bounce.InOut'		: k=> k < 0.5
+			?(1 -CmnTween.#bounceOut(1 -k*2)) *0.5
+			:CmnTween.#bounceOut(k*2 -1) *0.5 +0.5,
+		'Bounce.Out'		: k=> CmnTween.#bounceOut(k),
+		'Circular.In'		: k=> 1 -Math.sqrt(1 -k*k),
+		'Circular.InOut'	: k=> {
+			if ((k *= 2) < 1) return -0.5 *(Math.sqrt(1 -k*k) -1);
+			return 0.5 *(Math.sqrt(1 -(k -= 2) *k) +1);
+		},
+		'Circular.Out'		: k=> Math.sqrt(1 - --k * k),
+		'Cubic.In'			: k=> k*k*k,
+		'Cubic.InOut'		: k=> {
+			if ((k *= 2) < 1) return 0.5 *k*k*k;
+			return 0.5 *((k -= 2) *k*k +2);
+		},
+		'Cubic.Out'			: k=> --k*k*k +1,
+		'Elastic.In'		: k=> {
+			if (k === 0) return 0;
+			if (k === 1) return 1;
+			return -Math.pow(2, 10 *(k -1)) *Math.sin((k -1.1) *5 *Math.PI);
+		},
+		'Elastic.InOut'		: k=> {
+			if (k === 0) return 0;
+			if (k === 1) return 1;
+			k *= 2;
+			if (k < 1) return -0.5 *Math.pow(2, 10 *(k -1)) *Math.sin((k -1.1) *5 *Math.PI);
+			return 0.5 *Math.pow(2, -10 *(k -1)) *Math.sin((k -1.1) *5 *Math.PI) +1;
+		},
+		'Elastic.Out'		: k=> {
+			if (k === 0) return 0;
+			if (k === 1) return 1;
+			return Math.pow(2, -10 *k) *Math.sin((k -0.1) *5 *Math.PI) +1;
+		},
+		'Exponential.In'	: k=> k === 0 ?0 :Math.pow(1024, k -1),
+		'Exponential.InOut'	: k=> {
+			if (k === 0) return 0;
+			if (k === 1) return 1;
+			if ((k *= 2) < 1) return 0.5 *Math.pow(1024, k -1);
+			return 0.5 *(-Math.pow(2, -10 *(k -1)) +2);
+		},
+		'Exponential.Out'	: k=> k === 1 ?1 :1 -Math.pow(2, -10 *k),
+		'Linear.None'		: k=> k,
+		'Quadratic.In'		: k=> k*k,
+		'Quadratic.InOut'	: k=> {
+			if ((k *= 2) < 1) return 0.5 *k*k;
+			return -0.5 *(--k *(k -2) -1);
+		},
+		'Quadratic.Out'		: k=> k*(2 -k),
+		'Quartic.In'		: k=> k*k*k*k,
+		'Quartic.InOut'		: k=> {
+			if ((k *= 2) < 1) return 0.5 *k*k*k*k;
+			return -0.5 *((k -= 2) *k*k*k -2);
+		},
+		'Quartic.Out'		: k=> 1 - --k * k * k * k,
+		'Quintic.In'		: k=> k*k*k*k*k,
+		'Quintic.InOut'		: k=> {
+			if ((k *= 2) < 1) return 0.5 *k*k*k*k*k;
+			return 0.5 *((k -= 2) *k*k*k*k +2);
+		},
+		'Quintic.Out'		: k=> --k*k*k*k*k +1,
+		'Sinusoidal.In'		: k=> 1 -Math.sin(((1.0 -k) *Math.PI) /2),
+		'Sinusoidal.InOut'	: k=> 0.5 *(1 -Math.sin(Math.PI *(0.5 -k))),
+		'Sinusoidal.Out'	: k=> Math.sin((k *Math.PI) /2),
 	};
 	static	ease(nm: string | undefined): (k: number)=> number {
-		if (! nm) return k=> Easing.Linear.None(k);
+		if (! nm) return k=> k;
 
 		const es = this.#hEase[nm];
 		if (! es) throw '異常なease指定です';
@@ -161,16 +290,16 @@ export class CmnTween {
 
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static	tween(tw_nm: string, hArg: TArg, hNow: any, hTo: any, onUpdate: (d: any)=> void, onComplete: ()=> void, onEnd: ()=> void, start = true): Tween {
+	static	tween(tw_nm: string, hArg: TArg, hNow: any, hTo: any, onUpdate: (d: any)=> void, onComplete: ()=> void, onEnd: ()=> void, start = true): Tw {
 		const time = this.#evtMng.isSkipping ?0 :argChk_Num(hArg, 'time', NaN);
-		const tw = new Tween(hNow)
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
+		this.#hTwInf[tw_nm]?.tw?.kill();	// 同名トゥイーンの二重起動対策（bluesnovel ScriptMng.ts:764で先に直された不具合）
+
+		const tw = new Tw(hNow)
 		.to(hTo, time)
 		.onUpdate(d=> onUpdate(d));
 		this.setTwProp(tw, hArg);
 		this.#hTwInf[tw_nm] = {tw, onEnd};
-
-		CmnTween.#grp.add(tw);
 
 		const {path} = hArg;
 		let twLast = tw;
@@ -199,12 +328,10 @@ export class CmnTween {
 					json ?? `{x:${String(x)} y:${String(y)} o:${String(o)}}`
 				} => hTo:${JSON.stringify(hTo2)}`);
 
-				const twNew = new Tween(hNow)
+				const twNew = new Tw(hNow)
 				.to(hTo2, time);
 				this.setTwProp(twNew, hArg);
 				twLast.chain(twNew);
-				// いらないかも？
-				// CmnTween.#grp.add(twNew);
 
 				twLast = twNew;
 			}

@@ -11,45 +11,6 @@
 ソースコメントに記録されている（`本家 ○○.ts:行番号 の移植` の形）。以下は2026-08-18の
 調査結果。
 
-- [ ] **`@tweenjs/tween.js` → gsap**（次セッションで改めて着手。冒頭に置く）
-
-  移行先ファイル: `src/sn/CmnTween.ts`（全面）／`Reading.ts:23,36-37,327-341,370`／
-  `TxtStage.ts:28,43,82,84,420,572-586,592-595`／`LayerMng.ts:689,705,717,781,818`／
-  `FrameMng.ts:458`／`test/CmnTween.test.ts`。`ScriptIterator.ts` は API 名を保てば無変更。
-
-  設計上の要点（調査済み）:
-  - `Group` + 自前 rAF ループ（`CmnTween.ts:29-51`）→ `gsap.ticker`。`ticker.wake()` は先頭で
-    `_id && sleep()` するため二重 wake でループが増えず、`:46-51` のゾンビ rAF 対策は構造的に
-    不要になる。`destroy()` は追跡中アニメを全 kill してから `ticker.sleep()`
-  - `stop()` と `end()` の区別（`:268`, `:278`, `:294`）→ gsap の `.progress(1)` は
-    repeat:Infinity で使えないため、**最終値スナップショットを持って `kill()` → 自前 `end()`**
-    （bluesnovel `ScriptMng.ts:779-783, 810-813`）。`end()` の発火順は
-    最終値代入 → onUpdate → onComplete → onEnd → `Reading.notifyEndProc` を保つ（`:213-225`）
-  - `path`(`:175-212`) → `gsap.timeline()`、`chain=`(`:227-233`) → `paused:true` + `play()`
-  - `repeat`(`:76`) → `repeat > 0 ? repeat-1 : -1`（gsap は -1 が無限）。**`time`/`delay` は /1000**（ms→秒）
-  - 31種イージングは bluesnovel `Tsy.ts:111-138` の `easeToGsap()` を移植
-  - **`lazy:false` を明示**（既定の lazy レンダで初回1フレームがズレうる）
-  - gsap は target に `_gsap` キャッシュを生やす。pixi の `Layer`/`Sprite` を直接 target に
-    しているので（`LayerMng.ts:689,781,818`, `TxtStage.ts:572`）、`[save]` の JSON 化や
-    `Layer.record()` への混入を確認。混入するなら素のオブジェクトを動かし onUpdate で書き戻す方式へ
-  - `TxtStage.ts:420` の `ease` は現在 `(k:number)=>number` 型で `#spWork()`(`:551`) と
-    `SpritesMng` へ流れる。**型を `string` に変える波及がある**
-  - 単体テスト `test/CmnTween.test.ts`(255行) は**9本前後の書き換えが必要**
-    （`ease_*` 3本、`tw.start(0)/tw.update(ms)` 駆動の2本、`isPaused()`→`paused()` の4本）。
-    `cnvTweenArg_*` 7本と rAF ライフサイクル3本を含む約2/3は無改変で通る見込み
-  - **ライセンス要確認**: skynovel_esm は MIT の npm 公開パッケージで、`src/build.ts` の web
-    ビルドに external 指定が無く依存が丸ごと `dist/web.js` に同梱される。gsap は MIT ではなく
-    GreenSock standard license（`node_modules/gsap/package.json:66` が URL 参照、LICENSE
-    ファイル無し）。現行依存は tinygesture（Apache-2.0）以外すべて MIT で、gsap が初の非 OSI
-    ライセンスになる。対処は `external: ['gsap']` + `peerDependencies` にするか、
-    LICENSE / README へ適用範囲を明記するか。bluesnovel も `@famibee/bluesnovel` / MIT /
-    external 無しで同じ状態＝あちらも未整理
-  - MIT 代替の調査結果（判断材料として残す）: `motion` 13.1.0（MIT、2026-08-10、683KB。
-    プレーンな JS オブジェクトを直接アニメーション可、`repeat: Infinity` /
-    `repeatType: "reverse"` / `delay` / `ease` / シーケンスに対応、戻り値に
-    `pause()`/`play()`/**`complete()`**/`stop()`。`complete()` があるので上記の `end()` 自作が
-    不要になる）、`animejs` 4.5.0（MIT、2.1MB）
-
 - [ ] **`platform` の削除** — `src/sn/CmnLib.ts:174-182` の `await import('platform')` を
   UA 正規表現4行へ。移植元 bluesnovel `src/sn/CmnLib.ts:167-184`。
   `CmnLib.platform` は `JSON.stringify(p)` → `navigator.userAgent` そのものに変わるので
@@ -128,7 +89,8 @@
 ### 積み残し
 
 - [ ] `[tsy]`/`[trans]` 専用の E2E が無い（`prj_tsy` 新設か `prj_leak` へラベル追加）。
-      `rafPending`（`probe.ts:67-80`, `snPage.ts:118`）で `reloadMain` 前後の ticker 多重化を見る
+      motion 移行後は `CmnTween` 側の自己再帰 rAF ループが無くなるため、`rafPending`
+      （`probe.ts:67-80`, `snPage.ts:118`）による `reloadMain` 前後の多重化検知は
+      「CmnTween の追跡レジストリに登録漏れが残っていないか」（destroy()後もアニメが動き続けない
+      か）を見る形に読み替える。pixi Ticker 分の rAF は引き続き乗るので閾値の取り方は要検討
 - [ ] `leak_crypto.e2e.ts:30-47` の blob 件数は howler 除去で音声ぶん減るので実測して更新
-- [ ] `CHANGELOG.md` にあった `- test1` / `- test2`（内容不明のプレースホルダだったため削除。
-      本来の用途が判明したら再検討）

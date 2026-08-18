@@ -16,7 +16,6 @@ type IPageLog = {
 };
 export declare class ReadingState {
     #private;
-    static init(): void;
     static get rs(): ReadingState;
     constructor();
     static setEvt2Fnc(glb: boolean, key: string, fnc: T_Evt2Fnc): void;

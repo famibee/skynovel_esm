@@ -7,7 +7,6 @@ import type { T_RP_Hyphenation } from './Hyphenation';
 import type { ScriptIterator } from './ScriptIterator';
 import type { T_cmdTxt_JSON } from './TxtLayer';
 import { Container, Sprite, Renderer, Application } from 'pixi.js';
-import { Group } from '@tweenjs/tween.js';
 export type T_InfTxLay = {
     fontsize: number;
     $width: number;
@@ -48,7 +47,6 @@ export declare class TxtStage extends Container {
     private readonly canFocus;
     private readonly sys;
     static init(cfg: Config, appPixi: Application): void;
-    static readonly grp: Group;
     static setEvtMng(evtMng: IEvtMng, scrItr: ScriptIterator): void;
     static destroy(): void;
     noticeCompTxt: () => void;

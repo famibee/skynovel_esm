@@ -11,7 +11,7 @@
 import {CmnLib, type IEvtMng, RPN_COMP_CHIN, argChk_Boolean, argChk_Num} from './CmnLib';
 import type {TArg} from './Grammar';
 import type {Config} from './Config';
-import {CmnTween} from './CmnTween';
+import {CmnTween, Tw} from './CmnTween';
 import {SpritesMng} from './SpritesMng';
 import {DebugMng} from './DebugMng';
 import type {IMakeDesignCast} from './LayerMng';
@@ -25,7 +25,6 @@ import type {T_cmdTxt_JSON} from './TxtLayer';
 import {htm2tx} from './htm2tx';
 
 import {Container, Sprite, Graphics, Rectangle, Renderer, Application} from 'pixi.js';
-import {Group, Tween} from '@tweenjs/tween.js'
 
 
 export type T_InfTxLay = {
@@ -40,7 +39,7 @@ export type T_InfTxLay = {
 
 type T_SpTw = {
 	sp	: Container;
-	tw	: Tween<Container> | undefined;
+	tw	: Tw | undefined;
 }
 
 
@@ -78,10 +77,8 @@ export class TxtStage extends Container {
 	static	init(cfg: Config, appPixi: Application): void {
 		TxtStage.#cfg = cfg;
 		TxtStage.#appPixi = appPixi;
-
-		CmnTween.addGrp(TxtStage.grp);
 	}
-	static	readonly	grp = new Group;
+	static	readonly	#sTw = new Set<Tw>;	// 文字出現演出トゥイーンの追跡
 
 	static	#evtMng	: IEvtMng;
 	static	#scrItr	: ScriptIterator;
@@ -91,7 +88,8 @@ export class TxtStage extends Container {
 	}
 
 	static	destroy() {
-		TxtStage.grp.removeAll();
+		for (const tw of TxtStage.#sTw) tw.kill();
+		TxtStage.#sTw.clear();
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		TxtStage.#hChInStyle	= Object.create(null);
@@ -569,7 +567,7 @@ export class TxtStage extends Container {
 		);
 		else sp.position.set(rct.x, rct.y,);
 
-		const tw = new Tween(sp)
+		const tw = new Tw(sp)
 		.to({ alpha: 1, x: rct.x, y: rct.y, width: rct.width, height: rct.height, angle: 0 }, cis.wait ?? 0)
 		.easing(ease)
 		.delay((add.wait ?? 0) +(arg.delay ?? 0))
@@ -580,7 +578,7 @@ export class TxtStage extends Container {
 			// これを有効にすると[snapshot]で文字が出ない
 		})
 		.start();
-		TxtStage.grp.add(tw);
+		TxtStage.#sTw.add(tw);
 
 		const st: T_SpTw = {sp, tw};
 		this.#aSpTw.push(st);

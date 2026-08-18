@@ -12,7 +12,6 @@ if (! globalThis.document) GlobalRegistrator.register();
 import {CmnTween} from '../src/sn/CmnTween';
 import type {IEvtMng} from '../src/sn/CmnLib';
 import type {TArg} from '../src/sn/Grammar';
-import {Easing} from '@tweenjs/tween.js';
 
 
 // CmnTween.tween() は this.#evtMng.isSkipping を参照するため、
@@ -32,18 +31,18 @@ beforeEach(()=> {
 	CmnTween.init(stubEvtMng);
 });
 afterEach(()=> {
-	CmnTween.destroy();	// rAFループを止める（テスト間の巻き添え防止）
+	CmnTween.destroy();	// 前テストのトゥイーンを止める（テスト間の巻き添え防止）
 });
 
 
 // ==== ease() ====
 it('ease_default_Linear', ()=> {
 	const fnc = CmnTween.ease(undefined);
-	expect(fnc(0.5)).toBe(Easing.Linear.None(0.5));
+	expect(fnc(0.5)).toBe(0.5);
 });
 it('ease_named', ()=> {
 	const fnc = CmnTween.ease('Cubic.In');
-	expect(fnc(0.5)).toBe(Easing.Cubic.In(0.5));
+	expect(fnc(0.5)).toBe(0.125);	// 0.5 * 0.5 * 0.5
 });
 it('ease_invalid_throw', ()=> {
 	expect(()=> CmnTween.ease('NoSuchEase')).toThrow('異常なease指定です');
@@ -92,6 +91,8 @@ it('cnvTweenArg_range_relative_within_documented_bounds', ()=> {
 
 
 // ==== tween() のライフサイクル（onUpdate/onComplete/onEnd） ====
+// motionは内部rAFで自走するため手動でtickを進められない。end()（同期的即時終了）で
+// onUpdate→onComplete→onEndの発火順と最終値到達を検証する
 it('tween_onUpdate_onComplete_onEnd', ()=> {
 	const hNow = {x: 0};
 	let updated = false, completed = false, ended = false;
@@ -99,14 +100,11 @@ it('tween_onUpdate_onComplete_onEnd', ()=> {
 		d=> {updated = true; hNow.x = <number>d.x},
 		()=> {completed = true},
 		()=> {ended = true},
-		false,	// 自前でstart/updateを呼ぶためstartさせない
+		false,	// end()で終わらせるためstartさせない
 	);
-	tw.start(0);
-	tw.update(50);
-	expect(updated).toBe(true);
-	expect(completed).toBe(false);
+	tw.end();
 
-	tw.update(100);
+	expect(updated).toBe(true);
 	expect(completed).toBe(true);
 	expect(ended).toBe(true);
 	expect(hNow.x).toBe(100);
@@ -123,7 +121,7 @@ it('tween_chain_to_unknown_throw', ()=> {
 it('tw_nm_priority_id_over_name_and_layer', ()=> {
 	const tw = CmnTween.tween('frm\n123', <TArg>{time: 100}, {x: 0}, {x: 100},
 		()=> { /* empty */ }, ()=> { /* empty */ }, ()=> { /* empty */ }, false);
-	tw.start(0);
+	tw.start();
 
 	CmnTween.pause_tsy(<TArg>{id: '123', name: 'other', layer: 'otherlay'});
 	expect(tw.isPaused()).toBe(true);
@@ -131,7 +129,7 @@ it('tw_nm_priority_id_over_name_and_layer', ()=> {
 it('tw_nm_priority_name_over_layer', ()=> {
 	const tw = CmnTween.tween('nm_A', <TArg>{time: 100}, {x: 0}, {x: 100},
 		()=> { /* empty */ }, ()=> { /* empty */ }, ()=> { /* empty */ }, false);
-	tw.start(0);
+	tw.start();
 
 	CmnTween.pause_tsy(<TArg>{name: 'nm_A', layer: 'otherlay'});
 	expect(tw.isPaused()).toBe(true);
@@ -139,7 +137,7 @@ it('tw_nm_priority_name_over_layer', ()=> {
 it('tw_nm_layer_fallback', ()=> {
 	const tw = CmnTween.tween('lay_A', <TArg>{time: 100}, {x: 0}, {x: 100},
 		()=> { /* empty */ }, ()=> { /* empty */ }, ()=> { /* empty */ }, false);
-	tw.start(0);
+	tw.start();
 
 	CmnTween.pause_tsy(<TArg>{layer: 'lay_A'});
 	expect(tw.isPaused()).toBe(true);
@@ -153,8 +151,8 @@ it('stop_tsy_no_throw_when_not_found', ()=> {
 it('resume_tsy_targets_correct_tween', ()=> {
 	const tw = CmnTween.tween('resume_A', <TArg>{time: 100}, {x: 0}, {x: 100},
 		()=> { /* empty */ }, ()=> { /* empty */ }, ()=> { /* empty */ }, false);
-	tw.start(0);
-	tw.pause(0);
+	tw.start();
+	tw.pause();
 	expect(tw.isPaused()).toBe(true);
 
 	CmnTween.resume_tsy(<TArg>{name: 'resume_A'});
@@ -171,7 +169,7 @@ it('resume_tsy_targets_correct_tween', ()=> {
 it('stopAllTw_detaches_old_tween_from_registry', ()=> {
 	const tw = CmnTween.tween('load_test', <TArg>{time: 1000}, {x: 0}, {x: 100},
 		()=> { /* empty */ }, ()=> { /* empty */ }, ()=> { /* empty */ }, false);
-	tw.start(0);
+	tw.start();
 
 	CmnTween.stopAllTw();	// [load]系タグ相当の処理
 
@@ -186,70 +184,26 @@ it('stopAllTw_does_not_kill_future_tweens (destroy()との違いの確認)', ()=
 	let completed = false;
 	const tw = CmnTween.tween('after_load_tw', <TArg>{time: 100}, hNow, {x: 100},
 		()=> { /* empty */ }, ()=> {completed = true}, ()=> { /* empty */ }, false);
-	tw.start(0);
-	tw.update(100);
+	tw.start();
+	tw.end();	// motionは内部rAFで自走するため、手動tickの代わりにend()で即時終了させる
 
 	expect(completed).toBe(true);
 	expect(hNow.x).toBe(100);
 });
 
 
-// ==== rAFループのライフサイクル ====
-//	E2E（test/e2e/leak.e2e.ts）でも Main の作り直しで確かめられるが、
-//	多重化そのものは rAF を差し替えれば此処で完結するのでブラウザは要らない
-describe('rAFループ', ()=> {
-	// 予約されたコールバックを握れるよう rAF を差し替える
-	function stubRaf() {
-		const org = {req: globalThis.requestAnimationFrame, cancel: globalThis.cancelAnimationFrame};
-		const hCb = new Map<number, FrameRequestCallback>();
-		let id = 0;
-		globalThis.requestAnimationFrame = cb=> {hCb.set(++id, cb); return id};
-		globalThis.cancelAnimationFrame = i=> {hCb.delete(i)};
-		return {
-			hCb,
-			restore: ()=> {
-				globalThis.requestAnimationFrame = org.req;
-				globalThis.cancelAnimationFrame = org.cancel;
-			},
-		};
-	}
+// ==== destroy()で追跡中の全アニメが止まること ====
+// tween.js版にあった単一rAFループ・Groupはmotion移行で廃止された（各アニメが自走するため）。
+// 代わりに、destroy()後は#hTwInf経由のend()がもう効かない（＝killされ黙って止まる）ことを確認する
+it('destroy_kills_pending_tween', ()=> {
+	const hNow = {x: 0};
+	let completed = false;
+	const tw = CmnTween.tween('destroy_test', <TArg>{time: 1000}, hNow, {x: 100},
+		()=> { /* empty */ }, ()=> {completed = true}, ()=> { /* empty */ }, false);
+	tw.start();
 
-	it('init_schedules_one_loop', ()=> {
-		const {hCb, restore} = stubRaf();
-		try {
-			CmnTween.destroy();		// beforeEach ぶんを畳んでから測る
-			CmnTween.init(stubEvtMng);
-			expect(hCb.size).toBe(1);
-		}
-		finally {restore()}
-	});
+	CmnTween.destroy();
 
-	it('destroy_cancels_pending_raf', ()=> {
-		const {hCb, restore} = stubRaf();
-		try {
-			CmnTween.destroy();
-			CmnTween.init(stubEvtMng);
-			CmnTween.destroy();
-			expect(hCb.size).toBe(0);	// 予約を取り消さないと1件残る
-		}
-		finally {restore()}
-	});
-
-	it('destroy_init_does_not_multiply_loops', ()=> {
-		const {hCb, restore} = stubRaf();
-		try {
-			CmnTween.destroy();
-			CmnTween.init(stubEvtMng);
-
-			// Main の作り直し（本家 SysBase.run()）に相当。
-			//	destroy()が予約を取り消していないと、古い loop が残ったまま
-			//	init()で #req が本物に戻り、発火時に自分を再スケジュールして倍々に増える
-			for (let i=0; i<3; ++i) {
-				CmnTween.destroy();
-				CmnTween.init(stubEvtMng);
-				expect(hCb.size).toBe(1);
-			}
-		}
-		finally {restore()}
-	});
+	tw.end();	// killされた後なので何も起きない
+	expect(completed).toBe(false);
 });

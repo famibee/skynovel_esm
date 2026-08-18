@@ -17,10 +17,9 @@ import type {SoundMng} from './SoundMng';
 import {EventListenerCtn} from './EventListenerCtn';
 import type {T_RP_layGrp} from './GrpLayer';
 import type {T_RP_layTxt} from './TxtLayer';
-import {CmnTween} from './CmnTween';
+import {Tw} from './CmnTween';
 
 import {Container} from 'pixi.js';
-import {Group, Tween} from '@tweenjs/tween.js'
 
 
 type IPageLog = {
@@ -33,8 +32,7 @@ type IPageLog = {
 
 
 export class ReadingState {
-	static	readonly	#grp = new Group;
-	static	init() {CmnTween.addGrp(ReadingState.#grp)}
+	static	readonly	#sTw = new Set<Tw>;	// [wait]タグのタイマー代わりトゥイーンの追跡
 
 	static	#rs: ReadingState;
 	static	get rs() {return this.#rs}
@@ -324,16 +322,16 @@ export class ReadingState {
 			return false;
 		}
 
-		const tw = new Tween({});
+		const tw = new Tw({v: 0});	// アニメではなくタイマー代わりなので中身は問わない
 		const RPN_WAIT = 'wait';
 		const fnc = ()=> {
-			ReadingState.#grp.remove(tw);
+			tw.stop();
 			Reading.notifyEndProc(RPN_WAIT);
 		};
-		tw.to({}, time)
+		tw.to({v: 1}, time)
 		.onComplete(fnc)
 		.start();
-		ReadingState.#grp.add(tw);
+		ReadingState.#sTw.add(tw);
 
 		const canskip = argChk_Boolean(hArg, 'canskip', true);
 		Reading.beginProc(RPN_WAIT, fnc, true, canskip ?fnc :undefined);
@@ -367,7 +365,8 @@ export class ReadingState {
 
 
 	static	destroy() {
-		ReadingState.#grp.removeAll();
+		for (const tw of ReadingState.#sTw) tw.kill();
+		ReadingState.#sTw.clear();
 		this.#hLocalEvt2Fnc = {};
 		this.#hGlobalEvt2Fnc = {};
 		this.aPage = [];
@@ -712,7 +711,6 @@ export class Reading {
 		hTag.waitclick	= o=> ReadingState.rs.s(o);		// クリックを待つ
 		hTag.page		= o=> ReadingState.rs.page(o);	// ページ移動
 
-		ReadingState.init();
 		new ReadingState_proc;
 		hTag.jump({fn: 'main'});
 	}
