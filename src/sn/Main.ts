@@ -43,7 +43,7 @@ export class Main implements T_Main {
 	#layMng		: LayerMng;
 	#evtMng		: EventMng;
 
-	#aDest		: (()=> void)[]		= [];
+	#stack		= new DisposableStack;	// リソース解放をLIFOで一括管理（ES2026 Explicit Resource Management）
 
 
 	private constructor(private readonly sys: SysBase) {}
@@ -67,18 +67,18 @@ export class Main implements T_Main {
 			hApp.view = cvs;
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const p = cvs.parentNode!;
-			this.#aDest.unshift(()=> p.appendChild(clone_cvs));
+			this.#stack.defer(()=> p.appendChild(clone_cvs));
 		}
 		else {	// 自動的に作ってくれるが、どうも appendChild に遅延があるので
 			const c = document.createElement('canvas');
 			c.id = SN_ID;
 			hApp.view = c;
 			document.body.appendChild(c);
-			this.#aDest.unshift(()=> document.body.removeChild(c));
+			this.#stack.defer(()=> document.body.removeChild(c));
 		}
 
 		const app = new Application(hApp);
-		this.#aDest.unshift(()=> {
+		this.#stack.defer(()=> {
 			utils.clearTextureCache();
 			this.sys.destroy();
 			app.destroy(false);	// remove canvas from DOM が非同期なのでウチがやる
@@ -117,15 +117,15 @@ export class Main implements T_Main {
 
 		// ＢＧＭ・効果音
 		const sndMng = new SoundMng(cfg, this.#hTag, val, this, this.sys);
-		this.#aDest.unshift(()=> sndMng.destroy());
+		this.#stack.defer(()=> sndMng.destroy());
 
 		// 条件分岐、ラベル・ジャンプ、マクロ、しおり
 		this.#scrItr = new ScriptIterator(cfg, this.#hTag, this, val, prpPrs, sndMng, this.sys);
-		this.#aDest.unshift(()=> this.#scrItr.destroy());
+		this.#stack.defer(()=> this.#scrItr.destroy());
 
 		// デバッグ・その他
 		const dbgMng = new DebugMng(this.sys, this.#hTag, this.#scrItr);
-		this.#aDest.unshift(()=> dbgMng.destroy());
+		this.#stack.defer(()=> dbgMng.destroy());
 		this.errScript = (mes, isThrow)=> {
 			this.stop();
 			DebugMng.myTrace(mes);
@@ -135,13 +135,13 @@ export class Main implements T_Main {
 
 		// レイヤ共通、文字レイヤ、画像レイヤ
 		this.#layMng = new LayerMng(cfg, this.#hTag, app, val, this, this.#scrItr, this.sys, sndMng, prpPrs);
-		this.#aDest.unshift(()=> this.#layMng.destroy());
+		this.#stack.defer(()=> this.#layMng.destroy());
 
 		// イベント
 		this.#evtMng = new EventMng(cfg, this.#hTag, app, this, this.#layMng, val, sndMng, this.#scrItr, this.sys);
-		this.#aDest.unshift(()=> this.#evtMng.destroy());
+		this.#stack.defer(()=> this.#evtMng.destroy());
 
-		this.#aDest.unshift(()=> {
+		this.#stack.defer(()=> {
 			this.stop();
 			this.#isLoop = false;
 
@@ -156,8 +156,7 @@ export class Main implements T_Main {
 
 		this.cvs.parentElement?.removeChild(this.cvs);
 			// （ギャラリーで）document.body はエラーになる
-		for (const f of this.#aDest) f();
-		this.#aDest = [];
+		this.#stack.dispose();
 	}
 
 

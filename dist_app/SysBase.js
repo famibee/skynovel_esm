@@ -12,7 +12,7 @@ var o = class o {
 		this.hPlg = e, this.arg = t;
 	}
 	destroy() {
-		this.elc.clear(), this.#e && (clearTimeout(this.#e), this.#e = void 0, this.#t && (this.#t = !1, this.flushSub()));
+		this.elc.clear(), this.#e && (clearTimeout(this.#e), this.#e = void 0, this.#t && (this.#t = !1, this.flushSub())), this.#p = [];
 	}
 	async loaded(...[e]) {
 		let t = e.snsys_pre;
@@ -48,7 +48,7 @@ var o = class o {
 	}
 	async run() {
 		let [{ Main: e }, { TxtLayer: t }, { GrpLayer: n }] = await Promise.all([
-			import("./Main.js"),
+			import("./Main.js").then((e) => e.t),
 			import("./TxtLayer.js"),
 			import("./GrpLayer.js")
 		]);
@@ -157,12 +157,13 @@ var o = class o {
 			(t && e > r || !t && e < r) && ([e, r] = [r, e]);
 		}
 		let o = i.getBoundingClientRect();
-		if (t(n.hDip, "expanding", !0) || a || n.stageW > e || n.stageH > r) if (n.stageW / n.stageH <= e / r ? (this.#i = r, this.#r = n.stageW / n.stageH * r) : (this.#r = e, this.#i = n.stageH / n.stageW * e), this.#a = this.#r / n.stageW, a) this.#c = 0, this.#l = 0;
-		else {
-			let t = 1 - this.#a;
-			n.isMobile ? (this.#c = (e - this.#r) / 2 * t, this.#l = (r - this.#i) / 2 * t) : (this.#c = o.left * t, this.#l = o.top * t);
-		}
-		else this.#r = n.stageW, this.#i = n.stageH, this.#a = 1, this.#c = 0, this.#l = 0;
+		if (t(n.hDip, "expanding", !0) || a || n.stageW > e || n.stageH > r) {
+			if (n.stageW / n.stageH <= e / r ? (this.#i = r, this.#r = n.stageW / n.stageH * r) : (this.#r = e, this.#i = n.stageH / n.stageW * e), this.#a = this.#r / n.stageW, a) this.#c = 0, this.#l = 0;
+			else {
+				let t = 1 - this.#a;
+				n.isMobile ? (this.#c = (e - this.#r) / 2 * t, this.#l = (r - this.#i) / 2 * t) : (this.#c = o.left * t, this.#l = o.top * t);
+			}
+		} else this.#r = n.stageW, this.#i = n.stageH, this.#a = 1, this.#c = 0, this.#l = 0;
 		let s = i.parentElement.style;
 		a || (s.position = "relative", s.width = `${String(this.#r)}px`, s.height = `${String(this.#i)}px`);
 		let c = i.style;

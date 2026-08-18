@@ -372,15 +372,16 @@ var t = /* @__PURE__ */ e(((e, t) => {
 				y(R),
 				"(?:Firefox|Minefield|NetFront)"
 			]), (A = L == "iCab" && parseFloat(F) > 3 && "WebKit" || /\bOpera\b/.test(R) && (/\bOPR\b/.test(e) ? "Blink" : "Presto") || /\b(?:Midori|Nook|Safari)\b/i.test(e) && !/^(?:Trident|EdgeHTML)$/.test(L) && "WebKit" || !L && /\bMSIE\b/i.test(e) && (V == "Mac OS" ? "Tasman" : "Trident") || L == "WebKit" && /\bPlayStation\b(?! Vita\b)/i.test(R) && "NetFront") && (L = [A]), R == "IE" && (A = (/; *(?:XBLWP|ZuneWP)(\d+)/i.exec(e) || 0)[1]) ? (R += " Mobile", V = "Windows Phone " + (/\+$/.test(A) ? A : A + ".x"), M.unshift("desktop mode")) : /\bWPDesktop\b/i.test(e) ? (R = "IE Mobile", V = "Windows Phone 8.x", M.unshift("desktop mode"), F ||= (/\brv:([\d.]+)/.exec(e) || 0)[1]) : R != "IE" && L == "Trident" && (A = /\brv:([\d.]+)/.exec(e)) && (R && M.push("identifying as " + R + (F ? " " + F : "")), R = "IE", F = A[1]), P) {
-				if (v(t, "global")) if (C && (A = C.lang.System, j = A.getProperty("os.arch"), V ||= A.getProperty("os.name") + " " + A.getProperty("os.version")), w) {
-					try {
-						F = t.require("ringo/engine").version.join("."), R = "RingoJS";
-					} catch {
-						(A = t.system) && A.global.system == t.system && (R = "Narwhal", V ||= A[0].os || null);
-					}
-					R ||= "Rhino";
-				} else typeof t.process == "object" && !t.process.browser && (A = t.process) && (typeof A.versions == "object" && (typeof A.versions.electron == "string" ? (M.push("Node " + A.versions.node), R = "Electron", F = A.versions.electron) : typeof A.versions.nw == "string" && (M.push("Chromium " + F, "Node " + A.versions.node), R = "NW.js", F = A.versions.nw)), R || (R = "Node.js", j = A.arch, V = A.platform, F = /[\d.]+/.exec(A.version), F = F ? F[0] : null));
-				else _(A = t.runtime) == l ? (R = "Adobe AIR", V = A.flash.system.Capabilities.os) : _(A = t.phantom) == m ? (R = "PhantomJS", F = (A = A.version || null) && A.major + "." + A.minor + "." + A.patch) : typeof D.documentMode == "number" && (A = /\bTrident\/(\d+)/i.exec(e)) ? (F = [F, D.documentMode], (A = +A[1] + 4) != F[1] && (M.push("IE " + F[1] + " mode"), L && (L[1] = ""), F[1] = A), F = R == "IE" ? String(F[1].toFixed(1)) : F[0]) : typeof D.documentMode == "number" && /^(?:Chrome|Firefox)\b/.test(R) && (M.push("masking as " + R + " " + F), R = "IE", F = "11.0", L = ["Trident"], V = "Windows");
+				if (v(t, "global")) {
+					if (C && (A = C.lang.System, j = A.getProperty("os.arch"), V ||= A.getProperty("os.name") + " " + A.getProperty("os.version")), w) {
+						try {
+							F = t.require("ringo/engine").version.join("."), R = "RingoJS";
+						} catch {
+							(A = t.system) && A.global.system == t.system && (R = "Narwhal", V ||= A[0].os || null);
+						}
+						R ||= "Rhino";
+					} else typeof t.process == "object" && !t.process.browser && (A = t.process) && (typeof A.versions == "object" && (typeof A.versions.electron == "string" ? (M.push("Node " + A.versions.node), R = "Electron", F = A.versions.electron) : typeof A.versions.nw == "string" && (M.push("Chromium " + F, "Node " + A.versions.node), R = "NW.js", F = A.versions.nw)), R || (R = "Node.js", j = A.arch, V = A.platform, F = /[\d.]+/.exec(A.version), F = F ? F[0] : null));
+				} else _(A = t.runtime) == l ? (R = "Adobe AIR", V = A.flash.system.Capabilities.os) : _(A = t.phantom) == m ? (R = "PhantomJS", F = (A = A.version || null) && A.major + "." + A.minor + "." + A.patch) : typeof D.documentMode == "number" && (A = /\bTrident\/(\d+)/i.exec(e)) ? (F = [F, D.documentMode], (A = +A[1] + 4) != F[1] && (M.push("IE " + F[1] + " mode"), L && (L[1] = ""), F[1] = A), F = R == "IE" ? String(F[1].toFixed(1)) : F[0]) : typeof D.documentMode == "number" && /^(?:Chrome|Firefox)\b/.test(R) && (M.push("masking as " + R + " " + F), R = "IE", F = "11.0", L = ["Trident"], V = "Windows");
 				V &&= h(V);
 			}
 			if (F && (A = /(?:[ab]|dp|pre|[ab]\d+pre)(?:\d+\+?)?$/i.exec(F) || /(?:alpha|beta)(?: ?\d)?/i.exec(e + ";" + (P && i.appMinorVersion)) || /\bMinefield\b/i.test(e) && "a") && (N = /b/i.test(A) ? "beta" : "alpha", F = F.replace(RegExp(A + "\\+?$"), "") + (N == "beta" ? E : T) + (/\d+\+?/.exec(A) || "")), R == "Fennec" || R == "Firefox" && /\b(?:Android|Firefox OS|KaiOS)\b/.test(V)) R = "Firefox Mobile";

@@ -5,7 +5,7 @@ import { n as s } from "./ConfigBase.js";
 import { t as c } from "./DebugMng.js";
 import { n as l, r as u, t as d } from "./Reading.js";
 import { t as f } from "./RubySpliter.js";
-import { a as p, i as m, r as h, t as g } from "./Grammar.js";
+import { a as p, i as m, n as h, r as g } from "./Main.js";
 import { n as _, r as v, t as y } from "./CallStack.js";
 import "./SndBuf.js";
 //#region src/sn/ScriptIterator.ts
@@ -49,7 +49,7 @@ var b = class b {
 	constructor(e, t, n, r, a, o, s) {
 		this.cfg = e, this.hTag = t, this.main = n, this.val = r, this.prpPrs = a, this.sndMng = o, this.sys = s, t.let_ml = (e) => this.#k(e), t.endlet_ml = () => !1, t.dump_stack = () => this.#A(), t.dump_script = (e) => this.#M(e), t.else = t.elsif = t.endif = () => this.#z(), t.if = (e) => this.#B(e), t.call = (e) => this.#V(e), t.jump = (e) => this.#U(e), t.pop_stack = (e) => this.#W(e), t.return = (e) => this.#G(e), t.bracket2macro = (e) => this.#fe(e), t.char2macro = (e) => this.#pe(e), t.endmacro = (e) => this.#G(e), t.macro = (e) => this.#he(e), t.load = (e) => this.#ve(e), t.reload_script = (e) => this.#ye(e), t.record_place = () => this.#xe(), t.save = (e) => this.#Se(e), e.oCfg.debug.token && (this.#Z = (e) => {
 			e.trim() !== "" && console.log(`🌱 トークン ${this.#t}:${String(this.#r)} (i:${String(this.#n)} cs:${String(this.#i.length)}) %c【${e}】`, "background-color:#350;");
-		}), e.oCfg.debug.tag && (this.#S = (e) => console.log(`🌲 タグ解析 ${this.#t}:${String(this.#r)} (i:${String(this.#n)} cs:${String(this.#i.length)}) %c[${e} %o]`, "background-color:#30B;", this.#o.hPrm)), r.defTmp("const.sn.aIfStk.length", () => this.#R.length), r.defTmp("const.sn.vctCallStk.length", () => this.#i.length), this.#a = new g(e);
+		}), e.oCfg.debug.tag && (this.#S = (e) => console.log(`🌲 タグ解析 ${this.#t}:${String(this.#r)} (i:${String(this.#n)} cs:${String(this.#i.length)}) %c[${e} %o]`, "background-color:#30B;", this.#o.hPrm)), r.defTmp("const.sn.aIfStk.length", () => this.#R.length), r.defTmp("const.sn.vctCallStk.length", () => this.#i.length), this.#a = new h(e);
 		let c = e.oCfg.init.escape;
 		if (this.#a.setEscape(c), f.setEscape(c), i.isDbg) {
 			this.#c, s.addHook((e, t) => this.#c[e]?.(t)), this.isBreak = (e) => this.#y(e);
@@ -159,7 +159,7 @@ var b = class b {
 				this.#b(), this.#v = 0;
 				break;
 			default:
-				if (h(e) in b.#_) return this.#v = 2, this.main.setLoop(!1, `関数 ${e} ブレーク`), this.sys.callHook("stopOnBreakpoint", {}), this.sys.send2Dbg("stopOnBreakpoint", {}), !0;
+				if (g(e) in b.#_) return this.#v = 2, this.main.setLoop(!1, `関数 ${e} ブレーク`), this.sys.callHook("stopOnBreakpoint", {}), this.sys.send2Dbg("stopOnBreakpoint", {}), !0;
 				{
 					let e = b.#g[this.#u(this.#t)];
 					if (!e) break;
@@ -182,7 +182,7 @@ var b = class b {
 		e?.hitCondition && --e.hitCondition;
 	}
 	#x() {
-		let e = +(this.#v === 3), t = this.#e.aToken[this.#n - 1 + e], n = this.#u(this.#t), r = h(t), i = r ? `[${r}]` : t, a = String(this.val.getVal("mp:const.sn.macro") ?? "{}");
+		let e = +(this.#v === 3), t = this.#e.aToken[this.#n - 1 + e], n = this.#u(this.#t), r = g(t), i = r ? `[${r}]` : t, a = String(this.val.getVal("mp:const.sn.macro") ?? "{}");
 		if (this.#n === 0) return [{
 			fn: n,
 			ln: 1,
@@ -203,7 +203,7 @@ var b = class b {
 			if (!n) continue;
 			let r = n.aToken[t.idx - 1];
 			if (!r) continue;
-			let i = this.#j(n, t.idx), a = h(r);
+			let i = this.#j(n, t.idx), a = g(r);
 			s.push({
 				fn: this.#u(t.fn),
 				ln: i.ln,

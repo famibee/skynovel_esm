@@ -9,7 +9,7 @@ import { Button as w } from "./Button.js";
 import { t as T } from "./RubySpliter.js";
 import { TxtLayer as E, t as D } from "./TxtLayer.js";
 import { GrpLayer as O, t as k } from "./GrpLayer.js";
-import { n as A } from "./Config.js";
+import { o as A } from "./Main.js";
 //#region src/sn/Pages.ts
 var j = class e {
 	cls;
@@ -229,23 +229,23 @@ var j = class e {
 		if (!this.val.getVal(`tmp:${p}`, 0)) throw `frame【${n}】が読み込まれていません`;
 		let m = {};
 		i && (m.a = Number(f.style.opacity)), (a || o || s || c || l) && (m.x = Number(this.val.getVal(`tmp:${p}.x`)), m.y = Number(this.val.getVal(`tmp:${p}.y`)), m.sx = Number(this.val.getVal(`tmp:${p}.scale_x`)), m.sy = Number(this.val.getVal(`tmp:${p}.scale_y`)), m.r = Number(this.val.getVal(`tmp:${p}.rotate`))), u && (m.w = Number(this.val.getVal(`tmp:${p}.width`))), d && (m.h = Number(this.val.getVal(`tmp:${p}.height`)));
-		let h = x.cnvTweenArg(t, m), g = {}, _ = (e) => {};
-		i && (g.a = r(h, "alpha", 0), _ = (e) => {
+		let h = x.cnvTweenArg(t, m), g = (e) => {};
+		i && (r(h, "alpha", 0), g = (e) => {
 			f.style.opacity = String(e.a), this.val.setVal_Nochk("tmp", "alpha", e.a);
 		});
-		let v = (e) => {}, y = this.#c(h);
-		(a || o || s || c || l) && (g.x = y.x, g.y = y.y, g.sx = r(h, "scale_x", 1), g.sy = r(h, "scale_y", 1), g.r = r(h, "rotate", 0), v = (t) => {
+		let _ = (e) => {}, v = this.#c(h);
+		(a || o || s || c || l) && (v.x, v.y, r(h, "scale_x", 1), r(h, "scale_y", 1), r(h, "rotate", 0), _ = (t) => {
 			f.style.left = `${String(e.#t.ofsLeft4elm + t.x * e.#t.cvsScale)} px`, f.style.top = `${String(e.#t.ofsTop4elm + t.y * e.#t.cvsScale)} px`, f.style.transform = `scale(${String(t.sx)}, ${String(t.sy)}) rotate(${String(t.r)}deg)`, this.val.setVal_Nochk("tmp", p + ".x", t.x), this.val.setVal_Nochk("tmp", p + ".y", t.y), this.val.setVal_Nochk("tmp", p + ".scale_x", t.sx), this.val.setVal_Nochk("tmp", p + ".scale_y", t.sy), this.val.setVal_Nochk("tmp", p + ".rotate", t.r);
 		});
-		let b = (e) => {};
-		u && (g.w = y.width, b = (t) => {
+		let y = (e) => {};
+		u && (v.width, y = (t) => {
 			f.width = `${String(t.w * e.#t.cvsScale)} px`, this.val.setVal_Nochk("tmp", p + ".width", t.w);
 		});
-		let S = (e) => {};
-		return d && (g.h = y.height, S = (t) => {
+		let b = (e) => {};
+		return d && (v.height, b = (t) => {
 			f.height = `${String(t.h * e.#t.cvsScale)} px`, this.val.setVal_Nochk("tmp", p + ".height", t.h);
 		}), this.appPixi.stage.interactive = !1, x.tween(`frm\n${n}`, t, m, x.cnvTweenArg(t, m), (e) => {
-			_(e), v(e), b(e), S(e);
+			g(e), _(e), y(e), b(e);
 		}, () => {
 			this.appPixi.stage.interactive = !0;
 		}, () => {}), !1;
@@ -468,7 +468,6 @@ var F = class c {
 			case "grp":
 				if (this.#w) break;
 				this.#w = t;
-				break;
 		}
 		return this.scrItr.recodeDesign(e), r.isWait;
 	}

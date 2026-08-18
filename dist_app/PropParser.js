@@ -696,7 +696,8 @@ var n = (/* @__PURE__ */ e(((e, t) => {
 			return (0, n.alt)(...t);
 		}
 		function a(e) {
-			return (0, n.alt)(...Object.keys(e).sort().map((t) => (typeof e[t] == "string" ? (0, n.string)(e[t]) : (0, n.regex)(e[t])).trim(n.optWhitespace).result(t)));
+			let t = Object.keys(e).sort().map((t) => (typeof e[t] == "string" ? (0, n.string)(e[t]) : (0, n.regex)(e[t])).trim(n.optWhitespace).result(t));
+			return (0, n.alt)(...t);
 		}
 		function o(e, t) {
 			let r = (0, n.lazy)(() => (0, n.seq)(e, r).or(t));

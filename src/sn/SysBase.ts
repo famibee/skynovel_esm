@@ -36,6 +36,12 @@ export class SysBase implements T_SysRoots, T_SysBase {
 			this.#tidFlush = undefined;
 			if (this.#rsvFlush) {this.#rsvFlush = false; this.flushSub()}
 		}
+
+		// sys は Main より長生きするが、addHook()で積まれるのは Main ごとに
+		// 作り直される Variable/LayerMng/EventMng/ScriptIterator の閉包。
+		// ここで畳まないと再生成のたび積み上がり、破棄済みの物を掴んだまま
+		// callHook()で呼ばれ続ける
+		this.#aFncHook = [];
 	}
 
 

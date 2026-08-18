@@ -1,51 +1,240 @@
-import { h as e, s as t, t as n } from "./CmnLib.js";
-import { _ as r, r as i, y as a } from "./pixi.js";
-import { t as o } from "./DebugMng.js";
-import { t as s } from "./Config.js";
-import { i as c, n as l } from "./Grammar.js";
-//#region src/sn/Main.ts
-var u = "skynovel", d = class d {
+import { n as e } from "./rolldown-runtime.js";
+import { d as t, h as n, s as r, t as i } from "./CmnLib.js";
+import { _ as a, r as o, y as s } from "./pixi.js";
+import { n as c } from "./ConfigBase.js";
+import { t as l } from "./DebugMng.js";
+import { t as u } from "./Config.js";
+//#region src/sn/AnalyzeTagArg.ts
+function d(e, t, n = 0, r = 0, i = 0) {
+	let a = e.slice(0, t).split("\n"), o = a.length;
+	return {
+		ln: r + o - 1,
+		ch: o < 2 ? i + 1 + n + t : a.at(-1)?.length ?? 0
+	};
+}
+var f = class {
+	#e = /;[^\n]*|(?<key>[^\s="'#|;]+)(?:\s|;[^\n]*\n)*=(?:\s|;[^\n]*\n)*(?:(?<val>[^\s"'#|;]+)|(["'#])(?<val2>.*?)\3)(?:\|(?:(?<def>[^\s"'#;]+)|(["'#])(?<def2>.*?)\6))?|(?<literal>[^\s;]+)/g;
+	parse(e) {
+		this.#t = {}, this.#n = !1;
+		for (let { groups: t } of e.matchAll(this.#e)) {
+			let { key: e, val: n, val2: r, def: i, def2: a, literal: o } = t;
+			e ? this.#t[e] = {
+				val: n ?? r ?? "",
+				def: i ?? a
+			} : o && (o === "*" ? this.#n = !0 : this.#t[o] = {
+				val: "1",
+				def: void 0
+			});
+		}
+	}
+	parseinDetail(e, t, n, r) {
+		let i = {}, a = e.slice(1 + t, -1);
+		for (let { groups: e, index: o, 0: s } of a.matchAll(this.#e)) {
+			if (!o) continue;
+			let { key: c, val: l, val2: u = "", literal: f } = e;
+			if (f) {
+				if (f.endsWith("=")) {
+					let e = f.length - 1, { ch: s } = d(a, o + e, t, n, r);
+					i[f.slice(0, -1)] = {
+						k_ln: n,
+						k_ch: s - e,
+						v_ln: n,
+						v_ch: s + 1,
+						v_len: 0
+					};
+				}
+				continue;
+			}
+			if (!c) continue;
+			let { ln: p, ch: m } = d(a, o, t, n, r), { ln: h, ch: g } = d(a, o + s.lastIndexOf(l ?? u) - +!l, t, n, r);
+			i[c] = {
+				k_ln: p,
+				k_ch: m,
+				v_ln: h,
+				v_ch: g,
+				v_len: l ? l.length : u.length + 2
+			};
+		}
+		return i;
+	}
+	#t = {};
+	get hPrm() {
+		return this.#t;
+	}
+	#n = !1;
+	get isKomeParam() {
+		return this.#n;
+	}
+}, p = /(?<name>[^\s;\]]+)/;
+function m(e) {
+	let t = p.exec(e.slice(1, -1))?.groups;
+	if (!t) throw `タグ記述【${e}】異常です(タグ解析)`;
+	let n = t.name;
+	return [n, e.slice(1 + n.length, -1)];
+}
+function h(e) {
+	let t = p.exec(e.slice(1))?.groups;
+	if (!t) throw `タグ記述【${e}】異常です(タグ解析)`;
+	return t.name;
+}
+function g(e) {
+	let t = e.replaceAll("==", "＝").replaceAll("!=", "≠").split("="), n = t.length;
+	if (n < 2 || n > 3) throw "「&計算」書式では「=」指定が一つか二つ必要です";
+	let [r, i, a] = t;
+	if (i.startsWith("&")) throw "「&計算」書式では「&」指定が不要です";
+	return {
+		name: r.replaceAll("＝", "==").replaceAll("≠", "!="),
+		text: i.replaceAll("＝", "==").replaceAll("≠", "!="),
+		...n === 3 ? { cast: a.trim() } : {}
+	};
+}
+var _ = class {
+	cfg;
+	constructor(e) {
+		this.cfg = e, this.setEscape("");
+	}
+	#e;
+	setEscape(e) {
+		if (this.#l && e in this.#l) throw "[エスケープ文字] char【" + e + "】が登録済みの括弧マクロまたは一文字マクロです";
+		this.#e = RegExp((e ? `\\${e}\\S|` : "") + `\\n+|\\t+|\\[let_ml\\s+[^\\]]+\\].+?(?=\\[endlet_ml[\\]\\s])|\\[(?:[^"'#;\\]]+|(["'#]).*?\\1|;[^\\n]*)*?]|;[^\\n]*|&[^&\\n]+&|&&?(?:[^"'#;\\n&]+|(["'#]).*?\\2)+|^\\*[^\\s\\[&;\\\\]+|[^\\n\\t\\[;${e ? `\\${e}` : ""}]+`, "gs"), this.#t = RegExp(`[\\w\\s;[\\]*=&｜《》${e ? `\\${e}` : ""}]`), this.#u = RegExp(`[\\n\\t;\\[*&${e ? `\\${e}` : ""}]`);
+	}
+	bracket2macro(e, t, n, r) {
+		let { name: i, text: a } = e;
+		if (!i) throw "[bracket2macro] nameは必須です";
+		if (!a) throw "[bracket2macro] textは必須です";
+		let o = a.at(0);
+		if (!o) throw "[bracket2macro] textは必須です";
+		if (a.length !== 2) throw "[bracket2macro] textは括弧の前後を示す二文字を指定してください";
+		if (!(i in t)) throw `[bracket2macro] 未定義のタグ又はマクロ[${i}]です`;
+		this.#l ??= {};
+		let s = a.charAt(1);
+		if (o in this.#l) throw "[bracket2macro] text【" + o + "】が登録済みの括弧マクロまたは一文字マクロです";
+		if (s in this.#l) throw "[bracket2macro] text【" + s + "】が登録済みの括弧マクロまたは一文字マクロです";
+		if (this.#t.test(o)) throw "[bracket2macro] text【" + o + "】は括弧マクロに使用できない文字です";
+		if (this.#t.test(s)) throw "[bracket2macro] text【" + s + "】は括弧マクロに使用できない文字です";
+		this.#l[s] = "0", this.#l[o] = `[${i} text=`, this.addC2M(`\\${o}[^\\${s}]*\\${s}`, `\\${o}\\${s}`), this.#d(n, r);
+	}
+	char2macro(e, t, n, r) {
+		let { char: i, name: a } = e;
+		if (!i) throw "[char2macro] charは必須です";
+		if (this.#l ??= {}, i in this.#l) throw "[char2macro] char【" + i + "】が登録済みの括弧マクロまたは一文字マクロです";
+		if (this.#t.test(i)) throw "[char2macro] char【" + i + "】は一文字マクロに使用できない文字です";
+		if (!a) throw "[char2macro] nameは必須です";
+		if (!(a in t)) throw `[char2macro] 未定義のタグ又はマクロ[${a}]です`;
+		this.#l[i] = `[${a}]`, this.addC2M(`\\${i}`, `\\${i}`), this.#d(n, r);
+	}
+	#t;
+	#n = /* @__PURE__ */ RegExp("");
+	#r = "";
+	#i = "";
+	addC2M(e, t) {
+		this.#r += `${e}|`, this.#i += t, this.#n = RegExp(`(${this.#r}[^${this.#i}]+)`, "g");
+	}
+	resolveScript(e) {
+		let t = e.replaceAll(/\r\n?/g, "\n").match(this.#e)?.flatMap((e) => {
+			if (!this.testTagLetml(e)) return e;
+			let t = /^([^\]]+?])(.*)$/s.exec(e);
+			if (!t) return e;
+			let [, n, r] = t;
+			return [n, r];
+		}) ?? [], n = {
+			aToken: t,
+			len: t.length,
+			aLNum: []
+		};
+		return this.#d(n), this.#s(n), n;
+	}
+	#a = /^\[(call|loadplugin)\s/;
+	#o = /\bfn\s*=\s*[^\s\]]+/;
+	#s(e) {
+		for (let n = e.len - 1; n >= 0; --n) {
+			let r = e.aToken[n];
+			if (!this.#a.test(r)) continue;
+			let [i, a] = m(r);
+			this.#c.parse(a);
+			let o = this.#c.hPrm.fn;
+			if (!o) continue;
+			let { val: s } = o;
+			if (!s.endsWith("*")) continue;
+			e.aToken.splice(n, 1, "	", "; " + r), e.aLNum.splice(n, 1, NaN, NaN);
+			let l = i === "loadplugin" ? c.CSS : c.SN, u = this.cfg.matchPath("^" + s.slice(0, -1) + ".*", l);
+			for (let i of u) {
+				let a = r.replace(this.#o, "fn=" + decodeURIComponent(t(i[l])));
+				e.aToken.splice(n, 0, a), e.aLNum.splice(n, 0, NaN);
+			}
+		}
+		e.len = e.aToken.length;
+	}
+	#c = new f();
+	testTagLetml(e) {
+		return /^\[let_ml\s/.test(e);
+	}
+	testTagEndLetml(e) {
+		return /^\[endlet_ml\s*]/.test(e);
+	}
+	#l = void 0;
+	#u;
+	#d(e, t = 0) {
+		if (this.#l) {
+			for (let n = e.len - 1; n >= t; --n) {
+				let t = e.aToken[n];
+				if (this.testNoTxt(t.at(0) ?? "\n")) continue;
+				let r = e.aLNum[n], i = t.match(this.#n);
+				if (!i) continue;
+				let a = 1;
+				for (let t = i.length - 1; t >= 0; --t) {
+					let o = i[t], s = this.#l[o.at(0) ?? " "];
+					s && (o = s + (s.endsWith("]") ? "" : `'${o.slice(1, -1)}']`)), e.aToken.splice(n, a, o), e.aLNum.splice(n, a, r), a = 0;
+				}
+			}
+			e.len = e.aToken.length;
+		}
+	}
+	testNoTxt(e) {
+		return this.#u.test(e);
+	}
+}, v = /* @__PURE__ */ e({ Main: () => b }), y = "skynovel", b = class e {
 	sys;
-	static async generate(e) {
-		a();
-		let t = new d(e);
-		return await t.#a().catch((e) => console.error("Main.generate err e:%o", e)), t;
+	static async generate(t) {
+		s();
+		let n = new e(t);
+		return await n.#a().catch((e) => console.error("Main.generate err e:%o", e)), n;
 	}
 	cvs;
 	#e = Object.create(null);
 	#t;
 	#n;
 	#r;
-	#i = [];
+	#i = new DisposableStack();
 	constructor(e) {
 		this.sys = e;
 	}
 	async #a() {
-		let t = await s.generate(this.sys);
-		this.sys.setMain(this, t);
-		let a = {
-			width: t.oCfg.window.width,
-			height: t.oCfg.window.height,
-			backgroundColor: e(String(t.oCfg.init.bg_color)),
+		let e = await u.generate(this.sys);
+		this.sys.setMain(this, e);
+		let t = {
+			width: e.oCfg.window.width,
+			height: e.oCfg.window.height,
+			backgroundColor: n(String(e.oCfg.init.bg_color)),
 			resolution: globalThis.devicePixelRatio
-		}, c = document.getElementById(u);
-		if (c) {
-			let e = c.cloneNode(!0);
-			e.id = u, a.view = c;
-			let t = c.parentNode;
-			this.#i.unshift(() => t.appendChild(e));
+		}, r = document.getElementById(y);
+		if (r) {
+			let e = r.cloneNode(!0);
+			e.id = y, t.view = r;
+			let n = r.parentNode;
+			this.#i.defer(() => n.appendChild(e));
 		} else {
 			let e = document.createElement("canvas");
-			e.id = u, a.view = e, document.body.appendChild(e), this.#i.unshift(() => document.body.removeChild(e));
+			e.id = y, t.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
 		}
-		let l = new i(a);
-		this.#i.unshift(() => {
-			r(), this.sys.destroy(), l.destroy(!1);
-		}), this.cvs = l.view, this.cvs.id = "skynovel_act", c || document.body.appendChild(this.cvs);
-		let d = document.createElement("canvas").getContext("2d");
-		if (!d) throw "#init cc err";
-		n.cc4ColorName = d;
-		let [{ Variable: f }, { PropParser: p }, { SoundMng: m }, { ScriptIterator: h }, { LayerMng: g }, { EventMng: _ }, { Button: v }] = await Promise.all([
+		let s = new o(t);
+		this.#i.defer(() => {
+			a(), this.sys.destroy(), s.destroy(!1);
+		}), this.cvs = s.view, this.cvs.id = "skynovel_act", r || document.body.appendChild(this.cvs);
+		let c = document.createElement("canvas").getContext("2d");
+		if (!c) throw "#init cc err";
+		i.cc4ColorName = c;
+		let [{ Variable: d }, { PropParser: f }, { SoundMng: p }, { ScriptIterator: m }, { LayerMng: h }, { EventMng: g }, { Button: _ }] = await Promise.all([
 			import("./Variable.js"),
 			import("./PropParser.js"),
 			import("./SoundMng.js"),
@@ -54,24 +243,22 @@ var u = "skynovel", d = class d {
 			import("./EventMng.js"),
 			import("./Button.js")
 		]);
-		v.init(t);
-		let y = new f(this.sys, t, this.#e), b = new p(y, t.oCfg.init.escape);
-		this.#o = (e, t, n, r) => y.setVal_Nochk(e, t, n, r), this.#l = (e) => b.getValAmpersand(e), this.#u = (e) => b.parse(e), await Promise.allSettled(this.sys.init(this.#e, l, y));
-		let x = new m(t, this.#e, y, this, this.sys);
-		this.#i.unshift(() => x.destroy()), this.#t = new h(t, this.#e, this, y, b, x, this.sys), this.#i.unshift(() => this.#t.destroy());
-		let S = new o(this.sys, this.#e, this.#t);
-		this.#i.unshift(() => S.destroy()), this.errScript = (e, t) => {
-			if (this.stop(), o.myTrace(e), n.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
-		}, this.#n = new g(t, this.#e, l, y, this, this.#t, this.sys, x, b), this.#i.unshift(() => this.#n.destroy()), this.#r = new _(t, this.#e, l, this, this.#n, y, x, this.#t, this.sys), this.#i.unshift(() => this.#r.destroy()), this.#i.unshift(() => {
+		_.init(e);
+		let v = new d(this.sys, e, this.#e), b = new f(v, e.oCfg.init.escape);
+		this.#o = (e, t, n, r) => v.setVal_Nochk(e, t, n, r), this.#l = (e) => b.getValAmpersand(e), this.#u = (e) => b.parse(e), await Promise.allSettled(this.sys.init(this.#e, s, v));
+		let x = new p(e, this.#e, v, this, this.sys);
+		this.#i.defer(() => x.destroy()), this.#t = new m(e, this.#e, this, v, b, x, this.sys), this.#i.defer(() => this.#t.destroy());
+		let S = new l(this.sys, this.#e, this.#t);
+		this.#i.defer(() => S.destroy()), this.errScript = (e, t) => {
+			if (this.stop(), l.myTrace(e), i.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
+		}, this.#n = new h(e, this.#e, s, v, this, this.#t, this.sys, x, b), this.#i.defer(() => this.#n.destroy()), this.#r = new g(e, this.#e, s, this, this.#n, v, x, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
 			this.stop(), this.#s = !1;
 			let e = () => !0;
 			for (let t in this.#e) this.#e[t] = e;
 		});
 	}
 	destroy() {
-		this.resume = this.destroy = () => {}, this.cvs.parentElement?.removeChild(this.cvs);
-		for (let e of this.#i) e();
-		this.#i = [];
+		this.resume = this.destroy = () => {}, this.cvs.parentElement?.removeChild(this.cvs), this.#i.dispose();
 	}
 	errScript = (e, t = !0) => {};
 	resumeByJumpOrCall(e) {
@@ -79,7 +266,7 @@ var u = "skynovel", d = class d {
 			this.#e.navigate_to(e), this.#t.jumpJustBefore();
 			return;
 		}
-		if (this.#o("tmp", "sn.eventArg", String(e.arg ?? "")), this.#o("tmp", "sn.eventLabel", e.label ?? ""), t(e, "call", !1)) {
+		if (this.#o("tmp", "sn.eventArg", String(e.arg ?? "")), this.#o("tmp", "sn.eventLabel", e.label ?? ""), r(e, "call", !1)) {
 			if (this.#t.subIdxToken(), this.#e.call(e)) return;
 		} else if (this.#e.clear_event({}), this.#e.jump(e)) return;
 		this.resume();
@@ -111,7 +298,7 @@ var u = "skynovel", d = class d {
 					}
 					if (n === 91) {
 						if (e = "タグ開始", this.#t.isBreak(t)) return;
-						let [n, r] = c(t);
+						let [n, r] = m(t);
 						e = `[${n}]例外`;
 						let i = (t.match(/\n/g) ?? []).length;
 						if (i > 0 && this.#t.addLineNum(i), await this.#t.タグ解析(n, r)) {
@@ -123,7 +310,7 @@ var u = "skynovel", d = class d {
 					if (n === 38) {
 						if (!t.endsWith("&")) {
 							if (e = "変数計算", this.#t.isBreak(t)) return;
-							let n = l(t.slice(1));
+							let n = g(t.slice(1));
 							n.name = this.#l(n.name), n.text = String(this.#u(n.text)), this.#e.let(n);
 							continue;
 						}
@@ -142,6 +329,6 @@ var u = "skynovel", d = class d {
 	#u;
 };
 //#endregion
-export { d as Main };
+export { b as Main, f as a, m as i, _ as n, h as r, v as t };
 
 //# sourceMappingURL=Main.js.map

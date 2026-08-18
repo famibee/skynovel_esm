@@ -24,7 +24,6 @@ export function htm2tx(fnc: (tx2: any)=> void, htmTxt: HTMLSpanElement, infTL :T
 
 /*---*/
 		const util = {
-			escape: (str: string)=> str.replaceAll(/([.*+?^${}()|[\]/\\])/g, '\\$1'),
 			mimeType: (url: any)=> {
 				const extension = parseExtension(url).toLowerCase();
 				return mimes()[extension] || '';
@@ -201,7 +200,7 @@ export function htm2tx(fnc: (tx2: any)=> void, htmTxt: HTMLSpanElement, infTL :T
 					.then(dataUrl=> str.replace(urlAsRegex(url), '$1' + dataUrl + '$3'));
 
 				function urlAsRegex(url: any) {
-					return new RegExp('(url\\([\'"]?)(' + util.escape(url) + ')([\'"]?\\))', 'g');
+					return new RegExp('(url\\([\'"]?)(' + RegExp.escape(url) + ')([\'"]?\\))', 'g');
 				}
 			}
 

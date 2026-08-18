@@ -195,7 +195,6 @@ var C = "、。，．）］｝〉」』】〕”〟ぁぃぅぇぉっゃゅょ�
 //#region src/sn/htm2tx.ts
 function M(e, t, n, r, i, a = !0) {
 	let o = {
-		escape: (e) => e.replaceAll(/([.*+?^${}()|[\]/\\])/g, "\\$1"),
 		mimeType: (e) => {
 			let t = f(e).toLowerCase();
 			return s()[t] || "";
@@ -290,7 +289,7 @@ function M(e, t, n, r, i, a = !0) {
 		function r(e, t, n, r) {
 			return Promise.resolve(t).then((e) => n ? o.resolveUrl(e, n) : e).then(r || o.getAndEncode).then((e) => o.dataAsUrl(e, o.mimeType(t))).then((n) => e.replace(i(t), "$1" + n + "$3"));
 			function i(e) {
-				return RegExp("(url\\(['\"]?)(" + o.escape(e) + ")(['\"]?\\))", "g");
+				return RegExp("(url\\(['\"]?)(" + RegExp.escape(e) + ")(['\"]?\\))", "g");
 			}
 		}
 		function i(e, i, a) {
@@ -419,21 +418,22 @@ var N = class t extends u {
 	};
 	lay(e) {
 		let n = this.#i.style;
-		if ("style" in e) if (e.style) {
-			let r = document.createElement("span");
-			r.style.cssText = e.style;
-			let i = r.style.length;
-			for (let e = 0; e < i; ++e) {
-				let i = r.style[e];
-				if (i in t.#s) {
-					h.myTrace(`${String(i)}は指定できません`, "W");
-					continue;
+		if ("style" in e) {
+			if (e.style) {
+				let r = document.createElement("span");
+				r.style.cssText = e.style;
+				let i = r.style.length;
+				for (let e = 0; e < i; ++e) {
+					let i = r.style[e];
+					if (i in t.#s) {
+						h.myTrace(`${String(i)}は指定できません`, "W");
+						continue;
+					}
+					n[i] = r.style[i];
 				}
-				n[i] = r.style[i];
-			}
-			!r.style.opacity && "alpha" in e && (n.opacity = String(this.ctn.alpha));
-		} else this.#i.style.cssText = "";
-		else "alpha" in e && (n.opacity = String(this.ctn.alpha));
+				!r.style.opacity && "alpha" in e && (n.opacity = String(this.ctn.alpha));
+			} else this.#i.style.cssText = "";
+		} else "alpha" in e && (n.opacity = String(this.ctn.alpha));
 		if ("width" in e && (n.width = String(e.width ?? "0") + "px"), "height" in e && (n.height = String(e.height ?? "0") + "px"), "pl" in e && (n.paddingLeft = String(e.pl ?? "0") + "px"), "pr" in e && (n.paddingRight = String(e.pr ?? "0") + "px"), "pt" in e && (n.paddingTop = String(e.pt ?? "0") + "px"), "pb" in e && (n.paddingBottom = String(e.pb ?? "0") + "px"), this.#c.lay(e), this.#f(), this.#p = this.ctn.position.x, n.transformOrigin = `${String(this.ctn.pivot.x)}px ${String(this.ctn.pivot.y)}px`, this.cvsResize(), n.display = this.ctn.visible ? "inline" : "none", ":redraw" in e && this.#y > 0) {
 			let e = [this.#i.innerHTML.replaceAll(/(animation-delay: )\d+ms/g, "$10ms"), "<span class='sn_ch' data-add='{\"ch_in_style\":\"default\"}'>&emsp;</span>"];
 			this.#N(), this.goTxt(e, !0);
@@ -888,20 +888,22 @@ var N = class t extends u {
 		this.#_.lay({ y: e });
 	}
 	lay(t) {
-		if (super.lay(t), m.setXY(this.ctn, t, this.ctn), t[":id_tag"] = this.name_.slice(0, -7), S.setting(t), this.#k(t), this.#_.lay(t), "r_align" in t && (this.#L = t.r_align ?? ""), this.#F = s.isSafari ? this.#_.tategaki ? (e, t) => `text-align: start; height: ${String(t)}em; padding-top: ${e}; padding-bottom: ${e};` : (e, t) => `text-align: start; width: ${String(t)}em; padding-left: ${e}; padding-right: ${e};` : this.#_.tategaki ? (e) => `text-align: justify; text-align-last: justify; padding-top: ${e}; padding-bottom: ${e};` : (e) => `text-align: justify; text-align-last: justify; padding-left: ${e}; padding-right: ${e};`, s.isFirefox && (this.#I = this.#R), "r_style" in t) if (t.r_style) {
-			let n = document.createElement("span");
-			n.style.cssText = t.r_style;
-			let r = n.style.length, i = this.#y.style;
-			for (let t = 0; t < r; ++t) {
-				let r = n.style[t];
-				if (r in e.#b) {
-					h.myTrace(`${String(r)}は指定できません`, "W");
-					continue;
+		if (super.lay(t), m.setXY(this.ctn, t, this.ctn), t[":id_tag"] = this.name_.slice(0, -7), S.setting(t), this.#k(t), this.#_.lay(t), "r_align" in t && (this.#L = t.r_align ?? ""), this.#F = s.isSafari ? this.#_.tategaki ? (e, t) => `text-align: start; height: ${String(t)}em; padding-top: ${e}; padding-bottom: ${e};` : (e, t) => `text-align: start; width: ${String(t)}em; padding-left: ${e}; padding-right: ${e};` : this.#_.tategaki ? (e) => `text-align: justify; text-align-last: justify; padding-top: ${e}; padding-bottom: ${e};` : (e) => `text-align: justify; text-align-last: justify; padding-left: ${e}; padding-right: ${e};`, s.isFirefox && (this.#I = this.#R), "r_style" in t) {
+			if (t.r_style) {
+				let n = document.createElement("span");
+				n.style.cssText = t.r_style;
+				let r = n.style.length, i = this.#y.style;
+				for (let t = 0; t < r; ++t) {
+					let r = n.style[t];
+					if (r in e.#b) {
+						h.myTrace(`${String(r)}は指定できません`, "W");
+						continue;
+					}
+					let a = n.style[r];
+					a && (i[r] = a);
 				}
-				let a = n.style[r];
-				a && (i[r] = a);
-			}
-		} else this.#y.style.cssText = "";
+			} else this.#y.style.cssText = "";
+		}
 		if ("alpha" in t) for (let e of this.#x.children) e.alpha = this.ctn.alpha;
 		this.#S(t), this.#T(t);
 		let n = y.procID + `TxtLayer lay name:${this.name_}`, r = this.#O(t, (e) => {
@@ -1037,73 +1039,71 @@ var N = class t extends u {
 				}
 				this.#W && (this.#W = !1, i === "" && (i = "&emsp;")), o = this.#V(t, i, this.#L);
 				break;
-			default:
-				switch (c) {
-					case "start":
-					case "left":
-					case "center":
-					case "right":
-					case "justify":
-					case "121":
-					case "even":
-					case "1ruby":
-						this.#W = !1, this.#z = !0, o = this.#V(t, u, c);
-						break;
-					case "gotxt":
-						this.#J(), this.#z ? (this.isCur && e.#r.recText(this.#G.join("").replace(/^<ruby>&emsp;<rt>&emsp;<\/rt><\/ruby>(<br\/>)+/, "").replaceAll(/style='(anim\S+ [^;]+;\s*)+/g, "style='").replaceAll(/( style=''| data-(add|arg|cmd)='[^']+'|\n+|\t+)/g, "").replaceAll(/class='sn_ch[^']+/g, "class='sn_ch").replaceAll("display: none;", "").replaceAll("class='offrec'", "style='display: none;'")), this.#_.goTxt(this.#G, this.#U === 0), this.#z = !1, this.#U = 0) : this.isCur && this.#_.noticeCompTxt();
-						return;
-					case "add":
-						{
-							let e = JSON.parse(u), { style: t = "", wait: n = null } = e, { cl: i, sty: a } = this.#H(!0, n ? r(n) : null);
-							this.#G.push(`<span${i} style='${a} display: inline; ${t}'>`), delete e.style, this.#q(e);
+			default: switch (c) {
+				case "start":
+				case "left":
+				case "center":
+				case "right":
+				case "justify":
+				case "121":
+				case "even":
+				case "1ruby":
+					this.#W = !1, this.#z = !0, o = this.#V(t, u, c);
+					break;
+				case "gotxt":
+					this.#J(), this.#z ? (this.isCur && e.#r.recText(this.#G.join("").replace(/^<ruby>&emsp;<rt>&emsp;<\/rt><\/ruby>(<br\/>)+/, "").replaceAll(/style='(anim\S+ [^;]+;\s*)+/g, "style='").replaceAll(/( style=''| data-(add|arg|cmd)='[^']+'|\n+|\t+)/g, "").replaceAll(/class='sn_ch[^']+/g, "class='sn_ch").replaceAll("display: none;", "").replaceAll("class='offrec'", "style='display: none;'")), this.#_.goTxt(this.#G, this.#U === 0), this.#z = !1, this.#U = 0) : this.isCur && this.#_.noticeCompTxt();
+					return;
+				case "add":
+					{
+						let e = JSON.parse(u), { style: t = "", wait: n = null } = e, { cl: i, sty: a } = this.#H(!0, n ? r(n) : null);
+						this.#G.push(`<span${i} style='${a} display: inline; ${t}'>`), delete e.style, this.#q(e);
+					}
+					return;
+				case "add_close":
+					this.#G.push("</span>"), this.#J();
+					return;
+				case "grp":
+					this.#z = !0;
+					{
+						let e = JSON.parse(u);
+						if (e.id ??= String(this.#G.length), e.id === "break") {
+							this.#_.dispBreak(e);
+							return;
 						}
-						return;
-					case "add_close":
-						this.#G.push("</span>"), this.#J();
-						return;
-					case "grp":
-						this.#z = !0;
-						{
-							let e = JSON.parse(u);
-							if (e.id ??= String(this.#G.length), e.id === "break") {
-								this.#_.dispBreak(e);
-								return;
-							}
-							this.#W = !1, e.delay = this.#U, e.r ??= "", e.style ??= "", e.r_style ??= "";
-							let { r: t, wait: n = null, r_style: i } = e, { cl: a, sty: s, lnk: c } = this.#H(!0, n ? r(n) : null);
-							o = `<span${a} style='${s} ${e.style}'><ruby><span data-cmd='grp' data-arg='${JSON.stringify(e)}'${c} style='${s} display: inline;'>&emsp;</span><rt${c}${this.#I("　", t, this.#L, this.#y.style.cssText + (this.#K.at(-1)?.o.r_style ?? "") + i)}>${e.r}</rt></ruby></span>`;
-						}
-						break;
-					case "tcy":
-						this.#W = !1, this.#z = !0;
-						{
-							let { t: n = "", r: a = "", wait: c = null, style: l = "", r_style: d = "" } = JSON.parse(u);
-							e.#t.doRecLog() && (this.#X += t + (i ? `《${i}》` : ""), this.#Z += n);
-							let f = s.isSafari ? a.replaceAll(/[A-Za-z0-9]/g, (e) => String.fromCharCode(e.charCodeAt(0) + 65248)) : a, { cl: p, sty: m, lnk: h } = this.#H(!0, c ? r(c) : null);
-							o = `<span${p} style='${m}${this.#j(n)} ${l}'><ruby><span${h} style='${m} display: inline; text-combine-upright: all;'>${n}</span><rt${h}${this.#I(n, f, this.#L, this.#y.style.cssText + (this.#K.at(-1)?.o.r_style ?? "") + d)}>${f}</rt></ruby></span>`;
-						}
-						break;
-					case "del":
-						N.delBreak();
-						return;
-					case "span":
-						this.#z = !0, this.#Y(JSON.parse(u));
-						return;
-					case "link":
-						this.#z = !0;
-						{
-							let e = JSON.parse(u);
-							e[":link"] = " data-lnk='@'";
-							let { cl: t, sty: n, curpos: i } = this.#H(!1, e.wait ? r(e.wait) : null);
-							this.#G.push(`<span${t} style='${n} display: inline; ${e.style ?? ""}' ${i} data-arg='${u}'>`), delete e.style, this.#Y(e);
-						}
-						return;
-					case "endlink":
-						this.#z = !0, this.#G.push("</span>"), this.#J();
-						return;
-					default: this.#z = !0, o = this.#V(t, i, this.#L);
-				}
-				break;
+						this.#W = !1, e.delay = this.#U, e.r ??= "", e.style ??= "", e.r_style ??= "";
+						let { r: t, wait: n = null, r_style: i } = e, { cl: a, sty: s, lnk: c } = this.#H(!0, n ? r(n) : null);
+						o = `<span${a} style='${s} ${e.style}'><ruby><span data-cmd='grp' data-arg='${JSON.stringify(e)}'${c} style='${s} display: inline;'>&emsp;</span><rt${c}${this.#I("　", t, this.#L, this.#y.style.cssText + (this.#K.at(-1)?.o.r_style ?? "") + i)}>${e.r}</rt></ruby></span>`;
+					}
+					break;
+				case "tcy":
+					this.#W = !1, this.#z = !0;
+					{
+						let { t: n = "", r: a = "", wait: c = null, style: l = "", r_style: d = "" } = JSON.parse(u);
+						e.#t.doRecLog() && (this.#X += t + (i ? `《${i}》` : ""), this.#Z += n);
+						let f = s.isSafari ? a.replaceAll(/[A-Za-z0-9]/g, (e) => String.fromCharCode(e.charCodeAt(0) + 65248)) : a, { cl: p, sty: m, lnk: h } = this.#H(!0, c ? r(c) : null);
+						o = `<span${p} style='${m}${this.#j(n)} ${l}'><ruby><span${h} style='${m} display: inline; text-combine-upright: all;'>${n}</span><rt${h}${this.#I(n, f, this.#L, this.#y.style.cssText + (this.#K.at(-1)?.o.r_style ?? "") + d)}>${f}</rt></ruby></span>`;
+					}
+					break;
+				case "del":
+					N.delBreak();
+					return;
+				case "span":
+					this.#z = !0, this.#Y(JSON.parse(u));
+					return;
+				case "link":
+					this.#z = !0;
+					{
+						let e = JSON.parse(u);
+						e[":link"] = " data-lnk='@'";
+						let { cl: t, sty: n, curpos: i } = this.#H(!1, e.wait ? r(e.wait) : null);
+						this.#G.push(`<span${t} style='${n} display: inline; ${e.style ?? ""}' ${i} data-arg='${u}'>`), delete e.style, this.#Y(e);
+					}
+					return;
+				case "endlink":
+					this.#z = !0, this.#G.push("</span>"), this.#J();
+					return;
+				default: this.#z = !0, o = this.#V(t, i, this.#L);
+			}
 		}
 		this.#G.push(e.#P(o));
 	};

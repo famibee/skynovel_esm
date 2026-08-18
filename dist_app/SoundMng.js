@@ -25,7 +25,7 @@ var a = r(), o = class {
 	}
 	#r(e) {
 		let { buf: t = "SE" } = e, n = "const.sn.sound." + t + ".volume", r = this.#i(e, 1);
-		return Number(this.val.getVal("sys:" + n)) === r ? !1 : (this.val.setVal_Nochk("sys", n, r), this.val.flush(), e.time = 0, e.volume = Number(this.val.getVal("save:" + n)), this.#c(e));
+		return Number(this.val.getVal("sys:" + n)) !== r && (this.val.setVal_Nochk("sys", n, r), this.val.flush(), e.time = 0, e.volume = Number(this.val.getVal("save:" + n)), this.#c(e));
 	}
 	#i(t, n) {
 		let r = e(t, "volume", n);

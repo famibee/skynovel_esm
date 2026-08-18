@@ -53,16 +53,14 @@ var g = class {
 				};
 				break;
 			case "text":
-			case "textarea":
-				o = (e) => {
-					if (e.isTrusted) return;
-					let t = (l.selectionStart ?? 0) + (e.key === "ArrowUp" ? -1 : 1);
-					t < 0 && (t = 0), l.setSelectionRange(t, t);
-				};
-				break;
+			case "textarea": o = (e) => {
+				if (e.isTrusted) return;
+				let t = (l.selectionStart ?? 0) + (e.key === "ArrowUp" ? -1 : 1);
+				t < 0 && (t = 0), l.setSelectionRange(t, t);
+			};
 		}
 		let u = this.#n.add(t, e, (e) => {
-			if (!(e.key !== "ArrowUp" && e.key !== "ArrowDown" && e.key !== "Enter")) {
+			if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Enter") {
 				if (e.stopImmediatePropagation(), s(e)) {
 					t.dispatchEvent(new MouseEvent("click"));
 					return;
@@ -668,10 +666,7 @@ function Le(e) {
 			case S:
 				c[l] = c[l] - (t[u] / 2 - n[u] / 2);
 				break;
-			case "end":
-				c[l] = c[l] + (t[u] / 2 - n[u] / 2);
-				break;
-			default:
+			case "end": c[l] = c[l] + (t[u] / 2 - n[u] / 2);
 		}
 	}
 	return c;
@@ -1247,7 +1242,7 @@ var pt = class {
 			if (e.button > 1) return;
 			let t = this.#o(e) + `${this.#r.get(e.button) ?? ""}click`;
 			p.fire(t, e, !0), f.resetFired();
-		}), this.#e.add(window, "pointerout", () => f.resetFired()), this.#n.on("longpress", (e) => {
+		}), this.#e.add(window, "pointerout", () => f.resetFired()), this.#e.add(document, "pointerdown", () => f.resetFired(), { capture: !0 }), this.#n.on("longpress", (e) => {
 			if (x = !0, e instanceof TouchEvent) {
 				p.fire("longpress", e, !0);
 				return;
@@ -1314,14 +1309,16 @@ var pt = class {
 					bubbles: !0
 				})), !(!l || l instanceof c) && (p.cancelAutoSkip(), l.getAttribute("type") === "range" && l.dispatchEvent(new InputEvent("input", { bubbles: !0 })));
 			}), n.on("gamepad:button", (t) => {
-				if (document.hasFocus()) if (t.detail.button % 2 == 0) {
-					p.cancelAutoSkip();
-					let t = this.#t.getFocus();
-					(!t || t instanceof c ? document.body : t).dispatchEvent(new KeyboardEvent(e, {
-						key: "Enter",
-						bubbles: !0
-					}));
-				} else p.fire("middleclick", t, !0);
+				if (document.hasFocus()) {
+					if (t.detail.button % 2 == 0) {
+						p.cancelAutoSkip();
+						let t = this.#t.getFocus();
+						(!t || t instanceof c ? document.body : t).dispatchEvent(new KeyboardEvent(e, {
+							key: "Enter",
+							bubbles: !0
+						}));
+					} else p.fire("middleclick", t, !0);
+				}
 			}), !this.#f && (this.#d = n, n.start());
 		}), this.#e.add(document, "keyup", (e) => {
 			e.isComposing || e.key in this.#w && (this.#w[e.key] = 0);
@@ -1503,9 +1500,7 @@ var pt = class {
 					i = ["input"];
 					break;
 				case "text":
-				case "textarea":
-					i = ["input", "change"];
-					break;
+				case "textarea": i = ["input", "change"];
 			}
 			this.#b(n);
 			let o = [], s = i.length;
@@ -1553,9 +1548,7 @@ var pt = class {
 			case "next":
 				this.#t.next();
 				break;
-			case "prev":
-				this.#t.prev();
-				break;
+			case "prev": this.#t.prev();
 		}
 		return !1;
 	}

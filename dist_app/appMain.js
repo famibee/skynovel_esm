@@ -48,8 +48,8 @@ var _ = class e {
 				width: r,
 				height: i,
 				quality: "best"
-			});
-			await l(n, n.endsWith(".png") ? t.toPNG() : t.toJPEG(80));
+			}), a = n.endsWith(".png") ? t.toPNG() : t.toJPEG(80);
+			await l(n, a);
 		})), i.handle("navigate_to", (e, t) => a.openExternal(t));
 		let _;
 		i.handle("Store", (e, t) => {

@@ -48,13 +48,15 @@ var o = /* @__PURE__ */ e(((e) => {
 			},
 			_setup: function() {
 				var e = this || n;
-				if (e.state = e.ctx && e.ctx.state || "suspended", e._autoSuspend(), !e.usingWebAudio) if (typeof Audio < "u") try {
-					var t = new Audio();
-					t.oncanplaythrough === void 0 && (e._canPlayEvent = "canplay");
-				} catch {
-					e.noAudio = !0;
+				if (e.state = e.ctx && e.ctx.state || "suspended", e._autoSuspend(), !e.usingWebAudio) {
+					if (typeof Audio < "u") try {
+						var t = new Audio();
+						t.oncanplaythrough === void 0 && (e._canPlayEvent = "canplay");
+					} catch {
+						e.noAudio = !0;
+					}
+					else e.noAudio = !0;
 				}
-				else e.noAudio = !0;
 				try {
 					var t = new Audio();
 					t.muted && (e.noAudio = !0);
@@ -286,10 +288,12 @@ var o = /* @__PURE__ */ e(((e) => {
 				for (var n = t._getSoundIds(e), r = 0; r < n.length; r++) {
 					t._clearTimer(n[r]);
 					var i = t._soundById(n[r]);
-					if (i && !i._paused && (i._seek = t.seek(n[r]), i._rateSeek = 0, i._paused = !0, t._stopFade(n[r]), i._node)) if (t._webAudio) {
-						if (!i._node.bufferSource) continue;
-						i._node.bufferSource.stop === void 0 ? i._node.bufferSource.noteOff(0) : i._node.bufferSource.stop(0), t._cleanBuffer(i._node);
-					} else (!isNaN(i._node.duration) || i._node.duration === Infinity) && i._node.pause();
+					if (i && !i._paused && (i._seek = t.seek(n[r]), i._rateSeek = 0, i._paused = !0, t._stopFade(n[r]), i._node)) {
+						if (t._webAudio) {
+							if (!i._node.bufferSource) continue;
+							i._node.bufferSource.stop === void 0 ? i._node.bufferSource.noteOff(0) : i._node.bufferSource.stop(0), t._cleanBuffer(i._node);
+						} else (!isNaN(i._node.duration) || i._node.duration === Infinity) && i._node.pause();
+					}
 					arguments[1] || t._emit("pause", i ? i._id : null);
 				}
 				return t;
@@ -317,8 +321,10 @@ var o = /* @__PURE__ */ e(((e) => {
 						r.mute(e, t);
 					}
 				}), r;
-				if (t === void 0) if (typeof e == "boolean") r._muted = e;
-				else return r._muted;
+				if (t === void 0) {
+					if (typeof e == "boolean") r._muted = e;
+					else return r._muted;
+				}
 				for (var i = r._getSoundIds(t), a = 0; a < i.length; a++) {
 					var o = r._soundById(i[a]);
 					o && (o._muted = e, o._interval && r._stopFade(o._id), r._webAudio && o._node ? o._node.gain.setValueAtTime(e ? 0 : o._volume, n.ctx.currentTime) : o._node && (o._node.muted = n._muted ? !0 : e), r._emit("mute", o._id));
@@ -377,9 +383,10 @@ var o = /* @__PURE__ */ e(((e) => {
 			loop: function() {
 				var e = this, t = arguments, n, r, i;
 				if (t.length === 0) return e._loop;
-				if (t.length === 1) if (typeof t[0] == "boolean") n = t[0], e._loop = n;
-				else return i = e._soundById(parseInt(t[0], 10)), i ? i._loop : !1;
-				else t.length === 2 && (n = t[0], r = parseInt(t[1], 10));
+				if (t.length === 1) {
+					if (typeof t[0] == "boolean") n = t[0], e._loop = n;
+					else return i = e._soundById(parseInt(t[0], 10)), i ? i._loop : !1;
+				} else t.length === 2 && (n = t[0], r = parseInt(t[1], 10));
 				for (var a = e._getSoundIds(r), o = 0; o < a.length; o++) i = e._soundById(a[o]), i && (i._loop = n, e._webAudio && i._node && i._node.bufferSource && (i._node.bufferSource.loop = n, n && (i._node.bufferSource.loopStart = i._start || 0, i._node.bufferSource.loopEnd = i._stop, e.playing(a[o]) && (e.pause(a[o], !0), e.play(a[o], !0)))));
 				return e;
 			},
@@ -413,22 +420,24 @@ var o = /* @__PURE__ */ e(((e) => {
 					}
 				}), e;
 				var a = e._soundById(i);
-				if (a) if (typeof r == "number" && r >= 0) {
-					var o = e.playing(i);
-					o && e.pause(i, !0), a._seek = r, a._ended = !1, e._clearTimer(i), !e._webAudio && a._node && !isNaN(a._node.duration) && (a._node.currentTime = r);
-					var s = function() {
-						o && e.play(i, !0), e._emit("seek", i);
-					};
-					if (o && !e._webAudio) {
-						var c = function() {
-							e._playLock ? setTimeout(c, 0) : s();
+				if (a) {
+					if (typeof r == "number" && r >= 0) {
+						var o = e.playing(i);
+						o && e.pause(i, !0), a._seek = r, a._ended = !1, e._clearTimer(i), !e._webAudio && a._node && !isNaN(a._node.duration) && (a._node.currentTime = r);
+						var s = function() {
+							o && e.play(i, !0), e._emit("seek", i);
 						};
-						setTimeout(c, 0);
-					} else s();
-				} else if (e._webAudio) {
-					var l = e.playing(i) ? n.ctx.currentTime - a._playStart : 0, u = a._rateSeek ? a._rateSeek - a._seek : 0;
-					return a._seek + (u + l * Math.abs(a._rate));
-				} else return a._node.currentTime;
+						if (o && !e._webAudio) {
+							var c = function() {
+								e._playLock ? setTimeout(c, 0) : s();
+							};
+							setTimeout(c, 0);
+						} else s();
+					} else if (e._webAudio) {
+						var l = e.playing(i) ? n.ctx.currentTime - a._playStart : 0, u = a._rateSeek ? a._rateSeek - a._seek : 0;
+						return a._seek + (u + l * Math.abs(a._rate));
+					} else return a._node.currentTime;
+				}
 				return e;
 			},
 			playing: function(e) {
@@ -551,7 +560,8 @@ var o = /* @__PURE__ */ e(((e) => {
 				if (e === void 0) {
 					for (var n = [], r = 0; r < t._sounds.length; r++) n.push(t._sounds[r]._id);
 					return n;
-				} else return [e];
+				}
+				return [e];
 			},
 			_refreshBuffer: function(e) {
 				var t = this;
@@ -728,20 +738,24 @@ var o = /* @__PURE__ */ e(((e) => {
 				}
 			}), r;
 			var i = Howler.ctx.createStereoPanner === void 0 ? "spatial" : "stereo";
-			if (n === void 0) if (typeof t == "number") r._stereo = t, r._pos = [
-				t,
-				0,
-				0
-			];
-			else return r._stereo;
-			for (var a = r._getSoundIds(n), o = 0; o < a.length; o++) {
-				var s = r._soundById(a[o]);
-				if (s) if (typeof t == "number") s._stereo = t, s._pos = [
+			if (n === void 0) {
+				if (typeof t == "number") r._stereo = t, r._pos = [
 					t,
 					0,
 					0
-				], s._node && (s._pannerAttr.panningModel = "equalpower", (!s._panner || !s._panner.pan) && e(s, i), i === "spatial" ? s._panner.positionX === void 0 ? s._panner.setPosition(t, 0, 0) : (s._panner.positionX.setValueAtTime(t, Howler.ctx.currentTime), s._panner.positionY.setValueAtTime(0, Howler.ctx.currentTime), s._panner.positionZ.setValueAtTime(0, Howler.ctx.currentTime)) : s._panner.pan.setValueAtTime(t, Howler.ctx.currentTime)), r._emit("stereo", s._id);
-				else return s._stereo;
+				];
+				else return r._stereo;
+			}
+			for (var a = r._getSoundIds(n), o = 0; o < a.length; o++) {
+				var s = r._soundById(a[o]);
+				if (s) {
+					if (typeof t == "number") s._stereo = t, s._pos = [
+						t,
+						0,
+						0
+					], s._node && (s._pannerAttr.panningModel = "equalpower", (!s._panner || !s._panner.pan) && e(s, i), i === "spatial" ? s._panner.positionX === void 0 ? s._panner.setPosition(t, 0, 0) : (s._panner.positionX.setValueAtTime(t, Howler.ctx.currentTime), s._panner.positionY.setValueAtTime(0, Howler.ctx.currentTime), s._panner.positionZ.setValueAtTime(0, Howler.ctx.currentTime)) : s._panner.pan.setValueAtTime(t, Howler.ctx.currentTime)), r._emit("stereo", s._id);
+					else return s._stereo;
+				}
 			}
 			return r;
 		}, Howl.prototype.pos = function(t, n, r, i) {
@@ -753,20 +767,24 @@ var o = /* @__PURE__ */ e(((e) => {
 					a.pos(t, n, r, i);
 				}
 			}), a;
-			if (n = typeof n == "number" ? n : 0, r = typeof r == "number" ? r : -.5, i === void 0) if (typeof t == "number") a._pos = [
-				t,
-				n,
-				r
-			];
-			else return a._pos;
-			for (var o = a._getSoundIds(i), s = 0; s < o.length; s++) {
-				var c = a._soundById(o[s]);
-				if (c) if (typeof t == "number") c._pos = [
+			if (n = typeof n == "number" ? n : 0, r = typeof r == "number" ? r : -.5, i === void 0) {
+				if (typeof t == "number") a._pos = [
 					t,
 					n,
 					r
-				], c._node && ((!c._panner || c._panner.pan) && e(c, "spatial"), c._panner.positionX === void 0 ? c._panner.setPosition(t, n, r) : (c._panner.positionX.setValueAtTime(t, Howler.ctx.currentTime), c._panner.positionY.setValueAtTime(n, Howler.ctx.currentTime), c._panner.positionZ.setValueAtTime(r, Howler.ctx.currentTime))), a._emit("pos", c._id);
-				else return c._pos;
+				];
+				else return a._pos;
+			}
+			for (var o = a._getSoundIds(i), s = 0; s < o.length; s++) {
+				var c = a._soundById(o[s]);
+				if (c) {
+					if (typeof t == "number") c._pos = [
+						t,
+						n,
+						r
+					], c._node && ((!c._panner || c._panner.pan) && e(c, "spatial"), c._panner.positionX === void 0 ? c._panner.setPosition(t, n, r) : (c._panner.positionX.setValueAtTime(t, Howler.ctx.currentTime), c._panner.positionY.setValueAtTime(n, Howler.ctx.currentTime), c._panner.positionZ.setValueAtTime(r, Howler.ctx.currentTime))), a._emit("pos", c._id);
+					else return c._pos;
+				}
 			}
 			return a;
 		}, Howl.prototype.orientation = function(t, n, r, i) {
@@ -778,51 +796,56 @@ var o = /* @__PURE__ */ e(((e) => {
 					a.orientation(t, n, r, i);
 				}
 			}), a;
-			if (n = typeof n == "number" ? n : a._orientation[1], r = typeof r == "number" ? r : a._orientation[2], i === void 0) if (typeof t == "number") a._orientation = [
-				t,
-				n,
-				r
-			];
-			else return a._orientation;
-			for (var o = a._getSoundIds(i), s = 0; s < o.length; s++) {
-				var c = a._soundById(o[s]);
-				if (c) if (typeof t == "number") c._orientation = [
+			if (n = typeof n == "number" ? n : a._orientation[1], r = typeof r == "number" ? r : a._orientation[2], i === void 0) {
+				if (typeof t == "number") a._orientation = [
 					t,
 					n,
 					r
-				], c._node && (c._panner || (c._pos ||= a._pos || [
-					0,
-					0,
-					-.5
-				], e(c, "spatial")), c._panner.orientationX === void 0 ? c._panner.setOrientation(t, n, r) : (c._panner.orientationX.setValueAtTime(t, Howler.ctx.currentTime), c._panner.orientationY.setValueAtTime(n, Howler.ctx.currentTime), c._panner.orientationZ.setValueAtTime(r, Howler.ctx.currentTime))), a._emit("orientation", c._id);
-				else return c._orientation;
+				];
+				else return a._orientation;
+			}
+			for (var o = a._getSoundIds(i), s = 0; s < o.length; s++) {
+				var c = a._soundById(o[s]);
+				if (c) {
+					if (typeof t == "number") c._orientation = [
+						t,
+						n,
+						r
+					], c._node && (c._panner || (c._pos ||= a._pos || [
+						0,
+						0,
+						-.5
+					], e(c, "spatial")), c._panner.orientationX === void 0 ? c._panner.setOrientation(t, n, r) : (c._panner.orientationX.setValueAtTime(t, Howler.ctx.currentTime), c._panner.orientationY.setValueAtTime(n, Howler.ctx.currentTime), c._panner.orientationZ.setValueAtTime(r, Howler.ctx.currentTime))), a._emit("orientation", c._id);
+					else return c._orientation;
+				}
 			}
 			return a;
 		}, Howl.prototype.pannerAttr = function() {
 			var t = this, n = arguments, r, i, a;
 			if (!t._webAudio) return t;
 			if (n.length === 0) return t._pannerAttr;
-			if (n.length === 1) if (typeof n[0] == "object") r = n[0], i === void 0 && (r.pannerAttr ||= {
-				coneInnerAngle: r.coneInnerAngle,
-				coneOuterAngle: r.coneOuterAngle,
-				coneOuterGain: r.coneOuterGain,
-				distanceModel: r.distanceModel,
-				maxDistance: r.maxDistance,
-				refDistance: r.refDistance,
-				rolloffFactor: r.rolloffFactor,
-				panningModel: r.panningModel
-			}, t._pannerAttr = {
-				coneInnerAngle: r.pannerAttr.coneInnerAngle === void 0 ? t._coneInnerAngle : r.pannerAttr.coneInnerAngle,
-				coneOuterAngle: r.pannerAttr.coneOuterAngle === void 0 ? t._coneOuterAngle : r.pannerAttr.coneOuterAngle,
-				coneOuterGain: r.pannerAttr.coneOuterGain === void 0 ? t._coneOuterGain : r.pannerAttr.coneOuterGain,
-				distanceModel: r.pannerAttr.distanceModel === void 0 ? t._distanceModel : r.pannerAttr.distanceModel,
-				maxDistance: r.pannerAttr.maxDistance === void 0 ? t._maxDistance : r.pannerAttr.maxDistance,
-				refDistance: r.pannerAttr.refDistance === void 0 ? t._refDistance : r.pannerAttr.refDistance,
-				rolloffFactor: r.pannerAttr.rolloffFactor === void 0 ? t._rolloffFactor : r.pannerAttr.rolloffFactor,
-				panningModel: r.pannerAttr.panningModel === void 0 ? t._panningModel : r.pannerAttr.panningModel
-			});
-			else return a = t._soundById(parseInt(n[0], 10)), a ? a._pannerAttr : t._pannerAttr;
-			else n.length === 2 && (r = n[0], i = parseInt(n[1], 10));
+			if (n.length === 1) {
+				if (typeof n[0] == "object") r = n[0], i === void 0 && (r.pannerAttr || (r.pannerAttr = {
+					coneInnerAngle: r.coneInnerAngle,
+					coneOuterAngle: r.coneOuterAngle,
+					coneOuterGain: r.coneOuterGain,
+					distanceModel: r.distanceModel,
+					maxDistance: r.maxDistance,
+					refDistance: r.refDistance,
+					rolloffFactor: r.rolloffFactor,
+					panningModel: r.panningModel
+				}), t._pannerAttr = {
+					coneInnerAngle: r.pannerAttr.coneInnerAngle === void 0 ? t._coneInnerAngle : r.pannerAttr.coneInnerAngle,
+					coneOuterAngle: r.pannerAttr.coneOuterAngle === void 0 ? t._coneOuterAngle : r.pannerAttr.coneOuterAngle,
+					coneOuterGain: r.pannerAttr.coneOuterGain === void 0 ? t._coneOuterGain : r.pannerAttr.coneOuterGain,
+					distanceModel: r.pannerAttr.distanceModel === void 0 ? t._distanceModel : r.pannerAttr.distanceModel,
+					maxDistance: r.pannerAttr.maxDistance === void 0 ? t._maxDistance : r.pannerAttr.maxDistance,
+					refDistance: r.pannerAttr.refDistance === void 0 ? t._refDistance : r.pannerAttr.refDistance,
+					rolloffFactor: r.pannerAttr.rolloffFactor === void 0 ? t._rolloffFactor : r.pannerAttr.rolloffFactor,
+					panningModel: r.pannerAttr.panningModel === void 0 ? t._panningModel : r.pannerAttr.panningModel
+				});
+				else return a = t._soundById(parseInt(n[0], 10)), a ? a._pannerAttr : t._pannerAttr;
+			} else n.length === 2 && (r = n[0], i = parseInt(n[1], 10));
 			for (var o = t._getSoundIds(i), s = 0; s < o.length; s++) if (a = t._soundById(o[s]), a) {
 				var c = a._pannerAttr;
 				c = {
@@ -836,11 +859,11 @@ var o = /* @__PURE__ */ e(((e) => {
 					panningModel: r.panningModel === void 0 ? c.panningModel : r.panningModel
 				};
 				var l = a._panner;
-				l ||= (a._pos ||= t._pos || [
+				l ||= (a._pos || (a._pos = t._pos || [
 					0,
 					0,
 					-.5
-				], e(a, "spatial"), a._panner), l.coneInnerAngle = c.coneInnerAngle, l.coneOuterAngle = c.coneOuterAngle, l.coneOuterGain = c.coneOuterGain, l.distanceModel = c.distanceModel, l.maxDistance = c.maxDistance, l.refDistance = c.refDistance, l.rolloffFactor = c.rolloffFactor, l.panningModel = c.panningModel;
+				]), e(a, "spatial"), a._panner), l.coneInnerAngle = c.coneInnerAngle, l.coneOuterAngle = c.coneOuterAngle, l.coneOuterGain = c.coneOuterGain, l.distanceModel = c.distanceModel, l.maxDistance = c.maxDistance, l.refDistance = c.refDistance, l.rolloffFactor = c.rolloffFactor, l.panningModel = c.panningModel;
 			}
 			return t;
 		}, Sound.prototype.init = (function(e) {
@@ -917,9 +940,7 @@ var y = class e {
 					e && (e.volume = Number(u.getVal("save:const.sn.sound.BGM.volume", 1)) * Number(u.getVal("sys:const.sn.sound.BGM.volume", 1, !0)) * h);
 				}
 				break;
-			case "BGM":
-				E *= h;
-				break;
+			case "BGM": E *= h;
 		}
 		S ? (m[r] = o, u.setVal_Nochk("save", "const.sn.loopPlaying", JSON.stringify(m))) : g(r), u.setVal_Nochk("save", w + "start_ms", v), u.setVal_Nochk("save", w + "end_ms", y), u.setVal_Nochk("save", w + "ret_ms", b), u.setVal_Nochk("tmp", w + "playing", !0), u.flush();
 		let D = () => {};

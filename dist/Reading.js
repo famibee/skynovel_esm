@@ -115,7 +115,7 @@ var s = Object.freeze({
 			return e === 0 ? 0 : --e * e * ((t + 1) * e + t) + 1;
 		},
 		InOut: function(e) {
-			var t = 1.70158 * 1.525;
+			var t = 2.5949095;
 			return (e *= 2) < 1 ? .5 * (e * e * ((t + 1) * e - t)) : .5 * ((e -= 2) * e * ((t + 1) * e + t) + 2);
 		}
 	}),
@@ -260,7 +260,7 @@ var s = Object.freeze({
 	}, e.prototype._setupProperties = function(e, t, n, r, i) {
 		for (var a in n) {
 			var o = e[a], s = Array.isArray(o), c = s ? "array" : typeof o, l = !s && Array.isArray(n[a]);
-			if (!(c === "undefined" || c === "function")) {
+			if (c !== "undefined" && c !== "function") {
 				if (l) {
 					var u = n[a];
 					if (u.length === 0) continue;
@@ -286,7 +286,7 @@ var s = Object.freeze({
 						n[a] = u = _;
 					}
 					this._setupProperties(h, t[a], u, r[a], i);
-				} else (t[a] === void 0 || i) && (t[a] = o), s || (t[a] *= 1), l ? r[a] = n[a].slice().reverse() : r[a] = t[a] || 0;
+				} else (t[a] === void 0 || i) && (t[a] = o), s || (t[a] *= 1), r[a] = l ? n[a].slice().reverse() : t[a] || 0;
 			}
 		}
 	}, e.prototype.stop = function() {
@@ -336,8 +336,10 @@ var s = Object.freeze({
 		var r = this;
 		if (t === void 0 && (t = c()), n === void 0 && (n = e.autoStartOnUpdate), this._isPaused) return !0;
 		var i;
-		if (!this._goToEnd && !this._isPlaying) if (n) this.start(t, !0);
-		else return !1;
+		if (!this._goToEnd && !this._isPlaying) {
+			if (n) this.start(t, !0);
+			else return !1;
+		}
 		if (this._goToEnd = !1, t < this._startTime) return !0;
 		this._onStartCallbackFired === !1 && (this._onStartCallback && this._onStartCallback(this._object), this._onStartCallbackFired = !0), this._onEveryStartCallbackFired === !1 && (this._onEveryStartCallback && this._onEveryStartCallback(this._object), this._onEveryStartCallbackFired = !0);
 		var a = t - this._startTime, o = this._duration + (this._repeatDelayTime ?? this._delayTime), s = this._duration + this._repeat * o, l = function() {
@@ -345,11 +347,12 @@ var s = Object.freeze({
 			var e = a - Math.trunc(a / o) * o, t = Math.min(e / r._duration, 1);
 			return t === 0 && a === r._duration ? 1 : t;
 		}(), u = this._easingFunction(l);
-		if (this._updateProperties(this._object, this._valuesStart, this._valuesEnd, u), this._onUpdateCallback && this._onUpdateCallback(this._object, l), this._duration === 0 || a >= this._duration) if (this._repeat > 0) {
-			var d = Math.min(Math.trunc((a - this._duration) / o) + 1, this._repeat);
-			for (i in isFinite(this._repeat) && (this._repeat -= d), this._valuesStartRepeat) !this._yoyo && typeof this._valuesEnd[i] == "string" && (this._valuesStartRepeat[i] = this._valuesStartRepeat[i] + parseFloat(this._valuesEnd[i])), this._yoyo && this._swapEndStartRepeatValues(i), this._valuesStart[i] = this._valuesStartRepeat[i];
-			return this._yoyo && (this._reversed = !this._reversed), this._startTime += o * d, this._onRepeatCallback && this._onRepeatCallback(this._object), this._onEveryStartCallbackFired = !1, !0;
-		} else {
+		if (this._updateProperties(this._object, this._valuesStart, this._valuesEnd, u), this._onUpdateCallback && this._onUpdateCallback(this._object, l), this._duration === 0 || a >= this._duration) {
+			if (this._repeat > 0) {
+				var d = Math.min(Math.trunc((a - this._duration) / o) + 1, this._repeat);
+				for (i in isFinite(this._repeat) && (this._repeat -= d), this._valuesStartRepeat) !this._yoyo && typeof this._valuesEnd[i] == "string" && (this._valuesStartRepeat[i] = this._valuesStartRepeat[i] + parseFloat(this._valuesEnd[i])), this._yoyo && this._swapEndStartRepeatValues(i), this._valuesStart[i] = this._valuesStartRepeat[i];
+				return this._yoyo && (this._reversed = !this._reversed), this._startTime += o * d, this._onRepeatCallback && this._onRepeatCallback(this._object), this._onEveryStartCallbackFired = !1, !0;
+			}
 			this._onCompleteCallback && this._onCompleteCallback(this._object);
 			for (var f = 0, p = this._chainedTweens.length; f < p; f++) this._chainedTweens[f].start(this._startTime + this._duration, !1);
 			return this._isPlaying = !1, !1;
@@ -627,7 +630,6 @@ var h = "trans\n", g = "tsy nm:", _ = class e {
 			case "btn":
 				if (C.evtMng.isSkipping) break;
 				if (!e.isFirstFire()) return;
-				break;
 		}
 		if (i === "enter") {
 			let e = C.fcs.getFocus();
@@ -646,7 +648,7 @@ var h = "trans\n", g = "tsy nm:", _ = class e {
 	isWait = !1;
 	static #a = !1;
 	static isFirstFire() {
-		return e.#a ? !1 : (e.#a = !0, !0);
+		return !e.#a && (e.#a = !0, !0);
 	}
 	static resetFired() {
 		e.#a = !1;

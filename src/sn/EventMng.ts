@@ -176,6 +176,12 @@ export class EventMng implements IEvtMng {
 		});
 		this.#elc.add(window, 'pointerout', ()=> ReadingState.resetFired());
 			// ポインターが要素の外に出た：押してフレームが横入りした場合など
+		// 押下の始まりで必ず落とす。キャンバス上で押した直後に[frame]が前面へ
+		// 出ると 'tap' が発生せず resetFired()が走らないため、立ったままの
+		// フラグが次の1クリックを丸ごと飲んでしまう。
+		// ボタンとステージクリックの二重発生除けは押下〜tap 間で効けばよいので、
+		// 押下前（capture）に落とす分には影響しない
+		this.#elc.add(document, 'pointerdown', ()=> ReadingState.resetFired(), {capture: true});
 		// gesture.on('doubletap'	// 原理上 tap 反応が遅くなるので不使用
 		this.#tg.on('longpress', e=> {
 			pressed = true;
