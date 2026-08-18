@@ -1,5 +1,5 @@
-import { d as e, h as t, s as n, t as r, v as i } from "./CmnLib.js";
-import { _ as a, r as o, y as s } from "./pixi.js";
+import { S as e, _ as t, r as n, y as r } from "./pixi.js";
+import { d as i, h as a, s as o, t as s } from "./CmnLib.js";
 import { n as c } from "./ConfigBase.js";
 import { t as l } from "./DebugMng.js";
 import { t as u } from "./Config.js";
@@ -145,24 +145,24 @@ var _ = class {
 	}
 	#a = /^\[(call|loadplugin)\s/;
 	#o = /\bfn\s*=\s*[^\s\]]+/;
-	#s(t) {
-		for (let n = t.len - 1; n >= 0; --n) {
-			let r = t.aToken[n];
-			if (!this.#a.test(r)) continue;
-			let [i, a] = m(r);
+	#s(e) {
+		for (let t = e.len - 1; t >= 0; --t) {
+			let n = e.aToken[t];
+			if (!this.#a.test(n)) continue;
+			let [r, a] = m(n);
 			this.#c.parse(a);
 			let o = this.#c.hPrm.fn;
 			if (!o) continue;
 			let { val: s } = o;
 			if (!s.endsWith("*")) continue;
-			t.aToken.splice(n, 1, "	", "; " + r), t.aLNum.splice(n, 1, NaN, NaN);
-			let l = i === "loadplugin" ? c.CSS : c.SN, u = this.cfg.matchPath("^" + s.slice(0, -1) + ".*", l);
-			for (let i of u) {
-				let a = r.replace(this.#o, "fn=" + decodeURIComponent(e(i[l])));
-				t.aToken.splice(n, 0, a), t.aLNum.splice(n, 0, NaN);
+			e.aToken.splice(t, 1, "	", "; " + n), e.aLNum.splice(t, 1, NaN, NaN);
+			let l = r === "loadplugin" ? c.CSS : c.SN, u = this.cfg.matchPath("^" + s.slice(0, -1) + ".*", l);
+			for (let r of u) {
+				let a = n.replace(this.#o, "fn=" + decodeURIComponent(i(r[l])));
+				e.aToken.splice(t, 0, a), e.aLNum.splice(t, 0, NaN);
 			}
 		}
-		t.len = t.aToken.length;
+		e.len = e.aToken.length;
 	}
 	#c = new f();
 	testTagLetml(e) {
@@ -192,10 +192,10 @@ var _ = class {
 	testNoTxt(e) {
 		return this.#u.test(e);
 	}
-}, v = /* @__PURE__ */ i({ Main: () => b }), y = "skynovel", b = class e {
+}, v = /* @__PURE__ */ e({ Main: () => b }), y = "skynovel", b = class e {
 	sys;
 	static async generate(t) {
-		s();
+		r();
 		let n = new e(t);
 		return await n.#a().catch((e) => console.error("Main.generate err e:%o", e)), n;
 	}
@@ -211,28 +211,28 @@ var _ = class {
 	async #a() {
 		let e = await u.generate(this.sys);
 		this.sys.setMain(this, e);
-		let n = {
+		let r = {
 			width: e.oCfg.window.width,
 			height: e.oCfg.window.height,
-			backgroundColor: t(String(e.oCfg.init.bg_color)),
+			backgroundColor: a(String(e.oCfg.init.bg_color)),
 			resolution: globalThis.devicePixelRatio
 		}, i = document.getElementById(y);
 		if (i) {
 			let e = i.cloneNode(!0);
-			e.id = y, n.view = i;
+			e.id = y, r.view = i;
 			let t = i.parentNode;
 			this.#i.defer(() => t.appendChild(e));
 		} else {
 			let e = document.createElement("canvas");
-			e.id = y, n.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
+			e.id = y, r.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
 		}
-		let s = new o(n);
+		let o = new n(r);
 		this.#i.defer(() => {
-			a(), this.sys.destroy(), s.destroy(!1);
-		}), this.cvs = s.view, this.cvs.id = "skynovel_act", i || document.body.appendChild(this.cvs);
+			t(), this.sys.destroy(), o.destroy(!1);
+		}), this.cvs = o.view, this.cvs.id = "skynovel_act", i || document.body.appendChild(this.cvs);
 		let c = document.createElement("canvas").getContext("2d");
 		if (!c) throw "#init cc err";
-		r.cc4ColorName = c;
+		s.cc4ColorName = c;
 		let [{ Variable: d }, { PropParser: f }, { SoundMng: p }, { ScriptIterator: m }, { LayerMng: h }, { EventMng: g }, { Button: _ }] = await Promise.all([
 			import("./Variable.js"),
 			import("./PropParser.js"),
@@ -244,13 +244,13 @@ var _ = class {
 		]);
 		_.init(e);
 		let v = new d(this.sys, e, this.#e), b = new f(v, e.oCfg.init.escape);
-		this.#o = (e, t, n, r) => v.setVal_Nochk(e, t, n, r), this.#l = (e) => b.getValAmpersand(e), this.#u = (e) => b.parse(e), await Promise.allSettled(this.sys.init(this.#e, s, v));
+		this.#o = (e, t, n, r) => v.setVal_Nochk(e, t, n, r), this.#l = (e) => b.getValAmpersand(e), this.#u = (e) => b.parse(e), await Promise.allSettled(this.sys.init(this.#e, o, v));
 		let x = new p(e, this.#e, v, this, this.sys);
 		this.#i.defer(() => x.destroy()), this.#t = new m(e, this.#e, this, v, b, x, this.sys), this.#i.defer(() => this.#t.destroy());
 		let S = new l(this.sys, this.#e, this.#t);
 		this.#i.defer(() => S.destroy()), this.errScript = (e, t) => {
-			if (this.stop(), l.myTrace(e), r.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
-		}, this.#n = new h(e, this.#e, s, v, this, this.#t, this.sys, x, b), this.#i.defer(() => this.#n.destroy()), this.#r = new g(e, this.#e, s, this, this.#n, v, x, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
+			if (this.stop(), l.myTrace(e), s.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
+		}, this.#n = new h(e, this.#e, o, v, this, this.#t, this.sys, x, b), this.#i.defer(() => this.#n.destroy()), this.#r = new g(e, this.#e, o, this, this.#n, v, x, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
 			this.stop(), this.#s = !1;
 			let e = () => !0;
 			for (let t in this.#e) this.#e[t] = e;
@@ -265,7 +265,7 @@ var _ = class {
 			this.#e.navigate_to(e), this.#t.jumpJustBefore();
 			return;
 		}
-		if (this.#o("tmp", "sn.eventArg", String(e.arg ?? "")), this.#o("tmp", "sn.eventLabel", e.label ?? ""), n(e, "call", !1)) {
+		if (this.#o("tmp", "sn.eventArg", String(e.arg ?? "")), this.#o("tmp", "sn.eventLabel", e.label ?? ""), o(e, "call", !1)) {
 			if (this.#t.subIdxToken(), this.#e.call(e)) return;
 		} else if (this.#e.clear_event({}), this.#e.jump(e)) return;
 		this.resume();

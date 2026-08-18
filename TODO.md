@@ -11,16 +11,7 @@
 ソースコメントに記録されている（`本家 ○○.ts:行番号 の移植` の形）。以下は2026-08-18の
 調査結果。
 
-- [ ] **`parsimmon` の削除** — `src/sn/PropParser.ts` の parsimmon 使用は
-  **コンストラクタの文法構築（`:29-175`）と `#parser.parse()`（`:180`, `:243`）に限定**され、
-  評価テーブル `#hFnc`（`:201-321`）・`#procEmbedVar`・`getValAmpersand` は非依存。
-  **この文法構築部分だけを差し替える**。
-  移植元 bluesnovel `src/ts/ExprEval.ts`（390行）— 手書きトークナイザ `#tokenize()`(`:85-148`) +
-  Pratt parser `#parseToAst()`(`:153-224`) + 優先順位表 `H_BINOP`(`:46-60`)。
-  **このファイルは本家 `test/PropParser.test.ts` をテスト駆動で移植して作られた**ので戻すのは容易。
-  戻す際の差分: `game:` 別名は不要／例外接頭辞を `(ExprEval)` → **`(PropParser)`** に戻す／
-  `evalBool()` は bluesnovel 独自なので移植しない。
-  検証: `bun test`（`test/PropParser.test.ts` 706行が合否判定そのもの）
+- [ ] 自作tooktipの横幅が固定されず文字が長くなると広がり放題だが、規定値固定になってなかったか
 
 - [ ] **`howler` の削除**（最も影響大）
   - 新規 `src/sn/SndCtx.ts`（bluesnovel `src/ts/SndMng.ts:38-88` 相当）— プロセスに1つだけの
@@ -56,7 +47,7 @@
     pan/rate、`:139` の `glbVolume`、`howlList()` 空判定（`:44,65,73,90,117,178,272`）。
     **それ以外（変数の帳簿・待ち時間・ダッキング・しおり復元）は無改変で通るべき＝これが合否判定**
 
-- [ ] `@types/howler` / `@types/parsimmon` も同時に削除
+- [ ] `@types/howler` も同時に削除
 
 ### 積み残し
 

@@ -1,5 +1,5 @@
-import { i as e, l as t, r as n, s as r, t as i } from "./CmnLib.js";
-import { m as a } from "./pixi.js";
+import { m as e } from "./pixi.js";
+import { i as t, l as n, r, s as i, t as a } from "./CmnLib.js";
 import { t as o } from "./EventListenerCtn.js";
 //#region node_modules/motion-utils/dist/es/array.mjs
 function s(e, t) {
@@ -2945,9 +2945,9 @@ var ja = Aa(), Ma = class {
 		for (let t of Object.values(e.#e)) t.tw?.kill();
 		e.#e = {};
 	}
-	static setTwProp(e, n) {
-		let i = t(n, "repeat", 1);
-		return e.delay(t(n, "delay", 0)).easing(this.ease(n.ease)).repeat(i > 0 ? i - 1 : Infinity).yoyo(r(n, "yoyo", !1));
+	static setTwProp(e, t) {
+		let r = n(t, "repeat", 1);
+		return e.delay(n(t, "delay", 0)).easing(this.ease(t.ease)).repeat(r > 0 ? r - 1 : Infinity).yoyo(i(t, "yoyo", !1));
 	}
 	static #n(e) {
 		return e < 1 / 2.75 ? 7.5625 * e * e : e < 2 / 2.75 ? 7.5625 * (e -= 1.5 / 2.75) * e + .75 : e < 2.5 / 2.75 ? 7.5625 * (e -= 2.25 / 2.75) * e + .9375 : 7.5625 * (e -= 2.625 / 2.75) * e + .984375;
@@ -3018,19 +3018,19 @@ var ja = Aa(), Ma = class {
 		}
 		return r;
 	}
-	static tween(e, n, r, a, o, s, c, l = !0) {
-		let u = this.#t.isSkipping ? 0 : t(n, "time", NaN);
+	static tween(e, t, r, i, o, s, c, l = !0) {
+		let u = this.#t.isSkipping ? 0 : n(t, "time", NaN);
 		this.#e[e]?.tw?.kill();
-		let d = new Ma(r).to(a, u).onUpdate((e) => o(e));
-		this.setTwProp(d, n), this.#e[e] = {
+		let d = new Ma(r).to(i, u).onUpdate((e) => o(e));
+		this.setTwProp(d, t), this.#e[e] = {
 			tw: d,
 			onEnd: c
 		};
-		let { path: f } = n, p = d;
+		let { path: f } = t, p = d;
 		if (f) {
-			i.debugLog && console.group(`🍝 [${n[":タグ名"] ?? ""}] path=${f}= start(${String(r.x)},${String(r.y)},${String(r.alpha)})`);
+			a.debugLog && console.group(`🍝 [${t[":タグ名"] ?? ""}] path=${f}= start(${String(r.x)},${String(r.y)},${String(r.alpha)})`);
 			for (let { groups: e } of f.matchAll(this.#i)) {
-				let { x: t, x2: a, y: o, y2: s, o: c, o2: l, json: d } = e, f = {};
+				let { x: n, x2: i, y: o, y2: s, o: c, o2: l, json: d } = e, f = {};
 				if (d) try {
 					f = JSON.parse(d);
 				} catch (e) {
@@ -3038,25 +3038,25 @@ var ja = Aa(), Ma = class {
 					continue;
 				}
 				else {
-					let e = t ?? a;
+					let e = n ?? i;
 					e && (f.x = e);
-					let n = o ?? s;
-					n && (f.y = n);
+					let t = o ?? s;
+					t && (f.y = t);
 					let r = c ?? l;
 					r && (f.alpha = Number(r));
 				}
 				let m = this.cnvTweenArg(f, r);
-				i.debugLog && console.info(`🍝 ${d ?? `{x:${String(t)} y:${String(o)} o:${String(c)}}`} => hTo:${JSON.stringify(m)}`);
+				a.debugLog && console.info(`🍝 ${d ?? `{x:${String(n)} y:${String(o)} o:${String(c)}}`} => hTo:${JSON.stringify(m)}`);
 				let h = new Ma(r).to(m, u);
-				this.setTwProp(h, n), p.chain(h), p = h;
+				this.setTwProp(h, t), p.chain(h), p = h;
 			}
-			i.debugLog && console.groupEnd();
+			a.debugLog && console.groupEnd();
 		}
 		p.onComplete(() => {
 			let t = this.#e[e];
 			t?.tw && (delete this.#e[e], t.tw = void 0, d.stop(), t.onEnd?.(), s(), $.notifyEndProc(Pa + e));
 		});
-		let { chain: m } = n;
+		let { chain: m } = t;
 		if (m) {
 			let e = this.#e[m];
 			if (!e?.tw) throw `${m}は存在しない・または終了したトゥイーンです`;
@@ -3068,7 +3068,7 @@ var ja = Aa(), Ma = class {
 	static wt(e) {
 		if (!this.#e["trans\n"]?.tw) return !1;
 		let t = () => this.stopEndTrans();
-		return $.beginProc(Na, t, !0, r(e, "canskip", !0) ? t : void 0), !0;
+		return $.beginProc(Na, t, !0, i(e, "canskip", !0) ? t : void 0), !0;
 	}
 	static stopEndTrans() {
 		this.#e[Na]?.tw?.stop().end();
@@ -3076,8 +3076,8 @@ var ja = Aa(), Ma = class {
 	static wait_tsy(e) {
 		let t = this.#a(e), n = this.#e[t]?.tw;
 		if (!n) return !1;
-		let i = () => n.end();
-		return $.beginProc(Pa + t, i, !0, r(e, "canskip", !0) ? i : void 0), new Ra(e), !0;
+		let r = () => n.end();
+		return $.beginProc(Pa + t, r, !0, i(e, "canskip", !0) ? r : void 0), new Ra(e), !0;
 	}
 	static #a(e) {
 		let { layer: t = "", id: n, name: r } = e, i = n ? `frm\n${n}` : r ?? t;
@@ -3096,14 +3096,14 @@ var ja = Aa(), Ma = class {
 		let t = this.#a(e);
 		return this.#e[t]?.tw?.resume(), !1;
 	}
-}, Q = class e {
+}, Q = class t {
 	static #e = /* @__PURE__ */ new Set();
 	static #t;
 	static get rs() {
 		return this.#t;
 	}
 	constructor() {
-		e.#t = this;
+		t.#t = this;
 	}
 	static #n = {};
 	static #r = {};
@@ -3124,7 +3124,7 @@ var ja = Aa(), Ma = class {
 		this.#n = e;
 	}
 	static clear_event(e) {
-		let t = r(e, "global", !1), n = t ? this.#r : this.#n;
+		let t = i(e, "global", !1), n = t ? this.#r : this.#n;
 		for (let [e, t] of Object.entries(n)) e.startsWith("dom=") && this.getHtmlElmList(e).el.forEach((e) => e.removeEventListener("click", t));
 		return t ? this.#r = {} : this.#n = {}, !1;
 	}
@@ -3149,7 +3149,7 @@ var ja = Aa(), Ma = class {
 		};
 	}
 	static waitRsvEvent(e, t) {
-		$.val.saveKidoku(), t ? this.#n.click = this.#n.enter = this.#n.arrowdown = this.#n["wheel.y>0"] = () => t() : (delete this.#n.click, delete this.#n.enter, delete this.#n.arrowdown, delete this.#n["wheel.y>0"]), this.getEvt2Fnc = e ? (e) => this.#n[e] ?? this.#r[e] : (e) => this.#n[e], $.scrItr.noticeWait(), i.debugLog && console.log("🎍 wait event... %o", {
+		$.val.saveKidoku(), t ? this.#n.click = this.#n.enter = this.#n.arrowdown = this.#n["wheel.y>0"] = () => t() : (delete this.#n.click, delete this.#n.enter, delete this.#n.arrowdown, delete this.#n["wheel.y>0"]), this.getEvt2Fnc = e ? (e) => this.#n[e] ?? this.#r[e] : (e) => this.#n[e], $.scrItr.noticeWait(), a.debugLog && console.log("🎍 wait event... %o", {
 			local: Object.keys(this.#n),
 			global: Object.keys(this.#r)
 		});
@@ -3166,9 +3166,9 @@ var ja = Aa(), Ma = class {
 		}
 		this.getEvt2Fnc = (t) => this.#n[t] ?? e[t];
 	}
-	fire(t, r) {
-		let i = e.#i.exec(t)?.[0] ?? "", o = t.toLowerCase();
-		switch (i) {
+	fire(n, i) {
+		let a = t.#i.exec(n)?.[0] ?? "", o = n.toLowerCase();
+		switch (a) {
 			case "click":
 			case "rightclick":
 			case "middleclick":
@@ -3176,17 +3176,17 @@ var ja = Aa(), Ma = class {
 			case "arrowdown":
 			case "btn":
 				if ($.evtMng.isSkipping) break;
-				if (!e.isFirstFire()) return;
+				if (!t.isFirstFire()) return;
 		}
-		if (i === "enter") {
-			let e = $.fcs.getFocus();
-			if (e instanceof a) {
-				e.emit(n, new PointerEvent(n));
+		if (a === "enter") {
+			let t = $.fcs.getFocus();
+			if (t instanceof e) {
+				t.emit(r, new PointerEvent(r));
 				return;
 			}
 		}
-		let s = e.getEvt2Fnc(o);
-		s && (r.stopImmediatePropagation?.(), !(!o.startsWith("dom=") && $.layMng.clickTxtLay()) && s(r));
+		let s = t.getEvt2Fnc(o);
+		s && (i.stopImmediatePropagation?.(), !(!o.startsWith("dom=") && $.layMng.clickTxtLay()) && s(i));
 	}
 	static #i = /btn|\w+$/;
 	get skip_enabled() {
@@ -3195,10 +3195,10 @@ var ja = Aa(), Ma = class {
 	isWait = !1;
 	static #a = !1;
 	static isFirstFire() {
-		return !e.#a && (e.#a = !0, !0);
+		return !t.#a && (t.#a = !0, !0);
 	}
 	static resetFired() {
-		e.#a = !1;
+		t.#a = !1;
 	}
 	static aPage;
 	static lenPage = 0;
@@ -3210,15 +3210,15 @@ var ja = Aa(), Ma = class {
 		if (!$.val.getVal("save:sn.doRecLog")) return;
 		let { fn: t, idx: n } = $.scrItr.nowScrIdx(), r = `${String(n - 1)}:` + t;
 		if (this.aPage.findIndex((e) => e.key === r) > -1) return;
-		i.debugLog && console.log(`📜 %crecodePage === week:${String(e)} lenPage:${String(this.lenPage)} len:${String(this.aPage.length)} POP:${String(this.aPage.at(-1)?.week)}`, "color:#3B0;"), this.aPage.at(-1)?.week && this.aPage.pop();
-		let { max_len: a } = $.cfg.oCfg.log, o = $.scrItr.nowMark();
+		a.debugLog && console.log(`📜 %crecodePage === week:${String(e)} lenPage:${String(this.lenPage)} len:${String(this.aPage.length)} POP:${String(this.aPage.at(-1)?.week)}`, "color:#3B0;"), this.aPage.at(-1)?.week && this.aPage.pop();
+		let { max_len: i } = $.cfg.oCfg.log, o = $.scrItr.nowMark();
 		o.hSave["const.sn.sLog"] = "[]", this.aPage.push({
 			key: r,
 			week: e,
 			fn: $.val.getVal("save:const.sn.scriptFn", t),
 			index: $.val.getVal("save:const.sn.scriptIdx", 0),
 			mark: o
-		}) > a && (this.aPage = this.aPage.slice(-a)), this.lenPage = this.aPage.length, i.debugLog && (console.log(`   %clenPage:${String(this.lenPage)} (base=${o.hPages.base.fore.sBkFn} 0=${o.hPages[0].fore.sBkFn} mes=${String(/color: \w+;/.exec((o.hPages.mes?.fore).txs.cssText))})%c mark:%o`, "color:#3B0;", "", o), console.table(this.aPage)), $.val.setVal_Nochk("sys", "const.sn.aPageLog", JSON.stringify(this.aPage));
+		}) > i && (this.aPage = this.aPage.slice(-i)), this.lenPage = this.aPage.length, a.debugLog && (console.log(`   %clenPage:${String(this.lenPage)} (base=${o.hPages.base.fore.sBkFn} 0=${o.hPages[0].fore.sBkFn} mes=${String(/color: \w+;/.exec((o.hPages.mes?.fore).txs.cssText))})%c mark:%o`, "color:#3B0;", "", o), console.table(this.aPage)), $.val.setVal_Nochk("sys", "const.sn.aPageLog", JSON.stringify(this.aPage));
 	}
 	static playbackPage(e, t) {
 		this.aPage = JSON.parse(e), this.lenPage = this.aPage.length, this.posPage >= this.lenPage && (this.posPage = this.lenPage - 1), this.styPaging = t;
@@ -3229,59 +3229,59 @@ var ja = Aa(), Ma = class {
 	endProc() {
 		new Ia();
 	}
-	l(t) {
+	l(e) {
 		if (!$.tagL_enabled) return !1;
-		if (e.recodePage(!0), $.auto_enabled) return t.time = Number($.val.getVal(`sys:sn.auto.msecLineWait${$.scrItr.isKidoku ? "_Kidoku" : ""}`)), this.wait(t);
+		if (t.recodePage(!0), $.auto_enabled) return e.time = Number($.val.getVal(`sys:sn.auto.msecLineWait${$.scrItr.isKidoku ? "_Kidoku" : ""}`)), this.wait(e);
 		if ($.skip_enabled) {
 			if (!$.skip_all && !$.scrItr.isNextKidoku) $.cancelAutoSkip();
-			else if ("ps".includes(String($.val.getVal("sys:sn.skip.mode")))) return t.time = 50, this.wait(t);
+			else if ("ps".includes(String($.val.getVal("sys:sn.skip.mode")))) return e.time = 50, this.wait(e);
 		}
-		return r(t, "visible", !0) && ($.layMng.breakLine(t), $.goTxt()), new Ra(t), !0;
+		return i(e, "visible", !0) && ($.layMng.breakLine(e), $.goTxt()), new Ra(e), !0;
 	}
-	p(t) {
-		if (e.recodePage(), $.auto_enabled) return t.time = Number($.val.getVal(`sys:sn.auto.msecPageWait${$.scrItr.isKidoku ? "_Kidoku" : ""}`)), this.wait(t);
+	p(e) {
+		if (t.recodePage(), $.auto_enabled) return e.time = Number($.val.getVal(`sys:sn.auto.msecPageWait${$.scrItr.isKidoku ? "_Kidoku" : ""}`)), this.wait(e);
 		if ($.skip_enabled) {
 			if (!$.skip_all && !$.scrItr.isNextKidoku) $.cancelAutoSkip();
-			else if (String($.val.getVal("sys:sn.skip.mode")) === "s") return t.time = 50, this.wait(t);
+			else if (String($.val.getVal("sys:sn.skip.mode")) === "s") return e.time = 50, this.wait(e);
 		}
-		return r(t, "visible", !0) && ($.layMng.breakPage(t), $.goTxt()), new Ra(t), !0;
+		return i(e, "visible", !0) && ($.layMng.breakPage(e), $.goTxt()), new Ra(e), !0;
 	}
-	s(t) {
-		return e.recodePage(), $.cancelAutoSkip(), new Ra(t), !0;
+	s(e) {
+		return t.recodePage(), $.cancelAutoSkip(), new Ra(e), !0;
 	}
-	wait(n) {
-		let i = t(n, "time", NaN);
+	wait(e) {
+		let r = n(e, "time", NaN);
 		if ($.skip_enabled) return !$.skip_all && !$.scrItr.isNextKidoku && $.cancelAutoSkip(), !1;
 		let a = new Ma({ v: 0 }), o = "wait", s = () => {
 			a.stop(), $.notifyEndProc(o);
 		};
-		a.to({ v: 1 }, i).onComplete(s).start(), e.#e.add(a);
-		let c = r(n, "canskip", !0);
+		a.to({ v: 1 }, r).onComplete(s).start(), t.#e.add(a);
+		let c = i(e, "canskip", !0);
 		return $.beginProc(o, s, !0, c ? s : void 0), !0;
 	}
-	page(t) {
-		if (!("clear" in t || "to" in t || "style" in t)) throw "clear,style,to いずれかは必須です";
-		let { key: n, style: i } = t;
-		return n && (e.aKeysAtPaging = n.split(",")), i ? (e.styPaging = i, $.val.setVal_Nochk("save", "const.sn.styPaging", i), !1) : r(t, "clear", !1) ? (e.aPage = [], e.lenPage = 0, e.posPage = 0, $.val.setVal_Nochk("sys", "const.sn.aPageLog", "[]"), $.val.setVal_Nochk("save", "const.sn.styPaging", e.INI_STYPAGE), !1) : !1;
+	page(e) {
+		if (!("clear" in e || "to" in e || "style" in e)) throw "clear,style,to いずれかは必須です";
+		let { key: n, style: r } = e;
+		return n && (t.aKeysAtPaging = n.split(",")), r ? (t.styPaging = r, $.val.setVal_Nochk("save", "const.sn.styPaging", r), !1) : i(e, "clear", !1) ? (t.aPage = [], t.lenPage = 0, t.posPage = 0, $.val.setVal_Nochk("sys", "const.sn.aPageLog", "[]"), $.val.setVal_Nochk("save", "const.sn.styPaging", t.INI_STYPAGE), !1) : !1;
 	}
 	static destroy() {
-		for (let t of e.#e) t.kill();
-		e.#e.clear(), this.#n = {}, this.#r = {}, this.aPage = [], this.lenPage = 0, this.posPage = 0;
+		for (let e of t.#e) e.kill();
+		t.#e.clear(), this.#n = {}, this.#r = {}, this.aPage = [], this.lenPage = 0, this.posPage = 0;
 	}
 }, Ia = class extends Q {
 	constructor() {
-		super(), i.debugLog && console.log("📖 => %cReadingState_go", "color:#3B0;"), $.main.resume();
+		super(), a.debugLog && console.log("📖 => %cReadingState_go", "color:#3B0;"), $.main.resume();
 	}
 	fire(e, t) {}
 }, La = class extends Q {
 	constructor() {
-		super(), i.debugLog && console.log("📖 => %cReadingState_proc", "color:#3B0;");
+		super(), a.debugLog && console.log("📖 => %cReadingState_proc", "color:#3B0;");
 	}
 	fire(e, t) {}
 }, Ra = class extends Q {
 	constructor(e) {
-		super(), i.debugLog && console.log("📖 => %cReadingState_wait", "color:#3B0;");
-		let t = () => {}, n = r(e, "global", !0);
+		super(), a.debugLog && console.log("📖 => %cReadingState_wait", "color:#3B0;");
+		let t = () => {}, n = i(e, "global", !0);
 		switch (e[":タグ名"]) {
 			case "wait": return;
 			case "s":
@@ -3289,7 +3289,7 @@ var ja = Aa(), Ma = class {
 				return;
 			case "p":
 				t = () => {
-					r(e, "er", !1) && $.hTag.er(e), new Ia();
+					i(e, "er", !1) && $.hTag.er(e), new Ia();
 				};
 				break;
 			default: t = () => new Ia();
@@ -3315,7 +3315,7 @@ var ja = Aa(), Ma = class {
 	}
 }, za = class e extends Q {
 	constructor() {
-		super(), i.debugLog && console.log("📖 => %cReadingState_page", "color:#3B0;"), $.val.setVal_Nochk("tmp", "const.sn.isPaging", !0);
+		super(), a.debugLog && console.log("📖 => %cReadingState_page", "color:#3B0;"), $.val.setVal_Nochk("tmp", "const.sn.isPaging", !0);
 	}
 	static go(t) {
 		return new e().page(t);
@@ -3332,10 +3332,10 @@ var ja = Aa(), Ma = class {
 		$.main.resume();
 	}
 	l(e) {
-		return this.#e ? Q.posPage === Q.lenPage - 1 ? (this.#t(), new Ia().l(e)) : (r(e, "visible", !0) && $.layMng.breakLine(e), $.layMng.setAllStyle2TxtLay(Q.styPaging), $.goTxt(), Q.aPage[Q.posPage]?.week ? (Q.waitRsvEvent4Paging(), !0) : !1) : super.l(e);
+		return this.#e ? Q.posPage === Q.lenPage - 1 ? (this.#t(), new Ia().l(e)) : (i(e, "visible", !0) && $.layMng.breakLine(e), $.layMng.setAllStyle2TxtLay(Q.styPaging), $.goTxt(), Q.aPage[Q.posPage]?.week ? (Q.waitRsvEvent4Paging(), !0) : !1) : super.l(e);
 	}
 	p(e) {
-		return this.#e ? Q.posPage === Q.lenPage - 1 ? (this.#t(), new Ia().p(e)) : (r(e, "visible", !0) && $.layMng.breakPage(e), $.layMng.setAllStyle2TxtLay(Q.styPaging), $.goTxt(), Q.waitRsvEvent4Paging(), !0) : super.p(e);
+		return this.#e ? Q.posPage === Q.lenPage - 1 ? (this.#t(), new Ia().p(e)) : (i(e, "visible", !0) && $.layMng.breakPage(e), $.layMng.setAllStyle2TxtLay(Q.styPaging), $.goTxt(), Q.waitRsvEvent4Paging(), !0) : super.p(e);
 	}
 	s(e) {
 		return new Ra(e), !0;
@@ -3346,7 +3346,7 @@ var ja = Aa(), Ma = class {
 	page(e) {
 		let { to: t, style: n, clear: r } = e;
 		if (n || r) return !1;
-		switch (i.debugLog && console.log(`📜 %cpage() pos:${String(Q.posPage)}%c len:${String(Q.lenPage)} to:${String(t)}`, "color:#3B0;", ""), t) {
+		switch (a.debugLog && console.log(`📜 %cpage() pos:${String(Q.posPage)}%c len:${String(Q.lenPage)} to:${String(t)}`, "color:#3B0;", ""), t) {
 			case "oldest":
 				if (Q.posPage === 0) return !1;
 				Q.posPage = 0;
@@ -3372,10 +3372,10 @@ var ja = Aa(), Ma = class {
 			default: throw `属性to「${String(t)}」は異常です`;
 		}
 		Q.posPage === Q.lenPage - 1 && this.#t();
-		let a = Q.aPage[Q.posPage];
-		if (!a) throw `posPage異常:${String(Q.posPage)}`;
-		let { fn: o, index: s, mark: c } = a;
-		if (i.debugLog) {
+		let i = Q.aPage[Q.posPage];
+		if (!i) throw `posPage異常:${String(Q.posPage)}`;
+		let { fn: o, index: s, mark: c } = i;
+		if (a.debugLog) {
 			let e = $.scrItr.nowMark(), { week: t } = Q.aPage[Q.posPage] ?? { week: !1 };
 			console.log(`   -- fn:${o} i:${String(s)} pos:${String(Q.posPage)} (base=%c${(e.hPages.base?.fore).sBkFn}%c 0=%c${(e.hPages[0]?.fore).sBkFn}%c mes=%c${String(/color: \w+;/.exec((e.hPages.mes?.fore).txs.cssText))}%c) week:${String(t)} A:${String(Q.posPage === Q.lenPage - 1)}\n   styPaging=%c${Q.styPaging}%c\n   mark:%o`, "background-color:#3B0; color:#000;", "", "background-color:#B4F; color:#000;", "", "color:#B68;", "", Q.styPaging, "", c);
 		}
@@ -3388,22 +3388,22 @@ var ja = Aa(), Ma = class {
 		$.val.setVal_Nochk("tmp", "const.sn.isPaging", !1), this.#e = !1;
 	}
 }, $ = class {
-	static beginProc(t, r, a = !0, o) {
-		if (i.debugLog && console.log(`📖.beginProc id:%c${t}%c onNotify:${String(r)} endProc:${String(a)} onClickSkip:${String(o)}`, "color:#3B0;", ""), this.#e(), this.#r = t, r) {
+	static beginProc(e, n, i = !0, o) {
+		if (a.debugLog && console.log(`📖.beginProc id:%c${e}%c onNotify:${String(n)} endProc:${String(i)} onClickSkip:${String(o)}`, "color:#3B0;", ""), this.#e(), this.#r = e, n) {
 			let { promise: e, resolve: t } = Promise.withResolvers();
 			e.then((e) => {
-				i.debugLog && console.log(`📖.callBack id:%c${e}%c`, "color:#3B0;", ""), r(), a ? this.endProc(e) : this.#e();
+				a.debugLog && console.log(`📖.callBack id:%c${e}%c`, "color:#3B0;", ""), n(), i ? this.endProc(e) : this.#e();
 			}), this.#n = t;
 		}
 		if (o) {
-			let r = () => {
-				this.cancelAutoSkip(), o(), a && this.endProc(t);
+			let n = () => {
+				this.cancelAutoSkip(), o(), i && this.endProc(e);
 			};
-			this.#t.add(this.main.cvs, n, (e) => {
-				e.stopPropagation(), r();
-			}), this.#t.add(document, e, (e) => {
-				e.isComposing || (e.stopPropagation(), r());
-			}), this.procWheel4wle(this.#t, r);
+			this.#t.add(this.main.cvs, r, (e) => {
+				e.stopPropagation(), n();
+			}), this.#t.add(document, t, (e) => {
+				e.isComposing || (e.stopPropagation(), n());
+			}), this.procWheel4wle(this.#t, n);
 		}
 		Q.rs.beginProc();
 	}
@@ -3413,10 +3413,10 @@ var ja = Aa(), Ma = class {
 	static #t = new o();
 	static #n = () => {};
 	static notifyEndProc(e) {
-		i.debugLog && console.log(`📖.notifyEndProc id:%c${e}%c=${String(this.#r === e)}`, "color:#3B0;", ""), this.#r === e && this.#n(e);
+		a.debugLog && console.log(`📖.notifyEndProc id:%c${e}%c=${String(this.#r === e)}`, "color:#3B0;", ""), this.#r === e && this.#n(e);
 	}
 	static endProc(e) {
-		i.debugLog && console.log(`📖.endProc id:%c${e}%c=${String(this.#r === e)}`, "color:#3B0;", ""), this.#r === e && (Q.rs.endProc(), this.#e());
+		a.debugLog && console.log(`📖.endProc id:%c${e}%c=${String(this.#r === e)}`, "color:#3B0;", ""), this.#r === e && (Q.rs.endProc(), this.#e());
 	}
 	static #r = "";
 	static get procID() {

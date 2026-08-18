@@ -1,5 +1,5 @@
-import { l as e, s as t, t as n } from "./CmnLib.js";
-import { d as r, n as i, o as a } from "./pixi.js";
+import { d as e, n as t, o as n } from "./pixi.js";
+import { l as r, s as i, t as a } from "./CmnLib.js";
 import { t as o } from "./Layer.js";
 import { t as s } from "./Reading.js";
 import { t as c } from "./SpritesMng.js";
@@ -44,7 +44,7 @@ var l = class {
 	}
 	#t = new u(this.ctn, this);
 	constructor() {
-		super(), n.isDbg && (this.#n = (e) => this.#t.setSp(e), this.cvsResize = () => {
+		super(), a.isDbg && (this.#n = (e) => this.#t.setSp(e), this.cvsResize = () => {
 			super.cvsResize(), this.#t.cvsResize();
 		});
 	}
@@ -58,13 +58,13 @@ var l = class {
 		});
 		return n && s.beginProc(t), n;
 	};
-	#o(n, r) {
-		let { fn: i, face: a = "" } = n;
-		if (this.#t.sethArg(n), !i) return super.lay(n), this.ctn.children.length > 0 && this.setPos(n), this.#i = "", this.#r = this.#a = a, r(!1), !1;
-		let s = "fn" in n, l = "face" in n;
-		return this.clearLay({ clear_filter: t(n, "clear_filter", !0) }), s && (this.#i = i), l && (this.#a = a), super.lay(n), n.dx = 0, n.dy = 0, this.#s.destroy(), this.#s = new c(this.#r = i + (a ? "," + a : ""), this.ctn, (t) => {
-			("width" in n || "height" in n) && (t.width = e(n, "width", 0), t.height = e(n, "height", 0)), this.#c = t.width, this.#l = t.height, o.setXY(t, n, this.ctn, !0), o.setBlendmode(this.ctn, n), this.#n(t);
-		}, (e) => r(e)), this.#s.ret;
+	#o(e, t) {
+		let { fn: n, face: a = "" } = e;
+		if (this.#t.sethArg(e), !n) return super.lay(e), this.ctn.children.length > 0 && this.setPos(e), this.#i = "", this.#r = this.#a = a, t(!1), !1;
+		let s = "fn" in e, l = "face" in e;
+		return this.clearLay({ clear_filter: i(e, "clear_filter", !0) }), s && (this.#i = n), l && (this.#a = a), super.lay(e), e.dx = 0, e.dy = 0, this.#s.destroy(), this.#s = new c(this.#r = n + (a ? "," + a : ""), this.ctn, (t) => {
+			("width" in e || "height" in e) && (t.width = r(e, "width", 0), t.height = r(e, "height", 0)), this.#c = t.width, this.#l = t.height, o.setXY(t, e, this.ctn, !0), o.setBlendmode(this.ctn, e), this.#n(t);
+		}, (e) => t(e)), this.#s.ret;
 	}
 	#s = new c();
 	#c = 0;
@@ -81,7 +81,7 @@ var l = class {
 			this.ctn.alpha = 1, this.ctn.alpha = e;
 			return;
 		}
-		this.#d = new a(this.#u), this.#d.visible = !1, this.ctn.addChildAt(this.#d, 0), this.#d.position.set(-this.ctn.x, -this.ctn.y);
+		this.#d = new n(this.#u), this.#d.visible = !1, this.ctn.addChildAt(this.#d, 0), this.#d.position.set(-this.ctn.x, -this.ctn.y);
 		let t = () => {
 			let e = this.ctn.alpha;
 			this.ctn.alpha = 1;
@@ -99,18 +99,18 @@ var l = class {
 			t(), this.#d.visible = !0;
 		}, l.#e.ticker.add(this.#f);
 	}
-	#u = r.create({
-		width: n.stageW,
-		height: n.stageH
+	#u = e.create({
+		width: a.stageW,
+		height: a.stageH
 	});
-	#d = new a();
+	#d = new n();
 	#f = () => {};
 	renderEnd() {
 		l.#e.ticker.remove(this.#f), this.ctn.removeChild(this.#d);
 		for (let e of this.ctn.children) e.visible = !0;
-		this.#d.destroy(!0), this.#u = r.create({
-			width: n.stageW,
-			height: n.stageH
+		this.#d.destroy(!0), this.#u = e.create({
+			width: a.stageW,
+			height: a.stageH
 		});
 	}
 	setPos(e) {
@@ -119,7 +119,7 @@ var l = class {
 	get containMovement() {
 		if (this.#r === "") return !1;
 		let e = this.ctn.children;
-		return this.#r.split(",").some((t, n) => e[n] instanceof i || c.getHFn2VElm(t));
+		return this.#r.split(",").some((n, r) => e[r] instanceof t || c.getHFn2VElm(n));
 	}
 	clearLay(e) {
 		super.clearLay(e), this.#s.destroy(), this.#i = "", this.#a = "", this.#r = "";

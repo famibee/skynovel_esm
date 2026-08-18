@@ -1,5 +1,5 @@
-import { d as e, l as t, p as n, s as r } from "./CmnLib.js";
-import { b as i, c as a, f as o, g as s, h as c, l, n as u, o as d } from "./pixi.js";
+import { b as e, c as t, f as n, g as r, h as i, l as a, n as o, o as s } from "./pixi.js";
+import { d as c, l, p as u, s as d } from "./CmnLib.js";
 import { n as f } from "./ConfigBase.js";
 import { t as p } from "./DebugMng.js";
 import { t as m } from "./Layer.js";
@@ -56,49 +56,49 @@ var g = class g {
 		}
 		g.#y = {};
 	}
-	static #l(e, t, n, r) {
-		if (!e) return !1;
-		let o = !1;
-		if (e.startsWith("data:")) {
-			let i = () => {
-				let i = d.from(e);
-				r(i), t(i), n(o);
+	static #l(n, i, o, c) {
+		if (!n) return !1;
+		let l = !1;
+		if (n.startsWith("data:")) {
+			let e = () => {
+				let e = s.from(n);
+				c(e), i(e), o(l);
 			};
-			return e in s ? i() : (o = !0, new a().add(e, e).load(i)), o;
+			return n in r ? e() : (l = !0, new t().add(n, n).load(e)), l;
 		}
-		let c = [], u = new a();
-		for (let t of e.split(",")) {
-			if (!t) throw "face属性に空要素が含まれます";
-			let { dx: e, dy: n, blendmode: r, fn: d } = g.#u[t] ?? {
-				fn: t,
+		let u = [], d = new t();
+		for (let i of n.split(",")) {
+			if (!i) throw "face属性に空要素が含まれます";
+			let { dx: n, dy: o, blendmode: s, fn: c } = g.#u[i] ?? {
+				fn: i,
 				dx: 0,
 				dy: 0,
-				blendmode: i.NORMAL
+				blendmode: e.NORMAL
 			};
-			if (c.push({
-				fn: d,
-				fnc: (t) => {
-					t.transform && (t.x = e, t.y = n, t.blendMode = r);
+			if (u.push({
+				fn: c,
+				fnc: (e) => {
+					e.transform && (e.x = n, e.y = o, e.blendMode = s);
 				}
-			}), d in g.#d || d in s || d in a.shared.resources) continue;
-			o = !0;
-			let p = g.#e.searchPath(d, f.SP_GSM), m = this.#n.arg.crypto ? { xhrType: p.endsWith(".json") ? l.XHR_RESPONSE_TYPE.TEXT : l.XHR_RESPONSE_TYPE.BUFFER } : {};
-			u.add({
+			}), c in g.#d || c in r || c in t.shared.resources) continue;
+			l = !0;
+			let p = g.#e.searchPath(c, f.SP_GSM), m = this.#n.arg.crypto ? { xhrType: p.endsWith(".json") ? a.XHR_RESPONSE_TYPE.TEXT : a.XHR_RESPONSE_TYPE.BUFFER } : {};
+			d.add({
 				...m,
-				name: d,
+				name: c,
 				url: p
 			});
 		}
-		let p = c.at(0);
-		p && (p.fnc = t);
+		let p = u.at(0);
+		p && (p.fnc = i);
 		let m = (e, t) => {
-			for (let { fn: e, fnc: n } of c) {
-				let i = g.#v(e, t);
-				i.name = e, r(i), n(i);
+			for (let { fn: e, fnc: n } of u) {
+				let r = g.#v(e, t);
+				r.name = e, c(r), n(r);
 			}
-			n(o);
+			o(l);
 		};
-		return o ? u.use((e, t) => {
+		return l ? d.use((e, t) => {
 			try {
 				if (e.extension === "json") {
 					this.#n.dec("json", e.data).then((n) => g.#g(n, e, t));
@@ -109,13 +109,13 @@ var g = class g {
 				let n = `画像/動画ロード失敗です fn:${e.name} ${String(t)}`;
 				g.#o.isSkipping ? console.warn(n) : console.error("%c" + n, "color:#FF3300;");
 			}
-		}).load(m) : queueMicrotask(() => m(0, {})), o;
+		}).load(m) : queueMicrotask(() => m(0, {})), l;
 	}
 	static #u = {};
 	static #d = {};
 	static #f = (e, { type: t, name: n, data: r }, i) => {
 		switch (t) {
-			case l.TYPE.VIDEO: {
+			case a.TYPE.VIDEO: {
 				let e = r;
 				e.volume = g.#a, g.#y[n] = g.#h(e);
 			}
@@ -125,44 +125,44 @@ var g = class g {
 	static #p(e) {
 		let t = /([^\d]+)\d+\.(\w+)/.exec(e[0] ?? "");
 		if (!t) return [];
-		let [, r = "", i = ""] = t, a = r.length, o = -i.length - 1;
-		return e.sort((e, t) => n(e.slice(a, o)) > n(t.slice(a, o)) ? 1 : -1);
+		let [, n = "", r = ""] = t, i = n.length, a = -r.length - 1;
+		return e.sort((e, t) => u(e.slice(i, a)) > u(t.slice(i, a)) ? 1 : -1);
 	}
-	static #m(e, t, n) {
-		if (t.data = e, t.extension !== "bin" && n(), e instanceof HTMLImageElement) {
-			o.fromLoader(e, t.url, t.name).then((r) => {
-				t.texture = r, t.type = l.TYPE.IMAGE, n(), URL.revokeObjectURL(e.src);
+	static #m(e, t, r) {
+		if (t.data = e, t.extension !== "bin" && r(), e instanceof HTMLImageElement) {
+			n.fromLoader(e, t.url, t.name).then((n) => {
+				t.texture = n, t.type = a.TYPE.IMAGE, r(), URL.revokeObjectURL(e.src);
 			});
 			return;
 		}
-		e instanceof HTMLVideoElement && (e.volume = g.#a, g.#y[t.name] = g.#h(e), t.type = l.TYPE.VIDEO), n();
+		e instanceof HTMLVideoElement && (e.volume = g.#a, g.#y[t.name] = g.#h(e), t.type = a.TYPE.VIDEO), r();
 	}
 	static #h(e) {
 		return g.#t.getVal("const.sn.needClick2Play") && (p.trace_beforeNew(`[lay系] ${p.strPos()}未クリック状態で動画を自動再生します。音声はミュートされます`, "W"), e.muted = !0), e.setAttribute("playsinline", ""), e;
 	}
-	static #g = (e, { type: t, spritesheet: n, name: r, data: i }, a) => {
+	static #g = (e, { type: t, spritesheet: r, name: i, data: o }, s) => {
 		switch (t) {
-			case l.TYPE.JSON: {
-				let e = n._frameKeys;
-				g.#p(e), g.#d[r] = {
-					aTex: e.map((e) => o.from(e)),
-					meta: i.meta
+			case a.TYPE.JSON: {
+				let e = r._frameKeys;
+				g.#p(e), g.#d[i] = {
+					aTex: e.map((e) => n.from(e)),
+					meta: o.meta
 				};
 			}
 		}
-		a();
+		s();
 	};
-	static #_(t, n, r) {
-		let { meta: i, frames: s } = n.data = JSON.parse(t);
-		if (n.type = l.TYPE.JSON, !i?.image) {
-			r();
+	static #_(e, r, o) {
+		let { meta: s, frames: l } = r.data = JSON.parse(e);
+		if (r.type = a.TYPE.JSON, !s?.image) {
+			o();
 			return;
 		}
-		let u = e(i.image), d = g.#e.searchPath(u, f.SP_GSM);
-		new a().use((e, t) => {
+		let u = c(s.image), d = g.#e.searchPath(u, f.SP_GSM);
+		new t().use((e, t) => {
 			this.#n.decAB(e.data).then((n) => {
 				if (e.data = n, n instanceof HTMLImageElement) {
-					e.type = l.TYPE.IMAGE, t(), URL.revokeObjectURL(n.src);
+					e.type = a.TYPE.IMAGE, t(), URL.revokeObjectURL(n.src);
 					return;
 				}
 				t();
@@ -170,30 +170,30 @@ var g = class g {
 		}).add({
 			name: u,
 			url: d,
-			xhrType: l.XHR_RESPONSE_TYPE.BUFFER
+			xhrType: a.XHR_RESPONSE_TYPE.BUFFER
 		}).load((e, t) => {
 			for (let { data: t } of Object.values(e.resources)) {
-				let { baseTexture: e } = o.from(t), r = Object.values(s);
-				g.#d[n.name] = {
-					aTex: r.map(({ frame: { x: t, y: n, w: r, h: i } }) => new o(e, new c(t, n, r, i))),
-					meta: i,
+				let { baseTexture: e } = n.from(t), a = Object.values(l);
+				g.#d[r.name] = {
+					aTex: a.map(({ frame: { x: t, y: r, w: a, h: o } }) => new n(e, new i(t, r, a, o))),
+					meta: s,
 					own: !0
 				};
 			}
-			r();
+			o();
 		});
 	}
 	static #v(e, t) {
 		let n = g.#d[e];
 		if (n) {
-			let e = new u(n.aTex);
+			let e = new o(n.aTex);
 			return e.animationSpeed = n.meta.animationSpeed ?? 1, e.play(), e;
 		}
-		if (e in s) return d.from(e);
-		let r = g.#y[e];
-		if (r) return d.from(r);
-		let i = t[e];
-		return i ? new d(i.texture) : new d();
+		if (e in r) return s.from(e);
+		let i = g.#y[e];
+		if (i) return s.from(i);
+		let a = t[e];
+		return a ? new s(a.texture) : new s();
 	}
 	static #y = {};
 	static getHFn2VElm(e) {
@@ -205,10 +205,10 @@ var g = class g {
 		let n = g.#y[t];
 		if (!n || n.loop) return !1;
 		if (g.#o.isSkipping || n.ended) return g.stopVideo(t), !1;
-		let i = "wv fn:" + t, a = r(e, "stop", !0), o = () => {
-			a && g.stopVideo(t);
+		let r = "wv fn:" + t, i = d(e, "stop", !0), a = () => {
+			i && g.stopVideo(t);
 		};
-		return h.beginProc(i, o, !0, r(e, "canskip", !0) ? o : void 0), n.addEventListener("ended", () => h.notifyEndProc(i), {
+		return h.beginProc(r, a, !0, d(e, "canskip", !0) ? a : void 0), n.addEventListener("ended", () => h.notifyEndProc(r), {
 			once: !0,
 			passive: !0
 		}), !0;
@@ -218,14 +218,14 @@ var g = class g {
 		t && (delete g.#y[e], t.pause(), t.currentTime = t.duration);
 	}
 	static add_face(e) {
-		let { name: n } = e;
-		if (!n) throw "nameは必須です";
-		if (n in g.#u) throw "一つのname（" + n + "）に対して同じ画像を複数割り当てられません";
-		let { fn: r = n } = e;
-		return g.#u[n] = {
-			fn: r,
-			dx: t(e, "dx", 0),
-			dy: t(e, "dy", 0),
+		let { name: t } = e;
+		if (!t) throw "nameは必須です";
+		if (t in g.#u) throw "一つのname（" + t + "）に対して同じ画像を複数割り当てられません";
+		let { fn: n = t } = e;
+		return g.#u[t] = {
+			fn: n,
+			dx: l(e, "dx", 0),
+			dy: l(e, "dy", 0),
 			blendmode: m.getBlendmodeNum(e.blendmode ?? "")
 		}, !1;
 	}

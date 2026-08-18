@@ -12,7 +12,6 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import {alt, lazy, of, optWhitespace, regex, seq, seqMap, string} from 'parsimmon';
 import {int} from './CmnLib';
 import type {T_PropParser, T_Variable, T_VAL_DATA, Scope} from './CmnInterface';
 
@@ -25,168 +24,213 @@ export type T_RET_getValName = {
 	at?		: string;
 }
 
+// 式トークン1件。NUM/NULL/BOOL/STRはvに評価済みのASTリーフ（['!num!', 値]等）を、
+//	FUNCは関数名、VARは変数参照の生テキストを持つ。それ以外（演算子・括弧）はtだけで判別できる
+type T_TOK = {t: string; v?: any[] | string};
+
+// 変数参照 hA['args'] / hB[1 + 4] の添字部分（中身は未解決の生テキストのまま）
+const REG_BRACKETS = /\[[^\]]+\]/g;
+
+// 2項演算子の優先順位表（値が大きいほど強く結合）。演算子文字列がそのままASTのopcode
+//	（#hFncのキー）になる。right:trueは右結合（例：2**3**2 は 2**(3**2)）
+const H_BINOP: {[op: string]: {bp: number; right?: boolean}} = {
+	'**':	{bp: 13, right: true},
+	'*':	{bp: 12}, '/': {bp: 12}, '¥': {bp: 12}, '%': {bp: 12},
+	'+':	{bp: 11}, '-': {bp: 11},
+	'>>>':	{bp: 10}, '<<': {bp: 10}, '>>': {bp: 10},
+	'<=':	{bp: 9}, '<': {bp: 9}, '>=': {bp: 9}, '>': {bp: 9},
+	'===':	{bp: 8}, '!==': {bp: 8}, '==': {bp: 8}, '!=': {bp: 8},
+	'&':	{bp: 7},
+	'^':	{bp: 6},
+	'|':	{bp: 5},
+	'&&':	{bp: 4},
+	'||':	{bp: 3},
+	':':	{bp: 2, right: true},	// 三項演算子の一部。単独でも構文上は成立し、意味エラーは#hFncの':'が出す
+	'?':	{bp: 1, right: true},
+};
+
 
 export class PropParser implements T_PropParser {
-	#parser: any = null;
+	readonly #ce: string;
+	// 「"〜"」「'〜'」「#〜#」の三種。#〜#は引用符自体を書きたい場合に使う
+	readonly #reStr: RegExp;
+	// 変数名（名前空間以外は「空白・演算子記号以外の全て」を許す＝非ASCII文字はそのまま通す）。
+	//	「.」区切り・「[...]」添字を繰り返せる
+	readonly #reVar = /^(?:(?:tmp|sys|save|mp):)?[^\s!-/:-@[-^`{-~]+(?:\.[^\s!-/:-@[-^`{-~]+|\[[^\]]+\])*/;
 
 	constructor(private readonly val: T_Variable, ce = '\\') {
-		function ope(a: (string | RegExp)[]) {
-			const ps = [];
-			for (const v of a) ps.push(
-				(typeof v === 'string' ?string(v) :regex(v))
-				.trim(optWhitespace)
-			);
-			return alt(...ps);
-		}
-		function opeH(ops: {[name: string]: string | RegExp}) {
-			const keys = Object.keys(ops).sort();
-			const ps = keys.map(k=>
-				(typeof ops[k] === 'string'
-					? string(ops[k]) :regex(ops[k]!))
-				.trim(optWhitespace)
-				.result(k)
-			);
-			return alt(...ps);
-		}
-
-		function PREFIX(operatorsParser: any, nextParser: any) {
-			const parser: any = lazy(()=> seq(operatorsParser, parser).or(nextParser));
-			return parser;
-		}
-		function POSTFIX(operatorsParser: any, nextParser: any) {
-			return seqMap(nextParser, operatorsParser.many(), (x, suffixes: any)=> suffixes.reduce((acc: any, x: any) => [x, acc], x));
-		}
-
-		// right. (e.g. 1^2^3 is 1^(2^3) not (1^2)^3)
-		function BINARY_RIGHT(operatorsParser: any, nextParser: any) {
-			const parser = lazy(
-				()=> nextParser.chain(
-					(next: any)=> seq(
-						operatorsParser,
-						of(next),
-						parser
-					).or(of(next))
-				)
-			);
-			return parser;
-		}
-
-		// left. (e.g. 1-2-3 is (1-2)-3 not 1-(2-3))
-		function BINARY_LEFT(operatorsParser: any, nextParser: any) {
-			return seqMap(
-				nextParser,
-				seq(operatorsParser, nextParser).many(),
-				(first, rest)=> rest.reduce((acc, ch)=> [ch[0], acc, ch[1]], first)
-			);
-		}
-
-		const Num = alt(
-			alt(
-				regex(/-?(0|[1-9][0-9]*)\.[0-9]+/),
-				regex(/0x[0-9a-fA-F]+/)
-			).map(Number),
-			alt(
-				regex(/-?(0|[1-9][0-9]*)/)
-			).map(n=> int(n))
-		)
-		.map(str=> ['!num!', str])
-		.desc('number');
-
-		const NullLiteral = string('null')
-		.map(()=> ['!str!', null]);
-
-		const BooleanLiteral = regex(/(true|false)/)
-		.map(b=> ['!bool!', b === 'true'])
-		.desc('boolean');
-
+		this.#ce = ce;
 		// (new RegExp("~")) の場合は、バックスラッシュは２つ必要
-		const StringLiteral = regex(new RegExp(`(?:"(?:\\${ce}["'#\\n]|[^"])*"|'(?:\\${ce}["'#\\n]|[^'])*'|\\#(?:\\${ce}["'#\\n]|[^#])*\\#)`))
+		this.#reStr = new RegExp(`^(?:"(?:\\${ce}["'#\\n]|[^"])*"|'(?:\\${ce}["'#\\n]|[^'])*'|\\#(?:\\${ce}["'#\\n]|[^#])*\\#)`);
 			// https://regex101.com/r/Fs5wL3/1
 			// 15 matches (279 steps, 0.1ms) by PCRE2
-		.map(b=> ['!str!', b.slice(1, -1).replaceAll(ce, '')])
-		.desc('string');
+	}
 
-		const REG_BRACKETS = /\[[^\]]+\]/g;
-		const VarLiteral = regex(/-?(?:(?:tmp|sys|save|mp):)?[^\s!-/:-@[-^`{-~]+(?:\.[^\s!-/:-@[-^`{-~]+|\[[^\]]+\])*(?:@str)?/)
-		.map(b=> {
-			//console.log('   👺 VarLiteral:0 b:%O:', b);
-			const s = b.replaceAll(REG_BRACKETS, v=>
-				// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-				'.'+ this.parse(v.slice(1, -1))
-			);
-			const v = this.val.getVal(s);
-			// console.log('      👹 val:%O: s:%O: v:%o', val, s, v);
-			if (v === null || v === undefined) return ['!str!', v];	// v == null は eqeqeq違反
-			if (typeof v === 'boolean') return ['!bool!', v];
+	// 文字列を左から走査してトークン列へ分解する。数値・null・true/false・文字列・関数呼び出し・
+	//	変数参照・各演算子記号の順に、その場所で最初にマッチしたものを採る（旧parsimmon版の
+	//	alt()の試行順をそのまま踏襲。例：数値を変数名より先に試すので "123abc" は数値"123"で
+	//	止まり "abc" が余って構文エラーになる、等の挙動もそのまま）。認識できない文字が
+	//	出てきたら例外（呼び出し元の#parseToAst()が構文エラーへ丸める）
+	#tokenize(s: string): T_TOK[] {
+		const aTok: T_TOK[] = [];
+		let pos = 0;
+		while (pos < s.length) {
+			const c = s.charCodeAt(pos);
+			if (c === 32 || c === 9 || c === 10 || c === 13) {++pos; continue}	// 空白類
 
-			return Object.prototype.toString.call(v) === '[object String]'
-				? ['!str!', String(v)]
-				: ['!num!', Number(v)];
-		})
-		.desc('string');
+			const rest = s.slice(pos);
+			let m: RegExpExecArray | null;
 
-		const Basic = lazy(()=>
-			string('(').then(this.#parser).skip(string(')'))
-			.or(Num)
-			.or(NullLiteral)
-			.or(BooleanLiteral)
-			.or(StringLiteral)
-			.or(VarLiteral)
-		);
+			// 数値：16進 → 小数 → 整数の順。頭の符号はUnaryNegateが持つのでここでは見ない
+			if ((m = /^0x[0-9a-fA-F]+/.exec(rest))
+			 || (m = /^(0|[1-9][0-9]*)\.[0-9]+/.exec(rest))) {
+				aTok.push({t: 'NUM', v: ['!num!', Number(m[0])]}); pos += m[0].length; continue;
+			}
+			if ((m = /^(0|[1-9][0-9]*)/.exec(rest))) {
+				aTok.push({t: 'NUM', v: ['!num!', int(m[0])]}); pos += m[0].length; continue;
+			}
 
-		const table = [
-			// 演算子の優先順位 - JavaScript | MDN https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Operator_precedence
-			// 優先順位：18（メンバーへのアクセス、計算値によるメンバーへのアクセス）
-				// a.b  a[b]
-			{type: PREFIX, ops: ope([/[A-Za-z_][A-Za-z0-9_]*(?=\()/])},
+			// null・true/false（単語境界のチェックは無い）
+			if (rest.startsWith('null')) {aTok.push({t: 'NULL', v: ['!str!', null]}); pos += 4; continue}
+			if ((m = /^(true|false)/.exec(rest))) {
+				aTok.push({t: 'BOOL', v: ['!bool!', m[0] === 'true']}); pos += m[0].length; continue;
+			}
 
-			// 優先順位：16
-			{type: POSTFIX, ops: opeH({PostfixInc: '++'})},
-			{type: POSTFIX, ops: opeH({PostfixDec: '--'})},
-				// 【未サポート】後置インクリメント・デクリメント
-			// 優先順位：15
-			{type: PREFIX, ops: ope([/!(?!=)|~/])},	// 論理 NOT (!)、ビット単位 NOT (~)
-			{type: PREFIX, ops: opeH({PrefixInc: '++'})},
-			{type: PREFIX, ops: opeH({PrefixDec: '--'})},
-				// 【未サポート】前置インクリメント・デクリメント
-		//	{type: PREFIX, ops: opeH({Unaryplus: /\+(?!\+)/})},	// 単項プラス
-			{type: PREFIX, ops: opeH({UnaryNegate: /-(?!-)/})},	// 単項マイナス
+			// 文字列リテラル
+			if ((m = this.#reStr.exec(rest))) {
+				aTok.push({t: 'STR', v: ['!str!', m[0].slice(1, -1).replaceAll(this.#ce, '')]});
+				pos += m[0].length; continue;
+			}
 
-			// 優先順位：14以下（並びに注意）
-			{type: BINARY_RIGHT, ops: ope(['**'])},
-			{type: BINARY_LEFT, ops: ope(['*', '/', '¥', '%'])},
-			{type: BINARY_LEFT, ops: ope(['+', '-'])},
-			{type: BINARY_LEFT, ops: ope([/>>>|<<|>>/])},
-			{type: BINARY_LEFT, ops: ope([/<=|<|>=|>/])},
-			{type: BINARY_LEFT, ops: ope([/===|!==|==|!=/])},
-			{type: BINARY_LEFT, ops: ope([/&(?!&)/])},
-			{type: BINARY_LEFT, ops: ope(['^'])},
-			{type: BINARY_LEFT, ops: ope([/\|(?!\|)/])},
-			{type: BINARY_LEFT, ops: ope(['&&'])},
-			{type: BINARY_LEFT, ops: ope(['||'])},
-			{type: BINARY_RIGHT, ops: ope([':'])},
-			{type: BINARY_RIGHT, ops: ope(['?'])},
-		];
+			// 演算子・括弧。3文字→2文字→1文字の順（最長一致）。
+			//	**変数参照より先に見る**：'¥'（整数除算）は非ASCIIのため変数名の文字クラス
+			//	（空白・ASCII記号以外は全部許す）にも該当してしまい、後回しにすると変数名として
+			//	食われてしまう（"10 ¥ 4" が壊れる）
+			const three = rest.slice(0, 3);
+			if (three === '>>>' || three === '===' || three === '!==') {
+				aTok.push({t: three}); pos += 3; continue;
+			}
+			const two = rest.slice(0, 2);
+			if (['**', '++', '--', '>>', '<<', '<=', '>=', '==', '!=', '&&', '||'].includes(two)) {
+				aTok.push({t: two}); pos += 2; continue;
+			}
+			const one = rest.charAt(0);
+			if ('()!~*/%+-<>&^|:?¥'.includes(one)) {aTok.push({t: one}); ++pos; continue}
 
-		const tableParser = table.reduce(
-			(acc, level)=> level.type(level.ops, acc),
-			Basic
-		);
-		this.#parser = tableParser.trim(optWhitespace);
+			// 関数呼び出し：ASCII識別子の直後（空白無し）に'('が来たときだけ
+			const mFunc = /^[A-Za-z_][A-Za-z0-9_]*/.exec(rest);
+			if (mFunc && rest.charAt(mFunc[0].length) === '(') {
+				aTok.push({t: 'FUNC', v: mFunc[0]}); pos += mFunc[0].length; continue;
+			}
+
+			// 変数参照。末尾の@strはVarStore側の自動キャスト抑制フラグなのでそのまま含めて渡す
+			if ((m = this.#reVar.exec(rest))) {
+				let text = m[0];
+				if (rest.slice(text.length, text.length + 4) === '@str') text += '@str';
+				aTok.push({t: 'VAR', v: text}); pos += text.length; continue;
+			}
+
+			throw Error(`(PropParser)不明な文字【${one}】です`);
+		}
+		return aTok;
+	}
+
+	// トークン列をAST（[opcode, ...operand]の入れ子配列。リーフは['!num!'|'!str!'|'!bool!', 値]）へ。
+	//	優先順位登坂法（Pratt parser）
+	#parseToAst(s: string): any[] {
+		const aTok = this.#tokenize(s);
+		let i = 0;
+		const peek = ()=> aTok[i];
+
+		const parseAtom = (): any[]=> {
+			const tok = aTok[i++];
+			if (! tok) throw Error('(PropParser)式が終端しています');
+
+			switch (tok.t) {
+			case 'NUM': case 'NULL': case 'BOOL': case 'STR': return tok.v as any[];
+			case 'VAR': return this.#resolveVar(tok.v as string);
+			case 'FUNC': {
+				if (peek()?.t !== '(') throw Error('(PropParser)関数呼び出しには開き括弧「(」が要ります');
+				++i;
+				const arg = parseExpr(0);
+				if (peek()?.t !== ')') throw Error('(PropParser)関数呼び出しの閉じ括弧「)」がありません');
+				++i;
+				return [tok.v as string, arg];
+			}
+			case '(': {
+				const inner = parseExpr(0);
+				if (peek()?.t !== ')') throw Error('(PropParser)閉じ括弧「)」がありません');
+				++i;
+				return inner;
+			}
+			default: throw Error(`(PropParser)想定外のトークン【${tok.t}】です`);
+			}
+		};
+
+		// 後置 ++ / --（構文としては受けるが#hFncが評価時に未サポート例外を出す）
+		const parsePostfix = (): any[]=> {
+			let node = parseAtom();
+			for (;;) {
+				const t = peek()?.t;
+				if (t === '++') {++i; node = ['PostfixInc', node]; continue}
+				if (t === '--') {++i; node = ['PostfixDec', node]; continue}
+				break;
+			}
+			return node;
+		};
+
+		// 前置 ! ~ ++ -- -（UnaryNegate）。自分自身を再帰して連続した前置演算子を束ねる
+		//	（例：「- - -4」）
+		const parseUnary = (): any[]=> {
+			const t = peek()?.t;
+			if (t === '!') {++i; return ['!', parseUnary()]}
+			if (t === '~') {++i; return ['~', parseUnary()]}
+			if (t === '++') {++i; return ['PrefixInc', parseUnary()]}
+			if (t === '--') {++i; return ['PrefixDec', parseUnary()]}
+			if (t === '-') {++i; return ['UnaryNegate', parseUnary()]}
+			return parsePostfix();
+		};
+
+		const parseExpr = (minBp: number): any[]=> {
+			let left = parseUnary();
+			for (;;) {
+				const tok = peek();
+				const info = tok && H_BINOP[tok.t];
+				if (! info || info.bp < minBp) break;
+				++i;
+				const right = parseExpr(info.right ? info.bp : info.bp + 1);
+				left = [tok!.t, left, right];
+			}
+			return left;
+		};
+
+		const result = parseExpr(0);
+		if (i !== aTok.length) throw Error('(PropParser)余分なトークンが残っています');
+		return result;
+	}
+
+	// 変数参照1件をASTリーフへ。[...]添字は中身を独立した式として先に評価し、
+	//	「.」区切りの名前へ組み立て直してから引く
+	#resolveVar(b: string): any[] {
+		const s = b.replaceAll(REG_BRACKETS, v=> '.'+ this.parse(v.slice(1, -1)));
+		const v = this.val.getVal(s);
+		if (v === null || v === undefined) return ['!str!', v];	// v == null は eqeqeq違反
+		if (typeof v === 'boolean') return ['!bool!', v];
+
+		return Object.prototype.toString.call(v) === '[object String]'
+			? ['!str!', String(v)]
+			: ['!num!', Number(v)];
 	}
 
 	parse(s: string): T_VAL_DATA {
-		//console.log("🌱 Parsimmon'%s'", s);
-		const p = this.#parser.parse(s);
-		if (! p.status) throw Error('(PropParser)文法エラー【'+ s +'】');
+		let a: any[];
+		try {a = this.#parseToAst(s)}
+		catch {throw Error(`(PropParser)文法エラー【${s}】`)}
 
-		const a = p.value;
 		if (a[0] === '!str!') return this.#procEmbedVar(a[1]);
-
 		return this.#calc(a);
 	}
 	#calc(a: any[]): T_VAL_DATA {
-		//console.log('🌷 calc%O', {...a});
 		const elm = a.shift();
 		if (elm instanceof Array) return this.#calc(elm);
 
@@ -240,7 +284,7 @@ export class PropParser implements T_PropParser {
 		'Number':	a=> {
 			const b = this.#calc(a.shift());
 			return Object.prototype.toString.call(b) === '[object String]'
-				? this.#fncSub_ChkNum(this.#parser.parse(String(b)).value)
+				? this.#fncSub_ChkNum(this.#parseToAst(String(b)))
 				: Number(b);
 		},
 		'Boolean':	a=> {

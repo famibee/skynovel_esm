@@ -1,5 +1,5 @@
-import { i as e, m as t, n, o as r, r as i, s as a, t as o } from "./CmnLib.js";
-import { _ as s, m as c } from "./pixi.js";
+import { _ as e, m as t } from "./pixi.js";
+import { i as n, m as r, n as i, o as a, r as o, s, t as c } from "./CmnLib.js";
 import { t as l } from "./EventListenerCtn.js";
 import { n as u } from "./ConfigBase.js";
 import { t as d } from "./SysBase.js";
@@ -17,63 +17,63 @@ var g = class {
 	destroy() {
 		this.#e = [], this.#t = -1, this.#n.clear();
 	}
-	add(t, n, r) {
-		if (this.#e.findIndex((e) => e.btn === t) >= 0) return;
-		let i = () => {
-			for (let e = this.#e.length - 1; e >= 0; --e) if (this.#e[e].btn === t) {
-				this.#t = e;
+	add(e, r, i) {
+		if (this.#e.findIndex((t) => t.btn === e) >= 0) return;
+		let a = () => {
+			for (let t = this.#e.length - 1; t >= 0; --t) if (this.#e[t].btn === e) {
+				this.#t = t;
 				return;
 			}
 			this.#t = -1;
 		};
-		if (t instanceof c) {
-			t.on("pointerdown", i), this.#e.push({
-				btn: t,
-				on: n,
-				off: r,
+		if (e instanceof t) {
+			e.on("pointerdown", a), this.#e.push({
+				btn: e,
+				on: r,
+				off: i,
 				offEvt: () => {
-					t.off("pointerdown", i);
+					e.off("pointerdown", a);
 				}
 			});
 			return;
 		}
-		let a = this.#n.add(t, "focus", i), o = (e) => {}, s = t.localName === "button" || t.localName === "a" ? (e) => !e.isTrusted && e.key === "Enter" : (e) => e.key === "Enter", l = t;
+		let o = this.#n.add(e, "focus", a), s = (e) => {}, c = e.localName === "button" || e.localName === "a" ? (e) => !e.isTrusted && e.key === "Enter" : (e) => e.key === "Enter", l = e;
 		switch (l.type ?? "") {
 			case "checkbox":
-				o = () => {
+				s = () => {
 					l.checked = !l.checked;
 				};
 				break;
 			case "":
-				t.querySelectorAll("input[type]").length > 0 && (o = (e) => this.#r(t, e.key), s = () => !1);
+				e.querySelectorAll("input[type]").length > 0 && (s = (t) => this.#r(e, t.key), c = () => !1);
 				break;
 			case "range":
-				o = (e) => {
+				s = (e) => {
 					e.isTrusted || (e.key === "ArrowUp" ? l.stepUp() : l.stepDown());
 				};
 				break;
 			case "text":
-			case "textarea": o = (e) => {
+			case "textarea": s = (e) => {
 				if (e.isTrusted) return;
 				let t = (l.selectionStart ?? 0) + (e.key === "ArrowUp" ? -1 : 1);
 				t < 0 && (t = 0), l.setSelectionRange(t, t);
 			};
 		}
-		let u = this.#n.add(t, e, (e) => {
-			if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Enter") {
-				if (e.stopImmediatePropagation(), s(e)) {
-					t.dispatchEvent(new MouseEvent("click"));
+		let u = this.#n.add(e, n, (t) => {
+			if (t.key === "ArrowUp" || t.key === "ArrowDown" || t.key === "Enter") {
+				if (t.stopImmediatePropagation(), c(t)) {
+					e.dispatchEvent(new MouseEvent("click"));
 					return;
 				}
-				o(e);
+				s(t);
 			}
 		}, { passive: !0 });
-		t.hasAttribute("tabindex") || (t.tabIndex = 0), this.#e.push({
-			btn: t,
-			on: n,
-			off: r,
+		e.hasAttribute("tabindex") || (e.tabIndex = 0), this.#e.push({
+			btn: e,
+			on: r,
+			off: i,
 			offEvt: () => {
-				a(), u();
+				o(), u();
 			}
 		});
 	}
@@ -121,7 +121,7 @@ var g = class {
 			this.#t = -1;
 		}
 	}
-	#i = o.debugLog ? (e) => console.log(`👾 <FocusMng idx:${String(e)} btn:%o`, this.#e[e].btn) : () => {};
+	#i = c.debugLog ? (e) => console.log(`👾 <FocusMng idx:${String(e)} btn:%o`, this.#e[e].btn) : () => {};
 	getFocus() {
 		if (this.#t < 0) return null;
 		if (this.#o(), this.#e.length === 0) return this.#t = -1, null;
@@ -144,7 +144,7 @@ var g = class {
 		}
 	}
 	#s(e) {
-		return e instanceof c ? !!e.parent : e.isConnected && !!e.ownerDocument.defaultView;
+		return e instanceof t ? !!e.parent : e.isConnected && !!e.ownerDocument.defaultView;
 	}
 }, _ = [
 	"",
@@ -178,25 +178,25 @@ var x = class {
 	};
 	#n = /* @__PURE__ */ new Map();
 	#r = /* @__PURE__ */ new Map();
-	#i(t) {
-		let n = this.#n.get(t.index) ?? "", r = b(t.axes[0] ?? 0, t.axes[1] ?? 0, n ? y : v);
-		if (r === n || (this.#n.set(t.index, r), !r)) return;
-		let i = this.fcs.getFocus();
-		(!i || i instanceof c ? globalThis : i).dispatchEvent(new KeyboardEvent(e, {
-			key: r,
+	#i(e) {
+		let r = this.#n.get(e.index) ?? "", i = b(e.axes[0] ?? 0, e.axes[1] ?? 0, r ? y : v);
+		if (i === r || (this.#n.set(e.index, i), !i)) return;
+		let a = this.fcs.getFocus();
+		(!a || a instanceof t ? globalThis : a).dispatchEvent(new KeyboardEvent(n, {
+			key: i,
 			bubbles: !0
-		})), !(!i || i instanceof c) && (p.cancelAutoSkip(), i.getAttribute("type") === "range" && i.dispatchEvent(new InputEvent("input", { bubbles: !0 })));
+		})), !(!a || a instanceof t) && (p.cancelAutoSkip(), a.getAttribute("type") === "range" && a.dispatchEvent(new InputEvent("input", { bubbles: !0 })));
 	}
 	#a(e) {
 		let t = this.#r.get(e.index) ?? [], n = e.buttons.map((e) => e.pressed);
 		this.#r.set(e.index, n);
 		for (let e = 0; e < n.length; ++e) n[e] && !t[e] && this.#o(e);
 	}
-	#o(t) {
-		if (t % 2 == 0) {
+	#o(e) {
+		if (e % 2 == 0) {
 			p.cancelAutoSkip();
-			let t = this.fcs.getFocus();
-			(!t || t instanceof c ? document.body : t).dispatchEvent(new KeyboardEvent(e, {
+			let e = this.fcs.getFocus();
+			(!e || e instanceof t ? document.body : e).dispatchEvent(new KeyboardEvent(n, {
 				key: "Enter",
 				bubbles: !0
 			}));
@@ -380,8 +380,8 @@ var M = class {
 	#t;
 	#n;
 	#r = /* @__PURE__ */ new Map([[0, ""], [1, "middle"]]);
-	constructor(t, n, i, a, c, l, u, d, m) {
-		if (this.cfg = t, this.hTag = n, this.appPixi = i, this.main = a, this.layMng = c, this.val = l, this.scrItr = d, this.sys = m, n.clear_event = (e) => f.clear_event(e), n.event = (e) => this.#v(e), n.set_cancel_skip = () => !1, n.set_focus = (e) => this.#b(e), this.#t = new g(i.view, m), u.setEvtMng(this), d.setOtherObj(this, c), h.setEvtMng(this, m, d), c.setEvtMng(this), p.setFcs(this.#t), m.setFire((e, t) => p.fire(e, t)), o.isDbg) {
+	constructor(t, r, i, o, s, l, u, d, m) {
+		if (this.cfg = t, this.hTag = r, this.appPixi = i, this.main = o, this.layMng = s, this.val = l, this.scrItr = d, this.sys = m, r.clear_event = (e) => f.clear_event(e), r.event = (e) => this.#v(e), r.set_cancel_skip = () => !1, r.set_focus = (e) => this.#b(e), this.#t = new g(i.view, m), u.setEvtMng(this), d.setOtherObj(this, s), h.setEvtMng(this, m, d), s.setEvtMng(this), p.setFcs(this.#t), m.setFire((e, t) => p.fire(e, t)), c.isDbg) {
 			let e = { pause: () => {
 				if (!p.isWait) return;
 				let e = {};
@@ -389,12 +389,12 @@ var M = class {
 			} };
 			e.attach = e.stopOnEntry = e.stopOnStep = e.stopOnStepIn = e.stopOnStepOut = e.stopOnBackstep = e.pause, m.addHook((t) => e[t]?.());
 		}
-		r("\n.sn_hint {\n	position: fixed;\n	background-color: #3c3225;\n	color: white;\n	padding: 4px 8px;\n	border-radius: 4px;\n	font-size: 1.2em;\n	z-index: 10000;\n	pointer-events: none;\n	user-select: none;\n}\n\n.sn_hint_ar,\n.sn_hint_ar::before {\n	position: absolute;\n	width: 8px;\n	height: 8px;\n	background: inherit;\n}\n.sn_hint_ar {\n	visibility: hidden;\n}\n.sn_hint_ar::before {\n	visibility: visible;\n	content: '';\n	transform: rotate(45deg);\n}\n\n.sn_hint[data-hint-place='top']		> .sn_hint_ar {bottom: -4px;}\n.sn_hint[data-hint-place='bottom']	> .sn_hint_ar {top: -4px;}\n.sn_hint[data-hint-place='left']		> .sn_hint_ar {right: -4px;}\n.sn_hint[data-hint-place='right']	> .sn_hint_ar {left: -4px;}\n"), a.cvs.parentElement?.insertAdjacentHTML("beforeend", "\n<div class=\"sn_hint\" role=\"tooltip\">\n	<span>Dummy</span>\n	<div class=\"sn_hint_ar\"></div>\n</div>"), this.#f = document.querySelector(".sn_hint"), this.#p = this.#f.querySelector("span"), this.#m = this.#f.querySelector(".sn_hint_ar"), this.#f.hidden = !0, i.stage.interactive = !0, this.#e.add(document.body, e, (e) => this.#a(e)), this.#e.add(document.body, "keyup", () => f.resetFired()), this.#e.add(a.cvs, "contextmenu", (e) => {
+		a("\n.sn_hint {\n	position: fixed;\n	background-color: #3c3225;\n	color: white;\n	padding: 4px 8px;\n	border-radius: 4px;\n	font-size: 1.2em;\n	z-index: 10000;\n	pointer-events: none;\n	user-select: none;\n}\n\n.sn_hint_ar,\n.sn_hint_ar::before {\n	position: absolute;\n	width: 8px;\n	height: 8px;\n	background: inherit;\n}\n.sn_hint_ar {\n	visibility: hidden;\n}\n.sn_hint_ar::before {\n	visibility: visible;\n	content: '';\n	transform: rotate(45deg);\n}\n\n.sn_hint[data-hint-place='top']		> .sn_hint_ar {bottom: -4px;}\n.sn_hint[data-hint-place='bottom']	> .sn_hint_ar {top: -4px;}\n.sn_hint[data-hint-place='left']		> .sn_hint_ar {right: -4px;}\n.sn_hint[data-hint-place='right']	> .sn_hint_ar {left: -4px;}\n"), o.cvs.parentElement?.insertAdjacentHTML("beforeend", "\n<div class=\"sn_hint\" role=\"tooltip\">\n	<span>Dummy</span>\n	<div class=\"sn_hint_ar\"></div>\n</div>"), this.#f = document.querySelector(".sn_hint"), this.#p = this.#f.querySelector("span"), this.#m = this.#f.querySelector(".sn_hint_ar"), this.#f.hidden = !0, i.stage.interactive = !0, this.#e.add(document.body, n, (e) => this.#a(e)), this.#e.add(document.body, "keyup", () => f.resetFired()), this.#e.add(o.cvs, "contextmenu", (e) => {
 			let t = this.#o(e) + "rightclick";
 			p.fire(t, e, !0), e.preventDefault();
 		});
 		let { width: _, height: v } = t.oCfg.window, y = Math.floor(_ > v ? v / 3 : _ / 3);
-		this.#n = new A(a.cvs, {
+		this.#n = new A(o.cvs, {
 			velocityThreshold: 0,
 			disregardVelocityThreshold: (e) => Math.floor(y * (e === "x" ? 1 : .5))
 		});
@@ -435,26 +435,26 @@ var M = class {
 			});
 		});
 		let S = () => l.setVal_Nochk("tmp", "const.sn.navigator.language", navigator.language);
-		this.#e.add(globalThis, "languagechange", (e) => {
-			S(), p.fire("sn:chgNavLang", e), s();
+		this.#e.add(globalThis, "languagechange", (t) => {
+			S(), p.fire("sn:chgNavLang", t), e();
 		}), S();
 		let C = (e) => {
-			o.isDarkMode = e.matches, l.setVal_Nochk("tmp", "const.sn.isDarkMode", o.isDarkMode);
+			c.isDarkMode = e.matches, l.setVal_Nochk("tmp", "const.sn.isDarkMode", c.isDarkMode);
 		}, w = globalThis.matchMedia("(prefers-color-scheme: dark)");
 		C(w), this.#e.add(w, "change", (e) => {
 			C(e), p.fire("sn:chgDarkMode", e);
 		});
 		let T = (e, t) => {};
-		"WheelEvent" in globalThis && (this.#e.add(a.cvs, "wheel", (e) => this.#s(e), { passive: !0 }), this.#i = (e) => this.#e.add(e, "wheel", (e) => this.#s(e), { passive: !0 }), T = (e, t) => e.add(a.cvs, "wheel", (e) => {
+		"WheelEvent" in globalThis && (this.#e.add(o.cvs, "wheel", (e) => this.#s(e), { passive: !0 }), this.#i = (e) => this.#e.add(e, "wheel", (e) => this.#s(e), { passive: !0 }), T = (e, t) => e.add(o.cvs, "wheel", (e) => {
 			e.deltaY <= 0 || (e.stopPropagation(), t());
-		})), p.init(t, n, a, l, d, c, this, u, T), this.#d = new x(this.#t), this.#d.start(), this.#e.add(document, "keyup", (e) => {
+		})), p.init(t, r, o, l, d, s, this, u, T), this.#d = new x(this.#t), this.#d.start(), this.#e.add(document, "keyup", (e) => {
 			e.isComposing || e.key in this.#x && (this.#x[e.key] = 0);
 		}), l.defTmp("const.sn.key.alternate", () => this.#x.Alt > 0), l.defTmp("const.sn.key.command", () => this.#x.Meta > 0), l.defTmp("const.sn.key.control", () => this.#x.Control > 0), l.defTmp("const.sn.key.end", () => this.#x.End > 0), l.defTmp("const.sn.key.escape", () => this.#x.Escape > 0), l.defTmp("const.sn.key.back", () => this.#x.GoBack > 0);
 	}
-	resvFlameEvent(t) {
-		this.#e.add(t, e, (e) => this.#a(e)), this.#e.add(t, "contextmenu", (e) => {
+	resvFlameEvent(e) {
+		this.#e.add(e, n, (e) => this.#a(e)), this.#e.add(e, "contextmenu", (e) => {
 			p.fire(this.#o(e) + "rightclick", e, !0), e.preventDefault();
-		}), this.#i(t), this.#e.add(t, i, (e) => {
+		}), this.#i(e), this.#e.add(e, o, (e) => {
 			if (e instanceof TouchEvent) {
 				p.fire("click", e, !0);
 				return;
@@ -462,7 +462,7 @@ var M = class {
 			if (e.button > 1) return;
 			let t = this.#o(e) + `${this.#r.get(e.button) ?? ""}click`;
 			p.fire(t, e, !0);
-		}), this.#e.add(t, "pointerup", () => f.resetFired()), this.#e.add(t, "pointerout", () => f.resetFired());
+		}), this.#e.add(e, "pointerup", () => f.resetFired()), this.#e.add(e, "pointerout", () => f.resetFired());
 	}
 	#i = (e) => {};
 	#a(e) {
@@ -500,22 +500,22 @@ var M = class {
 	unButton(e) {
 		this.#t.remove(e);
 	}
-	button(e, t, r, i, s) {
+	button(e, t, n, r, a) {
 		!e.fn && !e.label && !e.url && this.main.errScript("fnまたはlabelまたはurlは必須です"), e.fn ??= this.scrItr.scriptFn, t.interactive = !0, t.cursor = "pointer";
-		let c = e.key?.toLowerCase() ?? " ", l = a(e, "global", !1);
-		f.setEvt2Fnc(l, c, () => this.main.resumeByJumpOrCall(e)), t.on(n, (e) => {
-			e.preventDefault?.(), p.fire(c, e, !0);
+		let o = e.key?.toLowerCase() ?? " ", l = s(e, "global", !1);
+		f.setEvt2Fnc(l, o, () => this.main.resumeByJumpOrCall(e)), t.on(i, (e) => {
+			e.preventDefault?.(), p.fire(o, e, !0);
 		});
 		let d = e.hint ? () => this.#h(e, t) : () => {}, h = () => {
-			r(), this.#f.hidden = !0;
-		}, g = () => (d(), i());
+			n(), this.#f.hidden = !0;
+		}, g = () => (d(), r());
 		if (t.on("pointerover", g), t.on("pointerout", () => {
 			this.#t.isFocus(t) ? g() : h();
 		}), t.on("pointerdown", () => {
 			this.#f.hidden = !0;
 			let e = this.#t.getFocus();
-			s(), e instanceof m && e.normal();
-		}), t.on("pointerup", o.isMobile ? h : () => {
+			a(), e instanceof m && e.normal();
+		}), t.on("pointerup", c.isMobile ? h : () => {
 			this.#t.isFocus(t) ? g() : h();
 		}), this.#t.add(t, g, h), e.clickse && (e.clicksebuf ??= "SYS", this.cfg.searchPath(e.clickse, u.SOUND), t.on("pointerdown", () => this.hTag.playse({
 			fn: e.clickse,
@@ -530,7 +530,7 @@ var M = class {
 			...e.leavesebuf ? { buf: e.leavesebuf } : {},
 			join: !1
 		}))), e.onenter) {
-			let n = c + e.onenter.toLowerCase(), r = {
+			let n = o + e.onenter.toLowerCase(), r = {
 				fn: e.fn,
 				label: e.onenter,
 				call: !0,
@@ -539,7 +539,7 @@ var M = class {
 			f.setEvt2Fnc(l, n, () => this.main.resumeByJumpOrCall(r)), t.on("pointerover", (e) => p.fire(n, e));
 		}
 		if (e.onleave) {
-			let n = c + e.onleave.toLowerCase(), r = {
+			let n = o + e.onleave.toLowerCase(), r = {
 				fn: e.fn,
 				label: e.onleave,
 				call: !0,
@@ -551,11 +551,11 @@ var M = class {
 	#f;
 	#p;
 	#m;
-	#h(e, n) {
-		let r = n instanceof m ? n.getBtnBounds() : n.getBounds();
+	#h(e, t) {
+		let n = t instanceof m ? t.getBtnBounds() : t.getBounds();
 		if (e[":タグ名"] !== "link") {
-			let e = n.parent.parent;
-			r.x += e.x, r.y += e.y;
+			let e = t.parent.parent;
+			n.x += e.x, n.y += e.y;
 		}
 		if (!e.hint) {
 			this.#f.hidden = !0;
@@ -565,15 +565,15 @@ var M = class {
 		let i;
 		try {
 			i = w(e.hint_opt);
-		} catch (n) {
-			console.error(t(e, "hint_opt", `dispHint 引数 hint_opt エラー ${n instanceof SyntaxError ? n.message : ""}`));
+		} catch (t) {
+			console.error(r(e, "hint_opt", `dispHint 引数 hint_opt エラー ${t instanceof SyntaxError ? t.message : ""}`));
 			return;
 		}
 		let a = {
-			x: this.sys.ofsLeft4elm + r.x * this.sys.cvsScale,
-			y: this.sys.ofsTop4elm + r.y * this.sys.cvsScale,
-			width: r.width,
-			height: r.height
+			x: this.sys.ofsLeft4elm + n.x * this.sys.cvsScale,
+			y: this.sys.ofsTop4elm + n.y * this.sys.cvsScale,
+			width: n.width,
+			height: n.height
 		};
 		this.#f.hidden = !1;
 		let o = this.#f.getBoundingClientRect(), s = {
@@ -598,22 +598,22 @@ var M = class {
 			this.#g.delete(e);
 		}
 	}
-	#v(t) {
-		let n = t.key;
-		if (!n) throw "keyは必須です";
-		let r = n.toLowerCase(), i = a(t, "call", !1), o = a(t, "global", !1), { fn: s, label: c, url: l } = t;
-		if (a(t, "del", !1)) {
-			if (s || c || i || l) throw "fn/label/callとdelは同時指定できません";
-			return this.#_(n), f.clear_eventer(n, o, r), !1;
+	#v(e) {
+		let t = e.key;
+		if (!t) throw "keyは必須です";
+		let r = t.toLowerCase(), i = s(e, "call", !1), a = s(e, "global", !1), { fn: o, label: c, url: l } = e;
+		if (s(e, "del", !1)) {
+			if (o || c || i || l) throw "fn/label/callとdelは同時指定できません";
+			return this.#_(t), f.clear_eventer(t, a, r), !1;
 		}
-		if (!s && !c && !l) throw "fn,label,url いずれかは必須です";
-		if (t.fn ??= this.scrItr.scriptFn, n.startsWith("dom=")) {
-			let r = f.getHtmlElmList(n);
+		if (!o && !c && !l) throw "fn,label,url いずれかは必須です";
+		if (e.fn ??= this.scrItr.scriptFn, t.startsWith("dom=")) {
+			let r = f.getHtmlElmList(t);
 			if (r.el.length === 0) {
-				if (a(t, "need_err", !0)) throw `HTML内にセレクタ（${r.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
+				if (s(e, "need_err", !0)) throw `HTML内にセレクタ（${r.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
 				return !1;
 			}
-			let i = ["click", e];
+			let i = ["click", n];
 			switch (r.el[0].type ?? "") {
 				case "checkbox":
 					i = ["input"];
@@ -624,22 +624,22 @@ var M = class {
 				case "text":
 				case "textarea": i = ["input", "change"];
 			}
-			this.#_(n);
-			let o = [], s = i.length;
-			for (let e = 0; e < s; ++e) {
-				let t = i[e];
+			this.#_(t);
+			let a = [], o = i.length;
+			for (let e = 0; e < o; ++e) {
+				let n = i[e];
 				r.el.forEach((i) => {
-					o.push(this.#e.add(i, t, (e) => {
-						if (!p.isWait || this.layMng.getFrmDisabled(r.id) || t === "keydown" && e.key !== "Enter") return;
+					a.push(this.#e.add(i, n, (e) => {
+						if (!p.isWait || this.layMng.getFrmDisabled(r.id) || n === "keydown" && e.key !== "Enter") return;
 						let a = i.dataset;
 						for (let [e, t] of Object.entries(a)) this.val.setVal_Nochk("tmp", `sn.event.domdata.${e}`, t);
-						p.fire(n, e);
+						p.fire(t, e);
 					})), e === 0 && this.#t.add(i, () => this.#y(i) ? (i.focus(), !0) : !1, () => {});
 				});
 			}
-			this.#g.set(n, o);
+			this.#g.set(t, a);
 		}
-		return f.setEvt2Fnc(o, r, () => this.main.resumeByJumpOrCall(t)), !1;
+		return f.setEvt2Fnc(a, r, () => this.main.resumeByJumpOrCall(e)), !1;
 	}
 	#y(e) {
 		if (!e || e.offsetParent === null) return !1;
@@ -654,12 +654,12 @@ var M = class {
 		let { add: t, del: n, to: r } = e;
 		if (t?.startsWith("dom=")) {
 			let n = f.getHtmlElmList(t);
-			if (n.el.length === 0 && a(e, "need_err", !0)) throw `HTML内にセレクタ（${n.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
+			if (n.el.length === 0 && s(e, "need_err", !0)) throw `HTML内にセレクタ（${n.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
 			return n.el.forEach((e) => this.#t.add(e, () => this.#y(e) ? (e.focus(), !0) : !1, () => {})), !1;
 		}
 		if (n?.startsWith("dom=")) {
 			let t = f.getHtmlElmList(n);
-			if (t.el.length === 0 && a(e, "need_err", !0)) throw `HTML内にセレクタ（${t.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
+			if (t.el.length === 0 && s(e, "need_err", !0)) throw `HTML内にセレクタ（${t.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
 			return t.el.forEach((e) => this.#t.remove(e)), !1;
 		}
 		if (!r) throw "[set_focus] add か to は必須です";

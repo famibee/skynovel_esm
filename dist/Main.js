@@ -1,5 +1,5 @@
-import { d as e, h as t, s as n, t as r, v as i } from "./CmnLib.js";
-import { _ as a, r as o, y as s } from "./pixi.js";
+import { S as e, _ as t, r as n, y as r } from "./pixi.js";
+import { d as i, h as a, s as o, t as s } from "./CmnLib.js";
 import { n as c, t as l } from "./ConfigBase.js";
 import { t as u } from "./DebugMng.js";
 //#region src/sn/Config.ts
@@ -18,7 +18,7 @@ var d = "userdata:/", f = "downloads:/", p = class e extends l {
 		return e.window ??= {
 			width: 300,
 			height: 300
-		}, r.stageW = e.window.width, r.stageH = e.window.height, r.debugLog = e.debug.debugLog, r.init(), super.load(e);
+		}, s.stageW = e.window.width, s.stageH = e.window.height, s.debugLog = e.debug.debugLog, s.init(), super.load(e);
 	}
 	searchPath(e, t = c.DEFAULT) {
 		return e.startsWith("downloads:/") ? this.sys.path_downloads + e.slice(11) : e.startsWith("userdata:/") ? this.sys.path_userdata + "storage/" + e.slice(10) : super.searchPath(e, t);
@@ -167,24 +167,24 @@ var b = class {
 	}
 	#a = /^\[(call|loadplugin)\s/;
 	#o = /\bfn\s*=\s*[^\s\]]+/;
-	#s(t) {
-		for (let n = t.len - 1; n >= 0; --n) {
-			let r = t.aToken[n];
-			if (!this.#a.test(r)) continue;
-			let [i, a] = _(r);
+	#s(e) {
+		for (let t = e.len - 1; t >= 0; --t) {
+			let n = e.aToken[t];
+			if (!this.#a.test(n)) continue;
+			let [r, a] = _(n);
 			this.#c.parse(a);
 			let o = this.#c.hPrm.fn;
 			if (!o) continue;
 			let { val: s } = o;
 			if (!s.endsWith("*")) continue;
-			t.aToken.splice(n, 1, "	", "; " + r), t.aLNum.splice(n, 1, NaN, NaN);
-			let l = i === "loadplugin" ? c.CSS : c.SN, u = this.cfg.matchPath("^" + s.slice(0, -1) + ".*", l);
-			for (let i of u) {
-				let a = r.replace(this.#o, "fn=" + decodeURIComponent(e(i[l])));
-				t.aToken.splice(n, 0, a), t.aLNum.splice(n, 0, NaN);
+			e.aToken.splice(t, 1, "	", "; " + n), e.aLNum.splice(t, 1, NaN, NaN);
+			let l = r === "loadplugin" ? c.CSS : c.SN, u = this.cfg.matchPath("^" + s.slice(0, -1) + ".*", l);
+			for (let r of u) {
+				let a = n.replace(this.#o, "fn=" + decodeURIComponent(i(r[l])));
+				e.aToken.splice(t, 0, a), e.aLNum.splice(t, 0, NaN);
 			}
 		}
-		t.len = t.aToken.length;
+		e.len = e.aToken.length;
 	}
 	#c = new h();
 	testTagLetml(e) {
@@ -214,10 +214,10 @@ var b = class {
 	testNoTxt(e) {
 		return this.#u.test(e);
 	}
-}, x = /* @__PURE__ */ i({ Main: () => C }), S = "skynovel", C = class e {
+}, x = /* @__PURE__ */ e({ Main: () => C }), S = "skynovel", C = class e {
 	sys;
 	static async generate(t) {
-		s();
+		r();
 		let n = new e(t);
 		return await n.#a().catch((e) => console.error("Main.generate err e:%o", e)), n;
 	}
@@ -233,28 +233,28 @@ var b = class {
 	async #a() {
 		let e = await p.generate(this.sys);
 		this.sys.setMain(this, e);
-		let n = {
+		let r = {
 			width: e.oCfg.window.width,
 			height: e.oCfg.window.height,
-			backgroundColor: t(String(e.oCfg.init.bg_color)),
+			backgroundColor: a(String(e.oCfg.init.bg_color)),
 			resolution: globalThis.devicePixelRatio
 		}, i = document.getElementById(S);
 		if (i) {
 			let e = i.cloneNode(!0);
-			e.id = S, n.view = i;
+			e.id = S, r.view = i;
 			let t = i.parentNode;
 			this.#i.defer(() => t.appendChild(e));
 		} else {
 			let e = document.createElement("canvas");
-			e.id = S, n.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
+			e.id = S, r.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
 		}
-		let s = new o(n);
+		let o = new n(r);
 		this.#i.defer(() => {
-			a(), this.sys.destroy(), s.destroy(!1);
-		}), this.cvs = s.view, this.cvs.id = "skynovel_act", i || document.body.appendChild(this.cvs);
+			t(), this.sys.destroy(), o.destroy(!1);
+		}), this.cvs = o.view, this.cvs.id = "skynovel_act", i || document.body.appendChild(this.cvs);
 		let c = document.createElement("canvas").getContext("2d");
 		if (!c) throw "#init cc err";
-		r.cc4ColorName = c;
+		s.cc4ColorName = c;
 		let [{ Variable: l }, { PropParser: d }, { SoundMng: f }, { ScriptIterator: m }, { LayerMng: h }, { EventMng: g }, { Button: _ }] = await Promise.all([
 			import("./Variable.js"),
 			import("./PropParser.js"),
@@ -266,13 +266,13 @@ var b = class {
 		]);
 		_.init(e);
 		let v = new l(this.sys, e, this.#e), y = new d(v, e.oCfg.init.escape);
-		this.#o = (e, t, n, r) => v.setVal_Nochk(e, t, n, r), this.#l = (e) => y.getValAmpersand(e), this.#u = (e) => y.parse(e), await Promise.allSettled(this.sys.init(this.#e, s, v));
+		this.#o = (e, t, n, r) => v.setVal_Nochk(e, t, n, r), this.#l = (e) => y.getValAmpersand(e), this.#u = (e) => y.parse(e), await Promise.allSettled(this.sys.init(this.#e, o, v));
 		let b = new f(e, this.#e, v, this, this.sys);
 		this.#i.defer(() => b.destroy()), this.#t = new m(e, this.#e, this, v, y, b, this.sys), this.#i.defer(() => this.#t.destroy());
 		let x = new u(this.sys, this.#e, this.#t);
 		this.#i.defer(() => x.destroy()), this.errScript = (e, t) => {
-			if (this.stop(), u.myTrace(e), r.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
-		}, this.#n = new h(e, this.#e, s, v, this, this.#t, this.sys, b, y), this.#i.defer(() => this.#n.destroy()), this.#r = new g(e, this.#e, s, this, this.#n, v, b, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
+			if (this.stop(), u.myTrace(e), s.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
+		}, this.#n = new h(e, this.#e, o, v, this, this.#t, this.sys, b, y), this.#i.defer(() => this.#n.destroy()), this.#r = new g(e, this.#e, o, this, this.#n, v, b, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
 			this.stop(), this.#s = !1;
 			let e = () => !0;
 			for (let t in this.#e) this.#e[t] = e;
@@ -287,7 +287,7 @@ var b = class {
 			this.#e.navigate_to(e), this.#t.jumpJustBefore();
 			return;
 		}
-		if (this.#o("tmp", "sn.eventArg", String(e.arg ?? "")), this.#o("tmp", "sn.eventLabel", e.label ?? ""), n(e, "call", !1)) {
+		if (this.#o("tmp", "sn.eventArg", String(e.arg ?? "")), this.#o("tmp", "sn.eventLabel", e.label ?? ""), o(e, "call", !1)) {
 			if (this.#t.subIdxToken(), this.#e.call(e)) return;
 		} else if (this.#e.clear_event({}), this.#e.jump(e)) return;
 		this.resume();
