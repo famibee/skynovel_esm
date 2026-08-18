@@ -31,7 +31,6 @@ export type T_DIP = {
     [name: string]: string;
 };
 export declare class CmnLib {
-    #private;
     static init(): void;
     static stageW: number;
     static stageH: number;

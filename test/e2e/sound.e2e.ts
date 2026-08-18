@@ -9,13 +9,13 @@
 //	元はギャラリー <SKYNovel_gallery/public/prj/sound/> のボタン駆動の手動テスト。
 //	耳で確かめていた項目を、機械が見られる値に置き換えている：
 //		・組み込み変数（tmp:…playing / save:…fn / save:…volume / const.sn.loopPlaying）
-//		・Howl の設定値（loop / rate / stereo / volume / duration / sprite）
-//		・[ws]/[wf] が実際に待つかどうか（停止点に着くまでの経過時間）
+//		・SndBuf の設定値（loop / speed / pan / volume / duration / startMs / endMs / retMs）
+//	・[ws]/[wf] が実際に待つかどうか（停止点に着くまでの経過時間）
 //	**鳴っている音そのものは確かめられない**ので、そこは対象外とする。
 //	音源は尺で区別できる： snd=4秒 / snd2=2秒 / f_*=1秒
 
 import {expect, test} from '@playwright/test';
-import {glbVolume, gotoSn, howlList, jump, jumpTo, val} from './snPage';
+import {glbVolume, gotoSn, jump, jumpTo, sndBufList, val} from './snPage';
 
 test.beforeEach(async ({page})=> {await gotoSn(page, 'sound')});
 
@@ -28,7 +28,7 @@ test.describe('単発再生（非ループ）', ()=> {
 	test('[playse]で鳴り、組み込み変数が立つ', async ({page})=> {
 		await jump(page, '*play');
 
-		const [h] = await howlList(page);
+		const [h] = await sndBufList(page);
 		expect(h?.src).toBe('snd.mp3');
 		expect(h?.loop).toBe(false);
 		expect(h?.playing).toBe(true);
@@ -38,10 +38,10 @@ test.describe('単発再生（非ループ）', ()=> {
 		expect(await loopPlaying(page)).toEqual({});
 	});
 
-	test('[stopse]で止まり Howl も解放される', async ({page})=> {
+	test('[stopse]で止まり SndBuf も解放される', async ({page})=> {
 		await jump(page, '*play_stop');
 
-		expect(await howlList(page)).toEqual([]);
+		expect(await sndBufList(page)).toEqual([]);
 		expect(await playing(page, 'SE')).toBe(false);
 	});
 });
@@ -51,7 +51,7 @@ test.describe('連続再生（ループ）', ()=> {
 	test('[playse loop=true]は loopPlaying に載る', async ({page})=> {
 		await jump(page, '*loop');
 
-		const [h] = await howlList(page);
+		const [h] = await sndBufList(page);
 		expect(h?.loop).toBe(true);
 		expect(h?.playing).toBe(true);
 		expect(await playing(page, 'SE')).toBe(true);
@@ -62,7 +62,7 @@ test.describe('連続再生（ループ）', ()=> {
 	test('[stopse]で loopPlaying から消える', async ({page})=> {
 		await jump(page, '*loop_stop');
 
-		expect(await howlList(page)).toEqual([]);
+		expect(await sndBufList(page)).toEqual([]);
 		expect(await playing(page, 'SE')).toBe(false);
 		expect(await loopPlaying(page)).toEqual({});
 	});
@@ -70,7 +70,7 @@ test.describe('連続再生（ループ）', ()=> {
 	test('[stop_allse]は全バッファを止める', async ({page})=> {
 		await jump(page, '*stop_allse');
 
-		expect(await howlList(page)).toEqual([]);
+		expect(await sndBufList(page)).toEqual([]);
 		expect(await playing(page, 'SE')).toBe(false);
 		expect(await playing(page, 'SE2')).toBe(false);
 		expect(await loopPlaying(page)).toEqual({});
@@ -87,7 +87,7 @@ test.describe('待ち（[ws]/[wf]）', ()=> {
 		// 4秒の音。待たなければ一瞬で着いてしまう
 		expect(ms).toBeGreaterThan(3500);
 		// 待ち切ったので鳴り終わって解放されている
-		expect(await howlList(page)).toEqual([]);
+		expect(await sndBufList(page)).toEqual([]);
 		expect(await playing(page, 'SE')).toBe(false);
 	});
 
@@ -96,7 +96,7 @@ test.describe('待ち（[ws]/[wf]）', ()=> {
 		await jump(page, '*ws_loop');
 
 		expect(Date.now() - t0).toBeLessThan(2000);	// 素通りする
-		expect((await howlList(page))[0]?.playing).toBe(true);
+		expect((await sndBufList(page))[0]?.playing).toBe(true);
 	});
 });
 
@@ -105,7 +105,7 @@ test.describe('フェード', ()=> {
 	test('[fadese]で目標音量まで下がり[wf]が待つ', async ({page})=> {
 		await jump(page, '*fade');
 
-		expect((await howlList(page))[0]?.volume).toBeCloseTo(0.2, 3);
+		expect((await sndBufList(page))[0]?.volume).toBeCloseTo(0.2, 3);
 		expect(await val(page, 'save:const.sn.sound.SE.volume')).toBe(0.2);
 		expect(await playing(page, 'SE')).toBe(true);	// 0でないので鳴り続ける
 	});
@@ -114,7 +114,7 @@ test.describe('フェード', ()=> {
 		await jump(page, '*fadeout');
 
 		// volume=0 は stop 扱い（SndBuf の fade は savevol===0 で stop 既定）
-		expect(await howlList(page)).toEqual([]);
+		expect(await sndBufList(page)).toEqual([]);
 		expect(await playing(page, 'SE')).toBe(false);
 		expect(await loopPlaying(page)).toEqual({});
 	});
@@ -122,7 +122,7 @@ test.describe('フェード', ()=> {
 	test('time=0 は即時反映', async ({page})=> {
 		await jump(page, '*fade_now');
 
-		expect((await howlList(page))[0]?.volume).toBeCloseTo(0.5, 3);
+		expect((await sndBufList(page))[0]?.volume).toBeCloseTo(0.5, 3);
 	});
 });
 
@@ -134,15 +134,15 @@ test.describe('音量', ()=> {
 		// 実音量 = 目標音量(save:) × 基準音量(sys:)
 		expect(await val(page, 'sys:const.sn.sound.SE.volume')).toBe(0.5);
 		expect(await val(page, 'save:const.sn.sound.SE.volume')).toBe(1);
-		expect((await howlList(page))[0]?.volume).toBeCloseTo(0.5, 3);
-		// グローバル音量（Howler側）は別物なので動かない
+		expect((await sndBufList(page))[0]?.volume).toBeCloseTo(0.5, 3);
+		// グローバル音量（SndCtx側）は別物なので動かない
 		expect(await glbVolume(page)).toBe(1);
 	});
 
 	test('VOICE再生中はBGMが vol_mul_talking ぶん絞られる', async ({page})=> {
 		await jump(page, '*downBGM');
 
-		const a = await howlList(page);
+		const a = await sndBufList(page);
 		const bgm = a.find(h=> h.src === 'snd.mp3');
 		const voice = a.find(h=> h.src === 'snd2.mp3');
 		expect(bgm?.volume).toBeCloseTo(0.2, 3);	// 1 × 1 × 0.2
@@ -152,7 +152,7 @@ test.describe('音量', ()=> {
 	test('VOICEが終わるとBGMの音量が戻る', async ({page})=> {
 		await jump(page, '*downBGM_end');
 
-		expect((await howlList(page))[0]?.volume).toBeCloseTo(1, 3);
+		expect((await sndBufList(page))[0]?.volume).toBeCloseTo(1, 3);
 		expect(await playing(page, 'VOICE')).toBe(false);
 		expect(await playing(page, 'BGM')).toBe(true);
 	});
@@ -174,8 +174,8 @@ test.describe('バッファ操作', ()=> {
 	test('同じbufへ重ねて[playse]すると前のは止まる', async ({page})=> {
 		await jump(page, '*playplay');
 
-		const a = await howlList(page);
-		expect(a).toHaveLength(1);			// 前の Howl は解放済み
+		const a = await sndBufList(page);
+		expect(a).toHaveLength(1);			// 前の SndBuf は解放済み
 		expect(a[0]?.src).toBe('snd2.mp3');
 		expect(await loopPlaying(page)).toEqual({SE: 'snd2'});
 	});
@@ -183,55 +183,57 @@ test.describe('バッファ操作', ()=> {
 
 
 test.describe('再生パラメータ', ()=> {
-	test('pan が Howl のステレオ位置になる', async ({page})=> {
+	test('pan がステレオ位置になる', async ({page})=> {
 		await jump(page, '*pan_l');
-		expect((await howlList(page))[0]?.stereo).toBe(-1);
+		expect((await sndBufList(page))[0]?.pan).toBe(-1);
 
 		await jump(page, '*pan_r');
-		expect((await howlList(page))[0]?.stereo).toBe(1);
+		expect((await sndBufList(page))[0]?.pan).toBe(1);
 	});
 
 	test('speed が再生レートになる', async ({page})=> {
 		await jump(page, '*speed');
-		expect((await howlList(page))[0]?.rate).toBe(2);
+		expect((await sndBufList(page))[0]?.speed).toBe(2);
 	});
 });
 
 
-// start_ms/end_ms/ret_ms は Howl の sprite（[開始ms, 継続ms]）に落ちる。
-//	一周目＝最初の再生、二周目＝ret_ms を効かせたループ後の再生。
-//	end_ms の負値は「末尾から何ms手前」、既定値(MAX)は「ファイル末端」
+// start_ms/end_ms/ret_ms は SndBuf の startMs/endMs/retMs（すべてms）にそのまま落ちる。
+//	end_ms は実尺で解決済みの値：負の値は「末尾から何ms手前」、既定値(MAX)は「ファイル末端」
 test.describe('start_ms / end_ms / ret_ms', ()=> {
-	const sprite = async (page: Parameters<typeof howlList>[0])=> (await howlList(page))[0]?.sprite;
+	const msTriple = async (page: Parameters<typeof sndBufList>[0])=> {
+		const [h] = await sndBufList(page);
+		return {startMs: h?.startMs, endMs: h?.endMs, retMs: h?.retMs};
+	};
 
 	test('start_ms のみ', async ({page})=> {
 		await jump(page, '*s2L');
-		expect(await sprite(page)).toEqual({一周目: [2000, 2000], 二周目: [0, 4000, true]});
+		expect(await msTriple(page)).toEqual({startMs: 2000, endMs: 4000, retMs: 0});
 	});
 
 	test('end_ms が正の値（冒頭から何ms目）', async ({page})=> {
 		await jump(page, '*e3L');
-		expect(await sprite(page)).toEqual({一周目: [0, 3000], 二周目: [0, 3000, true]});
+		expect(await msTriple(page)).toEqual({startMs: 0, endMs: 3000, retMs: 0});
 	});
 
 	test('end_ms が負の値（末尾から何ms手前）', async ({page})=> {
 		await jump(page, '*eM1L');
-		expect(await sprite(page)).toEqual({一周目: [0, 2500], 二周目: [0, 2500, true]});
+		expect(await msTriple(page)).toEqual({startMs: 0, endMs: 2500, retMs: 0});
 	});
 
 	test('start_ms と end_ms', async ({page})=> {
 		await jump(page, '*s1e3L');
-		expect(await sprite(page)).toEqual({一周目: [1000, 2000], 二周目: [0, 3000, true]});
+		expect(await msTriple(page)).toEqual({startMs: 1000, endMs: 3000, retMs: 0});
 	});
 
 	test('ret_ms のみ（二周目だけ開始位置が変わる）', async ({page})=> {
 		await jump(page, '*r2L');
-		expect(await sprite(page)).toEqual({一周目: [0, 4000], 二周目: [2000, 2000, true]});
+		expect(await msTriple(page)).toEqual({startMs: 0, endMs: 4000, retMs: 2000});
 	});
 
 	test('start_ms と end_ms と ret_ms', async ({page})=> {
 		await jump(page, '*s1e3r2L');
-		expect(await sprite(page)).toEqual({一周目: [1000, 2000], 二周目: [2000, 1000, true]});
+		expect(await msTriple(page)).toEqual({startMs: 1000, endMs: 3000, retMs: 2000});
 	});
 });
 
@@ -246,7 +248,7 @@ test.describe('音声形式', ()=> {
 		test(`${nm} が読める`, async ({page})=> {
 			await jump(page, `*fmt_${nm}`);
 
-			const [h] = await howlList(page);
+			const [h] = await sndBufList(page);
 			expect(h?.src).toBe(fn);
 			expect(h?.playing).toBe(true);
 			expect(h?.duration).toBeGreaterThan(0.9);	// 1秒の音源
@@ -268,7 +270,7 @@ test.describe('しおりからのBGM復元', ()=> {
 		//	復元が仕事をしていなければ SE が鳴ったままになる
 		await jumpTo(page, '*load_bgm', 'OKsave_bgm');
 
-		const a = await howlList(page);
+		const a = await sndBufList(page);
 		expect(a).toHaveLength(1);
 		expect(a[0]?.src).toBe('snd.mp3');
 		expect(a[0]?.loop).toBe(true);
@@ -294,7 +296,7 @@ test.describe('しおりからのBGM復元', ()=> {
 		expect(await loopPlaying(page)).toEqual({SE: 'snd2', SE2: 'snd'});
 
 		// 尺で見ても2音とも生きている（snd=4秒 / snd2=2秒）
-		const a = await howlList(page);
+		const a = await sndBufList(page);
 		expect(a.map(h=> h.duration).sort()).toEqual([2, 4]);
 		expect(a.every(h=> h.playing && h.loop)).toBe(true);
 	});

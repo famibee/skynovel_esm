@@ -16,6 +16,7 @@ import {EventListenerCtn} from './EventListenerCtn';
 import {Button} from './Button';
 import {FocusMng} from './FocusMng';
 import type {SoundMng} from './SoundMng';
+import {SndCtx} from './SndCtx';
 import type {Config} from './Config';
 import {SysBase} from './SysBase';
 import {SEARCH_PATH_ARG_EXT} from './ConfigBase';
@@ -145,6 +146,9 @@ export class EventMng implements IEvtMng {
 
 		// マウスボタンやキーボードイベント登録
 		appPixi.stage.interactive = true;
+		// ブラウザの自動再生ポリシー対策。howlerの`autoUnlock`（既定true）が消えるので、
+		//	初回のクリック・キー入力からこちらで明示的にAudioContextを起こす（見落とし注意）
+		this.#elc.add(document, 'pointerdown', ()=> SndCtx.unlock(), {capture: true});
 		this.#elc.add(document.body, EVNM_KEY, (e: KeyboardEvent)=> this.#ev_keydown(e));
 		this.#elc.add(document.body, 'keyup', ()=> ReadingState.resetFired());
 		// 右クリックは contextmenu で処理。resvFlameEvent と合わせる
@@ -296,6 +300,7 @@ export class EventMng implements IEvtMng {
 	#ev_keydown(e: KeyboardEvent) {
 		if (e.isComposing) return;	// サポートしてない環境でもいける書き方
 		if (e.key in this.#hDownKeys) this.#hDownKeys[e.key] = e.repeat ?eDownKeys.PUSH_REPEATING :eDownKeys.ONE_PUSH;
+		SndCtx.unlock();
 
 		e.preventDefault();
 		Reading.fire(SysBase.modKey(e) + e.key, e, true);

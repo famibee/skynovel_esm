@@ -134,8 +134,8 @@ const probe = {
 	rafPending	: ()=> sRaf.size,
 	blobLive	: ()=> sBlob.size,
 	blobList	: ()=> [...sBlob],
-	// main.ts が howler を注入する（src/ と同一モジュール実体を掴むため）
-	howls		: ()=> -1,
+	// main.ts が SndBuf.live を注入する（src/ と同一モジュール実体を掴むため）
+	sndLive		: ()=> -1,
 };
 
 export type T_PROBE = typeof probe;

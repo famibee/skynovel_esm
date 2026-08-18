@@ -1,23 +1,23 @@
 import { _ as e, m as t } from "./pixi.js";
-import { i as n, m as r, n as i, o as a, r as o, s, t as c } from "./CmnLib.js";
-import { t as l } from "./EventListenerCtn.js";
-import { n as u } from "./ConfigBase.js";
-import { t as d } from "./SysBase.js";
-import { n as f, t as p } from "./Reading.js";
-import { Button as m } from "./Button.js";
-import { TxtLayer as h } from "./TxtLayer.js";
+import { _ as n, i as r, m as i, n as a, o, r as s, s as c, t as l } from "./CmnLib.js";
+import { t as u } from "./EventListenerCtn.js";
+import { n as d } from "./ConfigBase.js";
+import { t as f } from "./SysBase.js";
+import { n as p, t as m } from "./Reading.js";
+import { Button as h } from "./Button.js";
+import { TxtLayer as g } from "./TxtLayer.js";
 //#region src/sn/FocusMng.ts
-var g = class {
+var _ = class {
 	#e = [];
 	#t = -1;
-	#n = new l();
+	#n = new u();
 	constructor(e, t) {
 		this.#a = t.isApp ? () => e.focus() : () => globalThis.focus();
 	}
 	destroy() {
 		this.#e = [], this.#t = -1, this.#n.clear();
 	}
-	add(e, r, i) {
+	add(e, n, i) {
 		if (this.#e.findIndex((t) => t.btn === e) >= 0) return;
 		let a = () => {
 			for (let t = this.#e.length - 1; t >= 0; --t) if (this.#e[t].btn === e) {
@@ -29,7 +29,7 @@ var g = class {
 		if (e instanceof t) {
 			e.on("pointerdown", a), this.#e.push({
 				btn: e,
-				on: r,
+				on: n,
 				off: i,
 				offEvt: () => {
 					e.off("pointerdown", a);
@@ -59,7 +59,7 @@ var g = class {
 				t < 0 && (t = 0), l.setSelectionRange(t, t);
 			};
 		}
-		let u = this.#n.add(e, n, (t) => {
+		let u = this.#n.add(e, r, (t) => {
 			if (t.key === "ArrowUp" || t.key === "ArrowDown" || t.key === "Enter") {
 				if (t.stopImmediatePropagation(), c(t)) {
 					e.dispatchEvent(new MouseEvent("click"));
@@ -70,7 +70,7 @@ var g = class {
 		}, { passive: !0 });
 		e.hasAttribute("tabindex") || (e.tabIndex = 0), this.#e.push({
 			btn: e,
-			on: r,
+			on: n,
 			off: i,
 			offEvt: () => {
 				o(), u();
@@ -121,7 +121,7 @@ var g = class {
 			this.#t = -1;
 		}
 	}
-	#i = c.debugLog ? (e) => console.log(`👾 <FocusMng idx:${String(e)} btn:%o`, this.#e[e].btn) : () => {};
+	#i = l.debugLog ? (e) => console.log(`👾 <FocusMng idx:${String(e)} btn:%o`, this.#e[e].btn) : () => {};
 	getFocus() {
 		if (this.#t < 0) return null;
 		if (this.#o(), this.#e.length === 0) return this.#t = -1, null;
@@ -146,7 +146,7 @@ var g = class {
 	#s(e) {
 		return e instanceof t ? !!e.parent : e.isConnected && !!e.ownerDocument.defaultView;
 	}
-}, _ = [
+}, v = [
 	"",
 	"ArrowUp",
 	"",
@@ -156,12 +156,12 @@ var g = class {
 	"",
 	"ArrowDown",
 	""
-], v = .3, y = .2;
-function b(e, t, n) {
+], y = .3, b = .2;
+function x(e, t, n) {
 	let r = Math.abs(e) < n ? 0 : Math.sign(e);
-	return _[((Math.abs(t) < n ? 0 : Math.sign(t)) + 1) * 3 + (r + 1)] ?? "";
+	return v[((Math.abs(t) < n ? 0 : Math.sign(t)) + 1) * 3 + (r + 1)] ?? "";
 }
-var x = class {
+var S = class {
 	fcs;
 	constructor(e) {
 		this.fcs = e;
@@ -179,13 +179,13 @@ var x = class {
 	#n = /* @__PURE__ */ new Map();
 	#r = /* @__PURE__ */ new Map();
 	#i(e) {
-		let r = this.#n.get(e.index) ?? "", i = b(e.axes[0] ?? 0, e.axes[1] ?? 0, r ? y : v);
-		if (i === r || (this.#n.set(e.index, i), !i)) return;
+		let n = this.#n.get(e.index) ?? "", i = x(e.axes[0] ?? 0, e.axes[1] ?? 0, n ? b : y);
+		if (i === n || (this.#n.set(e.index, i), !i)) return;
 		let a = this.fcs.getFocus();
-		(!a || a instanceof t ? globalThis : a).dispatchEvent(new KeyboardEvent(n, {
+		(!a || a instanceof t ? globalThis : a).dispatchEvent(new KeyboardEvent(r, {
 			key: i,
 			bubbles: !0
-		})), !(!a || a instanceof t) && (p.cancelAutoSkip(), a.getAttribute("type") === "range" && a.dispatchEvent(new InputEvent("input", { bubbles: !0 })));
+		})), !(!a || a instanceof t) && (m.cancelAutoSkip(), a.getAttribute("type") === "range" && a.dispatchEvent(new InputEvent("input", { bubbles: !0 })));
 	}
 	#a(e) {
 		let t = this.#r.get(e.index) ?? [], n = e.buttons.map((e) => e.pressed);
@@ -194,42 +194,42 @@ var x = class {
 	}
 	#o(e) {
 		if (e % 2 == 0) {
-			p.cancelAutoSkip();
+			m.cancelAutoSkip();
 			let e = this.fcs.getFocus();
-			(!e || e instanceof t ? document.body : e).dispatchEvent(new KeyboardEvent(n, {
+			(!e || e instanceof t ? document.body : e).dispatchEvent(new KeyboardEvent(r, {
 				key: "Enter",
 				bubbles: !0
 			}));
 			return;
 		}
-		p.fire("middleclick", new Event("gamepad:button"), !0);
+		m.fire("middleclick", new Event("gamepad:button"), !0);
 	}
-}, S = [
+}, C = [
 	"top",
 	"bottom",
 	"left",
 	"right"
-], C = {
+], w = {
 	placement: "bottom",
 	skid: 0,
 	dist: 0
 };
-function w(e) {
-	if (!e) return C;
-	let t = JSON.parse(e), n = t.placement?.split("-")[0] ?? "", r = S.includes(n) ? n : C.placement, [i, a] = (t.modifiers?.find((e) => e.name === "offset"))?.options?.offset ?? [C.skid, C.dist];
+function T(e) {
+	if (!e) return w;
+	let t = JSON.parse(e), n = t.placement?.split("-")[0] ?? "", r = C.includes(n) ? n : w.placement, [i, a] = (t.modifiers?.find((e) => e.name === "offset"))?.options?.offset ?? [w.skid, w.dist];
 	return {
 		placement: r,
 		skid: i,
 		dist: a
 	};
 }
-var T = {
+var E = {
 	top: "bottom",
 	bottom: "top",
 	left: "right",
 	right: "left"
 };
-function E(e, t, n, r, i) {
+function D(e, t, n, r, i) {
 	let a = (n) => {
 		switch (n) {
 			case "top": return e.y - r - t.height >= 0;
@@ -239,10 +239,10 @@ function E(e, t, n, r, i) {
 		}
 	};
 	if (a(n)) return n;
-	let o = T[n];
+	let o = E[n];
 	return a(o) ? o : n;
 }
-function D(e, t, n, r, i) {
+function O(e, t, n, r, i) {
 	switch (n) {
 		case "bottom": return {
 			left: e.x + (e.width - t.width) / 2 + r,
@@ -262,19 +262,19 @@ function D(e, t, n, r, i) {
 		};
 	}
 }
-function O(e, t, n) {
+function k(e, t, n) {
 	return {
 		left: Math.min(Math.max(e.left, 0), Math.max(0, n.width - t.width)),
 		top: Math.min(Math.max(e.top, 0), Math.max(0, n.height - t.height))
 	};
 }
-function k(e, t, n, r, i = 8) {
+function A(e, t, n, r, i = 8) {
 	let a = r === "top" || r === "bottom", o = a ? e.x + e.width / 2 : e.y + e.height / 2, s = a ? n.left : n.top, c = a ? t.width : t.height;
 	return Math.min(Math.max(o - s - i / 2, 0), Math.max(0, c - i));
 }
 //#endregion
 //#region node_modules/tinygesture/dist/TinyGesture.js
-var A = class e {
+var j = class e {
 	constructor(t, n) {
 		this.element = t, this.touch1 = null, this.touch2 = null, this.touchStartX = null, this.touchStartY = null, this.touchEndX = null, this.touchEndY = null, this.touchMove1 = null, this.touchMove2 = null, this.touchMoveX = null, this.touchMoveY = null, this.velocityX = null, this.velocityY = null, this.longPressTimer = null, this.doubleTapTimer = null, this.doubleTapWaiting = !1, this.thresholdX = 0, this.thresholdY = 0, this.disregardVelocityThresholdX = 0, this.disregardVelocityThresholdY = 0, this.swipingHorizontal = !1, this.swipingVertical = !1, this.swipingDirection = null, this.swipedHorizontal = !1, this.swipedVertical = !1, this.originalDistance = null, this.newDistance = null, this.scale = null, this.originalAngle = null, this.newAngle = null, this.rotation = null, this.handlers = {
 			panstart: [],
@@ -291,7 +291,7 @@ var A = class e {
 			pinchend: [],
 			rotate: [],
 			rotateend: []
-		}, this._onTouchStart = this.onTouchStart.bind(this), this._onTouchMove = this.onTouchMove.bind(this), this._onTouchEnd = this.onTouchEnd.bind(this), this.opts = Object.assign({}, e.defaults, n), this.element.addEventListener("touchstart", this._onTouchStart, j), this.element.addEventListener("touchmove", this._onTouchMove, j), this.element.addEventListener("touchend", this._onTouchEnd, j), this.opts.mouseSupport && !("ontouchstart" in window) && (this.element.addEventListener("mousedown", this._onTouchStart, j), document.addEventListener("mousemove", this._onTouchMove, j), document.addEventListener("mouseup", this._onTouchEnd, j));
+		}, this._onTouchStart = this.onTouchStart.bind(this), this._onTouchMove = this.onTouchMove.bind(this), this._onTouchEnd = this.onTouchEnd.bind(this), this.opts = Object.assign({}, e.defaults, n), this.element.addEventListener("touchstart", this._onTouchStart, M), this.element.addEventListener("touchmove", this._onTouchMove, M), this.element.addEventListener("touchend", this._onTouchEnd, M), this.opts.mouseSupport && !("ontouchstart" in window) && (this.element.addEventListener("mousedown", this._onTouchStart, M), document.addEventListener("mousemove", this._onTouchMove, M), document.addEventListener("mouseup", this._onTouchEnd, M));
 	}
 	destroy() {
 		this.element.removeEventListener("touchstart", this._onTouchStart), this.element.removeEventListener("touchmove", this._onTouchMove), this.element.removeEventListener("touchend", this._onTouchEnd), this.element.removeEventListener("mousedown", this._onTouchStart), document.removeEventListener("mousemove", this._onTouchMove), document.removeEventListener("mouseup", this._onTouchEnd), clearTimeout(this.longPressTimer ?? void 0), clearTimeout(this.doubleTapTimer ?? void 0);
@@ -348,7 +348,7 @@ var A = class e {
 		}
 	}
 };
-A.defaults = {
+j.defaults = {
 	threshold: (e, t) => Math.max(25, Math.floor(.15 * (e === "x" ? window.innerWidth || document.body.clientWidth : window.innerHeight || document.body.clientHeight))),
 	velocityThreshold: 10,
 	disregardVelocityThreshold: (e, t) => Math.floor(.5 * (e === "x" ? t.element.clientWidth : t.element.clientHeight)),
@@ -359,15 +359,15 @@ A.defaults = {
 	doubleTapTime: 300,
 	mouseSupport: !0
 };
-var j = !1;
+var M = !1;
 try {
 	window.addEventListener("test", null, Object.defineProperty({}, "passive", { get: function() {
-		j = { passive: !0 };
+		M = { passive: !0 };
 	} }));
 } catch {}
 //#endregion
 //#region src/sn/EventMng.ts
-var M = class {
+var N = class {
 	cfg;
 	hTag;
 	appPixi;
@@ -376,48 +376,48 @@ var M = class {
 	val;
 	scrItr;
 	sys;
-	#e = new l();
+	#e = new u();
 	#t;
 	#n;
 	#r = /* @__PURE__ */ new Map([[0, ""], [1, "middle"]]);
-	constructor(t, r, i, o, s, l, u, d, m) {
-		if (this.cfg = t, this.hTag = r, this.appPixi = i, this.main = o, this.layMng = s, this.val = l, this.scrItr = d, this.sys = m, r.clear_event = (e) => f.clear_event(e), r.event = (e) => this.#v(e), r.set_cancel_skip = () => !1, r.set_focus = (e) => this.#b(e), this.#t = new g(i.view, m), u.setEvtMng(this), d.setOtherObj(this, s), h.setEvtMng(this, m, d), s.setEvtMng(this), p.setFcs(this.#t), m.setFire((e, t) => p.fire(e, t)), c.isDbg) {
+	constructor(t, i, a, s, c, u, d, f, h) {
+		if (this.cfg = t, this.hTag = i, this.appPixi = a, this.main = s, this.layMng = c, this.val = u, this.scrItr = f, this.sys = h, i.clear_event = (e) => p.clear_event(e), i.event = (e) => this.#v(e), i.set_cancel_skip = () => !1, i.set_focus = (e) => this.#b(e), this.#t = new _(a.view, h), d.setEvtMng(this), f.setOtherObj(this, c), g.setEvtMng(this, h, f), c.setEvtMng(this), m.setFcs(this.#t), h.setFire((e, t) => m.fire(e, t)), l.isDbg) {
 			let e = { pause: () => {
-				if (!p.isWait) return;
+				if (!m.isWait) return;
 				let e = {};
-				d.recodeDesign(e), m.callHook("_enterDesign", e), m.send2Dbg("_enterDesign", e);
+				f.recodeDesign(e), h.callHook("_enterDesign", e), h.send2Dbg("_enterDesign", e);
 			} };
-			e.attach = e.stopOnEntry = e.stopOnStep = e.stopOnStepIn = e.stopOnStepOut = e.stopOnBackstep = e.pause, m.addHook((t) => e[t]?.());
+			e.attach = e.stopOnEntry = e.stopOnStep = e.stopOnStepIn = e.stopOnStepOut = e.stopOnBackstep = e.pause, h.addHook((t) => e[t]?.());
 		}
-		a("\n.sn_hint {\n	position: fixed;\n	background-color: #3c3225;\n	color: white;\n	padding: 4px 8px;\n	border-radius: 4px;\n	font-size: 1.2em;\n	z-index: 10000;\n	pointer-events: none;\n	user-select: none;\n	max-width: 300px;\n	word-break: break-word;\n}\n\n.sn_hint_ar,\n.sn_hint_ar::before {\n	position: absolute;\n	width: 8px;\n	height: 8px;\n	background: inherit;\n}\n.sn_hint_ar {\n	visibility: hidden;\n}\n.sn_hint_ar::before {\n	visibility: visible;\n	content: '';\n	transform: rotate(45deg);\n}\n\n.sn_hint[data-hint-place='top']		> .sn_hint_ar {bottom: -4px;}\n.sn_hint[data-hint-place='bottom']	> .sn_hint_ar {top: -4px;}\n.sn_hint[data-hint-place='left']		> .sn_hint_ar {right: -4px;}\n.sn_hint[data-hint-place='right']	> .sn_hint_ar {left: -4px;}\n"), o.cvs.parentElement?.insertAdjacentHTML("beforeend", "\n<div class=\"sn_hint\" role=\"tooltip\">\n	<span>Dummy</span>\n	<div class=\"sn_hint_ar\"></div>\n</div>"), this.#f = document.querySelector(".sn_hint"), this.#p = this.#f.querySelector("span"), this.#m = this.#f.querySelector(".sn_hint_ar"), this.#f.hidden = !0, i.stage.interactive = !0, this.#e.add(document.body, n, (e) => this.#a(e)), this.#e.add(document.body, "keyup", () => f.resetFired()), this.#e.add(o.cvs, "contextmenu", (e) => {
+		o("\n.sn_hint {\n	position: fixed;\n	background-color: #3c3225;\n	color: white;\n	padding: 4px 8px;\n	border-radius: 4px;\n	font-size: 1.2em;\n	z-index: 10000;\n	pointer-events: none;\n	user-select: none;\n	max-width: 300px;\n	word-break: break-word;\n}\n\n.sn_hint_ar,\n.sn_hint_ar::before {\n	position: absolute;\n	width: 8px;\n	height: 8px;\n	background: inherit;\n}\n.sn_hint_ar {\n	visibility: hidden;\n}\n.sn_hint_ar::before {\n	visibility: visible;\n	content: '';\n	transform: rotate(45deg);\n}\n\n.sn_hint[data-hint-place='top']		> .sn_hint_ar {bottom: -4px;}\n.sn_hint[data-hint-place='bottom']	> .sn_hint_ar {top: -4px;}\n.sn_hint[data-hint-place='left']		> .sn_hint_ar {right: -4px;}\n.sn_hint[data-hint-place='right']	> .sn_hint_ar {left: -4px;}\n"), s.cvs.parentElement?.insertAdjacentHTML("beforeend", "\n<div class=\"sn_hint\" role=\"tooltip\">\n	<span>Dummy</span>\n	<div class=\"sn_hint_ar\"></div>\n</div>"), this.#f = document.querySelector(".sn_hint"), this.#p = this.#f.querySelector("span"), this.#m = this.#f.querySelector(".sn_hint_ar"), this.#f.hidden = !0, a.stage.interactive = !0, this.#e.add(document, "pointerdown", () => n.unlock(), { capture: !0 }), this.#e.add(document.body, r, (e) => this.#a(e)), this.#e.add(document.body, "keyup", () => p.resetFired()), this.#e.add(s.cvs, "contextmenu", (e) => {
 			let t = this.#o(e) + "rightclick";
-			p.fire(t, e, !0), e.preventDefault();
+			m.fire(t, e, !0), e.preventDefault();
 		});
-		let { width: _, height: v } = t.oCfg.window, y = Math.floor(_ > v ? v / 3 : _ / 3);
-		this.#n = new A(o.cvs, {
+		let { width: v, height: y } = t.oCfg.window, b = Math.floor(v > y ? y / 3 : v / 3);
+		this.#n = new j(s.cvs, {
 			velocityThreshold: 0,
-			disregardVelocityThreshold: (e) => Math.floor(y * (e === "x" ? 1 : .5))
+			disregardVelocityThreshold: (e) => Math.floor(b * (e === "x" ? 1 : .5))
 		});
-		let b = !1;
+		let x = !1;
 		this.#n.on("tap", (e) => {
-			if (b) return;
+			if (x) return;
 			if (e instanceof TouchEvent) {
-				p.fire("click", e, !0), f.resetFired();
+				m.fire("click", e, !0), p.resetFired();
 				return;
 			}
 			if (e.button > 1) return;
 			let t = this.#o(e) + `${this.#r.get(e.button) ?? ""}click`;
-			p.fire(t, e, !0), f.resetFired();
-		}), this.#e.add(window, "pointerout", () => f.resetFired()), this.#e.add(document, "pointerdown", () => f.resetFired(), { capture: !0 }), this.#n.on("longpress", (e) => {
-			if (b = !0, e instanceof TouchEvent) {
-				p.fire("longpress", e, !0);
+			m.fire(t, e, !0), p.resetFired();
+		}), this.#e.add(window, "pointerout", () => p.resetFired()), this.#e.add(document, "pointerdown", () => p.resetFired(), { capture: !0 }), this.#n.on("longpress", (e) => {
+			if (x = !0, e instanceof TouchEvent) {
+				m.fire("longpress", e, !0);
 				return;
 			}
 			let t = this.#o(e) + `${this.#r.get(e.button) ?? ""}longpress`;
-			p.fire(t, e, !0);
+			m.fire(t, e, !0);
 		}), this.#n.on("panend", () => {
-			b && queueMicrotask(() => {
-				b = !1;
+			x && queueMicrotask(() => {
+				x = !1;
 			});
 		}), [
 			"swiperight",
@@ -427,46 +427,46 @@ var M = class {
 		].forEach((e) => {
 			this.#n.on(e, (t) => {
 				if (t instanceof TouchEvent) {
-					p.fire(e, t, !0);
+					m.fire(e, t, !0);
 					return;
 				}
 				let n = this.#o(t) + e;
-				p.fire(n, t, !0);
+				m.fire(n, t, !0);
 			});
 		});
-		let S = () => l.setVal_Nochk("tmp", "const.sn.navigator.language", navigator.language);
+		let C = () => u.setVal_Nochk("tmp", "const.sn.navigator.language", navigator.language);
 		this.#e.add(globalThis, "languagechange", (t) => {
-			S(), p.fire("sn:chgNavLang", t), e();
-		}), S();
-		let C = (e) => {
-			c.isDarkMode = e.matches, l.setVal_Nochk("tmp", "const.sn.isDarkMode", c.isDarkMode);
-		}, w = globalThis.matchMedia("(prefers-color-scheme: dark)");
-		C(w), this.#e.add(w, "change", (e) => {
-			C(e), p.fire("sn:chgDarkMode", e);
+			C(), m.fire("sn:chgNavLang", t), e();
+		}), C();
+		let w = (e) => {
+			l.isDarkMode = e.matches, u.setVal_Nochk("tmp", "const.sn.isDarkMode", l.isDarkMode);
+		}, T = globalThis.matchMedia("(prefers-color-scheme: dark)");
+		w(T), this.#e.add(T, "change", (e) => {
+			w(e), m.fire("sn:chgDarkMode", e);
 		});
-		let T = (e, t) => {};
-		"WheelEvent" in globalThis && (this.#e.add(o.cvs, "wheel", (e) => this.#s(e), { passive: !0 }), this.#i = (e) => this.#e.add(e, "wheel", (e) => this.#s(e), { passive: !0 }), T = (e, t) => e.add(o.cvs, "wheel", (e) => {
+		let E = (e, t) => {};
+		"WheelEvent" in globalThis && (this.#e.add(s.cvs, "wheel", (e) => this.#s(e), { passive: !0 }), this.#i = (e) => this.#e.add(e, "wheel", (e) => this.#s(e), { passive: !0 }), E = (e, t) => e.add(s.cvs, "wheel", (e) => {
 			e.deltaY <= 0 || (e.stopPropagation(), t());
-		})), p.init(t, r, o, l, d, s, this, u, T), this.#d = new x(this.#t), this.#d.start(), this.#e.add(document, "keyup", (e) => {
+		})), m.init(t, i, s, u, f, c, this, d, E), this.#d = new S(this.#t), this.#d.start(), this.#e.add(document, "keyup", (e) => {
 			e.isComposing || e.key in this.#x && (this.#x[e.key] = 0);
-		}), l.defTmp("const.sn.key.alternate", () => this.#x.Alt > 0), l.defTmp("const.sn.key.command", () => this.#x.Meta > 0), l.defTmp("const.sn.key.control", () => this.#x.Control > 0), l.defTmp("const.sn.key.end", () => this.#x.End > 0), l.defTmp("const.sn.key.escape", () => this.#x.Escape > 0), l.defTmp("const.sn.key.back", () => this.#x.GoBack > 0);
+		}), u.defTmp("const.sn.key.alternate", () => this.#x.Alt > 0), u.defTmp("const.sn.key.command", () => this.#x.Meta > 0), u.defTmp("const.sn.key.control", () => this.#x.Control > 0), u.defTmp("const.sn.key.end", () => this.#x.End > 0), u.defTmp("const.sn.key.escape", () => this.#x.Escape > 0), u.defTmp("const.sn.key.back", () => this.#x.GoBack > 0);
 	}
 	resvFlameEvent(e) {
-		this.#e.add(e, n, (e) => this.#a(e)), this.#e.add(e, "contextmenu", (e) => {
-			p.fire(this.#o(e) + "rightclick", e, !0), e.preventDefault();
-		}), this.#i(e), this.#e.add(e, o, (e) => {
+		this.#e.add(e, r, (e) => this.#a(e)), this.#e.add(e, "contextmenu", (e) => {
+			m.fire(this.#o(e) + "rightclick", e, !0), e.preventDefault();
+		}), this.#i(e), this.#e.add(e, s, (e) => {
 			if (e instanceof TouchEvent) {
-				p.fire("click", e, !0);
+				m.fire("click", e, !0);
 				return;
 			}
 			if (e.button > 1) return;
 			let t = this.#o(e) + `${this.#r.get(e.button) ?? ""}click`;
-			p.fire(t, e, !0);
-		}), this.#e.add(e, "pointerup", () => f.resetFired()), this.#e.add(e, "pointerout", () => f.resetFired());
+			m.fire(t, e, !0);
+		}), this.#e.add(e, "pointerup", () => p.resetFired()), this.#e.add(e, "pointerout", () => p.resetFired());
 	}
 	#i = (e) => {};
 	#a(e) {
-		e.isComposing || (e.key in this.#x && (this.#x[e.key] = e.repeat ? 2 : 1), e.preventDefault(), p.fire(d.modKey(e) + e.key, e, !0));
+		e.isComposing || (e.key in this.#x && (this.#x[e.key] = e.repeat ? 2 : 1), n.unlock(), e.preventDefault(), m.fire(f.modKey(e) + e.key, e, !0));
 	}
 	#o(e) {
 		return (e.altKey ? "alt+" : "") + (e.ctrlKey ? "ctrl+" : "") + (e.metaKey ? "meta+" : "") + (e.shiftKey ? "shift+" : "");
@@ -478,7 +478,7 @@ var M = class {
 		}
 		this.#c = !0, this.#u();
 		let t = this.#o(e) + (e.deltaY > 0 ? "downwheel" : "upwheel");
-		p.fire(t, e, !0);
+		m.fire(t, e, !0);
 	}
 	#c = !1;
 	#l = !1;
@@ -495,37 +495,37 @@ var M = class {
 	destroy() {
 		this.#d.stop();
 		for (let e of Array.from(document.getElementsByClassName("sn_hint"))) e.parentElement?.removeChild(e);
-		this.#n.destroy(), p.destroy(), this.#t.destroy(), this.#g.clear(), this.#e.clear();
+		this.#n.destroy(), m.destroy(), this.#t.destroy(), this.#g.clear(), this.#e.clear();
 	}
 	unButton(e) {
 		this.#t.remove(e);
 	}
-	button(e, t, n, r, a) {
+	button(e, t, n, r, i) {
 		!e.fn && !e.label && !e.url && this.main.errScript("fnまたはlabelまたはurlは必須です"), e.fn ??= this.scrItr.scriptFn, t.interactive = !0, t.cursor = "pointer";
-		let o = e.key?.toLowerCase() ?? " ", l = s(e, "global", !1);
-		f.setEvt2Fnc(l, o, () => this.main.resumeByJumpOrCall(e)), t.on(i, (e) => {
-			e.preventDefault?.(), p.fire(o, e, !0);
+		let o = e.key?.toLowerCase() ?? " ", s = c(e, "global", !1);
+		p.setEvt2Fnc(s, o, () => this.main.resumeByJumpOrCall(e)), t.on(a, (e) => {
+			e.preventDefault?.(), m.fire(o, e, !0);
 		});
-		let d = e.hint ? () => this.#h(e, t) : () => {}, h = () => {
+		let u = e.hint ? () => this.#h(e, t) : () => {}, f = () => {
 			n(), this.#f.hidden = !0;
-		}, g = () => (d(), r());
+		}, g = () => (u(), r());
 		if (t.on("pointerover", g), t.on("pointerout", () => {
-			this.#t.isFocus(t) ? g() : h();
+			this.#t.isFocus(t) ? g() : f();
 		}), t.on("pointerdown", () => {
 			this.#f.hidden = !0;
 			let e = this.#t.getFocus();
-			a(), e instanceof m && e.normal();
-		}), t.on("pointerup", c.isMobile ? h : () => {
-			this.#t.isFocus(t) ? g() : h();
-		}), this.#t.add(t, g, h), e.clickse && (e.clicksebuf ??= "SYS", this.cfg.searchPath(e.clickse, u.SOUND), t.on("pointerdown", () => this.hTag.playse({
+			i(), e instanceof h && e.normal();
+		}), t.on("pointerup", l.isMobile ? f : () => {
+			this.#t.isFocus(t) ? g() : f();
+		}), this.#t.add(t, g, f), e.clickse && (e.clicksebuf ??= "SYS", this.cfg.searchPath(e.clickse, d.SOUND), t.on("pointerdown", () => this.hTag.playse({
 			fn: e.clickse,
 			...e.clicksebuf ? { buf: e.clicksebuf } : {},
 			join: !1
-		}))), e.enterse && (e.entersebuf ??= "SYS", this.cfg.searchPath(e.enterse, u.SOUND), t.on("pointerover", () => this.hTag.playse({
+		}))), e.enterse && (e.entersebuf ??= "SYS", this.cfg.searchPath(e.enterse, d.SOUND), t.on("pointerover", () => this.hTag.playse({
 			fn: e.enterse,
 			...e.entersebuf ? { buf: e.entersebuf } : {},
 			join: !1
-		}))), e.leavese && (e.leavesebuf ??= "SYS", this.cfg.searchPath(e.leavese, u.SOUND), t.on("pointerout", () => this.hTag.playse({
+		}))), e.leavese && (e.leavesebuf ??= "SYS", this.cfg.searchPath(e.leavese, d.SOUND), t.on("pointerout", () => this.hTag.playse({
 			fn: e.leavese,
 			...e.leavesebuf ? { buf: e.leavesebuf } : {},
 			join: !1
@@ -536,7 +536,7 @@ var M = class {
 				call: !0,
 				key: n
 			};
-			f.setEvt2Fnc(l, n, () => this.main.resumeByJumpOrCall(r)), t.on("pointerover", (e) => p.fire(n, e));
+			p.setEvt2Fnc(s, n, () => this.main.resumeByJumpOrCall(r)), t.on("pointerover", (e) => m.fire(n, e));
 		}
 		if (e.onleave) {
 			let n = o + e.onleave.toLowerCase(), r = {
@@ -545,14 +545,14 @@ var M = class {
 				call: !0,
 				key: n
 			};
-			f.setEvt2Fnc(l, n, () => this.main.resumeByJumpOrCall(r)), t.on("pointerout", (e) => p.fire(n, e));
+			p.setEvt2Fnc(s, n, () => this.main.resumeByJumpOrCall(r)), t.on("pointerout", (e) => m.fire(n, e));
 		}
 	}
 	#f;
 	#p;
 	#m;
 	#h(e, t) {
-		let n = t instanceof m ? t.getBtnBounds() : t.getBounds();
+		let n = t instanceof h ? t.getBtnBounds() : t.getBounds();
 		if (e[":タグ名"] !== "link") {
 			let e = t.parent.parent;
 			n.x += e.x, n.y += e.y;
@@ -562,11 +562,11 @@ var M = class {
 			return;
 		}
 		this.#f.style.cssText = e.hint_style ?? "", this.#p.style.cssText = "", this.#p.textContent = e.hint ?? "";
-		let i;
+		let r;
 		try {
-			i = w(e.hint_opt);
+			r = T(e.hint_opt);
 		} catch (t) {
-			console.error(r(e, "hint_opt", `dispHint 引数 hint_opt エラー ${t instanceof SyntaxError ? t.message : ""}`));
+			console.error(i(e, "hint_opt", `dispHint 引数 hint_opt エラー ${t instanceof SyntaxError ? t.message : ""}`));
 			return;
 		}
 		let a = {
@@ -579,9 +579,9 @@ var M = class {
 		let o = this.#f.getBoundingClientRect(), s = {
 			width: globalThis.innerWidth,
 			height: globalThis.innerHeight
-		}, c = E(a, o, i.placement, i.dist, s), l = O(D(a, o, c, i.skid, i.dist), o, s);
+		}, c = D(a, o, r.placement, r.dist, s), l = k(O(a, o, c, r.skid, r.dist), o, s);
 		this.#f.style.left = `${String(l.left)}px`, this.#f.style.top = `${String(l.top)}px`, this.#f.dataset.hintPlace = c;
-		let u = c === "top" || c === "bottom", d = `${String(k(a, o, l, c))}px`;
+		let u = c === "top" || c === "bottom", d = `${String(A(a, o, l, c))}px`;
 		this.#m.style.left = u ? d : "", this.#m.style.top = u ? "" : d;
 	}
 	hideHint() {
@@ -601,20 +601,20 @@ var M = class {
 	#v(e) {
 		let t = e.key;
 		if (!t) throw "keyは必須です";
-		let r = t.toLowerCase(), i = s(e, "call", !1), a = s(e, "global", !1), { fn: o, label: c, url: l } = e;
-		if (s(e, "del", !1)) {
-			if (o || c || i || l) throw "fn/label/callとdelは同時指定できません";
-			return this.#_(t), f.clear_eventer(t, a, r), !1;
+		let n = t.toLowerCase(), i = c(e, "call", !1), a = c(e, "global", !1), { fn: o, label: s, url: l } = e;
+		if (c(e, "del", !1)) {
+			if (o || s || i || l) throw "fn/label/callとdelは同時指定できません";
+			return this.#_(t), p.clear_eventer(t, a, n), !1;
 		}
-		if (!o && !c && !l) throw "fn,label,url いずれかは必須です";
+		if (!o && !s && !l) throw "fn,label,url いずれかは必須です";
 		if (e.fn ??= this.scrItr.scriptFn, t.startsWith("dom=")) {
-			let r = f.getHtmlElmList(t);
-			if (r.el.length === 0) {
-				if (s(e, "need_err", !0)) throw `HTML内にセレクタ（${r.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
+			let n = p.getHtmlElmList(t);
+			if (n.el.length === 0) {
+				if (c(e, "need_err", !0)) throw `HTML内にセレクタ（${n.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
 				return !1;
 			}
-			let i = ["click", n];
-			switch (r.el[0].type ?? "") {
+			let i = ["click", r];
+			switch (n.el[0].type ?? "") {
 				case "checkbox":
 					i = ["input"];
 					break;
@@ -627,19 +627,19 @@ var M = class {
 			this.#_(t);
 			let a = [], o = i.length;
 			for (let e = 0; e < o; ++e) {
-				let n = i[e];
-				r.el.forEach((i) => {
-					a.push(this.#e.add(i, n, (e) => {
-						if (!p.isWait || this.layMng.getFrmDisabled(r.id) || n === "keydown" && e.key !== "Enter") return;
+				let r = i[e];
+				n.el.forEach((i) => {
+					a.push(this.#e.add(i, r, (e) => {
+						if (!m.isWait || this.layMng.getFrmDisabled(n.id) || r === "keydown" && e.key !== "Enter") return;
 						let a = i.dataset;
 						for (let [e, t] of Object.entries(a)) this.val.setVal_Nochk("tmp", `sn.event.domdata.${e}`, t);
-						p.fire(t, e);
+						m.fire(t, e);
 					})), e === 0 && this.#t.add(i, () => this.#y(i) ? (i.focus(), !0) : !1, () => {});
 				});
 			}
 			this.#g.set(t, a);
 		}
-		return f.setEvt2Fnc(a, r, () => this.main.resumeByJumpOrCall(e)), !1;
+		return p.setEvt2Fnc(a, n, () => this.main.resumeByJumpOrCall(e)), !1;
 	}
 	#y(e) {
 		if (!e || e.offsetParent === null) return !1;
@@ -653,13 +653,13 @@ var M = class {
 	#b(e) {
 		let { add: t, del: n, to: r } = e;
 		if (t?.startsWith("dom=")) {
-			let n = f.getHtmlElmList(t);
-			if (n.el.length === 0 && s(e, "need_err", !0)) throw `HTML内にセレクタ（${n.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
+			let n = p.getHtmlElmList(t);
+			if (n.el.length === 0 && c(e, "need_err", !0)) throw `HTML内にセレクタ（${n.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
 			return n.el.forEach((e) => this.#t.add(e, () => this.#y(e) ? (e.focus(), !0) : !1, () => {})), !1;
 		}
 		if (n?.startsWith("dom=")) {
-			let t = f.getHtmlElmList(n);
-			if (t.el.length === 0 && s(e, "need_err", !0)) throw `HTML内にセレクタ（${t.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
+			let t = p.getHtmlElmList(n);
+			if (t.el.length === 0 && c(e, "need_err", !0)) throw `HTML内にセレクタ（${t.sel}）に対応する要素が見つかりません。存在しない場合を許容するなら、need_err=false と指定してください`;
 			return t.el.forEach((e) => this.#t.remove(e)), !1;
 		}
 		if (!r) throw "[set_focus] add か to は必須です";
@@ -675,7 +675,7 @@ var M = class {
 		return !1;
 	}
 	get isSkipping() {
-		return p.isSkipping ? !0 : Object.keys(this.#x).some((e) => this.#x[e] === 2);
+		return m.isSkipping ? !0 : Object.keys(this.#x).some((e) => this.#x[e] === 2);
 	}
 	#x = {
 		Alt: 0,
@@ -690,6 +690,6 @@ var M = class {
 	};
 };
 //#endregion
-export { M as EventMng };
+export { N as EventMng };
 
 //# sourceMappingURL=EventMng.js.map

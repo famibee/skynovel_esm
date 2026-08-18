@@ -11,8 +11,7 @@ import type {T_Variable, T_Main, T_NoticeChgVolume} from './CmnInterface';
 import type {Config} from './Config';
 import type {SysBase} from './SysBase';
 import {BUF_BGM, BUF_SE, SndBuf, xchgbuf} from './SndBuf';
-
-import {Howler} from 'howler';
+import {SndCtx} from './SndCtx';
 
 
 export type HSndBuf = {[buf: string]: SndBuf}
@@ -42,12 +41,10 @@ export class SoundMng {
 
 		val.setVal_Nochk('save', 'const.sn.loopPlaying', '{}');
 
-		const codecs: {[ext: string]: boolean} = {};
-		for (const ext of 'aac,caf,dolby,flac,m4a,m4b,mp3,mp4,mpeg,oga,ogg,opus,wav,weba,webm'.split(',')) codecs[ext] = Howler.codecs(ext);
-		val.setVal_Nochk('tmp', 'const.sn.sound.codecs', JSON.stringify(codecs));
+		val.setVal_Nochk('tmp', 'const.sn.sound.codecs', SndCtx.codecs());
 		// - PixiJS Sound
 		// aiff,caf,mid,mp3,mpeg,oga,ogg,opus,wav,wma
-		// - Howl
+		// - SndCtx（旧Howl）
 		// aac,caf,dolby,flac,m4a,m4b,mp3,mp4,mpeg,oga,ogg,opus,wav,weba,webm
 
 		SndBuf.init(cfg, val, main, sys, buf=> this.#getSndBuf(buf));
@@ -58,7 +55,7 @@ export class SoundMng {
 	setNoticeChgVolume(setGlbVol: T_NoticeChgVolume, setMovVol: T_NoticeChgVolume) {
 		this.val.defValTrg('sys:sn.sound.global_volume', (_, val)=> {
 			const v = Number(val);
-			Howler.volume(v);
+			SndCtx.setGlobalVol(v);
 			setGlbVol(v);
 		});
 		this.val.defValTrg('sys:sn.sound.movie_volume', (_, val)=> setMovVol(Number(val)));
@@ -130,7 +127,7 @@ export class SoundMng {
 		return join;
 	}
 	#initVol = ()=> {
-		Howler.volume(Number(this.val.getVal('sys:sn.sound.global_volume', 1)));
+		SndCtx.setGlobalVol(Number(this.val.getVal('sys:sn.sound.global_volume', 1)));
 		this.#initVol = ()=> { /* empty */ };
 	};
 
@@ -138,8 +135,8 @@ export class SoundMng {
 	#stop_allse() {
 		for (const buf of Object.keys(this.#hSndBuf)) this.#stopse({buf});
 		this.#hSndBuf = {};
-
-		Howler.unload();
+		// howler時代と違い、ctxごと閉じて作り直す事はしない（iOS/Safariでctxがずっとsuspendedのままになるのを避けるため）。
+		// 個々のSndBufはstopse()の中でunload()済み
 
 		return false;
 	}
@@ -178,9 +175,10 @@ export class SoundMng {
 		const a = this.#hSndBuf[buf1];	// 分割代入の変数交換だと noUncheckedIndexedAccess エラーになるので
 		const b = this.#hSndBuf[buf2];
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-		if (a) this.#hSndBuf[buf2] = a; else delete this.#hSndBuf[buf2];
+		if (a) {this.#hSndBuf[buf2] = a; a.buf = buf2} else delete this.#hSndBuf[buf2];
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-		if (b) this.#hSndBuf[buf1] = b; else delete this.#hSndBuf[buf1];
+		if (b) {this.#hSndBuf[buf1] = b; b.buf = buf1} else delete this.#hSndBuf[buf1];
+		// sb.buf を書き換えないと、交換後に自然終了した際、古いbuf名でtmp:playingを倒してしまう
 
 		xchgbuf(hArg);
 

@@ -1,34 +1,31 @@
-import { l as e, s as t } from "./CmnLib.js";
-import { n, r, t as i } from "./SndBuf.js";
+import { _ as e, l as t, s as n } from "./CmnLib.js";
+import { n as r, t as i } from "./SndBuf.js";
 //#region src/sn/SoundMng.ts
-var a = r(), o = class {
+var a = class {
 	val;
 	#e = {};
 	#t(e) {
 		return this.#e[e];
 	}
-	constructor(e, t, n, r, o) {
-		this.val = n, t.volume = (e) => this.#r(e), t.fadebgm = (e) => this.#s(e), t.fadeoutbgm = (e) => this.#a(e), t.fadeoutse = (e) => this.#o(e), t.fadese = (e) => this.#c(e), t.playbgm = (e) => this.#l(e), t.playse = (e) => this.#u(e), t.stop_allse = () => this.#f(), t.stopbgm = (e) => this.#p(e), t.stopse = (e) => this.#m(e), t.wb = (e) => this.#h(e), t.wf = (e) => this.#g(e), t.stopfadese = () => !1, t.wl = (e) => this.#_(e), t.ws = (e) => this.#v(e), t.xchgbuf = (e) => this.#y(e), n.setVal_Nochk("save", "const.sn.loopPlaying", "{}");
-		let s = {};
-		for (let e of "aac,caf,dolby,flac,m4a,m4b,mp3,mp4,mpeg,oga,ogg,opus,wav,weba,webm".split(",")) s[e] = a.Howler.codecs(e);
-		n.setVal_Nochk("tmp", "const.sn.sound.codecs", JSON.stringify(s)), i.init(e, n, r, o, (e) => this.#t(e));
+	constructor(t, n, r, a, o) {
+		this.val = r, n.volume = (e) => this.#r(e), n.fadebgm = (e) => this.#s(e), n.fadeoutbgm = (e) => this.#a(e), n.fadeoutse = (e) => this.#o(e), n.fadese = (e) => this.#c(e), n.playbgm = (e) => this.#l(e), n.playse = (e) => this.#u(e), n.stop_allse = () => this.#f(), n.stopbgm = (e) => this.#p(e), n.stopse = (e) => this.#m(e), n.wb = (e) => this.#h(e), n.wf = (e) => this.#g(e), n.stopfadese = () => !1, n.wl = (e) => this.#_(e), n.ws = (e) => this.#v(e), n.xchgbuf = (e) => this.#y(e), r.setVal_Nochk("save", "const.sn.loopPlaying", "{}"), r.setVal_Nochk("tmp", "const.sn.sound.codecs", e.codecs()), i.init(t, r, a, o, (e) => this.#t(e));
 	}
 	#n;
 	setEvtMng(e) {
 		this.#n = e, i.setEvtMng(e);
 	}
-	setNoticeChgVolume(e, t) {
-		this.val.defValTrg("sys:sn.sound.global_volume", (t, n) => {
-			let r = Number(n);
-			a.Howler.volume(r), e(r);
-		}), this.val.defValTrg("sys:sn.sound.movie_volume", (e, n) => t(Number(n))), this.val.setVal_Nochk("sys", "sn.sound.global_volume", this.val.getVal("sys:sn.sound.global_volume", 1)), this.val.setVal_Nochk("sys", "sn.sound.movie_volume", this.val.getVal("sys:sn.sound.movie_volume", 1));
+	setNoticeChgVolume(t, n) {
+		this.val.defValTrg("sys:sn.sound.global_volume", (n, r) => {
+			let i = Number(r);
+			e.setGlobalVol(i), t(i);
+		}), this.val.defValTrg("sys:sn.sound.movie_volume", (e, t) => n(Number(t))), this.val.setVal_Nochk("sys", "sn.sound.global_volume", this.val.getVal("sys:sn.sound.global_volume", 1)), this.val.setVal_Nochk("sys", "sn.sound.movie_volume", this.val.getVal("sys:sn.sound.movie_volume", 1));
 	}
 	#r(e) {
 		let { buf: t = "SE" } = e, n = "const.sn.sound." + t + ".volume", r = this.#i(e, 1);
 		return Number(this.val.getVal("sys:" + n)) !== r && (this.val.setVal_Nochk("sys", n, r), this.val.flush(), e.time = 0, e.volume = Number(this.val.getVal("save:" + n)), this.#c(e));
 	}
-	#i(t, n) {
-		let r = e(t, "volume", n);
+	#i(e, n) {
+		let r = t(e, "volume", n);
 		return r < 0 ? 0 : r > 1 ? 1 : r;
 	}
 	#a(e) {
@@ -45,21 +42,21 @@ var a = r(), o = class {
 		return this.#e[t]?.fade(e), !1;
 	}
 	#l(e) {
-		return e.buf = "BGM", e.canskip = !1, t(e, "loop", !0), this.#u(e);
+		return e.buf = "BGM", e.canskip = !1, n(e, "loop", !0), this.#u(e);
 	}
 	#u(e) {
-		let { buf: n = "SE" } = e;
-		if (this.#m({ buf: n }), t(e, "canskip", !0) && this.#n.isSkipping) return !1;
+		let { buf: t = "SE" } = e;
+		if (this.#m({ buf: t }), n(e, "canskip", !0) && this.#n.isSkipping) return !1;
 		this.#d();
-		let r = t(e, "join", !0);
-		return this.#e[n] = i.generate(e, n, r), r;
+		let r = n(e, "join", !0);
+		return this.#e[t] = i.generate(e, t, r), r;
 	}
 	#d = () => {
-		a.Howler.volume(Number(this.val.getVal("sys:sn.sound.global_volume", 1))), this.#d = () => {};
+		e.setGlobalVol(Number(this.val.getVal("sys:sn.sound.global_volume", 1))), this.#d = () => {};
 	};
 	#f() {
 		for (let e of Object.keys(this.#e)) this.#m({ buf: e });
-		return this.#e = {}, a.Howler.unload(), !1;
+		return this.#e = {}, !1;
 	}
 	#p(e) {
 		return e.buf = "BGM", this.#m(e);
@@ -83,10 +80,10 @@ var a = r(), o = class {
 		return this.#e[t]?.ws(e) ?? !1;
 	}
 	#y(e) {
-		let { buf: t = "SE", buf2: r = "SE" } = e;
-		if (t === r) return !1;
-		let i = this.#e[t], a = this.#e[r];
-		return i ? this.#e[r] = i : delete this.#e[r], a ? this.#e[t] = a : delete this.#e[t], n(e), !1;
+		let { buf: t = "SE", buf2: n = "SE" } = e;
+		if (t === n) return !1;
+		let i = this.#e[t], a = this.#e[n];
+		return i ? (this.#e[n] = i, i.buf = n) : delete this.#e[n], a ? (this.#e[t] = a, a.buf = t) : delete this.#e[t], r(e), !1;
 	}
 	playLoopFromSaveObj(e) {
 		let t = String(this.val.getVal("save:const.sn.loopPlaying", "{}"));
@@ -119,6 +116,6 @@ var a = r(), o = class {
 	}
 };
 //#endregion
-export { o as SoundMng };
+export { a as SoundMng };
 
 //# sourceMappingURL=SoundMng.js.map

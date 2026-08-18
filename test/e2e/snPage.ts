@@ -124,24 +124,26 @@ export async function blobLive(page: Page): Promise<number> {
 	return page.evaluate(()=> (<any>globalThis).__probe.blobLive() as number);
 }
 
-// Howler._howls の件数。unload()でしか減らないので、解放漏れがそのまま出る
-export async function howls(page: Page): Promise<number> {
-	return page.evaluate(()=> (<any>globalThis).__probe.howls() as number);
+// SndBuf.live の件数。unload()でしか減らないので、解放漏れがそのまま出る
+export async function sndLive(page: Page): Promise<number> {
+	return page.evaluate(()=> (<any>globalThis).__probe.sndLive() as number);
 }
 
 
 // ---- 音声（prj_sound）用 -----------------------------------------------------
 
-// 生きている Howl の設定値。src はファイル名だけ、sprite は start_ms/end_ms/ret_ms の反映結果
-export type T_HOWL = {
+// 生きている SndBuf の設定値。src はファイル名だけ、startMs/endMs/retMsはミリ秒で実尺解決済み
+export type T_SNDBUF = {
 	src		: string;
 	loop	: boolean;
-	rate	: number;
-	stereo?	: number;
+	speed	: number;
+	pan		: number;
 	volume	: number;
 	duration: number;
 	playing	: boolean;
-	sprite	: Record<string, number[]>;
+	startMs	: number;
+	endMs	: number;
+	retMs	: number;
 };
 
 // シナリオの任意ラベルへ飛び、そこが [s] で止まるまで待つ。
@@ -163,12 +165,12 @@ export async function val(page: Page, nm: string): Promise<unknown> {
 	return page.evaluate(n=> (<any>globalThis).__sn.val(n) as unknown, nm);
 }
 
-// 生きている Howl 一覧
-export async function howlList(page: Page): Promise<T_HOWL[]> {
-	return page.evaluate(()=> (<any>globalThis).__sn.howls() as T_HOWL[]);
+// 生きている SndBuf 一覧
+export async function sndBufList(page: Page): Promise<T_SNDBUF[]> {
+	return page.evaluate(()=> (<any>globalThis).__sn.sndBufs() as T_SNDBUF[]);
 }
 
-// Howler のグローバル音量（sys:sn.sound.global_volume が反映される）
+// SndCtxのグローバル音量（sys:sn.sound.global_volume が反映される）
 export async function glbVolume(page: Page): Promise<number> {
 	return page.evaluate(()=> (<any>globalThis).__sn.glbVolume() as number);
 }

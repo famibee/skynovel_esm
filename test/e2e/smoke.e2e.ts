@@ -9,7 +9,7 @@
 //	ここが落ちたら他のE2Eを疑う前にこちらを直す
 
 import {expect, test} from '@playwright/test';
-import {countLsn, gotoSn, howls, rafPending, waitMes} from './snPage';
+import {countLsn, gotoSn, rafPending, sndLive, waitMes} from './snPage';
 
 test('シナリオが起動して1行目が表示される', async ({page})=> {
 	await gotoSn(page);
@@ -23,6 +23,6 @@ test('計装（__probe）が生きている', async ({page})=> {
 	expect(await rafPending(page)).toBeGreaterThan(0);
 	// document には EventMng がキー操作を張っている
 	expect(await countLsn(page, {sel: 'document'})).toBeGreaterThan(0);
-	// howler は読み込まれているが、まだ何も再生していない
-	expect(await howls(page)).toBe(0);
+	// SndBuf は読み込まれているが、まだ何も再生していない
+	expect(await sndLive(page)).toBe(0);
 });

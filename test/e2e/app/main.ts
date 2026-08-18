@@ -8,20 +8,20 @@
 // E2E（Playwright）専用の起動エントリ。src/ 配下には一切手を入れず、
 //	ここだけでテスト用のフック（window.__probe / window.__sn）を生やす。
 //	vite dev が src/ をそのままトランスパイルして配信するため、
-//	src/ 側と同一モジュール実体を掴める（＝howler の Howler も本番と同じ物）。
+//	src/ 側と同一モジュール実体を掴める（＝SndBuf.live も本番と同じ物）。
 
 // **この import は必ず先頭**。src/ より先に評価してブラウザAPIを包む必要がある
 import './probe';
 
 import {SysWeb} from '../../../src/web';
 import {Reading} from '../../../src/sn/Reading';
-import {Howler} from 'howler';
+import {SndBuf} from '../../../src/sn/SndBuf';
+import {SndCtx} from '../../../src/sn/SndCtx';
 
-// Howler._howls は解放漏れの最も直接的な指標。unload()でしか除去されないので、
-//	「再生と停止を繰り返しても増えない」が SndBuf の検査そのものになる。
-//	型に無い私有プロパティなので any 経由で読む
+// SndBuf.live は解放漏れの最も直接的な指標。unload()でしか除去されないので、
+//	「再生と停止を繰り返しても増えない」が SndBuf の検査そのものになる
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any).__probe.howls = ()=> ((<any>Howler)._howls as unknown[]).length;
+(globalThis as any).__probe.sndLive = ()=> SndBuf.live.size;
 
 // ?prj=leak でシナリオ（プロジェクトフォルダ）を切り替える。
 //	読むのは常に main（path.json の "main"）なので、シナリオごとにフォルダを分ける
@@ -42,7 +42,7 @@ const sys = new SysWeb(hPlg, {cur: `/test/e2e/app/prj_${prj}/`, crypto, dip: ''}
 //	クリック前には必ずこれを見る（本文の表示だけでは判定できない）。
 //
 //	main/val は protected だが、**src/ に手を入れずに中を見るため**ここだけ any で覗く。
-//	音声まわりは組み込み変数（const.sn.sound.*）と Howl の設定値が唯一の観測点で、
+//	音声まわりは組み込み変数（const.sn.sound.*）と SndBuf の公開ゲッタが唯一の観測点で、
 //	鳴っている音そのものはヘッドレスでは確かめようがない
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const anySys = <any>sys;
@@ -61,18 +61,18 @@ const anySys = <any>sys;
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
 	val		: (nm: string)=> anySys.val?.getVal(nm),
 
-	// 生きている Howl の設定値。playing()/volume()/duration() は公開API、
-	//	_sprite/_stereo/_src は私有だが、start_ms/end_ms/ret_ms と pan の
-	//	検証には他に手段が無い
-	howls	: ()=> ((<any>Howler)._howls as any[]).map(h=> ({
-		src		: String(h._src).split('/').pop(),
-		loop	: Boolean(h._loop),
-		rate	: Number(h._rate),
-		stereo	: h._stereo as number | undefined,
-		volume	: Number(h.volume()),
-		duration: Number(h.duration()),
-		playing	: Boolean(h.playing()),
-		sprite	: h._sprite as Record<string, number[]>,
+	// 生きている SndBuf の設定値。すべて公開ゲッタ経由（旧Howlの私有プロパティ覗きが不要になった）
+	sndBufs	: ()=> [...SndBuf.live].map(sb=> ({
+		src		: sb.src.split('/').pop(),
+		loop	: sb.loop,
+		speed	: sb.speed,
+		pan		: sb.effPan,
+		volume	: sb.volume,
+		duration: sb.duration,
+		playing	: sb.playing,
+		startMs	: sb.startMs,
+		endMs	: sb.endMs,
+		retMs	: sb.retMs,
 	})),
-	glbVolume: ()=> Number(Howler.volume()),
+	glbVolume: ()=> SndCtx.globalVol,
 };

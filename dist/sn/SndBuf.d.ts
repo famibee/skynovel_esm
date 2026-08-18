@@ -9,20 +9,25 @@ export declare function xchgbuf({ buf: buf1, buf2 }: TArg): void;
 export declare class SndBuf {
     #private;
     readonly hArg: TArg;
-    readonly buf: string;
     readonly fn: string;
     readonly procID: string;
     readonly join: boolean;
-    private readonly start_ms;
+    readonly start_ms: number;
     private readonly end_ms;
     readonly ret_ms: number;
     readonly loop: boolean;
-    private readonly pan;
+    readonly pan: number;
+    readonly speed: number;
     static init(cfg: Config, $val: T_Variable, main: T_Main, sys: SysBase, $getSndBuf: (buf: string) => SndBuf | undefined): void;
     static setEvtMng($evtMng: IEvtMng): void;
     static readonly generate: (hArg: TArg, buf: string, join: boolean) => SndBuf;
+    static readonly live: Set<SndBuf>;
     stt: ISndState;
+    buf: string;
     private constructor();
+    readonly src: string;
+    readonly gn: GainNode;
+    startFade(vol: number, timeMs: number, delayMs: number, onDone: () => void): void;
     unload(): void;
     stopse(): void;
     readonly ws: (hArg: TArg) => boolean;
@@ -30,6 +35,12 @@ export declare class SndBuf {
     readonly wf: (hArg: TArg) => boolean;
     get volume(): number;
     set volume(v: number);
+    get duration(): number;
+    get playing(): boolean;
+    get effPan(): number;
+    get startMs(): number;
+    get endMs(): number;
+    get retMs(): number;
 }
 type ISndState = {
     onend(): void;

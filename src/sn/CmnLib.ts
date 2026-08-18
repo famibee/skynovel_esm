@@ -6,6 +6,7 @@
 ** ***** END LICENSE BLOCK ***** */
 
 import type {TArg} from './Grammar';
+import {SndCtx} from './SndCtx';
 
 // =============== Global
 export function int(o: unknown): number {return parseInt(String(o), 10)}
@@ -202,16 +203,9 @@ export class CmnLib {
 	static	isDbg		= false;
 	static	isPackaged	= false;
 
-	static	needClick2Play(): boolean {
-		if ('AudioContext' in globalThis) {
-			CmnLib.#ac = new globalThis.AudioContext;
-			CmnLib.needClick2Play = ()=> CmnLib.#ac.state === 'suspended';
-		}
-		else CmnLib.needClick2Play = ()=> false;
-
-		return CmnLib.needClick2Play();
-	}
-	static	#ac: AudioContext;
+	// 判定専用に別のAudioContextを持たず、実際の再生に使うSndCtxのctxをそのまま見る
+	//	（howler撤去に伴い、以前ここに専用contextを1個newしていた実装をSndCtxへ委譲した）
+	static	needClick2Play(): boolean {return SndCtx.needClick2Play()}
 
 	static	isDarkMode	= false;
 

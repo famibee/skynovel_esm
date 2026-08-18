@@ -1,4 +1,4 @@
-import { S as e, _ as t, r as n, y as r } from "./pixi.js";
+import { _ as e, r as t, x as n, y as r } from "./pixi.js";
 import { d as i, h as a, s as o, t as s } from "./CmnLib.js";
 import { n as c } from "./ConfigBase.js";
 import { t as l } from "./DebugMng.js";
@@ -192,12 +192,12 @@ var _ = class {
 	testNoTxt(e) {
 		return this.#u.test(e);
 	}
-}, v = /* @__PURE__ */ e({ Main: () => b }), y = "skynovel", b = class e {
+}, v = /* @__PURE__ */ n({ Main: () => b }), y = "skynovel", b = class n {
 	sys;
-	static async generate(t) {
+	static async generate(e) {
 		r();
-		let n = new e(t);
-		return await n.#a().catch((e) => console.error("Main.generate err e:%o", e)), n;
+		let t = new n(e);
+		return await t.#a().catch((e) => console.error("Main.generate err e:%o", e)), t;
 	}
 	cvs;
 	#e = Object.create(null);
@@ -209,12 +209,12 @@ var _ = class {
 		this.sys = e;
 	}
 	async #a() {
-		let e = await u.generate(this.sys);
-		this.sys.setMain(this, e);
+		let n = await u.generate(this.sys);
+		this.sys.setMain(this, n);
 		let r = {
-			width: e.oCfg.window.width,
-			height: e.oCfg.window.height,
-			backgroundColor: a(String(e.oCfg.init.bg_color)),
+			width: n.oCfg.window.width,
+			height: n.oCfg.window.height,
+			backgroundColor: a(String(n.oCfg.init.bg_color)),
 			resolution: globalThis.devicePixelRatio
 		}, i = document.getElementById(y);
 		if (i) {
@@ -226,9 +226,9 @@ var _ = class {
 			let e = document.createElement("canvas");
 			e.id = y, r.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
 		}
-		let o = new n(r);
+		let o = new t(r);
 		this.#i.defer(() => {
-			t(), this.sys.destroy(), o.destroy(!1);
+			e(), this.sys.destroy(), o.destroy(!1);
 		}), this.cvs = o.view, this.cvs.id = "skynovel_act", i || document.body.appendChild(this.cvs);
 		let c = document.createElement("canvas").getContext("2d");
 		if (!c) throw "#init cc err";
@@ -242,15 +242,15 @@ var _ = class {
 			import("./EventMng.js"),
 			import("./Button.js")
 		]);
-		_.init(e);
-		let v = new d(this.sys, e, this.#e), b = new f(v, e.oCfg.init.escape);
+		_.init(n);
+		let v = new d(this.sys, n, this.#e), b = new f(v, n.oCfg.init.escape);
 		this.#o = (e, t, n, r) => v.setVal_Nochk(e, t, n, r), this.#l = (e) => b.getValAmpersand(e), this.#u = (e) => b.parse(e), await Promise.allSettled(this.sys.init(this.#e, o, v));
-		let x = new p(e, this.#e, v, this, this.sys);
-		this.#i.defer(() => x.destroy()), this.#t = new m(e, this.#e, this, v, b, x, this.sys), this.#i.defer(() => this.#t.destroy());
+		let x = new p(n, this.#e, v, this, this.sys);
+		this.#i.defer(() => x.destroy()), this.#t = new m(n, this.#e, this, v, b, x, this.sys), this.#i.defer(() => this.#t.destroy());
 		let S = new l(this.sys, this.#e, this.#t);
 		this.#i.defer(() => S.destroy()), this.errScript = (e, t) => {
 			if (this.stop(), l.myTrace(e), s.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
-		}, this.#n = new h(e, this.#e, o, v, this, this.#t, this.sys, x, b), this.#i.defer(() => this.#n.destroy()), this.#r = new g(e, this.#e, o, this, this.#n, v, x, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
+		}, this.#n = new h(n, this.#e, o, v, this, this.#t, this.sys, x, b), this.#i.defer(() => this.#n.destroy()), this.#r = new g(n, this.#e, o, this, this.#n, v, x, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
 			this.stop(), this.#s = !1;
 			let e = () => !0;
 			for (let t in this.#e) this.#e[t] = e;

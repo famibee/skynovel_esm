@@ -43,7 +43,6 @@
 		"adm-zip": "^0.6.0",
 		"electron-store": "^11.0.2",
 		"fs-extra": "^11.4.0",
-		"howler": "^2.2.4",
 		"motion": "^13.1.0",
 		"pixi.js": "^6.5.10",
 		"tinygesture": "^3.0.1"
@@ -53,7 +52,6 @@
 		"@happy-dom/global-registrator": "^20.11.2",
 		"@playwright/test": "^1.62.1",
 		"@types/fs-extra": "^11.0.4",
-		"@types/howler": "^2.2.13",
 		"@types/jest": "^30.0.0",
 		"@types/node": "^26.2.0",
 		"@typescript/typescript6": "^6.0.2",

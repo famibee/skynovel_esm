@@ -11,12 +11,12 @@
 //	計装の仕組みと限界は test/e2e/app/probe.ts の冒頭に書いてある。
 
 import {expect, test} from '@playwright/test';
-import {clickNext, countLsn, gotoSn, howls, mesStr, waitMes} from './snPage';
+import {clickNext, countLsn, gotoSn, mesStr, sndLive, waitMes} from './snPage';
 
-test.describe('SndBuf（Howler._howls）', ()=> {
+test.describe('SndBuf（SndBuf.live）', ()=> {
 	// ロード完了前に停止が入る競合を確実に起こすため、音声の応答を遅らせる。
 	//	即座にロードが終わると StPlaying から停止する経路になり、
-	//	直す前のコードでも Howl が unload されてしまって差が出ない
+	//	直す前のコードでも SndBuf が unload されてしまって差が出ない
 	test.beforeEach(async ({page})=> {
 		await page.route('**/*.wav', async route=> {
 			await new Promise(re=> setTimeout(re, 400));
@@ -24,17 +24,17 @@ test.describe('SndBuf（Howler._howls）', ()=> {
 		});
 	});
 
-	test('ロード中に停止を繰り返しても Howl が残らない', async ({page})=> {
+	test('ロード中に停止を繰り返しても SndBuf が残らない', async ({page})=> {
 		await gotoSn(page);
-		expect(await howls(page)).toBe(0);
+		expect(await sndLive(page)).toBe(0);
 
 		// [playse]×6 と [stopse]。すべてロード中に停止される
 		await clickNext(page);
 		await waitMes(page, 'おと。');
 
 		// 遅延させた分のロードが片付くのを待つ。直っていなければ、
-		// ここで6件が Howler._howls に残ったままになる
-		await expect.poll(()=> howls(page), {timeout: 10_000}).toBe(0);
+		// ここで6件が SndBuf.live に残ったままになる
+		await expect.poll(()=> sndLive(page), {timeout: 10_000}).toBe(0);
 	});
 });
 
