@@ -1,5 +1,4 @@
-import { n as e } from "./rolldown-runtime.js";
-import { d as t, h as n, s as r, t as i } from "./CmnLib.js";
+import { d as e, h as t, s as n, t as r, v as i } from "./CmnLib.js";
 import { _ as a, r as o, y as s } from "./pixi.js";
 import { n as c } from "./ConfigBase.js";
 import { t as l } from "./DebugMng.js";
@@ -146,9 +145,9 @@ var _ = class {
 	}
 	#a = /^\[(call|loadplugin)\s/;
 	#o = /\bfn\s*=\s*[^\s\]]+/;
-	#s(e) {
-		for (let n = e.len - 1; n >= 0; --n) {
-			let r = e.aToken[n];
+	#s(t) {
+		for (let n = t.len - 1; n >= 0; --n) {
+			let r = t.aToken[n];
 			if (!this.#a.test(r)) continue;
 			let [i, a] = m(r);
 			this.#c.parse(a);
@@ -156,14 +155,14 @@ var _ = class {
 			if (!o) continue;
 			let { val: s } = o;
 			if (!s.endsWith("*")) continue;
-			e.aToken.splice(n, 1, "	", "; " + r), e.aLNum.splice(n, 1, NaN, NaN);
+			t.aToken.splice(n, 1, "	", "; " + r), t.aLNum.splice(n, 1, NaN, NaN);
 			let l = i === "loadplugin" ? c.CSS : c.SN, u = this.cfg.matchPath("^" + s.slice(0, -1) + ".*", l);
 			for (let i of u) {
-				let a = r.replace(this.#o, "fn=" + decodeURIComponent(t(i[l])));
-				e.aToken.splice(n, 0, a), e.aLNum.splice(n, 0, NaN);
+				let a = r.replace(this.#o, "fn=" + decodeURIComponent(e(i[l])));
+				t.aToken.splice(n, 0, a), t.aLNum.splice(n, 0, NaN);
 			}
 		}
-		e.len = e.aToken.length;
+		t.len = t.aToken.length;
 	}
 	#c = new f();
 	testTagLetml(e) {
@@ -193,7 +192,7 @@ var _ = class {
 	testNoTxt(e) {
 		return this.#u.test(e);
 	}
-}, v = /* @__PURE__ */ e({ Main: () => b }), y = "skynovel", b = class e {
+}, v = /* @__PURE__ */ i({ Main: () => b }), y = "skynovel", b = class e {
 	sys;
 	static async generate(t) {
 		s();
@@ -212,28 +211,28 @@ var _ = class {
 	async #a() {
 		let e = await u.generate(this.sys);
 		this.sys.setMain(this, e);
-		let t = {
+		let n = {
 			width: e.oCfg.window.width,
 			height: e.oCfg.window.height,
-			backgroundColor: n(String(e.oCfg.init.bg_color)),
+			backgroundColor: t(String(e.oCfg.init.bg_color)),
 			resolution: globalThis.devicePixelRatio
-		}, r = document.getElementById(y);
-		if (r) {
-			let e = r.cloneNode(!0);
-			e.id = y, t.view = r;
-			let n = r.parentNode;
-			this.#i.defer(() => n.appendChild(e));
+		}, i = document.getElementById(y);
+		if (i) {
+			let e = i.cloneNode(!0);
+			e.id = y, n.view = i;
+			let t = i.parentNode;
+			this.#i.defer(() => t.appendChild(e));
 		} else {
 			let e = document.createElement("canvas");
-			e.id = y, t.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
+			e.id = y, n.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
 		}
-		let s = new o(t);
+		let s = new o(n);
 		this.#i.defer(() => {
 			a(), this.sys.destroy(), s.destroy(!1);
-		}), this.cvs = s.view, this.cvs.id = "skynovel_act", r || document.body.appendChild(this.cvs);
+		}), this.cvs = s.view, this.cvs.id = "skynovel_act", i || document.body.appendChild(this.cvs);
 		let c = document.createElement("canvas").getContext("2d");
 		if (!c) throw "#init cc err";
-		i.cc4ColorName = c;
+		r.cc4ColorName = c;
 		let [{ Variable: d }, { PropParser: f }, { SoundMng: p }, { ScriptIterator: m }, { LayerMng: h }, { EventMng: g }, { Button: _ }] = await Promise.all([
 			import("./Variable.js"),
 			import("./PropParser.js"),
@@ -250,7 +249,7 @@ var _ = class {
 		this.#i.defer(() => x.destroy()), this.#t = new m(e, this.#e, this, v, b, x, this.sys), this.#i.defer(() => this.#t.destroy());
 		let S = new l(this.sys, this.#e, this.#t);
 		this.#i.defer(() => S.destroy()), this.errScript = (e, t) => {
-			if (this.stop(), l.myTrace(e), i.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
+			if (this.stop(), l.myTrace(e), r.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
 		}, this.#n = new h(e, this.#e, s, v, this, this.#t, this.sys, x, b), this.#i.defer(() => this.#n.destroy()), this.#r = new g(e, this.#e, s, this, this.#n, v, x, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
 			this.stop(), this.#s = !1;
 			let e = () => !0;
@@ -266,7 +265,7 @@ var _ = class {
 			this.#e.navigate_to(e), this.#t.jumpJustBefore();
 			return;
 		}
-		if (this.#o("tmp", "sn.eventArg", String(e.arg ?? "")), this.#o("tmp", "sn.eventLabel", e.label ?? ""), r(e, "call", !1)) {
+		if (this.#o("tmp", "sn.eventArg", String(e.arg ?? "")), this.#o("tmp", "sn.eventLabel", e.label ?? ""), n(e, "call", !1)) {
 			if (this.#t.subIdxToken(), this.#e.call(e)) return;
 		} else if (this.#e.clear_event({}), this.#e.jump(e)) return;
 		this.resume();

@@ -32,7 +32,7 @@ export type T_DIP = {
 };
 export declare class CmnLib {
     #private;
-    static init(): Promise<void>;
+    static init(): void;
     static stageW: number;
     static stageH: number;
     static debugLog: boolean;

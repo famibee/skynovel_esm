@@ -1,5 +1,4 @@
-import { t as e } from "./rolldown-runtime.js";
-import { p as t } from "./CmnLib.js";
+import { _ as e, p as t } from "./CmnLib.js";
 //#endregion
 //#region src/sn/PropParser.ts
 var n = (/* @__PURE__ */ e(((e, t) => {

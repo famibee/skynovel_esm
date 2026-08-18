@@ -1,5 +1,4 @@
-import { n as e } from "./rolldown-runtime.js";
-import { d as t, h as n, s as r, t as i } from "./CmnLib.js";
+import { d as e, h as t, s as n, t as r, v as i } from "./CmnLib.js";
 import { _ as a, r as o, y as s } from "./pixi.js";
 import { n as c, t as l } from "./ConfigBase.js";
 import { t as u } from "./DebugMng.js";
@@ -19,7 +18,7 @@ var d = "userdata:/", f = "downloads:/", p = class e extends l {
 		return e.window ??= {
 			width: 300,
 			height: 300
-		}, i.stageW = e.window.width, i.stageH = e.window.height, i.debugLog = e.debug.debugLog, await i.init(), super.load(e);
+		}, r.stageW = e.window.width, r.stageH = e.window.height, r.debugLog = e.debug.debugLog, r.init(), super.load(e);
 	}
 	searchPath(e, t = c.DEFAULT) {
 		return e.startsWith("downloads:/") ? this.sys.path_downloads + e.slice(11) : e.startsWith("userdata:/") ? this.sys.path_userdata + "storage/" + e.slice(10) : super.searchPath(e, t);
@@ -168,9 +167,9 @@ var b = class {
 	}
 	#a = /^\[(call|loadplugin)\s/;
 	#o = /\bfn\s*=\s*[^\s\]]+/;
-	#s(e) {
-		for (let n = e.len - 1; n >= 0; --n) {
-			let r = e.aToken[n];
+	#s(t) {
+		for (let n = t.len - 1; n >= 0; --n) {
+			let r = t.aToken[n];
 			if (!this.#a.test(r)) continue;
 			let [i, a] = _(r);
 			this.#c.parse(a);
@@ -178,14 +177,14 @@ var b = class {
 			if (!o) continue;
 			let { val: s } = o;
 			if (!s.endsWith("*")) continue;
-			e.aToken.splice(n, 1, "	", "; " + r), e.aLNum.splice(n, 1, NaN, NaN);
+			t.aToken.splice(n, 1, "	", "; " + r), t.aLNum.splice(n, 1, NaN, NaN);
 			let l = i === "loadplugin" ? c.CSS : c.SN, u = this.cfg.matchPath("^" + s.slice(0, -1) + ".*", l);
 			for (let i of u) {
-				let a = r.replace(this.#o, "fn=" + decodeURIComponent(t(i[l])));
-				e.aToken.splice(n, 0, a), e.aLNum.splice(n, 0, NaN);
+				let a = r.replace(this.#o, "fn=" + decodeURIComponent(e(i[l])));
+				t.aToken.splice(n, 0, a), t.aLNum.splice(n, 0, NaN);
 			}
 		}
-		e.len = e.aToken.length;
+		t.len = t.aToken.length;
 	}
 	#c = new h();
 	testTagLetml(e) {
@@ -215,7 +214,7 @@ var b = class {
 	testNoTxt(e) {
 		return this.#u.test(e);
 	}
-}, x = /* @__PURE__ */ e({ Main: () => C }), S = "skynovel", C = class e {
+}, x = /* @__PURE__ */ i({ Main: () => C }), S = "skynovel", C = class e {
 	sys;
 	static async generate(t) {
 		s();
@@ -234,28 +233,28 @@ var b = class {
 	async #a() {
 		let e = await p.generate(this.sys);
 		this.sys.setMain(this, e);
-		let t = {
+		let n = {
 			width: e.oCfg.window.width,
 			height: e.oCfg.window.height,
-			backgroundColor: n(String(e.oCfg.init.bg_color)),
+			backgroundColor: t(String(e.oCfg.init.bg_color)),
 			resolution: globalThis.devicePixelRatio
-		}, r = document.getElementById(S);
-		if (r) {
-			let e = r.cloneNode(!0);
-			e.id = S, t.view = r;
-			let n = r.parentNode;
-			this.#i.defer(() => n.appendChild(e));
+		}, i = document.getElementById(S);
+		if (i) {
+			let e = i.cloneNode(!0);
+			e.id = S, n.view = i;
+			let t = i.parentNode;
+			this.#i.defer(() => t.appendChild(e));
 		} else {
 			let e = document.createElement("canvas");
-			e.id = S, t.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
+			e.id = S, n.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
 		}
-		let s = new o(t);
+		let s = new o(n);
 		this.#i.defer(() => {
 			a(), this.sys.destroy(), s.destroy(!1);
-		}), this.cvs = s.view, this.cvs.id = "skynovel_act", r || document.body.appendChild(this.cvs);
+		}), this.cvs = s.view, this.cvs.id = "skynovel_act", i || document.body.appendChild(this.cvs);
 		let c = document.createElement("canvas").getContext("2d");
 		if (!c) throw "#init cc err";
-		i.cc4ColorName = c;
+		r.cc4ColorName = c;
 		let [{ Variable: l }, { PropParser: d }, { SoundMng: f }, { ScriptIterator: m }, { LayerMng: h }, { EventMng: g }, { Button: _ }] = await Promise.all([
 			import("./Variable.js"),
 			import("./PropParser.js"),
@@ -272,7 +271,7 @@ var b = class {
 		this.#i.defer(() => b.destroy()), this.#t = new m(e, this.#e, this, v, y, b, this.sys), this.#i.defer(() => this.#t.destroy());
 		let x = new u(this.sys, this.#e, this.#t);
 		this.#i.defer(() => x.destroy()), this.errScript = (e, t) => {
-			if (this.stop(), u.myTrace(e), i.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
+			if (this.stop(), u.myTrace(e), r.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
 		}, this.#n = new h(e, this.#e, s, v, this, this.#t, this.sys, b, y), this.#i.defer(() => this.#n.destroy()), this.#r = new g(e, this.#e, s, this, this.#n, v, b, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
 			this.stop(), this.#s = !1;
 			let e = () => !0;
@@ -288,7 +287,7 @@ var b = class {
 			this.#e.navigate_to(e), this.#t.jumpJustBefore();
 			return;
 		}
-		if (this.#o("tmp", "sn.eventArg", String(e.arg ?? "")), this.#o("tmp", "sn.eventLabel", e.label ?? ""), r(e, "call", !1)) {
+		if (this.#o("tmp", "sn.eventArg", String(e.arg ?? "")), this.#o("tmp", "sn.eventLabel", e.label ?? ""), n(e, "call", !1)) {
 			if (this.#t.subIdxToken(), this.#e.call(e)) return;
 		} else if (this.#e.clear_event({}), this.#e.jump(e)) return;
 		this.resume();

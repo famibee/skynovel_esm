@@ -11,15 +11,6 @@
 ソースコメントに記録されている（`本家 ○○.ts:行番号 の移植` の形）。以下は2026-08-18の
 調査結果。
 
-- [ ] **`platform` の削除** — `src/sn/CmnLib.ts:174-182` の `await import('platform')` を
-  UA 正規表現4行へ。移植元 bluesnovel `src/sn/CmnLib.ts:167-184`。
-  `CmnLib.platform` は `JSON.stringify(p)` → `navigator.userAgent` そのものに変わるので
-  `CmnInterface.ts:338`（組み込み変数 `const.sn.platform`）と `DebugMng.ts:61` に影響。
-  `plat_desc` の供給元が無くなるため UA 文字列で代替。
-  削除理由: bestiejs/platform.js が Public archive（更新停止）。
-  影響先: `TxtLayer.ts:308,316,680`（ルビ）、`SysApp.ts:368`、`LayerMng.ts:72`、
-  `SysBase.ts:238,267`、`EventMng.ts:457`
-
 - [ ] **`devtools-detect` の削除** — `src/sn/SysWeb.ts:15-16` の import と `:154-159` の
   `devtoolschange` ハンドラを、bluesnovel `src/ts/DevToolsGuard.ts`（43行）方式へ。
   原理は同じ「window 外寸と内寸の差」ヒューリスティック（しきい値160px、500ms 間隔 + resize）。
@@ -84,7 +75,7 @@
     pan/rate、`:139` の `glbVolume`、`howlList()` 空判定（`:44,65,73,90,117,178,272`）。
     **それ以外（変数の帳簿・待ち時間・ダッキング・しおり復元）は無改変で通るべき＝これが合否判定**
 
-- [ ] `@types/howler` / `@types/parsimmon` / `@types/platform` も同時に削除
+- [ ] `@types/howler` / `@types/parsimmon` も同時に削除
 
 ### 積み残し
 

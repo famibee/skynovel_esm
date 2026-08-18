@@ -171,14 +171,22 @@ export type T_DIP = {[name: string]: string};
 //import {isMobile} from 'pixi.js';		// 使い物にならないことを確認済み
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class CmnLib {
-	static	async	init() {
-		const p = await import('platform');
-		this.platform	= JSON.stringify(p);
-		this.plat_desc	= p.description ?? '';
-		this.isSafari	= p.name === 'Safari';
-		this.isFirefox	= p.name === 'Firefox';
-		this.isMac		= (p.os?.family ?? '').includes('OS X');
-		this.isMobile	= ! /(Windows|OS X)/.test(p.os?.family ?? '');
+	// 実行環境の判別。**本家は platform.js を読んでいたが、bestiejs/platform.js が
+	// Public archive（更新停止）のため UA文字列からの正規表現判定へ切り替え**
+	// （移植元 bluesnovel `src/sn/CmnLib.ts:167-184`）。
+	// 組み込み変数 `const.sn.platform`（CmnInterface.ts）も本家のJSONではなく
+	// UA文字列そのものになる（`const.sn.platform.os.family` のような使い方は元々無い）
+	static	init() {
+		const ua = globalThis.navigator.userAgent;
+		this.platform	= ua;
+		this.plat_desc	= ua;
+		// Chrome系もUAに"Safari"を含むので、他ブラウザの名前が無いことまで見る
+		this.isSafari	= /safari/i.test(ua) && ! /chrome|chromium|crios|edg|android|fxios/i.test(ua);
+		this.isFirefox	= /firefox|fxios/i.test(ua);
+		// 本家は os.family が'OS X'を含むか。iOSは別family（'iOS'）なのでMac扱いにしない
+		this.isMac		= /macintosh|mac os x/i.test(ua) && ! /iphone|ipad|ipod/i.test(ua);
+		// 本家は「WindowsでもOS Xでもない」＝携帯機扱い。同じ結果になる書き方にする
+		this.isMobile	= ! /windows|macintosh|mac os x/i.test(ua) || /iphone|ipad|ipod|android/i.test(ua);
 	}
 
 	static	stageW		= 0;
