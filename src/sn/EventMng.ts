@@ -20,6 +20,7 @@ import type {Config} from './Config';
 import {SysBase} from './SysBase';
 import {SEARCH_PATH_ARG_EXT} from './ConfigBase';
 import {Reading, ReadingState} from './Reading';
+import {GamepadMng} from './GamepadMng';
 
 import {Container, type Application, utils} from 'pixi.js';
 import {createPopper, type Instance as InsPop} from '@popperjs/core';
@@ -251,74 +252,8 @@ export class EventMng implements IEvtMng {
 		}
 		Reading.init(cfg, hTag, main, val, scrItr, layMng, this, sndMng, procWheel4wle);
 
-
-		void import('gamepad.js').then(({GamepadListener})=> {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			const gamepad: {
-				on		: (evt_nm: string, hand: (e: {
-					detail: {
-	index	: number;// Gamepad index: Number [0-3].
-	axis?	: number;
-	button?	: number; // Button index: Number [0-N].
-	value	: number; // Current value: Number between 0 and 1. Float in analog mode, integer otherwise.
-	pressed	: boolean; // Native GamepadButton pressed value: Boolean.
-	gamepad	: Gamepad; // Native Gamepad object
-					};
-				})=> void)=> void;
-				start	: ()=> void;
-				stop	: ()=> void;
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-			} = new GamepadListener({
-				analog	: false,
-				deadZone: 0.3,
-			});
-			if (CmnLib.debugLog) {
-				// コネクタを挿した時ではなく、ボタンなどを押した時に発生
-				// ただ一度抜き→差しするとすぐ発生するようになる
-				gamepad.on('gamepad:connected', ({detail})=> console.log(`👺<'gamepad:connected' index:${String(detail.index)} id:${detail.gamepad.id}`));
-				// コネクタを抜いた時に発生
-				gamepad.on('gamepad:disconnected', ({detail})=> console.log(`👺<'gamepad:disconnected' index:${String(detail.index)} id:${detail.gamepad.id}`));	// e.detail.gamepad = undefined
-			}
-			const aStick: string[] = [
-				'',			'ArrowUp',	'',				// '7', '8', '9',
-				'ArrowLeft', '',		'ArrowRight',	// '4', '5', '6',
-				'',			'ArrowDown', '',			// '1', '2', '3',
-			];
-			const stick_xy = [0, 0];
-			gamepad.on('gamepad:axis', ({detail})=> {
-				if (! document.hasFocus()) return;
-
-				stick_xy[detail.axis!] = detail.value;
-				const [x=0, y=0] = stick_xy;
-				const s = (y +1)*3 + (x +1);
-//console.log(`fn:EventMng.ts 👺 'gamepad:axis' detail:%o`, detail);
-				const s2 = aStick[s];
-				if (! s2) return;
-				const cmp = this.#fcs.getFocus();
-				(! cmp || cmp instanceof Container ?globalThis :cmp)
-				.dispatchEvent(new KeyboardEvent(EVNM_KEY, {key: s2, bubbles: true}));
-
-				if (! cmp || cmp instanceof Container) return;
-
-				Reading.cancelAutoSkip();	// ユーザーアクションなので停止
-				if (cmp.getAttribute('type') === 'range') cmp.dispatchEvent(new InputEvent('input', {bubbles: true}));	// スライダー変更時、表示数字が変わらない対応
-			});
-			gamepad.on('gamepad:button', e=> {
-				if (! document.hasFocus()) return;
-//console.log(`fn:EventMng.ts 👺 'gamepad:button' detail:%o`, e.detail);
-				if (e.detail.button! % 2 === 0) {
-					Reading.cancelAutoSkip();	// ユーザーアクションなので停止
-					const cmp = this.#fcs.getFocus();
-					(! cmp || cmp instanceof Container ?document.body :cmp)
-					.dispatchEvent(new KeyboardEvent(EVNM_KEY, {key: 'Enter', bubbles: true}));
-				}
-				else Reading.fire('middleclick', <Event><unknown>e, true);
-			});
-			if (this.#destroyed) return;	// import 解決前に destroy された
-
-			this.#gamepad = gamepad;
-			gamepad.start();
-		});
+		this.#gamepad = new GamepadMng(this.#fcs);
+		this.#gamepad.start();
 
 		this.#elc.add(document, 'keyup', (e: KeyboardEvent)=> {
 			if (e.isComposing) return;	// サポートしてない環境でもいける書き方
@@ -395,22 +330,12 @@ export class EventMng implements IEvtMng {
 		}, 250);
 	}
 
-	// GamepadListener は内部で rAF ループを回し続けるので、
+	// GamepadMng は内部で rAF ループを回し続けるので、
 	// 止めないと Main を作り直すたびに多重に走る
-	#gamepad	: {stop: ()=> void} | undefined = undefined;
-	#destroyed	= false;
+	readonly	#gamepad: GamepadMng;
 
 	destroy() {
-		this.#destroyed = true;
-		const gp = this.#gamepad;
-		if (gp) {
-			gp.stop();
-			// GamepadListener はコンストラクタで window に error リスナ
-			//（bind 済みの stop 自身）を張り、自分では外さない。
-			// 参照が違えば何も起きないので、実装が変わっても無害
-			globalThis.removeEventListener('error', gp.stop);
-			this.#gamepad = undefined;
-		}
+		this.#gamepad.stop();
 
 		for (const v of Array.from(document.getElementsByClassName('sn_hint'))) v.parentElement?.removeChild(v);	// ギャラリーリロード用初期化
 

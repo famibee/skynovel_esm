@@ -11,18 +11,6 @@
 ソースコメントに記録されている（`本家 ○○.ts:行番号 の移植` の形）。以下は2026-08-18の
 調査結果。
 
-- [ ] **`gamepad.js` の削除** — `src/sn/EventMng.ts:255-321` を、bluesnovel
-  `src/ts/GamepadMng.ts`（120行）方式（`navigator.getGamepads()` を rAF でポーリング）へ。
-  `src/sn/gamepad.js.d.ts` も削除。
-  削除理由: 型を同梱しない。rAF ループ停止漏れ・window の `error` リスナ解除漏れ
-  （`EventMng.ts:398,408-410` で呼び出し側が手当てしている穴）。
-  **bluesnovel 版をそのままコピーせず、本家固有の挙動を残すこと**:
-  - `cmp instanceof Container`（pixi Container 判定）での `globalThis`/`document.body` 振り分け（`:298`, `:312`）
-  - スライダー（`type="range"`）への `InputEvent('input')` 再ディスパッチ（`:304`）
-  - **奇数ボタンは `middleclick` のまま**（bluesnovel は `rightclick` へ意図的に変更しているが本家互換のため変えない）
-  - `#destroyed` チェック（`:317`）と `destroy()`（`:405-411`）の後始末
-  - ヒステリシス（ENTER `0.3` / EXIT `0.2`）は bluesnovel の改善なので取り込む
-
 - [ ] **`parsimmon` の削除** — `src/sn/PropParser.ts` の parsimmon 使用は
   **コンストラクタの文法構築（`:29-175`）と `#parser.parse()`（`:180`, `:243`）に限定**され、
   評価テーブル `#hFnc`（`:201-321`）・`#procEmbedVar`・`getValAmpersand` は非依存。
