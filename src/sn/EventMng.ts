@@ -23,7 +23,7 @@ import {Reading, ReadingState} from './Reading';
 import {GamepadMng} from './GamepadMng';
 
 import {Container, type Application, utils} from 'pixi.js';
-import {createPopper, type Instance as InsPop} from '@popperjs/core';
+import {parseHintOpt, flipPlace, calcPos, clampPos, calcArrowOffset} from './HintPos';
 import TinyGesture, {type Events} from 'tinygesture';
 
 
@@ -97,6 +97,7 @@ export class EventMng implements IEvtMng {
 
 		addStyle(`
 .sn_hint {
+	position: fixed;
 	background-color: #3c3225;
 	color: white;
 	padding: 4px 8px;
@@ -123,20 +124,20 @@ export class EventMng implements IEvtMng {
 	transform: rotate(45deg);
 }
 
-.sn_hint[data-popper-placement^='top']		> .sn_hint_ar {bottom: -4px;}
-.sn_hint[data-popper-placement^='bottom']	> .sn_hint_ar {top: -4px;}
-.sn_hint[data-popper-placement^='left']		> .sn_hint_ar {right: -4px;}
-.sn_hint[data-popper-placement^='right']	> .sn_hint_ar {left: -4px;}
+.sn_hint[data-hint-place='top']		> .sn_hint_ar {bottom: -4px;}
+.sn_hint[data-hint-place='bottom']	> .sn_hint_ar {top: -4px;}
+.sn_hint[data-hint-place='left']		> .sn_hint_ar {right: -4px;}
+.sn_hint[data-hint-place='right']	> .sn_hint_ar {left: -4px;}
 `);
 
 		main.cvs.parentElement?.insertAdjacentHTML('beforeend', `
 <div class="sn_hint" role="tooltip">
 	<span>Dummy</span>
-	<div class="sn_hint_ar" data-popper-arrow></div>
+	<div class="sn_hint_ar"></div>
 </div>`);
 		this.#elmHint = document.querySelector('.sn_hint')!;
 		this.#spanHint = this.#elmHint.querySelector('span')!;
-		this.#popper = createPopper(this.#elmV, this.#elmHint);
+		this.#elmArrow = this.#elmHint.querySelector('.sn_hint_ar')!;
 		this.#elmHint.hidden = true;
 
 
@@ -432,23 +433,9 @@ export class EventMng implements IEvtMng {
 			ctnBtn.on('pointerout', e=> Reading.fire(k, e));
 		}
 	}
-	readonly	#elmV = {
-		getBoundingClientRect: (x = 0, y = 0)=> DOMRect.fromRect({x, y, width: 0, height: 0,}),
-	};
 	readonly	#elmHint	: HTMLElement;
 	readonly	#spanHint	: HTMLElement;
-	readonly	#popper		: InsPop;
-	readonly	#oHintOpt	= {
-		placement: 'bottom',
-		modifiers: [
-			{	// Flip | Popper https://popper.js.org/docs/v2/modifiers/flip/
-				name: 'flip',
-				options: {
-					fallbackPlacements: ['top', 'bottom'],
-				},
-			},
-		],
-	};
+	readonly	#elmArrow	: HTMLElement;
 	#dispHint(hArg: TArg, ctnBtn: Container) {
 		const rctBtn = ctnBtn instanceof Button
 			? ctnBtn.getBtnBounds()
@@ -461,32 +448,44 @@ export class EventMng implements IEvtMng {
 		}
 		if (! hArg.hint) {this.#elmHint.hidden = true; return}
 
-		this.#elmHint.style.cssText = `position:${this.#elmHint.style.position}; transform:${this.#elmHint.style.transform};`+ (hArg.hint_style ?? '');
+		this.#elmHint.style.cssText = hArg.hint_style ?? '';
 		this.#spanHint.style.cssText = '';
 		this.#spanHint.textContent = hArg.hint ?? '';
 
-		this.#elmV.getBoundingClientRect = ()=> DOMRect.fromRect({
+		let opt;
+		try {opt = parseHintOpt(hArg.hint_opt)}
+		catch (e) {
+			console.error(mesErrJSON(
+				hArg,
+				'hint_opt',
+				`dispHint 引数 hint_opt エラー ${
+					e instanceof SyntaxError ?e.message :''
+				}`,
+			));
+			return;
+		}
+
+		const trg = {
 			x: this.sys.ofsLeft4elm +rctBtn.x *this.sys.cvsScale,
 			y: this.sys.ofsTop4elm  +rctBtn.y *this.sys.cvsScale,
 			width: rctBtn.width, height: rctBtn.height,
-		});
-		void this.#popper.setOptions(
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			hArg.hint_opt
-			? {...this.#oHintOpt, ...JSON.parse(hArg.hint_opt)}
-			: this.#oHintOpt
-		)
-		.then(async ()=> {
-			await this.#popper.update();
-			this.#elmHint.hidden = false;
-		})
-		.catch((e: unknown)=> console.error(mesErrJSON(
-			hArg,
-			'hint_opt',
-			`dispHint 引数 hint_opt エラー ${
-				e instanceof SyntaxError ?e.message :''
-			}`,
-		)));
+		};
+
+		// 表示してから測る（hidden=trueのまま＝display:noneでは大きさが0になり位置計算できない）
+		this.#elmHint.hidden = false;
+		const box = this.#elmHint.getBoundingClientRect();
+		const vp = {width: globalThis.innerWidth, height: globalThis.innerHeight};
+
+		const place = flipPlace(trg, box, opt.placement, opt.dist, vp);
+		const pos = clampPos(calcPos(trg, box, place, opt.skid, opt.dist), box, vp);
+		this.#elmHint.style.left = `${String(pos.left)}px`;
+		this.#elmHint.style.top  = `${String(pos.top)}px`;
+		this.#elmHint.dataset.hintPlace = place;
+
+		const isX = place === 'top' || place === 'bottom';
+		const arOfs = `${String(calcArrowOffset(trg, box, pos, place))}px`;
+		this.#elmArrow.style.left = isX ?arOfs :'';
+		this.#elmArrow.style.top  = isX ?'' :arOfs;
 	}
 	hideHint() {this.#elmHint.hidden = true}
 	cvsResize() {this.hideHint()}
