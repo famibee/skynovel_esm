@@ -11,13 +11,6 @@
 ソースコメントに記録されている（`本家 ○○.ts:行番号 の移植` の形）。以下は2026-08-18の
 調査結果。
 
-- [ ] **`devtools-detect` の削除** — `src/sn/SysWeb.ts:15-16` の import と `:154-159` の
-  `devtoolschange` ハンドラを、bluesnovel `src/ts/DevToolsGuard.ts`（43行）方式へ。
-  原理は同じ「window 外寸と内寸の差」ヒューリスティック（しきい値160px、500ms 間隔 + resize）。
-  **本家は `this.main?.destroy()` まで行うので、警告オーバーレイのみに留める bluesnovel 版と違い
-  既存の強制終了の挙動を維持する**（`cfg.oCfg.debug.devtool` が OFF のときのみ動くのも同じ）。
-  削除理由: 2026-05-12 に作者がリポジトリをアーカイブ、README 冒頭に「多くの欠陥がある」と明記
-
 - [ ] **`gamepad.js` の削除** — `src/sn/EventMng.ts:255-321` を、bluesnovel
   `src/ts/GamepadMng.ts`（120行）方式（`navigator.getGamepads()` を rAF でポーリング）へ。
   `src/sn/gamepad.js.d.ts` も削除。

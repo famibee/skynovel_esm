@@ -17,22 +17,15 @@ var o = {
 	remove(e) {
 		localStorage.removeItem(e);
 	}
-}, s = {
-	isOpen: !1,
-	orientation: void 0
-}, c = 170, l = (e, t) => {
-	globalThis.dispatchEvent(new globalThis.CustomEvent("devtoolschange", { detail: {
-		isOpen: e,
-		orientation: t
-	} }));
-}, u = ({ emitEvents: e = !0 } = {}) => {
-	let t = globalThis.outerWidth - globalThis.innerWidth > c, n = globalThis.outerHeight - globalThis.innerHeight > c, r = t ? "vertical" : "horizontal";
-	!(n && t) && (globalThis.Firebug && globalThis.Firebug.chrome && globalThis.Firebug.chrome.isInitialized || t || n) ? ((!s.isOpen || s.orientation !== r) && e && l(!0, r), s.isOpen = !0, s.orientation = r) : (s.isOpen && e && l(!1, void 0), s.isOpen = !1, s.orientation = void 0);
-};
-u({ emitEvents: !1 }), setInterval(u, 500);
+}, s = 160, c = 500, l = new EventTarget(), u = !1;
+function d() {
+	let e = globalThis.outerWidth - globalThis.innerWidth > s || globalThis.outerHeight - globalThis.innerHeight > s;
+	e !== u && (u = e, e && l.dispatchEvent(new Event("open")));
+}
+globalThis.addEventListener("resize", d, { passive: !0 }), setInterval(d, c);
 //#endregion
 //#region src/sn/SysWeb.ts
-var d = class extends i {
+var f = class extends i {
 	#e;
 	constructor(...[e = {}, t = {
 		cur: "prj/",
@@ -105,8 +98,8 @@ var d = class extends i {
 				this.isFullScr = !!e.webkitFullscreenElement;
 			});
 		}
-		return this.cfg.oCfg.debug.devtool || this.elc.add(globalThis, "devtoolschange", (e) => {
-			e.detail.isOpen && (console.error("DevToolは禁止されています。許可する場合は【プロジェクト設定】の【devtool】をONに。"), this.main?.destroy());
+		return this.cfg.oCfg.debug.devtool || this.elc.add(l, "open", () => {
+			console.error("DevToolは禁止されています。許可する場合は【プロジェクト設定】の【devtool】をONに。"), this.main?.destroy();
 		}, {
 			once: !0,
 			passive: !0
@@ -165,6 +158,6 @@ var d = class extends i {
 	}
 };
 //#endregion
-export { n as CmnLib, a as Layer, d as SysWeb, t as argChk_Boolean, e as argChk_Num };
+export { n as CmnLib, a as Layer, f as SysWeb, t as argChk_Boolean, e as argChk_Num };
 
 //# sourceMappingURL=web.js.map

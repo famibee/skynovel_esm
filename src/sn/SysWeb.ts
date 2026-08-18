@@ -12,8 +12,7 @@ import type {T_Variable, T_Data4Vari, T_SysBaseParams, T_SysBaseLoadedParams, T_
 
 import type {Application} from 'pixi.js';
 import store from './localStore';
-import type {DevToolsEvent} from 'devtools-detect';
-import 'devtools-detect';
+import {devToolsGuard} from './DevToolsGuard';
 
 
 export class SysWeb extends SysBase {
@@ -151,9 +150,7 @@ export class SysWeb extends SysBase {
 			this.elc.add(document, 'fullscreenchange', ()=> {this.isFullScr = Boolean(doc.webkitFullscreenElement)});	// Escの場合もあるので
 		}
 
-		// window.addEventListener('devtoolschange', event => {});
-		if (! this.cfg.oCfg.debug.devtool) this.elc.add(globalThis, 'devtoolschange', (e: DevToolsEvent)=> {
-			if (! e.detail.isOpen) return;
+		if (! this.cfg.oCfg.debug.devtool) this.elc.add(devToolsGuard, 'open', ()=> {
 			console.error('DevToolは禁止されています。許可する場合は【プロジェクト設定】の【devtool】をONに。');
 			this.main?.destroy();
 		}, {once: true, passive: true});

@@ -42,7 +42,6 @@
 		"@electron-toolkit/typed-ipc": "^1.0.2",
 		"@popperjs/core": "^2.11.8",
 		"adm-zip": "^0.6.0",
-		"devtools-detect": "^4.0.2",
 		"electron-store": "^11.0.2",
 		"fs-extra": "^11.4.0",
 		"gamepad.js": "^3.0.1",
