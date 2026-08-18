@@ -106,6 +106,8 @@ export class EventMng implements IEvtMng {
 	z-index: 10000;
 	pointer-events: none;
 	user-select: none;
+	max-width: 300px;
+	word-break: break-word;
 }
 
 .sn_hint_ar,

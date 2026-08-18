@@ -11,8 +11,6 @@
 ソースコメントに記録されている（`本家 ○○.ts:行番号 の移植` の形）。以下は2026-08-18の
 調査結果。
 
-- [ ] 自作tooktipの横幅が固定されず文字が長くなると広がり放題だが、規定値固定になってなかったか
-
 - [ ] **`howler` の削除**（最も影響大）
   - 新規 `src/sn/SndCtx.ts`（bluesnovel `src/ts/SndMng.ts:38-88` 相当）— プロセスに1つだけの
     `AudioContext` + マスタ `GainNode`、`unlock()`、`codecs()`、`fn→Promise<AudioBuffer>` の
