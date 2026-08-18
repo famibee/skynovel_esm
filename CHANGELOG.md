@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 	- test2
 
 
+## [2.0.21](https://github.com/famibee/skynovel_esm/compare/v2.0.20...v2.0.21) (2026-08-18)
+
+
+### Bug Fixes
+
+* **sound:** [xchgbuf]でループ再生の記録が入れ替わらない ([3a1d23c](https://github.com/famibee/skynovel_esm/commit/3a1d23cead717fcad9cdd77a27d7b792d8346e11))
+
 ## [2.0.20](https://github.com/famibee/skynovel_esm/compare/v2.0.19...v2.0.20) (2026-07-29)
 
 
