@@ -3175,8 +3175,8 @@ var ja = Aa(), Ma = class {
 		this.getEvt2Fnc = (t) => this.#n[t] ?? e[t];
 	}
 	fire(n, i) {
-		let a = t.#i.exec(n)?.[0] ?? "", o = n.toLowerCase();
-		switch (a) {
+		let a = n.toLowerCase(), o = t.#i.exec(a)?.[0] ?? "";
+		switch (o) {
 			case "click":
 			case "rightclick":
 			case "middleclick":
@@ -3186,15 +3186,15 @@ var ja = Aa(), Ma = class {
 				if ($.evtMng.isSkipping) break;
 				if (!t.isFirstFire()) return;
 		}
-		if (a === "enter") {
+		if (o === "enter") {
 			let t = $.fcs.getFocus();
 			if (t instanceof e) {
 				t.emit(r, new PointerEvent(r));
 				return;
 			}
 		}
-		let s = t.getEvt2Fnc(o);
-		s && (i.stopImmediatePropagation?.(), !(!o.startsWith("dom=") && $.layMng.clickTxtLay()) && s(i));
+		let s = t.getEvt2Fnc(a);
+		s && (i.stopImmediatePropagation?.(), !(!a.startsWith("dom=") && $.layMng.clickTxtLay()) && s(i));
 	}
 	static #i = /btn|\w+$/;
 	get skip_enabled() {

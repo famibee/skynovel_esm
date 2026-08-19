@@ -153,8 +153,8 @@ export class ReadingState {
 
 		// 予約実行
 		// meta, ctrl, alt などを除いたキー名
-		const key_name = ReadingState.#REG_KEY_NAME.exec(rawKeY)?.[0] ?? '';
 		const key = rawKeY.toLowerCase();
+		const key_name = ReadingState.#REG_KEY_NAME.exec(key)?.[0] ?? '';
 // console.log(`👺 fire<(nm:\`${key_name}\` key:\`${key}\` type:${e.type})`);
 		switch (key_name) {
 			case 'click':
