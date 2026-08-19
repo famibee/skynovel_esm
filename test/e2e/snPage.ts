@@ -15,7 +15,7 @@
 import {expect, type Page} from '@playwright/test';
 import type {T_TARGET} from './app/probe';
 
-export type T_PRJ = 'leak' | 'crypto' | 'sound' | 'tsy' | 'gesture';
+export type T_PRJ = 'leak' | 'crypto' | 'sound' | 'tsy' | 'gesture' | 'frame';
 
 // 文字レイヤ本体。TxtStage は canvas の親（＝body）へ直に足すので、位置ではなくクラスで拾う。
 //	表裏ページぶん存在し、裏は空なので「中身のある物」を採る

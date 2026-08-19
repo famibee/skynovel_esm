@@ -216,7 +216,11 @@ var j = class e {
 		}
 		if ("b_color" in e && (a.backgroundColor = e.b_color), "disabled" in e) {
 			let t = this.#s[n] = m(e, "disabled", !0), i = r.contentDocument.body;
-			for (let e of [...Array.from(i.getElementsByTagName("input")), ...Array.from(i.getElementsByTagName("select"))]) e.disabled = t;
+			for (let e of [
+				...Array.from(i.getElementsByTagName("input")),
+				...Array.from(i.getElementsByTagName("select")),
+				...Array.from(i.getElementsByTagName("button"))
+			]) e.disabled = t;
 		}
 		return !1;
 	}

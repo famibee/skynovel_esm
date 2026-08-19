@@ -1,0 +1,14 @@
+; [frame disabled=]検査用シナリオ（frame.e2e.ts が使用）
+;	FrameMng.ts の#set_frame()のdisabled反映はinput/selectのみが対象で、button要素が
+;	抜けていた（bluesnovel側27034c0で先に発覚・修正）。ここではbuttonの反映だけを見る
+[add_lay layer=mes class=txt]
+[current layer=mes]
+
+[add_frame id=yesno src=yesno width=200 height=100]
+よみこんだ[p]
+
+[frame id=yesno disabled=true]
+むこうにした[p]
+
+[frame id=yesno disabled=false]
+もどした[s]

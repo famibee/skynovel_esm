@@ -371,6 +371,7 @@ export class FrameMng implements T_GetFrm {
 			for (const e of [
 				...Array.from(b.getElementsByTagName('input')),
 				...Array.from(b.getElementsByTagName('select')),
+				...Array.from(b.getElementsByTagName('button')),
 			]) e.disabled = d;
 		}
 
