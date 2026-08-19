@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.22](https://github.com/famibee/skynovel_esm/compare/v2.0.21...v2.0.22) (2026-08-19)
+
+
+### Bug Fixes
+
+* [frame disabled=true]がbutton要素に反映されない不具合を修正 ([c1f8f1b](https://github.com/famibee/skynovel_esm/commit/c1f8f1b124720b0c7ea86029a04ac077e15cf619))
+* [wait_tsy]等の打ち切りクリックが次の停止点まで読み進めてしまう不具合を修正 ([e04bd81](https://github.com/famibee/skynovel_esm/commit/e04bd8134e3af3b0335d7114611a7792f4162c55))
+* #canFocus()のvisibility:hidden判定をcheckVisibility()で有効化 ([e80fe93](https://github.com/famibee/skynovel_esm/commit/e80fe93b1b88515ede02d1d721e10ac9c0a40d24))
+* motion移行後のCmnTweenでstop()が効かず値が巻き戻る不具合を修正 ([e04bd81](https://github.com/famibee/skynovel_esm/commit/e04bd8134e3af3b0335d7114611a7792f4162c55))
+* Reading#fireのkey_name判定が大文字小文字不一致でEnter/ArrowDown系が効かない不具合を修正 ([3fa304e](https://github.com/famibee/skynovel_esm/commit/3fa304e1d07225d2fc0241ad780fac05fc75276d))
+* モーダル的なフレームの裏へのフォーカス漏れを自動的に防止 ([2fe82dc](https://github.com/famibee/skynovel_esm/commit/2fe82dcf86c9a91b7b4c03867c0ffdbaa67df437))
+* 自作tooltipに横幅上限を追加 ([7455872](https://github.com/famibee/skynovel_esm/commit/7455872a804c1820dbcfbdc1c1adfda11899df6b))
+
 ## [2.0.21](https://github.com/famibee/skynovel_esm/compare/v2.0.20...v2.0.21) (2026-08-18)
 
 
