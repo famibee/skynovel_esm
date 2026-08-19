@@ -613,7 +613,34 @@ export class EventMng implements IEvtMng {
 		}
 		while (e);
 
+		// フレーム内要素は、外側が別フレームに覆われていても中は見えているつもりになる
+		//	（その文書は自分が入れ子になっていることを知らないので、offsetParent等は
+		//	普通に非nullを返す）。[frame disabled=]をシナリオ側が明示的に呼ばなくても、
+		//	前面に別フレーム（[ask_ync]等のモーダル的なフレーム）が重なっている間は
+		//	自動的にフォーカスの輪から外す（bluesnovel FocusMng.ts の移植）。
+		//	同一originのiframeなのでframeElementを辿れる。念のため例外は握る
+		try {
+			for (let w = elm.ownerDocument.defaultView; w && w !== w.parent;) {
+				const fe = <HTMLElement | null>w.frameElement;
+				if (! fe) break;
+				if (fe.getClientRects().length === 0) return false;
+				if (EventMng.#isOccluded(fe)) return false;
+				w = fe.ownerDocument.defaultView;
+			}
+		}
+		catch {/* 別originのフレームは辿れない。その時は中の要素の見え方だけで判断する */}
+
 		return true;
+	}
+	// フレーム要素feの中心点で最前面に表示されているのが自分自身か（＝他のフレーム等に
+	//	覆われていないか）。elementFromPointは要素を貫通せず、iframeはそれ自身が1つの要素として
+	//	当たり判定を持つため、z-indexで上に重なる別要素があればそれが返る
+	static #isOccluded(fe: HTMLElement): boolean {
+		const r = fe.getBoundingClientRect();
+		if (r.width === 0 || r.height === 0) return false;
+		const top = fe.ownerDocument.elementFromPoint(
+			r.left +r.width /2, r.top +r.height /2);
+		return top !== null && top !== fe;
 	}
 
 	// フォーカス移動

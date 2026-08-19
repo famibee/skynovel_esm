@@ -1,6 +1,7 @@
-; [frame disabled=]検査用シナリオ（frame.e2e.ts が使用）
-;	FrameMng.ts の#set_frame()のdisabled反映はinput/selectのみが対象で、button要素が
+; [frame disabled=]／フォーカスの輪 検査用シナリオ（frame.e2e.ts が使用）
+;	前半：FrameMng.ts の#set_frame()のdisabled反映はinput/selectのみが対象で、button要素が
 ;	抜けていた（bluesnovel側27034c0で先に発覚・修正）。ここではbuttonの反映だけを見る
+;	後半：EventMng.ts #canFocus()のz-index被覆判定（下記コメント参照）
 [add_lay layer=mes class=txt]
 [current layer=mes]
 
@@ -11,4 +12,24 @@
 むこうにした[p]
 
 [frame id=yesno disabled=false]
-もどした[s]
+もどした[p]
+
+; ここから、別フレームがz-indexで前面に重なった時、[frame disabled=]を明示的に
+;	呼ばなくても自動でフォーカスの輪から外れるかの検査
+;	（bluesnovel FocusMng.ts の#isOccluded()相当。EventMng.ts #canFocus()の回帰確認）
+[set_focus add='dom=yesno:#btn']
+[set_focus to=next]
+とれた[p]
+
+[set_focus to=null]
+[add_frame id=cover src=yesno width=200 height=100]
+[frame id=cover float=true]
+おおった[p]
+
+[set_focus to=next]
+かくれた[p]
+
+[set_focus to=null]
+[frame id=cover visible=false]
+[set_focus to=next]
+もどってきた[s]

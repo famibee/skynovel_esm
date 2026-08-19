@@ -281,7 +281,7 @@ function j(e, t, n, r) {
 }
 //#endregion
 //#region src/sn/EventMng.ts
-var M = 8, N = 500, P = class {
+var M = 8, N = 500, P = class t {
 	cfg;
 	hTag;
 	appPixi;
@@ -294,7 +294,7 @@ var M = 8, N = 500, P = class {
 	#t;
 	#n = /* @__PURE__ */ new Map([[0, ""], [1, "middle"]]);
 	constructor(t, i, a, s, c, u, d, f, h) {
-		if (this.cfg = t, this.hTag = i, this.appPixi = a, this.main = s, this.layMng = c, this.val = u, this.scrItr = f, this.sys = h, i.clear_event = (e) => p.clear_event(e), i.event = (e) => this.#_(e), i.set_cancel_skip = () => !1, i.set_focus = (e) => this.#y(e), this.#t = new _(a.view, h), d.setEvtMng(this), f.setOtherObj(this, c), g.setEvtMng(this, h, f), c.setEvtMng(this), m.setFcs(this.#t), h.setFire((e, t) => m.fire(e, t)), l.isDbg) {
+		if (this.cfg = t, this.hTag = i, this.appPixi = a, this.main = s, this.layMng = c, this.val = u, this.scrItr = f, this.sys = h, i.clear_event = (e) => p.clear_event(e), i.event = (e) => this.#_(e), i.set_cancel_skip = () => !1, i.set_focus = (e) => this.#b(e), this.#t = new _(a.view, h), d.setEvtMng(this), f.setOtherObj(this, c), g.setEvtMng(this, h, f), c.setEvtMng(this), m.setFcs(this.#t), h.setFire((e, t) => m.fire(e, t)), l.isDbg) {
 			let e = { pause: () => {
 				if (!m.isWait) return;
 				let e = {};
@@ -347,8 +347,8 @@ var M = 8, N = 500, P = class {
 		"WheelEvent" in globalThis && (this.#e.add(s.cvs, "wheel", (e) => this.#o(e), { passive: !0 }), this.#r = (e) => this.#e.add(e, "wheel", (e) => this.#o(e), { passive: !0 }), T = (e, t) => e.add(s.cvs, "wheel", (e) => {
 			e.deltaY <= 0 || (e.stopPropagation(), t());
 		})), m.init(t, i, s, u, f, c, this, d, T), this.#u = new S(this.#t), this.#u.start(), this.#e.add(document, "keyup", (e) => {
-			e.isComposing || e.key in this.#b && (this.#b[e.key] = 0);
-		}), u.defTmp("const.sn.key.alternate", () => this.#b.Alt > 0), u.defTmp("const.sn.key.command", () => this.#b.Meta > 0), u.defTmp("const.sn.key.control", () => this.#b.Control > 0), u.defTmp("const.sn.key.end", () => this.#b.End > 0), u.defTmp("const.sn.key.escape", () => this.#b.Escape > 0), u.defTmp("const.sn.key.back", () => this.#b.GoBack > 0);
+			e.isComposing || e.key in this.#x && (this.#x[e.key] = 0);
+		}), u.defTmp("const.sn.key.alternate", () => this.#x.Alt > 0), u.defTmp("const.sn.key.command", () => this.#x.Meta > 0), u.defTmp("const.sn.key.control", () => this.#x.Control > 0), u.defTmp("const.sn.key.end", () => this.#x.End > 0), u.defTmp("const.sn.key.escape", () => this.#x.Escape > 0), u.defTmp("const.sn.key.back", () => this.#x.GoBack > 0);
 	}
 	resvFlameEvent(e) {
 		this.#e.add(e, r, (e) => this.#i(e)), this.#e.add(e, "contextmenu", (e) => {
@@ -365,7 +365,7 @@ var M = 8, N = 500, P = class {
 	}
 	#r = (e) => {};
 	#i(e) {
-		e.isComposing || (e.key in this.#b && (this.#b[e.key] = e.repeat ? 2 : 1), n.unlock(), e.preventDefault(), m.fire(f.modKey(e) + e.key, e, !0));
+		e.isComposing || (e.key in this.#x && (this.#x[e.key] = e.repeat ? 2 : 1), n.unlock(), e.preventDefault(), m.fire(f.modKey(e) + e.key, e, !0));
 	}
 	#a(e) {
 		return (e.altKey ? "alt+" : "") + (e.ctrlKey ? "ctrl+" : "") + (e.metaKey ? "meta+" : "") + (e.shiftKey ? "shift+" : "");
@@ -542,14 +542,28 @@ var M = 8, N = 500, P = class {
 	}
 	#v(e) {
 		if (!e || e.offsetParent === null || !e.checkVisibility({ checkVisibilityCSS: !0 })) return !1;
-		let t = e;
+		let n = e;
 		do {
-			if (getComputedStyle(t).display === "none" || t.dataset.focus === "false" || t?.disabled) return !1;
-			t = t.parentElement;
-		} while (t);
+			if (getComputedStyle(n).display === "none" || n.dataset.focus === "false" || n?.disabled) return !1;
+			n = n.parentElement;
+		} while (n);
+		try {
+			for (let n = e.ownerDocument.defaultView; n && n !== n.parent;) {
+				let e = n.frameElement;
+				if (!e) break;
+				if (e.getClientRects().length === 0 || t.#y(e)) return !1;
+				n = e.ownerDocument.defaultView;
+			}
+		} catch {}
 		return !0;
 	}
-	#y(e) {
+	static #y(e) {
+		let t = e.getBoundingClientRect();
+		if (t.width === 0 || t.height === 0) return !1;
+		let n = e.ownerDocument.elementFromPoint(t.left + t.width / 2, t.top + t.height / 2);
+		return n !== null && n !== e;
+	}
+	#b(e) {
 		let { add: t, del: n, to: r } = e;
 		if (t?.startsWith("dom=")) {
 			let n = p.getHtmlElmList(t);
@@ -574,9 +588,9 @@ var M = 8, N = 500, P = class {
 		return !1;
 	}
 	get isSkipping() {
-		return m.isSkipping ? !0 : Object.keys(this.#b).some((e) => this.#b[e] === 2);
+		return m.isSkipping ? !0 : Object.keys(this.#x).some((e) => this.#x[e] === 2);
 	}
-	#b = {
+	#x = {
 		Alt: 0,
 		Meta: 0,
 		Control: 0,

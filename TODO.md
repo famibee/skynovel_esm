@@ -13,7 +13,3 @@
 ### 積み残し
 
 - [ ] bluesnovel のtsソース、テストを参考に追加・更新
-- [ ] [call]割込みで本文が消失する不具合（bluesnovel dfe99ed相当）がskynovel_esm側でも
-      起きうるか要調査
-- [ ] 右クリックメニューのモーダル裏へのフォーカス漏れ（bluesnovel 3ad3fee相当）が
-      skynovel_esm側でも起きうるか要調査

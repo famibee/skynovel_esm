@@ -34,3 +34,35 @@ test('[frame disabled=true]でフレーム内のbutton要素もdisabledになる
 	await waitMes(page, 'もどした');
 	expect(await btnDisabled()).toBe(false);
 });
+
+test('別フレームに前面から覆われている間、[frame disabled=]無しでも自動でフォーカスの輪から外れる', async ({page})=> {
+	await gotoSn(page, 'frame');
+	await waitMes(page, 'よみこんだ');
+
+	const activeYesnoId = ()=> page.evaluate(
+		()=> (document.getElementById('yesno') as HTMLIFrameElement)
+			.contentDocument?.activeElement?.id || null);
+
+	await clickNextAway(page);
+	await waitMes(page, 'むこうにした');
+	await clickNextAway(page);
+	await waitMes(page, 'もどした');
+	await clickNextAway(page);
+	await waitMes(page, 'とれた');
+
+	// 覆われる前：[set_focus to=next]でyesnoフレーム内のbtnへ届く
+	expect(await activeYesnoId()).toBe('btn');
+
+	await clickNextAway(page);
+	await waitMes(page, 'おおった');	// coverフレームがyesnoの手前(float=true)に重なる
+	await clickNextAway(page);
+	await waitMes(page, 'かくれた');
+
+	// 覆われている間：[set_focus to=next]してもyesno:#btnへは届かない（輪から外れる）
+	expect(await activeYesnoId()).toBeNull();
+
+	await clickNextAway(page);
+	await waitMes(page, 'もどってきた');	// coverを隠すと再びyesno側へ届くようになる
+
+	expect(await activeYesnoId()).toBe('btn');
+});
