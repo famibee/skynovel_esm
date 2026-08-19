@@ -541,7 +541,7 @@ var M = 8, N = 500, P = class {
 		return p.setEvt2Fnc(a, n, () => this.main.resumeByJumpOrCall(e)), !1;
 	}
 	#v(e) {
-		if (!e || e.offsetParent === null) return !1;
+		if (!e || e.offsetParent === null || !e.checkVisibility({ checkVisibilityCSS: !0 })) return !1;
 		let t = e;
 		do {
 			if (getComputedStyle(t).display === "none" || t.dataset.focus === "false" || t?.disabled) return !1;

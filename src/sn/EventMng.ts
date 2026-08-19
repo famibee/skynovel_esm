@@ -592,12 +592,17 @@ export class EventMng implements IEvtMng {
 		if (! elm) return false;
 		if (elm.offsetParent === null) return false;
 
+		// visibilityは子要素側で明示的に上書きできる継承プロパティなので、祖先を
+		//	1つずつ辿るループでは正しく判定できない（本ファイル冒頭の.sn_hint_arが
+		//	visibility:hidden、その::beforeがvisibility:visibleで上書きする例が該当）。
+		//	checkVisibility()はこの継承・上書きルールを踏まえて祖先まで自動で見てくれる
+		if (! elm.checkVisibility({checkVisibilityCSS: true})) return false;
+
 		let e: HTMLElement | null = elm;
 		do {
 			const style = getComputedStyle(e);
 			if (style.display === 'none'
 			|| e.dataset.focus === 'false'
-		//	|| style.visibility !== 'visible'
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			|| (<HTMLInputElement>e)?.disabled
 		//	|| parseFloat(style.opacity ?? '') <= 0.0
