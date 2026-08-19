@@ -12,5 +12,5 @@
 
 ### 積み残し
 
-- [ ] bluesnovel の CLAUDE.md 系ファイルやtsソース、テストを参考に追加・更新
+- [ ] bluesnovel のtsソース、テストを参考に追加・更新
   - `CHANGELOG.md` の扱いは本家が最終的に正

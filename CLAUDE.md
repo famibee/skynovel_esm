@@ -1,6 +1,15 @@
 # SKYNovel (skynovel_esm) — 開発メモ
 
-ノベルゲームエンジン本体 `@famibee/skynovel_esm` のリポジトリ。
+ノベルゲームエンジン本体 `@famibee/skynovel_esm` のリポジトリ。姉妹プロジェクト
+`../bluesnovel` はこれを React + zustand で書き直したフレームワーク（コード中の
+`bluesnovel <file>:<line> の移植` コメントは双方向の知見融通の跡）。
+
+## Architecture（概要）
+
+`hTag`（タグ名→処理関数の辞書）を中心に、`ScriptIterator` がトークンを読み進めて
+タグを実行し、各 Mng クラス（`LayerMng`/`EventMng`/`SoundMng`/`Variable`/`SysBase` 等）が
+自分の担当タグをコンストラクタで登録する構成。主要ファイルの役割・設計判断・起動〜
+シナリオ実行のデータフローは **[.claude/docs/ARCHITECTURE.md](.claude/docs/ARCHITECTURE.md)**。
 
 ## 規約
 

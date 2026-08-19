@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun run *)",
+      "Bash(bun src/build.ts)",
+      "Bash(bun test *)",
+      "Bash(bunx playwright *)",
+      "Bash(bunx tsc *)",
+      "Bash(bunx vite *)",
+      "Bash(gh api *)",
+      "Bash(gh auth *)",
+      "Bash(git add *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git commit *)",
+      "Bash(git fetch *)",
+      "Bash(git merge *)",
+      "Bash(git pull *)",
+      "Bash(git stash *)",
+      "Bash(git status *)",
+      "Bash(git switch *)",
+      "Bash(npm run *)",
+      "Bash(npx eslint *)",
+      "Bash(npx tsc *)",
+      "Bash(python3 -)",
+      "Bash(python3 -c ' *)",
+      "Bash(xargs -r kill)",
+      "Read(//private/tmp/**)",
+      "Read(//tmp/**)",
+      "Read(//Users/ugai/**)",
+      "Read(//Users/ugai/Documents/MacHD2/_Famibee/**)",
+      "Read(//Users/ugai/Library/Caches/ms-playwright/**)"
+    ],
+    "additionalDirectories": [
+      "/Users/ugai/Documents/MacHD2/_Famibee/SKYNovel/bluesnovel/src/ts",
+      "/Users/ugai/Documents/MacHD2/_Famibee/SKYNovel/bluesnovel/src/sn",
+      "/Users/ugai/Documents/MacHD2/_Famibee/SKYNovel/tmp_esm_uc/doc/prj/theme"
+    ]
+  }
+}

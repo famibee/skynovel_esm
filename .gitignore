@@ -13,5 +13,6 @@ blob-report/
 
 dist/*.tsbuildinfo
 
-# Claude Code のセッション設定（権限許可リスト）
-/.claude/
+# Claude Code の個人設定・実行時ファイル（docs/ 等プロジェクト共有物はコミット対象）
+/.claude/settings.local.json
+/.claude/scheduled_tasks.lock
