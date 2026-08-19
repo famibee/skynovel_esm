@@ -611,7 +611,7 @@ export class Reading {
 			const fnc = ()=> {
 				this.cancelAutoSkip();
 				// EVNM_CLICK（'pointerdown'）はここで即座に拾うが、通常の読み進めは
-				// TinyGestureが合成する'tap'（pointerup後、ReadingState.fire経由）で
+				// EventMng.ts が合成する'click'（pointerup後、ReadingState.fire経由）で
 				// 少し遅れて発火する。isFirstFire()を先取りして立てておかないと、
 				// 同じ1回のクリック操作から出た'tap'が、この直後に生まれる次の待ち状態
 				// （[p]等）をそのまま読み進めてしまう（[wait_tsy]中断で実際に発生を確認）

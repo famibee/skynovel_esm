@@ -1,0 +1,33 @@
+; ***** tinygesture（tap/longpress/panend/swipe）検査用シナリオ（gesture.e2e.ts が使用）*****
+;	画像・音等の外部資材に依存させない。EventMng.ts の#tgが張るtap/longpress/panend/swipeの
+;	発火経路だけを見る（TinyGesture自体はマウスのdown/move/upで発火するので、E2Eからは
+;	page.mouseで模擬する）
+[add_lay layer=mes class=txt]
+[current layer=mes]
+[event key=longpress label=*hit_longpress]
+[event key=swipeleft label=*hit_swipeleft]
+[event key=swiperight label=*hit_swiperight]
+[event key=swipeup label=*hit_swipeup]
+[event key=swipedown label=*hit_swipedown]
+;	tapは[event key=click]では検証できない：[s]のwaitRsvEvent()はonUserAct未指定だと
+;	'click'キーのローカル登録を明示的に消す（Reading.ts）ため、[p]のクリック待ちで見る
+たいき。[p]
+OKtap[s]
+
+*hit_longpress
+;	panend検証を兼ねる：longpress直後に立つpressedフラグがpanendで正しく落ちないと、
+;	この直後のクリック（tap）が握り潰され[p]から進めない
+OKlongpress[p]
+つぎへ。[s]
+
+*hit_swipeleft
+OKswipeleft[s]
+
+*hit_swiperight
+OKswiperight[s]
+
+*hit_swipeup
+OKswipeup[s]
+
+*hit_swipedown
+OKswipedown[s]

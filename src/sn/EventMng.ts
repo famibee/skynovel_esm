@@ -25,7 +25,12 @@ import {GamepadMng} from './GamepadMng';
 
 import {Container, type Application, utils} from 'pixi.js';
 import {parseHintOpt, flipPlace, calcPos, clampPos, calcArrowOffset} from './HintPos';
-import TinyGesture, {type Events} from 'tinygesture';
+import {detectSwipe} from './Swipe';
+
+
+// tinygesture既定値の踏襲（tinygesture依存の削減、TODO.md）。tap/longpress判定の閾値
+const PRESS_THRESHOLD = 8;	// これ未満の移動ならタップ扱い（tinygesture defaults.pressThreshold）
+const LONGPRESS_TIME = 500;	// 押しっぱなしがこの時間続けば長押し発火（tinygesture defaults.longPressTime）
 
 
 const enum eDownKeys {
@@ -38,7 +43,6 @@ const enum eDownKeys {
 export class EventMng implements IEvtMng {
 	readonly	#elc		= new EventListenerCtn;
 	readonly	#fcs;
-	readonly	#tg;
 	readonly	#setBtnNM	= new Map<eDownKeys, string>([
 		[0, ''],
 		[1, 'middle'],
@@ -159,28 +163,28 @@ export class EventMng implements IEvtMng {
 		});
 		// その他マウス（ポインターイベント）
 		// this.#elc.add(main.cvs, EVNM_KEY, e=> {	// 通常のクリックイベント
-		const {width: w, height: h} = cfg.oCfg.window;
-		const TG_CHK_SPAN = Math.floor(w > h ?h/3 :w/3);	// だいたいの数字
-		this.#tg = new TinyGesture(main.cvs, {
-			velocityThreshold: 0,
-			disregardVelocityThreshold: type=> Math.floor(TG_CHK_SPAN *(type === 'x' ?1 :0.5)),
-		});
+		// tap/longpress/panend/swipeleft・right・up・down。tinygestureに代えてpointerdown〜
+		//	pointermove〜pointerupの自作で判定する（tinygesture依存の削減、TODO.md）。
+		//	PointerEventはtouch/mouse/penを統一的に扱うので、旧実装にあったTouchEvent分岐は不要になった
 		let pressed = false;	// 長押しとクリックを排他的にする仕組み
-		this.#tg.on('tap', (e: TouchEvent | MouseEvent)=> {
-			if (pressed) return;
+		let gestureStart: {x: number, y: number} | null = null;
+		let longPressTimer: ReturnType<typeof setTimeout> | undefined;
 
-			if (e instanceof TouchEvent) {
-				Reading.fire('click', e, true);
-				ReadingState.resetFired();
-				return;
-			}
-			if (e.button > 1) return;	// 右クリックは contextmenu で
+		this.#elc.add(main.cvs, 'pointerdown', (e: PointerEvent)=> {
+			gestureStart = {x: e.clientX, y: e.clientY};
+			longPressTimer = setTimeout(()=> {
+				pressed = true;
+				const nmEvt = this.#modKey4MouseEvent(e) +`${
+					this.#setBtnNM.get(e.button) ?? ''}longpress`;
+				Reading.fire(nmEvt, e, true);
+			}, LONGPRESS_TIME);
+		});
+		// 押下中の移動がpressThresholdを超えたら長押し判定を打ち切る（tinygestureと同じ基準）
+		this.#elc.add(document, 'pointermove', (e: PointerEvent)=> {
+			if (! gestureStart) return;
+			if (Math.max(Math.abs(e.clientX -gestureStart.x), Math.abs(e.clientY -gestureStart.y)) <= PRESS_THRESHOLD) return;
 
-			const nmEvt = this.#modKey4MouseEvent(e) +`${
-				this.#setBtnNM.get(e.button) ?? ''}click`;
-// console.log(`fn:EventMng.ts -tap- nmEvt:${nmEvt} e:%o`, e);
-			Reading.fire(nmEvt, e, true);
-			ReadingState.resetFired();
+			clearTimeout(longPressTimer);
 		});
 		this.#elc.add(window, 'pointerout', ()=> ReadingState.resetFired());
 			// ポインターが要素の外に出た：押してフレームが横入りした場合など
@@ -190,32 +194,30 @@ export class EventMng implements IEvtMng {
 		// ボタンとステージクリックの二重発生除けは押下〜tap 間で効けばよいので、
 		// 押下前（capture）に落とす分には影響しない
 		this.#elc.add(document, 'pointerdown', ()=> ReadingState.resetFired(), {capture: true});
-		// gesture.on('doubletap'	// 原理上 tap 反応が遅くなるので不使用
-		this.#tg.on('longpress', e=> {
-			pressed = true;
-			if (e instanceof TouchEvent) {Reading.fire('longpress', e, true); return}
+		this.#elc.add(document, 'pointerup', (e: PointerEvent)=> {
+			if (! gestureStart) return;
+			clearTimeout(longPressTimer);
 
-			const nmEvt = this.#modKey4MouseEvent(e) +`${
-				this.#setBtnNM.get(e.button) ?? ''}longpress`;
-// console.log(`fn:EventMng.ts -longpress- nmEvt:${nmEvt} e:%o`, e);
-			Reading.fire(nmEvt, e, true);
-		});
-		this.#tg.on('panend', ()=> {
-			if (pressed) queueMicrotask(()=> {pressed = false});
-		});
-		(<(keyof Events)[]>[
-			'swiperight',
-			'swipeleft',
-			'swipeup',
-			'swipedown'
-		]).forEach(en=> {
-			this.#tg.on(en, (e: TouchEvent | MouseEvent)=> {
-				if (e instanceof TouchEvent) {Reading.fire(en, e, true); return}
+			const dx = e.clientX -gestureStart.x;
+			const dy = e.clientY -gestureStart.y;
+			gestureStart = null;
 
-				const nmEvt = this.#modKey4MouseEvent(e) +en;
-// console.log(`fn:EventMng.ts -${en}- nmEvt:${nmEvt} e:%o`, e);
+			const {width, height} = main.cvs.getBoundingClientRect();
+			const dir = detectSwipe(dx, dy, width, height);
+			if (dir) {
+				Reading.fire(this.#modKey4MouseEvent(e) +dir, e, true);
+			}
+			else if (! pressed && Math.abs(dx) <= PRESS_THRESHOLD && Math.abs(dy) <= PRESS_THRESHOLD && e.button <= 1) {
+				// タップ。右クリックは contextmenu で
+				const nmEvt = this.#modKey4MouseEvent(e) +`${
+					this.#setBtnNM.get(e.button) ?? ''}click`;
 				Reading.fire(nmEvt, e, true);
-			});
+				ReadingState.resetFired();
+			}
+
+			// panend相当：長押しで立てた排他フラグをここで下ろす。同期的に下ろすと
+			//	このtap判定自体を巻き込んで握り潰してしまうため、次のtickまで遅らせる
+			if (pressed) queueMicrotask(()=> {pressed = false});
 		});
 
 
@@ -347,7 +349,6 @@ export class EventMng implements IEvtMng {
 
 		for (const v of Array.from(document.getElementsByClassName('sn_hint'))) v.parentElement?.removeChild(v);	// ギャラリーリロード用初期化
 
-		this.#tg.destroy();
 		Reading.destroy();
 		this.#fcs.destroy();
 		this.#hOffDomEvt.clear();	// リスナ実体は #elc.clear()で外れる
