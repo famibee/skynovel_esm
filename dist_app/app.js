@@ -4,7 +4,7 @@ import { t as o } from "./SysBase.js";
 import { t as s } from "./DebugMng.js";
 import "./Config.js";
 import { t as c } from "./Layer.js";
-//#region node_modules/@electron-toolkit/typed-ipc/dist/renderer.mjs
+//#region src/IpcRenderer.ts
 var l = class {
 	send(e, ...t) {
 		window.electron.ipcRenderer.send(e, ...t);

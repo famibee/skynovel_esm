@@ -39,7 +39,6 @@
 		}
 	},
 	"dependencies": {
-		"@electron-toolkit/typed-ipc": "^1.0.2",
 		"adm-zip": "^0.6.0",
 		"electron-store": "^11.0.2",
 		"fs-extra": "^11.4.0",

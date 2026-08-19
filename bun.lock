@@ -5,7 +5,6 @@
     "": {
       "name": "@famibee/skynovel_ems",
       "dependencies": {
-        "@electron-toolkit/typed-ipc": "^1.0.2",
         "adm-zip": "^0.6.0",
         "electron-store": "^11.0.2",
         "fs-extra": "^11.4.0",
@@ -39,10 +38,6 @@
     "@babel/helper-validator-identifier": ["@babel/helper-validator-identifier@7.27.1", "", {}, "sha512-D2hP9eA+Sqx1kBZgzxZh0y1trbuU+JoDkiEwqhQ36nodYqJwyEIhPSdMNd7lOm/4io72luTPWH20Yda0xOuUow=="],
 
     "@electron-internal/extract-zip": ["@electron-internal/extract-zip@1.0.2", "", {}, "sha512-VJuNETNPEhrmQEZezeTZO5TZMV+dobBRyJ7zHjGJWIhMS7m7W1UeClt69u4hkUxv9ZZVxuli/E9Yvc4gDNHGsg=="],
-
-    "@electron-toolkit/preload": ["@electron-toolkit/preload@3.0.1", "", { "peerDependencies": { "electron": ">=13.0.0" } }, "sha512-EzoQmpK8jqqU8YnM5jRe0GJjGVJPke2KtANqz8QtN2JPT96ViOvProBdK5C6riCm0j1T8jjAGVQCZLQy9OVoIA=="],
-
-    "@electron-toolkit/typed-ipc": ["@electron-toolkit/typed-ipc@1.0.2", "", { "peerDependencies": { "@electron-toolkit/preload": ">=3.0.0", "electron": ">=13.0.0" } }, "sha512-N5yV5PzoAQDI4pLRBguY/8qwS7C7b84g2XQHPNqmp5KJTiYGeaQVfglI3979tzIqpSEV8Nmwdlw3ADmYE44WvQ=="],
 
     "@electron/get": ["@electron/get@5.0.0", "", { "dependencies": { "debug": "^4.1.1", "env-paths": "^3.0.0", "graceful-fs": "^4.2.11", "progress": "^2.0.3", "semver": "^7.6.3", "sumchecker": "^3.0.1" }, "optionalDependencies": { "undici": "^7.24.4" } }, "sha512-pjoBpru1KdEtcExBnuHAP1cAc/5faoedw0hzJkL3o4/IJp7HNF1+fbrdxT3gMYRX2oJfvnA/WXeCTVQpYYxyJA=="],
 

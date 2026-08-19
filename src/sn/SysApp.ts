@@ -17,7 +17,7 @@ import {PROTOCOL_USERDATA} from './Config';
 
 import type {Application, Loader} from 'pixi.js';
 import type {IpcRendererEvent, MessageBoxOptions} from 'electron/renderer';
-import {IpcListener, IpcEmitter} from '@electron-toolkit/typed-ipc/renderer'
+import {IpcListener, IpcEmitter} from '../IpcRenderer'
 import type {readFile} from 'fs-extra';
 
 

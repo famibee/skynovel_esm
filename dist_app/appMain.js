@@ -125,17 +125,16 @@ var _ = class e {
 	sendSaveWinInf(e) {}
 	openDevTools = () => {};
 }, v = class {
-	constructor() {
-		this.listeners = [], this.handlers = [];
-	}
+	#e = [];
+	#t = [];
 	on(e, t) {
-		this.listeners.push(e), r.on(e, t);
+		this.#e.push(e), r.on(e, t);
 	}
 	handle(e, t) {
-		this.handlers.push(e), r.handle(e, t);
+		this.#t.push(e), r.handle(e, t);
 	}
 	dispose() {
-		this.listeners.forEach((e) => r.removeAllListeners(e)), this.listeners = [], this.handlers.forEach((e) => r.removeHandler(e)), this.handlers = [];
+		this.#e.forEach((e) => r.removeAllListeners(e)), this.#e = [], this.#t.forEach((e) => r.removeHandler(e)), this.#t = [];
 	}
 }, y = class {
 	send(e, t, ...n) {
