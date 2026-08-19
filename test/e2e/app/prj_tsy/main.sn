@@ -1,0 +1,51 @@
+; ***** トゥイーン（[tsy]/[trans]）検査用シナリオ（tsy.e2e.ts が使用）*****
+;	画像・フォント等の外部資材に依存させない。動かす対象は class=grp の空レイヤ。
+;	width/height は Layer（tsy_frame等含む）に setter が無く[tsy]で動かせないため対象外
+;	（CmnTween.aLayerPrpNm には載っているが、本家と違い読み取り専用）
+[add_lay layer=base class=grp]
+[add_lay layer=base2 class=grp]
+[add_lay layer=mes class=txt]
+[current layer=mes]
+
+; 開始値をはっきりさせておく（未指定だとレイヤのCSS既定が開始値になる）
+[lay layer=base left=0 top=0 alpha=1]
+はじめ。[p]
+
+; --- 基本動作：時間をかけて値が動く。[wait_tsy]がその間シナリオを止める ---
+[tsy layer=base time=1200 x=200]
+[wait_tsy layer=base]
+うごいた。[p]
+
+; --- 相対指定：現在値(200)に+100 = 300 ---
+[tsy layer=base time=300 x='=100']
+[wait_tsy layer=base]
+そうたい。[p]
+
+; --- [stop_tsy]は即座に終了状態へ送る（9秒かける指定でも待たない）---
+[tsy layer=base name=tw1 time=9000 y=400]
+[stop_tsy name=tw1]
+とめた。[p]
+
+; --- [wait_tsy]中のクリックで打ち切れる。打ち切っても終了状態(alpha=0)になる ---
+[tsy layer=base time=9000 alpha=0]
+[wait_tsy layer=base]
+うちきり。[p]
+
+; --- path=（経路）。相対はどの区間も**開始値**が基準（(,=0)が元の位置(400)へ戻す指定）---
+;	class=grp は子（画像）が無いと[lay left=/top=]が効かない（GrpLayer#laySub の
+;	children.length>0 ガード）ため、ここでは前段の[stop_tsy]終了値(400)を起点にする
+[tsy layer=base time=800 path='(,=100) (,=0)']
+[wait_tsy layer=base]
+けいろ。[p]
+
+; --- chain=。tw_aの終了にtw_bを繋ぐ（繋いだ側はそれまで動き出さない）---
+;	base2 は未操作でx=0のまま（[lay]は上と同じ理由で使わない）
+[tsy layer=base name=tw_a time=400 y=300]
+[tsy layer=base2 name=tw_b time=200 x=100 chain=tw_a]
+[wait_tsy name=tw_b]
+つなげた。[p]
+
+; --- [trans]：ページ裏表交換のクロスフェード。[wt]が終了を待つ ---
+[trans layer=base time=300]
+[wt]
+とらんす。[s]

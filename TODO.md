@@ -12,8 +12,6 @@
 
 ### 積み残し
 
-- [ ] `[tsy]`/`[trans]` 専用の E2E が無い（`prj_tsy` 新設か `prj_leak` へラベル追加）。
-      motion 移行後は `CmnTween` 側の自己再帰 rAF ループが無くなるため、`rafPending`
-      （`probe.ts:67-80`, `snPage.ts:118`）による `reloadMain` 前後の多重化検知は
-      「CmnTween の追跡レジストリに登録漏れが残っていないか」（destroy()後もアニメが動き続けない
-      か）を見る形に読み替える。pixi Ticker 分の rAF は引き続き乗るので閾値の取り方は要検討
+- [ ] bluesnovel の CLAUDE.md 系ファイルやtsソース、テストを参考に追加・更新
+  - `CHANGELOG.md` の扱いは本家が最終的に正
+- [ ] @electron-toolkit/typed-ipc 依存削除できるか（bluesnovel にないのはなぜか）

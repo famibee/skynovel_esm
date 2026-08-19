@@ -15,7 +15,7 @@
 import {expect, type Page} from '@playwright/test';
 import type {T_TARGET} from './app/probe';
 
-export type T_PRJ = 'leak' | 'crypto' | 'sound';
+export type T_PRJ = 'leak' | 'crypto' | 'sound' | 'tsy';
 
 // 文字レイヤ本体。TxtStage は canvas の親（＝body）へ直に足すので、位置ではなくクラスで拾う。
 //	表裏ページぶん存在し、裏は空なので「中身のある物」を採る
@@ -84,6 +84,12 @@ export async function clickNext(page: Page) {
 	await page.locator('#skynovel_act').click({position: {x: 10, y: 10}});
 }
 
+// waitStop()を挟まない生のクリック。[wait_tsy]/[wt]中は isWait() が立たないため
+//	clickNext()は使えない。演出打ち切り（canskip）の検査専用
+export async function clickDuring(page: Page) {
+	await page.locator('#skynovel_act').click({position: {x: 10, y: 10}});
+}
+
 // Main を破棄して作り直す（SysBase.run）。index.html の [data-reload] が繋がれている。
 //	CmnTween の rAF ループや gamepad が多重化しないかを見るための操作
 export async function reloadMain(page: Page) {
@@ -127,6 +133,25 @@ export async function blobLive(page: Page): Promise<number> {
 // SndBuf.live の件数。unload()でしか減らないので、解放漏れがそのまま出る
 export async function sndLive(page: Page): Promise<number> {
 	return page.evaluate(()=> (<any>globalThis).__probe.sndLive() as number);
+}
+
+// CmnTween の実行中トゥイーン登録数（[tsy]/[trans]共通）。destroy()（＝Main作り直し）
+//	後もこれが残っていれば、CmnTween側の登録漏れ
+export async function tsyLive(page: Page): Promise<number> {
+	return page.evaluate(()=> (<any>globalThis).__probe.tsyLive() as number);
+}
+
+
+// ---- レイヤ（[tsy]で動く属性）用 -----------------------------------------------
+
+// [tsy]で動くレイヤ属性を1つ読む。組み込み変数 const.sn.lay.（レイヤ名）.（fore|back）.（prop）
+//	（tmpスコープ、Pages.ts が defTmp で定義）を経由する。演出中の途中経過もそのまま読める
+export async function layNum(
+	page: Page, nm: string,
+	prop: 'alpha' | 'width' | 'height' | 'x' | 'y',
+	side: 'fore' | 'back' = 'fore',
+): Promise<number | undefined> {
+	return <number | undefined>await val(page, `tmp:const.sn.lay.${nm}.${side}.${prop}`);
 }
 
 

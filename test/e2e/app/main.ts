@@ -17,11 +17,17 @@ import {SysWeb} from '../../../src/web';
 import {Reading} from '../../../src/sn/Reading';
 import {SndBuf} from '../../../src/sn/SndBuf';
 import {SndCtx} from '../../../src/sn/SndCtx';
+import {CmnTween} from '../../../src/sn/CmnTween';
 
 // SndBuf.live は解放漏れの最も直接的な指標。unload()でしか除去されないので、
 //	「再生と停止を繰り返しても増えない」が SndBuf の検査そのものになる
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).__probe.sndLive = ()=> SndBuf.live.size;
+
+// CmnTween.liveCount は [tsy]/[trans] の登録漏れ検査に使う。motion移行で自己再帰rAF
+//	ループが無くなった（各アニメが自走する）ため、rafPending では多重化を検知できない
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(globalThis as any).__probe.tsyLive = ()=> CmnTween.liveCount;
 
 // ?prj=leak でシナリオ（プロジェクトフォルダ）を切り替える。
 //	読むのは常に main（path.json の "main"）なので、シナリオごとにフォルダを分ける

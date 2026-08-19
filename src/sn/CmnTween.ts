@@ -8,7 +8,7 @@
 import {type IEvtMng, CmnLib, argChk_Boolean, argChk_Num} from './CmnLib';
 import type {TArg} from './Grammar';
 import type {Layer} from './Layer';
-import {Reading, ReadingState_wait4Tag} from './Reading';
+import {Reading} from './Reading';
 
 import {animate, type AnimationPlaybackControls} from 'motion';
 
@@ -63,19 +63,37 @@ export class Tw {
 
 	start(): this {
 		if (this.#ctrl) return this;	// 二重start対策（tween.jsの_isPlayingガード相当）
-		this.#ctrl = animate(this.#target, this.#hTo, {
+
+		// targetへ直接animateさせない：motionのctrl.stop()は「動いている最中」だと
+		// 同期的には止まらず、stop/end後もしばらく（時に長時間）targetへの書き込みが
+		// 裏で続いてしまう（stop_tsy/[wait_tsy]中断のクリックで実測）。ダミー(proxy)を
+		// 動かしてonUpdate側で#finishedを見るようにし、「以後targetへ触らせない」を
+		// motionのstop()の信頼性に依らず保証する
+		const proxy: {[k: string]: number} = {};
+		for (const k of Object.keys(this.#hTo)) proxy[k] = <number>this.#target[k];
+
+		this.#ctrl = animate(<any>proxy, this.#hTo, {
 			duration	: this.#durationSec,
 			delay		: this.#delaySec,
 			ease		: this.#ease,
 			repeat		: this.#repeatN,
 			...this.#yoyo ?{repeatType: 'reverse' as const} :{},
-			onUpdate	: ()=> this.#onUpdateFn?.(this.#target),
+			onUpdate	: ()=> {
+				if (this.#finished) return;
+				Object.assign(this.#target, proxy);
+				this.#onUpdateFn?.(this.#target);
+			},
 			onComplete	: ()=> this.#fireComplete(),
 		});
 		return this;
 	}
 	#fireComplete() {
 		if (this.#finished) return;
+		// motionのonCompleteは、proxyが正確に最終値へ到達したonUpdateの後に来るとは
+		// 限らない（丸め誤差や順序のズレで僅かに届かないまま呼ばれることがある）ため、
+		// #finishedを立てる前に目標値そのものを代入して確定させる
+		Object.assign(this.#target, this.#hTo);
+		this.#onUpdateFn?.(this.#target);
 		this.#finished = true;
 		this.#onCompleteFn?.();
 		this.#nextInChain?.start();
@@ -91,14 +109,13 @@ export class Tw {
 		while (node) {
 			Object.assign(fin, node.#hTo);
 			node.#ctrl?.stop();
+			node.#finished = true;	// 以後そのnodeのonUpdateがproxyの続きを反映しないよう先に立てる
 			last = node;
 			node = node.#nextInChain;
 		}
 		Object.assign(this.#target, fin);
 		this.#onUpdateFn?.(this.#target);
 
-		this.#finished = true;
-		last.#finished = true;
 		last.#onCompleteFn?.();
 		return this;
 	}
@@ -142,6 +159,11 @@ export class CmnTween {
 		for (const ti of Object.values(CmnTween.#hTwInf)) ti.tw?.kill();
 		CmnTween.#hTwInf = {};
 	}
+
+	// 実行中トゥイーンの登録数（[trans]も同じ#hTwInfに乗る）。
+	//	E2E がリーク検査に使う観測用ゲッタ（SndBuf.live と同じ位置付け）。
+	//	destroy()（＝stopAllTw()）が効いていれば、その直後は必ず0になる
+	static get liveCount(): number {return Object.keys(CmnTween.#hTwInf).length}
 
 
 	static	setTwProp(tw: Tw, hArg: TArg): Tw {
@@ -404,7 +426,10 @@ export class CmnTween {
 
 		const fnc = ()=> tw.end();	// stop()とend()は別
 		Reading.beginProc(PID_HD_TW + tw_nm, fnc, true, argChk_Boolean(hArg, 'canskip', true) ?fnc: undefined);
-		new ReadingState_wait4Tag(hArg);
+		// new ReadingState_wait4Tag(hArg);	// wt()/wait()と同じくbeginProcと二重の待ちになるため呼ばない。
+		// 呼ぶと、ここで作られる待ち状態のdefaultケース（'p'/'s'以外）がクリック一発で
+		// ReadingState_goへ遷移してしまい、[wait_tsy]の打ち切りとは別に、シナリオが
+		// canskipの終了処理を待たずそのまま次の行まで進んでしまう（実際に観測した）
 		return true;
 	}
 		static	#tw_nm(hArg: TArg) {

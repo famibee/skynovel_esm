@@ -2897,18 +2897,23 @@ var ja = Aa(), Ma = class {
 		return this.#l = e, this;
 	}
 	start() {
-		return this.#u ||= ja(this.#e, this.#t, {
+		if (this.#u) return this;
+		let e = {};
+		for (let t of Object.keys(this.#t)) e[t] = this.#e[t];
+		return this.#u = ja(e, this.#t, {
 			duration: this.#n,
 			delay: this.#r,
 			ease: this.#i,
 			repeat: this.#a,
 			...this.#o ? { repeatType: "reverse" } : {},
-			onUpdate: () => this.#s?.(this.#e),
+			onUpdate: () => {
+				this.#d || (Object.assign(this.#e, e), this.#s?.(this.#e));
+			},
 			onComplete: () => this.#f()
 		}), this;
 	}
 	#f() {
-		this.#d || (this.#d = !0, this.#c?.(), this.#l?.start());
+		this.#d || (Object.assign(this.#e, this.#t), this.#s?.(this.#e), this.#d = !0, this.#c?.(), this.#l?.start());
 	}
 	stop() {
 		return this.#u?.stop(), this;
@@ -2916,8 +2921,8 @@ var ja = Aa(), Ma = class {
 	end() {
 		if (this.#d) return this;
 		let e = {}, t = this, n = this;
-		for (; t;) Object.assign(e, t.#t), t.#u?.stop(), n = t, t = t.#l;
-		return Object.assign(this.#e, e), this.#s?.(this.#e), this.#d = !0, n.#d = !0, n.#c?.(), this;
+		for (; t;) Object.assign(e, t.#t), t.#u?.stop(), t.#d = !0, n = t, t = t.#l;
+		return Object.assign(this.#e, e), this.#s?.(this.#e), n.#c?.(), this;
 	}
 	kill() {
 		let e = this;
@@ -2944,6 +2949,9 @@ var ja = Aa(), Ma = class {
 	static stopAllTw() {
 		for (let t of Object.values(e.#e)) t.tw?.kill();
 		e.#e = {};
+	}
+	static get liveCount() {
+		return Object.keys(e.#e).length;
 	}
 	static setTwProp(e, t) {
 		let r = n(t, "repeat", 1);
@@ -3077,7 +3085,7 @@ var ja = Aa(), Ma = class {
 		let t = this.#a(e), n = this.#e[t]?.tw;
 		if (!n) return !1;
 		let r = () => n.end();
-		return $.beginProc(Pa + t, r, !0, i(e, "canskip", !0) ? r : void 0), new Ra(e), !0;
+		return $.beginProc(Pa + t, r, !0, i(e, "canskip", !0) ? r : void 0), !0;
 	}
 	static #a(e) {
 		let { layer: t = "", id: n, name: r } = e, i = n ? `frm\n${n}` : r ?? t;
@@ -3397,7 +3405,7 @@ var ja = Aa(), Ma = class {
 		}
 		if (o) {
 			let n = () => {
-				this.cancelAutoSkip(), o(), i && this.endProc(e);
+				this.cancelAutoSkip(), Q.isFirstFire(), o(), i && this.endProc(e);
 			};
 			this.#t.add(this.main.cvs, r, (e) => {
 				e.stopPropagation(), n();

@@ -136,6 +136,8 @@ const probe = {
 	blobList	: ()=> [...sBlob],
 	// main.ts が SndBuf.live を注入する（src/ と同一モジュール実体を掴むため）
 	sndLive		: ()=> -1,
+	// main.ts が CmnTween.liveCount を注入する。[tsy]/[trans]共通の登録数
+	tsyLive		: ()=> -1,
 };
 
 export type T_PROBE = typeof probe;

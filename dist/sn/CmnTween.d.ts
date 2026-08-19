@@ -26,6 +26,7 @@ export declare class CmnTween {
     static init(evtMng: IEvtMng): void;
     static destroy(): void;
     static stopAllTw(): void;
+    static get liveCount(): number;
     static setTwProp(tw: Tw, hArg: TArg): Tw;
     static ease(nm: string | undefined): (k: number) => number;
     static readonly aLayerPrpNm: (keyof Layer)[];
