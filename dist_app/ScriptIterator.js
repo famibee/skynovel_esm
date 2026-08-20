@@ -676,7 +676,7 @@ var b = class b {
 	#pe(e) {
 		return this.#a.char2macro(e, this.hTag, this.#e, this.#n), !1;
 	}
-	#me = /["'#;\\]　]+/;
+	#me = /["'#;\\\]　]+/;
 	#he(e) {
 		let { name: t } = e;
 		if (!t) throw "nameは必須です";

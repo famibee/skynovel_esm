@@ -1359,7 +1359,7 @@ export class ScriptIterator {
 
 	//MARK: マクロ定義の開始
 	// eslint-disable-next-line no-irregular-whitespace
-	readonly	#REG_NG4MAC_NM = /["'#;\\]　]+/;
+	readonly	#REG_NG4MAC_NM = /["'#;\\\]　]+/;
 	#macro(hArg: TArg) {
 		const {name} = hArg;
 		if (! name) throw 'nameは必須です';
