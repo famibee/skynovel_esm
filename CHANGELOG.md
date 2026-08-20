@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.23](https://github.com/famibee/skynovel_esm/compare/v2.0.22...v2.0.23) (2026-08-20)
+
+
+### Bug Fixes
+
+* #REG_NG4MAC_NMの正規表現エスケープ漏れを修正 ([337e6b8](https://github.com/famibee/skynovel_esm/commit/337e6b87c420e9b86863fcf218c2240f639c0332))
+
 ## [2.0.22](https://github.com/famibee/skynovel_esm/compare/v2.0.21...v2.0.22) (2026-08-19)
 
 
