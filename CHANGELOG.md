@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.24](https://github.com/famibee/skynovel_esm/compare/v2.0.23...v2.0.24) (2026-08-23)
+
+
+### Bug Fixes
+
+* OSのモーションを減らす設定でtsyのx/y/width/height等が瞬時移動になる不具合を修正 ([4b8c4c4](https://github.com/famibee/skynovel_esm/commit/4b8c4c464d1e727f162b2945c544af10d02f29ed))
+
 ## [2.0.23](https://github.com/famibee/skynovel_esm/compare/v2.0.22...v2.0.23) (2026-08-20)
 
 
