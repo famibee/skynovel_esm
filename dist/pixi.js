@@ -1253,8 +1253,8 @@ var G = {
 				if (!t.has(e)) throw new r("Side channel does not contain " + n(e));
 			},
 			delete: function(t) {
-				var n = e && e.next, r = c(e, t);
-				return r && n && n === r && (e = void 0), !!r;
+				var n = c(e, t);
+				return n && e && !e.next && (e = void 0), !!n;
 			},
 			get: function(t) {
 				return a(e, t);
@@ -1731,7 +1731,7 @@ var G = {
 	t.exports = function() {
 		var e, t = {
 			assert: function(e) {
-				if (!t.has(e)) throw new n("Side channel does not contain " + r(e));
+				if (!t.has(e)) throw new n("Side channel does not contain " + (e && Object(e) === e ? "the given object key" : r(e)));
 			},
 			delete: function(t) {
 				return !!e && e.delete(t);
@@ -1767,44 +1767,98 @@ var G = {
 		RFC3986: i.RFC3986
 	};
 })), bt = /* @__PURE__ */ o(((e, t) => {
-	var n = yt(), r = Object.prototype.hasOwnProperty, i = Array.isArray, a = function() {
-		for (var e = [], t = 0; t < 256; ++t) e.push("%" + ((t < 16 ? "0" : "") + t.toString(16)).toUpperCase());
+	var n = yt(), r = vt(), i = $e(), a = Object.prototype.hasOwnProperty, o = Array.isArray, s = r(), c = function(e, t) {
+		return s.set(e, t), e;
+	}, l = function(e) {
+		return s.has(e);
+	}, u = function(e) {
+		return s.get(e);
+	}, d = function(e, t) {
+		s.set(e, t);
+	}, f = function() {
+		for (var e = [], t = 0; t < 256; ++t) e[e.length] = "%" + ((t < 16 ? "0" : "") + t.toString(16)).toUpperCase();
 		return e;
-	}(), o = function(e) {
+	}(), p = function(e) {
 		for (; e.length > 1;) {
 			var t = e.pop(), n = t.obj[t.prop];
-			if (i(n)) {
-				for (var r = [], a = 0; a < n.length; ++a) n[a] !== void 0 && r.push(n[a]);
+			if (o(n)) {
+				for (var r = [], i = 0; i < n.length; ++i) n[i] !== void 0 && (r[r.length] = n[i]);
 				t.obj[t.prop] = r;
 			}
 		}
-	}, s = function(e, t) {
+	}, m = function(e, t) {
 		for (var n = t && t.plainObjects ? { __proto__: null } : {}, r = 0; r < e.length; ++r) e[r] !== void 0 && (n[r] = e[r]);
 		return n;
-	}, c = function e(t, n, a) {
+	}, h = function(e, t, n) {
+		t === "__proto__" && i ? i(e, t, {
+			configurable: !0,
+			enumerable: !0,
+			value: n,
+			writable: !0
+		}) : e[t] = n;
+	}, g = function e(t, n, r) {
 		if (!n) return t;
 		if (typeof n != "object" && typeof n != "function") {
-			if (i(t)) t.push(n);
-			else if (t && typeof t == "object") (a && (a.plainObjects || a.allowPrototypes) || !r.call(Object.prototype, n)) && (t[n] = !0);
-			else return [t, n];
+			if (o(t)) {
+				var i = t.length;
+				if (r && typeof r.arrayLimit == "number" && i >= r.arrayLimit) {
+					if (r.throwOnLimitExceeded) throw RangeError("Array limit exceeded. Only " + r.arrayLimit + " element" + (r.arrayLimit === 1 ? "" : "s") + " allowed in an array.");
+					return c(m(t.concat(n), r), i);
+				}
+				t[i] = n;
+			} else if (t && typeof t == "object") {
+				if (l(t)) {
+					var s = u(t) + 1;
+					t[s] = n, d(t, s);
+				} else if (r && r.strictMerge) return [t, n];
+				else (r && (r.plainObjects || r.allowPrototypes) || !a.call(Object.prototype, n)) && (t[n] = !0);
+			} else return [t, n];
 			return t;
 		}
-		if (!t || typeof t != "object") return [t].concat(n);
-		var o = t;
-		return i(t) && !i(n) && (o = s(t, a)), i(t) && i(n) ? (n.forEach(function(n, i) {
-			if (r.call(t, i)) {
-				var o = t[i];
-				o && typeof o == "object" && n && typeof n == "object" ? t[i] = e(o, n, a) : t.push(n);
-			} else t[i] = n;
-		}), t) : Object.keys(n).reduce(function(t, i) {
+		if (!t || typeof t != "object") {
+			if (l(n)) {
+				for (var f = Object.keys(n), p = r && r.plainObjects ? {
+					__proto__: null,
+					0: t
+				} : { 0: t }, g = 0; g < f.length; g++) {
+					var _ = parseInt(f[g], 10);
+					p[_ + 1] = n[f[g]];
+				}
+				return c(p, u(n) + 1);
+			}
+			var v = [t].concat(n);
+			if (r && typeof r.arrayLimit == "number" && v.length > r.arrayLimit) {
+				if (r.throwOnLimitExceeded) throw RangeError("Array limit exceeded. Only " + r.arrayLimit + " element" + (r.arrayLimit === 1 ? "" : "s") + " allowed in an array.");
+				return c(m(v, r), v.length - 1);
+			}
+			return v;
+		}
+		var y = t;
+		if (o(t) && !o(n) && (y = m(t, r)), o(t) && o(n)) {
+			if (n.forEach(function(n, i) {
+				if (a.call(t, i)) {
+					var o = t[i];
+					o && typeof o == "object" && n && typeof n == "object" ? t[i] = e(o, n, r) : t[t.length] = n;
+				} else t[i] = n;
+			}), r && typeof r.arrayLimit == "number" && t.length > r.arrayLimit) {
+				if (r.throwOnLimitExceeded) throw RangeError("Array limit exceeded. Only " + r.arrayLimit + " element" + (r.arrayLimit === 1 ? "" : "s") + " allowed in an array.");
+				return c(m(t, r), t.length - 1);
+			}
+			return t;
+		}
+		return Object.keys(n).reduce(function(t, i) {
 			var o = n[i];
-			return t[i] = r.call(t, i) ? e(t[i], o, a) : o, t;
-		}, o);
-	}, l = function(e, t) {
+			if (a.call(t, i) ? h(t, i, e(t[i], o, r)) : h(t, i, o), l(n) && !l(t) && c(t, u(n)), l(t)) {
+				var s = parseInt(i, 10);
+				String(s) === i && s >= 0 && s > u(t) && d(t, s);
+			}
+			return t;
+		}, y);
+	}, _ = function(e, t) {
 		return Object.keys(t).reduce(function(e, n) {
-			return e[n] = t[n], e;
+			return h(e, n, t[n]), e;
 		}, e);
-	}, u = function(e, t, n) {
+	}, v = function(e, t, n) {
 		var r = e.replace(/\+/g, " ");
 		if (n === "iso-8859-1") return r.replace(/%[0-9a-f]{2}/gi, unescape);
 		try {
@@ -1812,72 +1866,89 @@ var G = {
 		} catch {
 			return r;
 		}
-	}, d = 1024;
+	}, y = 1024;
 	t.exports = {
-		arrayToObject: s,
-		assign: l,
-		combine: function(e, t) {
-			return [].concat(e, t);
+		arrayToObject: m,
+		assign: _,
+		combine: function(e, t, n, r, i) {
+			if (l(e)) {
+				if (i) throw RangeError("Array limit exceeded. Only " + n + " element" + (n === 1 ? "" : "s") + " allowed in an array.");
+				var a = u(e) + 1;
+				return e[a] = t, d(e, a), e;
+			}
+			var o = [].concat(e, t);
+			if (o.length > n) {
+				if (i) throw RangeError("Array limit exceeded. Only " + n + " element" + (n === 1 ? "" : "s") + " allowed in an array.");
+				return c(m(o, { plainObjects: r }), o.length - 1);
+			}
+			return o;
 		},
 		compact: function(e) {
 			for (var t = [{
 				obj: { o: e },
 				prop: "o"
-			}], n = [], r = 0; r < t.length; ++r) for (var i = t[r], a = i.obj[i.prop], s = Object.keys(a), c = 0; c < s.length; ++c) {
-				var l = s[c], u = a[l];
-				typeof u == "object" && u && n.indexOf(u) === -1 && (t.push({
-					obj: a,
+			}], n = r(), i = 0; i < t.length; ++i) for (var a = t[i], o = a.obj[a.prop], s = Object.keys(o), c = 0; c < s.length; ++c) {
+				var l = s[c], u = o[l];
+				typeof u == "object" && u && !n.has(u) && (t[t.length] = {
+					obj: o,
 					prop: l
-				}), n.push(u));
+				}, n.set(u, !0));
 			}
-			return o(t), e;
+			return p(t), e;
 		},
-		decode: u,
-		encode: function(e, t, r, i, o) {
+		decode: v,
+		encode: function(e, t, r, i, a) {
 			if (e.length === 0) return e;
-			var s = e;
-			if (typeof e == "symbol" ? s = Symbol.prototype.toString.call(e) : typeof e != "string" && (s = String(e)), r === "iso-8859-1") return escape(s).replace(/%u[0-9a-f]{4}/gi, function(e) {
+			var o = e;
+			if (typeof e == "symbol" ? o = Symbol.prototype.toString.call(e) : typeof e != "string" && (o = String(e)), r === "iso-8859-1") return escape(o).replace(/%u[0-9a-f]{4}/gi, function(e) {
 				return "%26%23" + parseInt(e.slice(2), 16) + "%3B";
 			});
-			for (var c = "", l = 0; l < s.length; l += d) {
-				for (var u = s.length >= d ? s.slice(l, l + d) : s, f = [], p = 0; p < u.length; ++p) {
-					var m = u.charCodeAt(p);
-					if (m === 45 || m === 46 || m === 95 || m === 126 || m >= 48 && m <= 57 || m >= 65 && m <= 90 || m >= 97 && m <= 122 || o === n.RFC1738 && (m === 40 || m === 41)) {
-						f[f.length] = u.charAt(p);
+			for (var s = "", c = 0; c < o.length; c += y) {
+				var l = o.length >= y ? o.slice(c, c + y) : o;
+				if (c + y < o.length) {
+					var u = l.charCodeAt(l.length - 1);
+					u >= 55296 && u <= 56319 && (l = l.slice(0, -1), --c);
+				}
+				for (var d = [], p = 0; p < l.length; ++p) {
+					var m = l.charCodeAt(p);
+					if (m === 45 || m === 46 || m === 95 || m === 126 || m >= 48 && m <= 57 || m >= 65 && m <= 90 || m >= 97 && m <= 122 || a === n.RFC1738 && (m === 40 || m === 41)) {
+						d[d.length] = l.charAt(p);
 						continue;
 					}
 					if (m < 128) {
-						f[f.length] = a[m];
+						d[d.length] = f[m];
 						continue;
 					}
 					if (m < 2048) {
-						f[f.length] = a[192 | m >> 6] + a[128 | m & 63];
+						d[d.length] = f[192 | m >> 6] + f[128 | m & 63];
 						continue;
 					}
 					if (m < 55296 || m >= 57344) {
-						f[f.length] = a[224 | m >> 12] + a[128 | m >> 6 & 63] + a[128 | m & 63];
+						d[d.length] = f[224 | m >> 12] + f[128 | m >> 6 & 63] + f[128 | m & 63];
 						continue;
 					}
-					p += 1, m = 65536 + ((m & 1023) << 10 | u.charCodeAt(p) & 1023), f[f.length] = a[240 | m >> 18] + a[128 | m >> 12 & 63] + a[128 | m >> 6 & 63] + a[128 | m & 63];
+					p += 1, m = 65536 + ((m & 1023) << 10 | l.charCodeAt(p) & 1023), d[d.length] = f[240 | m >> 18] + f[128 | m >> 12 & 63] + f[128 | m >> 6 & 63] + f[128 | m & 63];
 				}
-				c += f.join("");
+				s += d.join("");
 			}
-			return c;
+			return s;
 		},
 		isBuffer: function(e) {
 			return !e || typeof e != "object" ? !1 : !!(e.constructor && e.constructor.isBuffer && e.constructor.isBuffer(e));
 		},
+		isOverflow: l,
 		isRegExp: function(e) {
 			return Object.prototype.toString.call(e) === "[object RegExp]";
 		},
+		markOverflow: c,
 		maybeMap: function(e, t) {
-			if (i(e)) {
-				for (var n = [], r = 0; r < e.length; r += 1) n.push(t(e[r]));
+			if (o(e)) {
+				for (var n = [], r = 0; r < e.length; r += 1) n[n.length] = t(e[r]);
 				return n;
 			}
 			return t(e);
 		},
-		merge: c
+		merge: g
 	};
 })), xt = /* @__PURE__ */ o(((e, t) => {
 	var n = vt(), r = bt(), i = yt(), a = Object.prototype.hasOwnProperty, o = {
@@ -1929,14 +2000,16 @@ var G = {
 		if (typeof _ == "function" ? E = _(i, E) : E instanceof Date ? E = b(E) : a === "comma" && s(E) && (E = r.maybeMap(E, function(e) {
 			return e instanceof Date ? b(e) : e;
 		})), E === null) {
-			if (u) return g && !C ? g(i, f.encoder, w, "key", x) : i;
+			if (u) return S(g && !C ? g(i, f.encoder, w, "key", x) : i);
 			E = "";
 		}
 		if (p(E) || r.isBuffer(E)) return g ? [S(C ? i : g(i, f.encoder, w, "key", x)) + "=" + S(g(E, f.encoder, w, "value", x))] : [S(i) + "=" + S(String(E))];
 		var j = [];
 		if (E === void 0) return j;
 		var M;
-		if (a === "comma" && s(E)) C && g && (E = r.maybeMap(E, g)), M = [{ value: E.length > 0 ? E.join(",") || null : void 0 }];
+		if (a === "comma" && s(E)) C && g && (E = r.maybeMap(E, function(e) {
+			return e == null ? e : g(e);
+		})), M = [{ value: E.length > 0 ? E.join(",") || null : void 0 }];
 		else if (s(_)) M = _;
 		else {
 			var N = Object.keys(E);
@@ -2001,11 +2074,14 @@ var G = {
 		var d = o[i.arrayFormat], f = d === "comma" && i.commaRoundTrip;
 		a ||= Object.keys(r), i.sort && a.sort(i.sort);
 		for (var p = n(), m = 0; m < a.length; ++m) {
-			var _ = a[m], v = r[_];
-			i.skipNulls && v === null || l(u, h(v, _, d, f, i.allowEmptyArrays, i.strictNullHandling, i.skipNulls, i.encodeDotInKeys, i.encode ? i.encoder : null, i.filter, i.sort, i.allowDots, i.serializeDate, i.format, i.formatter, i.encodeValuesOnly, i.charset, p));
+			var _ = a[m];
+			if (_ != null) {
+				var v = r[_];
+				i.skipNulls && v === null || l(u, h(v, _, d, f, i.allowEmptyArrays, i.strictNullHandling, i.skipNulls, i.encodeDotInKeys, i.encode ? i.encoder : null, i.filter, i.sort, i.allowDots, i.serializeDate, i.format, i.formatter, i.encodeValuesOnly, i.charset, p));
+			}
 		}
 		var y = u.join(i.delimiter), b = i.addQueryPrefix === !0 ? "?" : "";
-		return i.charsetSentinel && (i.charset === "iso-8859-1" ? b += "utf8=%26%2310003%3B&" : b += "utf8=%E2%9C%93&"), y.length > 0 ? b + y : "";
+		return i.charsetSentinel && (i.charset === "iso-8859-1" ? b += "utf8=%26%2310003%3B" + i.delimiter : b += "utf8=%E2%9C%93" + i.delimiter), y.length > 0 ? b + y : "";
 	};
 })), St = /* @__PURE__ */ o(((e, t) => {
 	var n = bt(), r = Object.prototype.hasOwnProperty, i = Array.isArray, a = {
@@ -2028,30 +2104,38 @@ var G = {
 		parseArrays: !0,
 		plainObjects: !1,
 		strictDepth: !1,
+		strictMerge: !0,
 		strictNullHandling: !1,
 		throwOnLimitExceeded: !1
 	}, o = function(e) {
 		return e.replace(/&#(\d+);/g, function(e, t) {
 			return String.fromCharCode(parseInt(t, 10));
 		});
-	}, s = function(e, t, n) {
-		if (e && typeof e == "string" && t.comma && e.indexOf(",") > -1) return e.split(",");
+	}, s = function(e, t, n, r) {
+		if (e && typeof e == "string" && t.comma && e.indexOf(",") > -1) {
+			if (r && t.throwOnLimitExceeded) for (var i = 0, a = e.indexOf(","); a > -1;) {
+				if (i += 1, i >= t.arrayLimit) throw RangeError("Array limit exceeded. Only " + t.arrayLimit + " element" + (t.arrayLimit === 1 ? "" : "s") + " allowed in an array.");
+				a = e.indexOf(",", a + 1);
+			}
+			return e.split(",");
+		}
 		if (t.throwOnLimitExceeded && n >= t.arrayLimit) throw RangeError("Array limit exceeded. Only " + t.arrayLimit + " element" + (t.arrayLimit === 1 ? "" : "s") + " allowed in an array.");
 		return e;
 	}, c = "utf8=%26%2310003%3B", l = "utf8=%E2%9C%93", u = function(e, t) {
 		var u = { __proto__: null }, d = t.ignoreQueryPrefix ? e.replace(/^\?/, "") : e;
 		d = d.replace(/%5B/gi, "[").replace(/%5D/gi, "]");
-		var f = t.parameterLimit === Infinity ? void 0 : t.parameterLimit, p = d.split(t.delimiter, t.throwOnLimitExceeded ? f + 1 : f);
-		if (t.throwOnLimitExceeded && p.length > f) throw RangeError("Parameter limit exceeded. Only " + f + " parameter" + (f === 1 ? "" : "s") + " allowed.");
+		var f = t.parameterLimit === Infinity ? void 0 : t.parameterLimit, p = d.split(t.delimiter, t.throwOnLimitExceeded && f !== void 0 ? f + 1 : f);
+		if (t.throwOnLimitExceeded && f !== void 0 && p.length > f) throw RangeError("Parameter limit exceeded. Only " + f + " parameter" + (f === 1 ? "" : "s") + " allowed.");
 		var m = -1, h, g = t.charset;
 		if (t.charsetSentinel) for (h = 0; h < p.length; ++h) p[h].indexOf("utf8=") === 0 && (p[h] === l ? g = "utf-8" : p[h] === c && (g = "iso-8859-1"), m = h, h = p.length);
 		for (h = 0; h < p.length; ++h) if (h !== m) {
 			var _ = p[h], v = _.indexOf("]="), y = v === -1 ? _.indexOf("=") : v + 1, b, x;
-			y === -1 ? (b = t.decoder(_, a.decoder, g, "key"), x = t.strictNullHandling ? null : "") : (b = t.decoder(_.slice(0, y), a.decoder, g, "key"), x = n.maybeMap(s(_.slice(y + 1), t, i(u[b]) ? u[b].length : 0), function(e) {
+			if (y === -1 ? (b = t.decoder(_, a.decoder, g, "key"), x = t.strictNullHandling ? null : "") : (b = t.decoder(_.slice(0, y), a.decoder, g, "key"), b !== null && (x = n.maybeMap(s(_.slice(y + 1), t, i(u[b]) ? u[b].length : 0, _.indexOf("[]=") === -1), function(e) {
 				return t.decoder(e, a.decoder, g, "value");
-			})), x && t.interpretNumericEntities && g === "iso-8859-1" && (x = o(String(x))), _.indexOf("[]=") > -1 && (x = i(x) ? [x] : x);
-			var S = r.call(u, b);
-			S && t.duplicates === "combine" ? u[b] = n.combine(u[b], x) : (!S || t.duplicates === "last") && (u[b] = x);
+			}))), x && t.interpretNumericEntities && g === "iso-8859-1" && (x = o(String(x))), _.indexOf("[]=") > -1 && (x = i(x) ? [x] : x), t.comma && i(x) && x.length > t.arrayLimit && (x = n.combine([], x, t.arrayLimit, t.plainObjects, t.throwOnLimitExceeded)), b !== null) {
+				var S = r.call(u, b);
+				S && (t.duplicates === "combine" || _.indexOf("[]=") > -1) ? u[b] = n.combine(u[b], x, t.arrayLimit, t.plainObjects, t.throwOnLimitExceeded) : (!S || t.duplicates === "last") && (u[b] = x);
+			}
 		}
 		return u;
 	}, d = function(e, t, r, i) {
@@ -2062,33 +2146,47 @@ var G = {
 		}
 		for (var c = i ? t : s(t, r, a), l = e.length - 1; l >= 0; --l) {
 			var u, d = e[l];
-			if (d === "[]" && r.parseArrays) u = r.allowEmptyArrays && (c === "" || r.strictNullHandling && c === null) ? [] : n.combine([], c);
+			if (d === "[]" && r.parseArrays) u = n.isOverflow(c) ? c : r.allowEmptyArrays && (c === "" || r.strictNullHandling && c === null) ? [] : n.combine([], c, r.arrayLimit, r.plainObjects, r.throwOnLimitExceeded);
 			else {
 				u = r.plainObjects ? { __proto__: null } : {};
-				var f = d.charAt(0) === "[" && d.charAt(d.length - 1) === "]" ? d.slice(1, -1) : d, p = r.decodeDotInKeys ? f.replace(/%2E/g, ".") : f, m = parseInt(p, 10);
-				!r.parseArrays && p === "" ? u = { 0: c } : !isNaN(m) && d !== p && String(m) === p && m >= 0 && r.parseArrays && m <= r.arrayLimit ? (u = [], u[m] = c) : p !== "__proto__" && (u[p] = c);
+				var f = d.charAt(0) === "[" && d.charAt(d.length - 1) === "]" ? d.slice(1, -1) : d, p = r.decodeDotInKeys ? f.replace(/%2E/g, ".") : f, m = parseInt(p, 10), h = !isNaN(m) && d !== p && String(m) === p && m >= 0 && r.parseArrays;
+				if (!r.parseArrays && p === "") u = { 0: c };
+				else if (h && m < r.arrayLimit) u = [], u[m] = c;
+				else if (h && r.throwOnLimitExceeded) throw RangeError("Array limit exceeded. Only " + r.arrayLimit + " element" + (r.arrayLimit === 1 ? "" : "s") + " allowed in an array.");
+				else h ? (u[m] = c, n.markOverflow(u, m)) : p !== "__proto__" && (u[p] = c);
 			}
 			c = u;
 		}
 		return c;
-	}, f = function(e, t, n, i) {
-		if (e) {
-			var a = n.allowDots ? e.replace(/\.([^.[]+)/g, "[$1]") : e, o = /(\[[^[\]]*])/, s = /(\[[^[\]]*])/g, c = n.depth > 0 && o.exec(a), l = c ? a.slice(0, c.index) : a, u = [];
-			if (l) {
-				if (!n.plainObjects && r.call(Object.prototype, l) && !n.allowPrototypes) return;
-				u.push(l);
-			}
-			for (var f = 0; n.depth > 0 && (c = s.exec(a)) !== null && f < n.depth;) {
-				if (f += 1, !n.plainObjects && r.call(Object.prototype, c[1].slice(1, -1)) && !n.allowPrototypes) return;
-				u.push(c[1]);
-			}
-			if (c) {
-				if (n.strictDepth === !0) throw RangeError("Input depth exceeded depth option of " + n.depth + " and strictDepth is true");
-				u.push("[" + a.slice(c.index) + "]");
-			}
-			return d(u, t, n, i);
+	}, f = function(e, t) {
+		var n = t.allowDots ? e.replace(/\.([^.[]+)/g, "[$1]") : e;
+		if (t.depth <= 0) return !t.plainObjects && r.call(Object.prototype, n) && !t.allowPrototypes ? void 0 : [n];
+		var i = [], a = n.indexOf("["), o = a >= 0 ? n.slice(0, a) : n;
+		if (o) {
+			if (!t.plainObjects && r.call(Object.prototype, o) && !t.allowPrototypes) return;
+			i[i.length] = o;
 		}
-	}, p = function(e) {
+		for (var s = n.length, c = a, l = 0; c >= 0 && l < t.depth;) {
+			for (var u = 1, d = c + 1, f = -1; d < s && f < 0;) {
+				var p = n.charCodeAt(d);
+				p === 91 ? u += 1 : p === 93 && (--u, u === 0 && (f = d)), d += 1;
+			}
+			if (f < 0) return i[i.length] = "[" + n.slice(c) + "]", i;
+			var m = n.slice(c, f + 1), h = m.slice(1, -1);
+			if (!t.plainObjects && r.call(Object.prototype, h) && !t.allowPrototypes) return;
+			i[i.length] = m, l += 1, c = n.indexOf("[", f + 1);
+		}
+		if (c >= 0) {
+			if (t.strictDepth === !0) throw RangeError("Input depth exceeded depth option of " + t.depth + " and strictDepth is true");
+			i[i.length] = "[" + n.slice(c) + "]";
+		}
+		return i;
+	}, p = function(e, t, n, r) {
+		if (e) {
+			var i = f(e, n);
+			if (i) return d(i, t, n, r);
+		}
+	}, m = function(e) {
 		if (!e) return a;
 		if (e.allowEmptyArrays !== void 0 && typeof e.allowEmptyArrays != "boolean") throw TypeError("`allowEmptyArrays` option can only be `true` or `false`, when provided");
 		if (e.decodeDotInKeys !== void 0 && typeof e.decodeDotInKeys != "boolean") throw TypeError("`decodeDotInKeys` option can only be `true` or `false`, when provided");
@@ -2117,15 +2215,16 @@ var G = {
 			parseArrays: e.parseArrays !== !1,
 			plainObjects: typeof e.plainObjects == "boolean" ? e.plainObjects : a.plainObjects,
 			strictDepth: typeof e.strictDepth == "boolean" ? !!e.strictDepth : a.strictDepth,
+			strictMerge: typeof e.strictMerge == "boolean" ? !!e.strictMerge : a.strictMerge,
 			strictNullHandling: typeof e.strictNullHandling == "boolean" ? e.strictNullHandling : a.strictNullHandling,
 			throwOnLimitExceeded: typeof e.throwOnLimitExceeded == "boolean" && e.throwOnLimitExceeded
 		};
 	};
 	t.exports = function(e, t) {
-		var r = p(t);
+		var r = m(t);
 		if (e === "" || e == null) return r.plainObjects ? { __proto__: null } : {};
 		for (var i = typeof e == "string" ? u(e, r) : e, a = r.plainObjects ? { __proto__: null } : {}, o = Object.keys(i), s = 0; s < o.length; ++s) {
-			var c = o[s], l = f(c, i[c], r, typeof e == "string");
+			var c = o[s], l = p(c, i[c], r, typeof e == "string");
 			a = n.merge(a, l, r);
 		}
 		return r.allowSparse === !0 ? a : n.compact(a);

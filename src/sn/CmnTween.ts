@@ -25,6 +25,13 @@ import {animate, type AnimationPlaybackControls} from 'motion';
 //     end()（同期的即時終了）は自前で「stop→最終値代入→onUpdate→onComplete」を行う
 //   - path（区間アニメ）はmotionにtimeline相当が無いため、区間ごとにTwを作り
 //     完了時に次を start() する形で連結する（chain=属性も同じ仕組みに乗る）
+//   - motionはOSの「モーションを減らす」(prefers-reduced-motion)設定を、x/y/width/height/
+//     transform系（motion-dom側のpositionalKeys）の属性だけ勝手に汲み取り、その属性を動かす
+//     区間だけ瞬時完了（calculatedDuration=0）にする（対象がDOM要素かどうかは関係なく、
+//     キー名だけで判定される）。alpha等の非positional属性はこの対象外なので影響を受けない。
+//     [tsy]はUIの付随演出ではなく作者が明示的に指定する演出そのものなので、OSのアクセシビリティ
+//     設定を暗黙に継承すべきではない → `reduceMotion: false`で明示的にOFFにする
+//     （実機ログで確認・2026-08-24。bluesnovelのTw.tsも同日この対策済み）
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class Tw {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,6 +85,9 @@ export class Tw {
 			ease		: this.#ease,
 			repeat		: this.#repeatN,
 			...this.#yoyo ?{repeatType: 'reverse' as const} :{},
+			// 上のコメント参照：OSのreduce-motion設定でx/y/width/height/scale_*等が
+			//	勝手に瞬時完了にされるのを防ぐ
+			reduceMotion: false,
 			onUpdate	: ()=> {
 				if (this.#finished) return;
 				Object.assign(this.#target, proxy);

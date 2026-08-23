@@ -58,8 +58,8 @@ var g = class h {
 			case a:
 				{
 					if ((f = Number(s.getVal("sys:sn.sound.BGM.vol_mul_talking") ?? 1)) === 1) break;
-					let e = l("BGM");
-					e && (e.volume = Number(s.getVal("save:const.sn.sound.BGM.volume", 1)) * Number(s.getVal("sys:const.sn.sound.BGM.volume", 1, !0)) * f);
+					let e = l("BGM"), t = "const.sn.sound.BGM.volume";
+					e && (e.volume = Number(s.getVal("save:" + t, 1)) * Number(s.getVal("sys:" + t, 1, !0)) * f);
 				}
 				break;
 			case "BGM": T *= f;

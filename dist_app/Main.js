@@ -229,7 +229,7 @@ var _ = class {
 		let o = new t(r);
 		this.#i.defer(() => {
 			e(), this.sys.destroy(), o.destroy(!1);
-		}), this.cvs = o.view, this.cvs.id = "skynovel_act", i || document.body.appendChild(this.cvs);
+		}), this.cvs = o.view, this.cvs.id = y + "_act", i || document.body.appendChild(this.cvs);
 		let c = document.createElement("canvas").getContext("2d");
 		if (!c) throw "#init cc err";
 		s.cc4ColorName = c;
