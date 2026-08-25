@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.25](https://github.com/famibee/skynovel_esm/compare/v2.0.24...v2.0.25) (2026-08-25)
+
+
+### Bug Fixes
+
+* [wait_tsy canskip=false]継続中はグローバルボタンが一切効かない不具合を修正 ([a973e78](https://github.com/famibee/skynovel_esm/commit/a973e78706c07cc9ccec1dd0c11beda9df7da3bc))
+
 ## [2.0.24](https://github.com/famibee/skynovel_esm/compare/v2.0.23...v2.0.24) (2026-08-23)
 
 
