@@ -179,6 +179,41 @@ test.describe('[trans]/[wt]', ()=> {
 });
 
 
+test.describe('[pause_tsy]/[resume_tsy]', ()=> {
+	// SKYNovel_gallery tag_tsy と同じ構造（main.sn の *pause_test 以下）。
+	//	[wait_tsy canskip=false]を連続させ、[tsy]実行中がほぼ常にproc状態になる状況で、
+	//	globalボタン（[button ... call=true]）経由の[pause_tsy]/[resume_tsy]が効くかを見る。
+	//	ボタンをピクセル位置クリックで狙うため、cvsScaleが1になるよう
+	//	ビューポートをプロジェクトのwindowサイズ(640x480)に合わせる
+	test.use({viewport: {width: 640, height: 480}});
+
+	test('proc状態が続く間もグローバルボタンでの一時停止／再開が効く', async ({page})=> {
+		await gotoSn(page, 'tsy');
+		await page.evaluate(()=> {(<any>globalThis).__sn.jump('*pause_test')});
+
+		// ループが動き出す（レイヤ登録＝アニメ開始）まで待つ
+		await expect.poll(()=> layNum(page, 'ptest', 'x'), {timeout: 5_000}).toBeGreaterThanOrEqual(0);
+
+		// 前提：pauseを押す前は値が動き続けている
+		const before = await layNum(page, 'ptest', 'x');
+		await page.waitForTimeout(300);
+		expect(await layNum(page, 'ptest', 'x')).not.toBe(before);
+
+		// [button left=10 top=440 page=fore label=*pt_pause]をクリック
+		await page.locator('#skynovel_act').click({position: {x: 30, y: 450}});
+		await page.waitForTimeout(50);
+		const justPaused = await layNum(page, 'ptest', 'x');
+		await page.waitForTimeout(400);
+		expect(await layNum(page, 'ptest', 'x')).toBe(justPaused);	// 静止したまま
+
+		// [button left=100 top=440 page=fore label=*pt_resume]をクリック
+		await page.locator('#skynovel_act').click({position: {x: 120, y: 450}});
+		await page.waitForTimeout(50);
+		await expect.poll(()=> layNum(page, 'ptest', 'x'), {timeout: 2_000}).not.toBe(justPaused);	// 再び動き出す
+	});
+});
+
+
 test.describe('Main の破棄', ()=> {
 	test('[tsy]実行中に作り直しても CmnTween の登録が残らない', async ({page})=> {
 		await waitMes(page, 'はじめ。');

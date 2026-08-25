@@ -395,7 +395,12 @@ class ReadingState_proc extends ReadingState {
 		super();
 		if (CmnLib.debugLog) console.log('📖 => %cReadingState_proc', 'color:#3B0;');
 	}
-	override	fire(_KeY: string, _e: Event) { /* empty */ }	// システムボタンなど無効化
+	// fire()は基底のまま（オーバーライドで無効化しない）：[wait_tsy canskip=false]のように
+	// 「クリックでの読み進め／打ち切りは禁止」の間も、[pause_tsy]用ボタンなど
+	// key指定の個別イベント（#hGlobalEvt2Fnc等）はここを通らないと一切発火しなくなる。
+	// 読み進め系キー（click/enter/arrowdown等）はproc中に予約されていない前提な上、
+	// 基底fire()のisFirstFire()ガードにも守られるため、素通りさせても実害はない
+	// （2026-08-25 [pause_tsy]がproc状態継続中は一切効かない不具合の原因として特定）
 }
 
 // wait 状態

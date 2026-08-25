@@ -3287,7 +3287,6 @@ var Ma = ja(), Na = class {
 	constructor() {
 		super(), a.debugLog && console.log("📖 => %cReadingState_proc", "color:#3B0;");
 	}
-	fire(e, t) {}
 }, za = class extends Q {
 	constructor(e) {
 		super(), a.debugLog && console.log("📖 => %cReadingState_wait", "color:#3B0;");

@@ -49,3 +49,23 @@
 [trans layer=base time=300]
 [wt]
 とらんす。[s]
+
+
+; --- [pause_tsy]／[resume_tsy]：SKYNovel_gallery tag_tsy と同じ構造（本家 main.sn の移植）。
+;	[wait_tsy canskip=false]を連続させ、[tsy]実行中がほぼ常にproc状態になる状況で、
+;	globalボタン（call=true）経由の[pause_tsy]が効くかを見る（TODO.md参照）---
+*pause_test
+[add_lay layer=ptest class=grp]
+[current layer=mes]
+[button text=pause left=10 top=440 page=fore label=*pt_pause global=true call=true]
+[button text=resume left=100 top=440 page=fore label=*pt_resume global=true call=true]
+
+*pt_loop
+	[tsy layer=ptest time=3000 x=500]
+	[wait_tsy layer=ptest canskip=false]
+	[tsy layer=ptest time=3000 x=0]
+	[wait_tsy layer=ptest canskip=false]
+[jump label=*pt_loop]
+
+*pt_pause	[pause_tsy layer=ptest][return]
+*pt_resume	[resume_tsy layer=ptest][return]
