@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1](https://github.com/famibee/skynovel_esm/compare/v2.2.0...v2.2.1) (2026-08-27)
+
+
+### Bug Fixes
+
+* [er]/[clear_lay] が走行中の [tsy] を止めない不具合を修正 ([7f08cdf](https://github.com/famibee/skynovel_esm/commit/7f08cdf19b67385cff95855cb1d3ccf3417d6abd))
+
 ## [2.2.0](https://github.com/famibee/skynovel_esm/compare/v2.1.0...v2.2.0) (2026-08-27)
 
 
