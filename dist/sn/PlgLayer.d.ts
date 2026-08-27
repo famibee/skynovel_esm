@@ -7,7 +7,11 @@ export declare class PlgLayer extends Layer {
     readonly htm: HTMLDivElement;
     constructor();
     cvsResize(): void;
+    setDomZ(z: number): void;
     destroy(): void;
+    protected plgCvs: HTMLCanvasElement | undefined;
     snapshotByCanvas(cvs: HTMLCanvasElement, rnd: AbstractRenderer, re: () => void): void;
     snapshot_end(): void;
+    transBake(): void;
+    transUnbake(): void;
 }

@@ -69,6 +69,7 @@ export class PlgLayer extends Layer {
 	#lastOrigin	= '';
 	#lastOpacity= '';
 	#lastDisp	= '';
+	#lastZ		= '';
 	#sync = ()=> {
 		const c = this.ctn;
 		const {cvsScale, ofsLeft4elm, ofsTop4elm} = PlgLayer.#sys;
@@ -89,14 +90,25 @@ export class PlgLayer extends Layer {
 		const opacity = String(c.alpha);
 		if (opacity !== this.#lastOpacity) this.htm.style.opacity = this.#lastOpacity = opacity;
 
-		// 表示は「表ページ かつ ctn.visible」で判定。親（#fore/#back Container）の visible は
-		//	[trans] 中に毎フレーム true/false されるので見てはいけない（TxtStage と同じ理由）
-		const disp = c.visible && PlgLayer.#isFore(this) ? '' : 'none';
+		// 表示は「表ページ かつ ctn.visible かつ [trans] 焼き込み中でない」で判定。
+		//	親（#fore/#back Container）の visible は [trans] 中に毎フレーム true/false される
+		//	ので見てはいけない（TxtStage と同じ理由）
+		const disp = ! this.#baking && c.visible && PlgLayer.#isFore(this) ? '' : 'none';
 		if (disp !== this.#lastDisp) this.htm.style.display = this.#lastDisp = disp;
 	};
 
 	// リサイズ直後の 1 フレーム遅延を消すため即時に反映（差分ガードは #sync 側が持つ）
 	override cvsResize() {this.#sync()}
+
+	// === z 順 ========================================================================
+	//	[lay index=]/float/dive は PIXI childIndex しか動かさないので、LayerMng が
+	//	#fore における ctn の childIndex をここへ流し、htm の CSS z-index へ写す。
+	//	canvas は z-index:0 固定（Main.ts）なので childIndex(1..) は必ず canvas の上。
+	//	childIndex 0 は不透明な bg_color Graphics 専用なのでレイヤは来ない
+	override setDomZ(z: number) {
+		const s = String(z);
+		if (s !== this.#lastZ) this.htm.style.zIndex = this.#lastZ = s;
+	}
 
 	override destroy() {
 		super.destroy();
@@ -105,6 +117,46 @@ export class PlgLayer extends Layer {
 	}
 
 
+	// === canvas → PIXI Texture 焼き（[snapshot] と [trans] で共用）====================
+	//	プラグインが htm へ挿した canvas。未設定なら htm 直下の <canvas> を拾う
+	//	（3d_layer/live2d_layer とも htm 直下に1枚 append しているので無改造で動く）
+	protected	plgCvs: HTMLCanvasElement | undefined;
+	get	#cvs(): HTMLCanvasElement | null {
+		return this.plgCvs ?? this.htm.querySelector('canvas');
+	}
+
+	// canvas を Texture 化し、ctn ローカル座標の正しい位置・寸法へ置いた Sprite を
+	//	ctn へ addChild して返す。
+	//	・Texture.from() は canvas のバックバッファ実寸（devicePixelRatio 分だけ大きい）に
+	//	  なるので、sp.width/height を CSS 実寸で上書きして 1:1 に戻す（旧 snapshotByCanvas は
+	//	  これを怠っており Retina で 2 倍ズレていた）
+	//	・htm 自身の transform（#sync が書く rotate/scale）を一旦外して測ると、残るのは
+	//	  canvas 側の transform（translate(-50%,-50%)・scale()）だけになり rect が実描画矩形に
+	//	  なる。ctn は既にレイヤ transform を持つのでスケール割り戻しは不要
+	//	  （canvas 側が rotate している場合は外接矩形になる。許容）
+	#bakeCvs2Sp(cvs: HTMLCanvasElement): Sprite {
+		const tx = Texture.from(cvs);
+		tx.baseTexture.update();	// 2 回目以降で前回の GPU 転送が残らないよう
+		const sp = new Sprite(tx);
+
+		const s = this.htm.style;
+		const bkTf = s.transform;
+		const bkDisp = s.display;
+		s.transform = 'none';
+		s.display = '';		// display:none だと rect が 0
+		const rc = cvs.getBoundingClientRect();
+		const rh = this.htm.getBoundingClientRect();
+		s.transform = bkTf;
+		s.display = bkDisp;
+
+		sp.position.set(rc.left -rh.left, rc.top -rh.top);
+		sp.width  = rc.width;
+		sp.height = rc.height;
+
+		this.ctn.addChild(sp);
+		return sp;
+	}
+
 	// === [snapshot] 用ヘルパ =========================================================
 	//	プラグイン側で override した snapshot(rnd, re) から
 	//	`this.snapshotByCanvas(this.#canvas!, rnd, re)` と呼ぶ。canvas は
@@ -112,10 +164,7 @@ export class PlgLayer extends Layer {
 	//	TxtStage.snapshot() が htm2tx で span を Texture 化して #cntTxt に一時 addChild するのと同型。
 	#snapSp	: Sprite | undefined;
 	snapshotByCanvas(cvs: HTMLCanvasElement, rnd: AbstractRenderer, re: ()=> void): void {
-		const tx = Texture.from(cvs);
-		tx.baseTexture.update();	// 2 回目以降のスナップショットで前回の GPU 転送が残らないよう
-		this.#snapSp = new Sprite(tx);
-		this.ctn.addChild(this.#snapSp);
+		this.#snapSp = this.#bakeCvs2Sp(cvs);
 		rnd.render(this.ctn, {clear: false});
 		re();
 	}
@@ -124,5 +173,32 @@ export class PlgLayer extends Layer {
 		this.ctn.removeChild(this.#snapSp);
 		this.#snapSp.destroy();
 		this.#snapSp = undefined;
+	}
+
+	// === [trans] 参加 ================================================================
+	//	LayerMng.#trans が time>0 パスの頭で全レイヤ fore/back へ transBake() を呼ぶ。
+	//	現在のプラグインの絵を ctn に焼き込み htm は隠す → 以降 #fore/#back を
+	//	RenderTexture へ焼く既存処理にプラグインの絵も乗り、クロスフェード／ルール画像
+	//	トランジションが無改造で効く。comp() で transUnbake() して元へ戻す。
+	//	trans 中（通常 0.5 秒程度）はプラグインの動きが静止するが許容
+	#baking	= false;
+	#bakedSp: Sprite | undefined;
+	override transBake(): void {
+		if (this.#baking) return;
+		const cvs = this.#cvs;
+		if (! cvs) return;	// canvas 未生成のプラグイン（[add_lay] 直後など）
+
+		this.#bakedSp = this.#bakeCvs2Sp(cvs);
+		this.#baking = true;
+		this.#sync();		// htm を即 display:none に
+	}
+	override transUnbake(): void {
+		this.#baking = false;
+		if (this.#bakedSp) {
+			this.ctn.removeChild(this.#bakedSp);
+			this.#bakedSp.destroy();
+			this.#bakedSp = undefined;
+		}
+		this.#sync();
 	}
 }

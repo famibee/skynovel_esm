@@ -17,6 +17,13 @@ import {Reading} from './Reading';
 import {type Application, Loader, LoaderResource} from 'pixi.js';
 
 
+// [add_frame] の iframe の z-index 基準。PlgLayer.htm / TxtStage はレイヤの childIndex
+//	（1.. の小さい値）を z-index に使うので、iframe は従来どおり最前面を保つよう十分大きく採る。
+//	[frame index=] で 1000 未満を明示指定していた既存プロジェクトは iframe 同士の相対順が
+//	変わりうるが、index はほぼ iframe 同士の並べ替え用途なので影響は小さいと判断
+const Z_FRAME_BASE = 1000;
+
+
 export class FrameMng implements T_GetFrm {
 	static	#cfg	: Config;
 	static	#sys	: SysBase;
@@ -90,7 +97,7 @@ export class FrameMng implements T_GetFrm {
 			String(FrameMng.#sys.ofsLeft4elm +rct.x *FrameMng.#sys.cvsScale)
 		}px; top: ${
 			String(FrameMng.#sys.ofsTop4elm +rct.y *FrameMng.#sys.cvsScale)
-		}px; z-index: 1; border: 0px; overflow: hidden; display: ${
+		}px; z-index: ${String(Z_FRAME_BASE)}; border: 0px; overflow: hidden; display: ${
 			v ?'inline' :'none'
 		}; transform: scale(${String(sx)}, ${String(sy)}) rotate(${
 			String(r)}deg);" width="${
@@ -311,7 +318,7 @@ export class FrameMng implements T_GetFrm {
 	}
 
 	// フレームに設定
-	#zIdx = 1;
+	#zIdx = Z_FRAME_BASE;
 	#frame(hArg: TArg) {
 		const {id} = hArg;
 		if (! id) throw 'idは必須です';

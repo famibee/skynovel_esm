@@ -93,6 +93,13 @@ export class Main implements T_Main {
 		this.cvs.id = SN_ID +'_act';
 		if (! cvs) document.body.appendChild(this.cvs);
 
+		// DOM オーバーレイ（PlgLayer.htm / TxtStage）の z-index の基準面。canvas を
+		//	positioned・z-index:0 にして、その上へ childIndex(1..) 順に重ねる。
+		//	ギャラリー埋め込み等で既に指定がある場合は尊重して触らない（位置は動かさない）
+		const csCvs = getComputedStyle(this.cvs);
+		if (csCvs.position === 'static') this.cvs.style.position = 'relative';
+		if (csCvs.zIndex === 'auto') this.cvs.style.zIndex = '0';
+
 
 		const cc = document.createElement('canvas').getContext('2d');
 		if (! cc) throw '#init cc err';

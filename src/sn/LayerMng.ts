@@ -475,6 +475,8 @@ export class LayerMng implements T_GetFrm {
 
 		this.scrItr.recodeDesign(hArg);	// hArg[':id_tag'] は new Pages 内で設定
 
+		this.#syncDomZ();	// 追加分の childIndex を DOM オーバーレイへ反映
+
 		return ret.isWait;
 	}
 	#hPages		: HPage		= { /* empty */ };	// しおりLoad時再読込
@@ -524,7 +526,20 @@ export class LayerMng implements T_GetFrm {
 
 		return pg.lay(hArg);
 	}
-	#rebuildLayerRankInfo() {this.#aLayName = this.#sortLayers()}
+	#rebuildLayerRankInfo() {this.#aLayName = this.#sortLayers(); this.#syncDomZ()}
+
+	// DOM オーバーレイ（PlgLayer.htm / TxtStage）を持つレイヤへ、#fore における ctn の
+	//	childIndex を z-index として流す。[lay index=]/float/dive は PIXI childIndex しか
+	//	動かさないため、DOM 側の重なり順はこれで追従させる。
+	//	#aLayName でなく #hPages を回すのは playback() が #aLayName を更新しないため。
+	//	fore/back 同値にするのは [trans] で表に回る瞬間に前後がちらつかないよう
+	#syncDomZ() {
+		for (const {fore, back} of Object.values(this.#hPages)) {
+			const z = this.#fore.getChildIndex(fore.ctn);
+			fore.setDomZ(z);
+			back.setDomZ(z);
+		}
+	}
 
 	//MARK: レイヤ設定の消去
 	#clear_lay(hArg: TArg) {
@@ -630,6 +645,14 @@ void main() {
 				this.#spTransBack.visible = false;
 				this.#spTransFore.visible = false;
 
+				// プラグイン htm の焼き込みを解除して DOM 描画へ戻す（time=0 パスからも
+				//	呼ばれるが未焼きなら no-op）。z-index も swap 後の childIndex で振り直す
+				for (const pg of Object.values(this.#hPages)) {
+					pg.fore.transUnbake();
+					pg.back.transUnbake();
+				}
+				this.#syncDomZ();
+
 				Reading.notifyEndProc(TW_NM_TRANS);
 			});
 		};
@@ -642,6 +665,14 @@ void main() {
 		const time = argChk_Num(hArg, 'time', 0);
 		if (time === 0 || this.#evtMng.isSkipping) {comp(); return false}
 
+		// プラグイン htm の現在の絵を ctn へ焼き込み、htm は隠す。以降 #fore/#back を
+		//	RenderTexture へ焼く処理にプラグインの絵も乗り、クロスフェード／ルール画像
+		//	トランジションが無改造で効く。trans 対象外レイヤも焼く（焼かないと trans 中
+		//	だけ htm が最前面へ浮くため）。comp() 内の transUnbake() で戻す
+		for (const pg of Object.values(this.#hPages)) {
+			pg.fore.transBake();
+			pg.back.transBake();
+		}
 
 		const aBackTransAfter: Sprite[] = [];
 		const aBack = this.#aLayName.map(ln=> {
@@ -1150,6 +1181,7 @@ void main() {
 				this.#fore.setChildIndex(fore.ctn, i);
 				this.#back.setChildIndex(back.ctn, i);
 			}
+			this.#syncDomZ();	// しおりLoad後の childIndex を DOM オーバーレイへ反映
 			re();
 		}));
 		return aPrm;

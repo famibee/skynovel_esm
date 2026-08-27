@@ -53,6 +53,9 @@ export declare class Layer {
     get containMovement(): boolean;
     renderStart(_isSkipping: boolean): void;
     renderEnd(): void;
+    setDomZ(_z: number): void;
+    transBake(): void;
+    transUnbake(): void;
     clearLay(hArg: TArg): void;
     copy(fromLayer: Layer, aPrm: Promise<void>[]): void;
     record(): {

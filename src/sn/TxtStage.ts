@@ -278,9 +278,18 @@ export class TxtStage extends Container {
 		s.left = `${String(this.sys.ofsLeft4elm +this.#left *cvsScale)}px`;
 		s.top = `${String(this.sys.ofsTop4elm +this.ctn.position.y *cvsScale)}px`;
 		s.transform = `rotate(${String(this.ctn.angle)}deg) scale(${String(this.ctn.scale.x *cvsScale)}, ${String(this.ctn.scale.y *cvsScale)})`;
+		if (this.#domZ) s.zIndex = this.#domZ;	// lay() の cssText='' 等で消えるので毎回
 
 //		this.#idc.cvsResize();
 //		this.#idcCh.cvsResize();
+	}
+
+	// LayerMng が #fore における ctn の childIndex を流す。PlgLayer.htm と同じ z-index 体系に
+	//	載せて、[lay index=]/float/dive のプラグイン⇔テキストレイヤ前後関係を反映する
+	#domZ = '';
+	setDomZ(z: number) {
+		this.#domZ = String(z);
+		this.#htmTxt.style.zIndex = this.#domZ;
 	}
 	#left = 0;
 	#isTategaki = false;

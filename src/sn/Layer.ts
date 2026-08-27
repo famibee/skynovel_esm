@@ -417,6 +417,16 @@ export class Layer {
 	renderStart(_isSkipping: boolean) { /* empty */ }
 	renderEnd() { /* empty */ }
 
+	// DOM オーバーレイ（PlgLayer.htm / TxtStage）を持つレイヤ用。PIXI childIndex 由来の
+	//	重なり順を CSS z-index へ写す。PIXI 描画に乗るレイヤは無関係なので no-op
+	setDomZ(_z: number) { /* empty */ }
+
+	// [trans] 中だけ、DOM オーバーレイの現在の絵を PIXI Texture 化して ctn に載せ替える。
+	//	これで #fore/#back の RenderTexture 焼きにプラグインの絵も乗り、クロスフェード／
+	//	ルール画像トランジションが無改造で効く。PIXI 描画に乗るレイヤは no-op
+	transBake() { /* empty */ }
+	transUnbake() { /* empty */ }
+
 	clearLay(hArg: TArg): void {
 		this.ctn.alpha = 1;
 		this.ctn.blendMode = BLEND_MODES.NORMAL;

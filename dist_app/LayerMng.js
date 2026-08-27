@@ -52,7 +52,7 @@ var M = class e {
 	transPage(e) {
 		[this.#e.back, this.#e.fore] = [this.#e.fore, this.#e.back], this.#e.back.copy(this.#e.fore, e);
 	}
-}, N = class t {
+}, N = 1e3, P = class t {
 	appPixi;
 	val;
 	static #e;
@@ -93,7 +93,7 @@ var M = class e {
 		let u = "const.sn.frm." + i;
 		if (this.val.getVal(`tmp:${u}`)) throw `frame【${i}】はすでにあります`;
 		let d = m(n, "visible", !0), f = n.b_color ? ` background-color: ${n.b_color};` : "", p = this.#c(n);
-		t.#n.cvs.insertAdjacentHTML("beforebegin", `<iframe id="${i}" style="opacity: ${String(o)}; ${f} position: absolute; left:${String(t.#t.ofsLeft4elm + p.x * t.#t.cvsScale)}px; top: ${String(t.#t.ofsTop4elm + p.y * t.#t.cvsScale)}px; z-index: 1; border: 0px; overflow: hidden; display: ${d ? "inline" : "none"}; transform: scale(${String(s)}, ${String(c)}) rotate(${String(l)}deg);" width="${String(p.width * t.#t.cvsScale)}" height="${String(p.height * t.#t.cvsScale)}"></iframe>`);
+		t.#n.cvs.insertAdjacentHTML("beforebegin", `<iframe id="${i}" style="opacity: ${String(o)}; ${f} position: absolute; left:${String(t.#t.ofsLeft4elm + p.x * t.#t.cvsScale)}px; top: ${String(t.#t.ofsTop4elm + p.y * t.#t.cvsScale)}px; z-index: ${String(N)}; border: 0px; overflow: hidden; display: ${d ? "inline" : "none"}; transform: scale(${String(s)}, ${String(c)}) rotate(${String(l)}deg);" width="${String(p.width * t.#t.cvsScale)}" height="${String(p.height * t.#t.cvsScale)}"></iframe>`);
 		let h = w.procID + `add_frame id:${i}`;
 		w.beginProc(h);
 		let g = t.#e.searchPath(a, v.HTML), _ = new e().add({
@@ -193,7 +193,7 @@ var M = class e {
 		let o = i.contentWindow;
 		return o[n] = r, !1;
 	}
-	#m = 1;
+	#m = N;
 	#h(e) {
 		let { id: n } = e;
 		if (!n) throw "idは必須です";
@@ -255,7 +255,7 @@ var M = class e {
 			this.appPixi.stage.interactive = !0;
 		}, () => {}), !1;
 	}
-}, P = class {
+}, F = class {
 	oCfg;
 	hTag;
 	val;
@@ -295,10 +295,10 @@ var M = class e {
 };
 //#endregion
 //#region src/sn/LayerMng.ts
-function F(e) {
+function I(e) {
 	return encodeURIComponent(JSON.stringify(e));
 }
-var I = class e {
+var L = class e {
 	cfg;
 	hTag;
 	appPixi;
@@ -329,13 +329,13 @@ var I = class e {
 				}, 1e3 / 60 * 10);
 			}, { passive: !0 });
 		}
-		o.cvsResize(), this.#a = new P(this.cfg.oCfg, t, r), O.init(e, t, r, this.#a, (e) => this.#x[e.layname].fore === e, n), A.init(i, e, n, o, c, r), x.setup(n, o, (e) => this.#x[e.layname]?.fore === e), N.init(e, o, i), this.#r = new N(t, n, r), t.loadplugin = (e) => this.#y(e), t.snapshot = (e) => this.#h(e), this.#g = this.sys.isApp ? (e, t, n, r, i) => this.#_(e, t, n, r, i) : (e, t, n, r, i) => this.#v(e, t, n, r, i), t.add_lay = (e) => this.#b(e), t.clear_lay = (e) => this.#D(e), t.finish_trans = () => !1, t.lay = (e) => this.#T(e), t.trans = (e) => this.#N(e), t.wt = (e) => C.wt(e), t.quake = (e) => this.#L(e), t.stop_quake = t.finish_trans, t.wq = t.wt, t.pause_tsy = (e) => C.pause_tsy(e), t.resume_tsy = (e) => C.resume_tsy(e), t.stop_tsy = (e) => C.stop_tsy(e), t.tsy = (e) => this.#R(e), t.wait_tsy = (e) => C.wait_tsy(e), t.add_filter = (e) => this.#z(e), t.clear_filter = (e) => this.#V(e), t.enable_filter = (e) => this.#H(e), t.ch = (e) => this.#W(e), t.clear_text = (e) => this.#Q(e), t.current = (e) => this.#q(e), t.endlink = (e) => this.#$(e), t.er = (e) => this.#ee(e), t.graph = (e) => this.#te(e), t.link = (e) => this.#ne(e), t.r = (e) => this.#re(e), t.ruby2 = (e) => this.#ie(e), t.span = (e) => this.#ae(e), t.tcy = (e) => this.#oe(e), t.add_face = (e) => T.add_face(e), t.wv = (e) => T.wv(e), t.dump_lay = (e) => this.#se(e), t.enable_event = (e) => this.#ce(e), t.button = (e) => this.#le(e), e.existsBreakline && (this.breakLine = (e) => {
-			delete e.visible, e.id = "break", e.pic = "breakline", this.#m("grp｜" + F(e));
+		o.cvsResize(), this.#a = new F(this.cfg.oCfg, t, r), O.init(e, t, r, this.#a, (e) => this.#x[e.layname].fore === e, n), A.init(i, e, n, o, c, r), x.setup(n, o, (e) => this.#x[e.layname]?.fore === e), P.init(e, o, i), this.#r = new P(t, n, r), t.loadplugin = (e) => this.#y(e), t.snapshot = (e) => this.#h(e), this.#g = this.sys.isApp ? (e, t, n, r, i) => this.#_(e, t, n, r, i) : (e, t, n, r, i) => this.#v(e, t, n, r, i), t.add_lay = (e) => this.#b(e), t.clear_lay = (e) => this.#O(e), t.finish_trans = () => !1, t.lay = (e) => this.#T(e), t.trans = (e) => this.#P(e), t.wt = (e) => C.wt(e), t.quake = (e) => this.#R(e), t.stop_quake = t.finish_trans, t.wq = t.wt, t.pause_tsy = (e) => C.pause_tsy(e), t.resume_tsy = (e) => C.resume_tsy(e), t.stop_tsy = (e) => C.stop_tsy(e), t.tsy = (e) => this.#z(e), t.wait_tsy = (e) => C.wait_tsy(e), t.add_filter = (e) => this.#B(e), t.clear_filter = (e) => this.#H(e), t.enable_filter = (e) => this.#U(e), t.ch = (e) => this.#G(e), t.clear_text = (e) => this.#$(e), t.current = (e) => this.#J(e), t.endlink = (e) => this.#ee(e), t.er = (e) => this.#te(e), t.graph = (e) => this.#ne(e), t.link = (e) => this.#re(e), t.r = (e) => this.#ie(e), t.ruby2 = (e) => this.#ae(e), t.span = (e) => this.#oe(e), t.tcy = (e) => this.#se(e), t.add_face = (e) => T.add_face(e), t.wv = (e) => T.wv(e), t.dump_lay = (e) => this.#ce(e), t.enable_event = (e) => this.#le(e), t.button = (e) => this.#ue(e), e.existsBreakline && (this.breakLine = (e) => {
+			delete e.visible, e.id = "break", e.pic = "breakline", this.#m("grp｜" + I(e));
 		}), e.existsBreakpage && (this.breakPage = (e) => {
-			delete e.visible, e.id = "break", e.pic = "breakpage", this.#m("grp｜" + F(e));
+			delete e.visible, e.id = "break", e.pic = "breakpage", this.#m("grp｜" + I(e));
 		}), this.#i = d(String(e.oCfg.init.bg_color));
 		let f = new s();
-		f.beginFill(this.#i).lineStyle(0, this.#i).drawRect(0, 0, h.stageW, h.stageH).endFill(), this.#t.addChild(f.clone()), this.#n.addChild(f), this.#n.visible = !1, this.#t.name = "page:A", this.#n.name = "page:B", this.#e = n.stage, this.#e.addChild(this.#n), this.#e.addChild(this.#t), this.#e.addChild(this.#A), this.#e.addChild(this.#M), this.#e.name = "stage";
+		f.beginFill(this.#i).lineStyle(0, this.#i).drawRect(0, 0, h.stageW, h.stageH).endFill(), this.#t.addChild(f.clone()), this.#n.addChild(f), this.#n.visible = !1, this.#t.name = "page:A", this.#n.name = "page:B", this.#e = n.stage, this.#e.addChild(this.#n), this.#e.addChild(this.#t), this.#e.addChild(this.#j), this.#e.addChild(this.#N), this.#e.name = "stage";
 		let p = (e, t) => {
 			this.#p(Number(t));
 		};
@@ -415,7 +415,7 @@ var I = class e {
 			let { ctn: t } = this.#x[e].fore, n = [t, t.visible];
 			return t.visible = !1, n;
 		});
-		for (let t of this.#P(e)) this.#x[t].fore.ctn.visible = !0;
+		for (let t of this.#F(e)) this.#x[t].fore.ctn.visible = !0;
 		return this.sys.capturePage(t, n, r, () => {
 			for (let [e, t] of a) e.visible = t;
 			this.#r.restoreAllFrame(), w.endProc(i);
@@ -432,13 +432,13 @@ var I = class e {
 			backgroundColor: s & 16777215,
 			autoDensity: !0
 		}), u = e.page === "back" ? "back" : "fore", { layer: d } = e;
-		return Promise.allSettled(this.#P(d).map((e) => new Promise((t) => this.#x[e][u].snapshot(c, t)))).then(async () => {
+		return Promise.allSettled(this.#F(d).map((e) => new Promise((t) => this.#x[e][u].snapshot(c, t)))).then(async () => {
 			let e = t.create({
 				width: c.width,
 				height: c.height
 			});
 			c.render(this.#e, { renderTexture: e }), await this.sys.savePic(n, c.plugins.extract.base64(e)), e.destroy();
-			for (let e of this.#P(d)) this.#x[e][u].snapshot_end();
+			for (let e of this.#F(d)) this.#x[e][u].snapshot_end();
 			c.destroy(!0), w.endProc(a);
 		}), !0;
 	}
@@ -462,7 +462,7 @@ var I = class e {
 		let r = { isWait: !1 };
 		switch (this.#x[t] = new M(t, n, this.#t, this.#n, e, this.sys, this.val, r), this.#S.push(t), n) {
 			case "txt":
-				this.#C || (this.#X = () => {}, this.#G = (e) => this.#K(e), this.#q = (e) => this.#J(e), this.hTag.current({ layer: t }), this.goTxt = () => {
+				this.#C || (this.#Z = () => {}, this.#K = (e) => this.#q(e), this.#J = (e) => this.#Y(e), this.hTag.current({ layer: t }), this.goTxt = () => {
 					this.#f.isSkipping ? O.msecChWait = 0 : this.setNormalChWait();
 					for (let e of this.#S) {
 						let t = this.#x[e].fore;
@@ -474,14 +474,14 @@ var I = class e {
 				if (this.#w) break;
 				this.#w = t;
 		}
-		return this.scrItr.recodeDesign(e), r.isWait;
+		return this.scrItr.recodeDesign(e), this.#D(), r.isWait;
 	}
 	#x = {};
 	#S = [];
 	#C = "";
 	#w = "";
 	#T(e) {
-		let t = this.#Z(e), n = this.#x[t], r = n.back.ctn, i = n.fore.ctn;
+		let t = this.#Q(e), n = this.#x[t], r = n.back.ctn, i = n.fore.ctn;
 		if (m(e, "float", !1)) this.#n.setChildIndex(r, this.#n.children.length - 1), this.#t.setChildIndex(i, this.#t.children.length - 1), this.#E();
 		else if (e.index) f(e, "index", 0) && (this.#n.setChildIndex(r, e.index), this.#t.setChildIndex(i, e.index), this.#E());
 		else if (e.dive) {
@@ -495,11 +495,17 @@ var I = class e {
 		return e[":id_tag"] = n.fore.name.slice(0, -7), this.scrItr.recodeDesign(e), n.lay(e);
 	}
 	#E() {
-		this.#S = this.#I();
+		this.#S = this.#L(), this.#D();
 	}
-	#D(e) {
-		return this.#F(e, (t) => {
-			let n = this.#x[this.#Z({ layer: t })];
+	#D() {
+		for (let { fore: e, back: t } of Object.values(this.#x)) {
+			let n = this.#t.getChildIndex(e.ctn);
+			e.setDomZ(n), t.setDomZ(n);
+		}
+	}
+	#O(e) {
+		return this.#I(e, (t) => {
+			let n = this.#x[this.#Q({ layer: t })];
 			if (e.page === "both") {
 				n.fore.clearLay(e), n.back.clearLay(e);
 				return;
@@ -507,19 +513,19 @@ var I = class e {
 			n.getPage(e).clearLay(e);
 		}), !1;
 	}
-	static #O = "\nprecision mediump float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D uSampler;\n\nuniform sampler2D rule;\nuniform float vague;\nuniform float tick;\n\nuniform vec4 inputPixel;\nuniform highp vec4 outputFrame;\nvec2 getUV(vec2 coord) {\n	return coord * inputPixel.xy / outputFrame.zw;\n}\n\nvoid main() {\n	vec4 fg = texture2D(uSampler, vTextureCoord);\n	vec4 ru = texture2D(rule, getUV(vTextureCoord));\n\n	float v = ru.r - tick;\n	gl_FragColor = abs(v) < vague\n		? vec4(fg.rgb, 1) *fg.a *(0.5 +v /vague *0.5)\n		: 0.0 <= v ? fg : vec4(0);\n}";
-	#k = t.create({
+	static #k = "\nprecision mediump float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D uSampler;\n\nuniform sampler2D rule;\nuniform float vague;\nuniform float tick;\n\nuniform vec4 inputPixel;\nuniform highp vec4 outputFrame;\nvec2 getUV(vec2 coord) {\n	return coord * inputPixel.xy / outputFrame.zw;\n}\n\nvoid main() {\n	vec4 fg = texture2D(uSampler, vTextureCoord);\n	vec4 ru = texture2D(rule, getUV(vTextureCoord));\n\n	float v = ru.r - tick;\n	gl_FragColor = abs(v) < vague\n		? vec4(fg.rgb, 1) *fg.a *(0.5 +v /vague *0.5)\n		: 0.0 <= v ? fg : vec4(0);\n}";
+	#A = t.create({
 		width: h.stageW,
 		height: h.stageH
 	});
-	#A = new a(this.#k);
-	#j = t.create({
+	#j = new a(this.#A);
+	#M = t.create({
 		width: h.stageW,
 		height: h.stageH
 	});
-	#M = new a(this.#j);
-	#N(t) {
-		let { layer: r } = t, i = /* @__PURE__ */ new Set(), a = this.#P(r).map((e) => (i.add(e), this.#x[e].fore)), o = () => {
+	#N = new a(this.#M);
+	#P(t) {
+		let { layer: r } = t, i = /* @__PURE__ */ new Set(), a = this.#F(r).map((e) => (i.add(e), this.#x[e].fore)), o = () => {
 			[this.#t, this.#n] = [this.#n, this.#t];
 			let e = [];
 			for (let [t, n] of Object.entries(this.#x)) {
@@ -531,18 +537,21 @@ var I = class e {
 				this.#t.removeChild(a), this.#n.removeChild(r), this.#t.addChildAt(r, o), this.#n.addChildAt(a, o);
 			}
 			Promise.allSettled(e).then(() => {
-				this.#t.visible = !0, this.#n.visible = !1, this.#A.visible = !1, this.#M.visible = !1, w.notifyEndProc(S);
+				this.#t.visible = !0, this.#n.visible = !1, this.#j.visible = !1, this.#N.visible = !1;
+				for (let e of Object.values(this.#x)) e.fore.transUnbake(), e.back.transUnbake();
+				this.#D(), w.notifyEndProc(S);
 			});
 		};
-		if (this.#M.filters = [], this.#M.alpha = 1, f(t, "time", 0) === 0 || this.#f.isSkipping) return o(), !1;
+		if (this.#N.filters = [], this.#N.alpha = 1, f(t, "time", 0) === 0 || this.#f.isSkipping) return o(), !1;
+		for (let e of Object.values(this.#x)) e.fore.transBake(), e.back.transBake();
 		let s = [], l = this.#S.map((e) => {
 			let { fore: t, back: n } = this.#x[e], r = i.has(e) ? n : t;
 			return r.ctn.visible && s.push(r.ctn), r;
 		}), { ticker: u, renderer: d } = this.appPixi;
-		d.render(this.#n, { renderTexture: this.#k });
+		d.render(this.#n, { renderTexture: this.#A });
 		let p = () => {
 			for (let e of s) d.render(e, {
-				renderTexture: this.#k,
+				renderTexture: this.#A,
 				clear: !1
 			});
 		};
@@ -552,7 +561,7 @@ var I = class e {
 				p = () => {}, e();
 			};
 		}
-		let m = () => d.render(this.#t, { renderTexture: this.#j });
+		let m = () => d.render(this.#t, { renderTexture: this.#M });
 		m();
 		let h = () => {
 			this.#t.visible = !0, m(), this.#t.visible = !1;
@@ -564,17 +573,17 @@ var I = class e {
 			};
 		}
 		let g = () => {
-			p(), this.#A.visible = !0, h(), this.#M.visible = !0;
+			p(), this.#j.visible = !0, h(), this.#N.visible = !0;
 		}, { glsl: _, rule: v } = t, y = () => {
 			u.remove(g), o();
 		};
-		if (!_ && !v) return C.tween(S, t, this.#M, { alpha: 0 }, () => {}, y, () => {}), u.add(g), !1;
+		if (!_ && !v) return C.tween(S, t, this.#N, { alpha: 0 }, () => {}, y, () => {}), u.add(g), !1;
 		let b = {
 			rule: n.EMPTY,
 			vague: f(t, "vague", .04),
 			tick: 0
 		};
-		this.#M.filters = [new c(void 0, _ ?? e.#O, b)];
+		this.#N.filters = [new c(void 0, _ ?? e.#k, b)];
 		let x = C.tween(S, t, b, { tick: 1 }, () => {}, y, () => {}, !v);
 		return v ? new T(v, void 0, (e) => {
 			b.rule = e.texture, e.destroy(), u.add(g), x.start();
@@ -582,11 +591,11 @@ var I = class e {
 			e && this.main.resume();
 		}).ret : (u.add(g), !1);
 	}
-	#P(e = "") {
+	#F(e = "") {
 		return e ? e.split(",") : this.#S;
 	}
-	#F(e, t) {
-		let n = this.#P(e.layer);
+	#I(e, t) {
+		let n = this.#F(e.layer);
 		for (let e of n) {
 			let n = this.#x[e];
 			if (!n) throw `存在しないlayer【${e}】です`;
@@ -594,8 +603,8 @@ var I = class e {
 		}
 		return n;
 	}
-	#I(e = "") {
-		return this.#P(e).sort((e, t) => {
+	#L(e = "") {
+		return this.#F(e).sort((e, t) => {
 			let n = this.#t.getChildIndex(this.#x[e].fore.ctn), r = this.#t.getChildIndex(this.#x[t].fore.ctn);
 			return n < r ? -1 : +(n > r);
 		});
@@ -606,61 +615,61 @@ var I = class e {
 			n instanceof O && n.lay({ style: e });
 		}
 	}
-	#L(e) {
+	#R(e) {
 		if (f(e, "time", NaN) === 0) return !1;
-		let t = this.#P(e.layer).map((e) => this.#x[e].fore.ctn), { renderer: n, ticker: r } = this.appPixi;
-		this.#j.resize(h.stageW, h.stageH);
+		let t = this.#F(e.layer).map((e) => this.#x[e].fore.ctn), { renderer: n, ticker: r } = this.appPixi;
+		this.#M.resize(h.stageW, h.stageH);
 		let i = () => {
 			this.#t.visible = !0;
 			for (let e of t) n.render(e, {
-				renderTexture: this.#j,
+				renderTexture: this.#M,
 				clear: !1
 			});
 			this.#t.visible = !1;
 		};
-		this.#M.visible = !0, this.#M.alpha = 1;
+		this.#N.visible = !0, this.#N.alpha = 1;
 		let a = u(f(e, "hmax", 10)), o = u(f(e, "vmax", 10)), s = a === 0 ? () => {} : () => {
-			this.#M.x = Math.round(Math.random() * a * 2) - a;
+			this.#N.x = Math.round(Math.random() * a * 2) - a;
 		}, c = o === 0 ? () => {} : () => {
-			this.#M.y = Math.round(Math.random() * o * 2) - o;
+			this.#N.y = Math.round(Math.random() * o * 2) - o;
 		};
-		return this.#M.filters = [], C.tween(S, e, this.#M, {
+		return this.#N.filters = [], C.tween(S, e, this.#N, {
 			x: 0,
 			y: 0
 		}, () => {
 			s(), c();
 		}, () => {
-			r.remove(i), this.#t.visible = !0, this.#M.visible = !1, this.#M.x = 0, this.#M.y = 0, w.notifyEndProc(S);
+			r.remove(i), this.#t.visible = !0, this.#N.visible = !1, this.#N.x = 0, this.#N.y = 0, w.notifyEndProc(S);
 		}, () => {}), r.add(i), !1;
 	}
-	#R(e) {
+	#z(e) {
 		let { layer: t, render: n, name: r } = e;
 		if (!t) throw "layerは必須です";
-		let i = this.#x[this.#Z(e)], a = i.fore, o = () => {};
+		let i = this.#x[this.#Q(e)], a = i.fore, o = () => {};
 		n && (this.#f.isSkipping ? a.renderStart(!0) : (a.renderStart(!1), o = () => a.renderEnd()));
 		let s = C.cnvTweenArg(e, a), c = m(e, "arrive", !1), l = m(e, "backlay", !1), u = i.back.ctn;
 		return C.tween(r ?? t, e, a, C.cnvTweenArg(e, a), () => {}, o, () => {
 			if (c && Object.assign(a, s), l) for (let e of C.aLayerPrpNm) u[e] = a[e];
 		}), "filter" in e && (a.ctn.filters = [b.bldFilters(e)], a.aFltHArg = [e]), !1;
 	}
-	#z(e) {
-		return this.#F(e, (t) => {
-			let n = this.#x[this.#Z({ layer: t })];
+	#B(e) {
+		return this.#I(e, (t) => {
+			let n = this.#x[this.#Q({ layer: t })];
 			if (e.page === "both") {
-				this.#B(n.fore, e), this.#B(n.back, e);
+				this.#V(n.fore, e), this.#V(n.back, e);
 				return;
 			}
 			let r = n.getPage(e);
-			this.#B(r, e);
+			this.#V(r, e);
 		}), !1;
 	}
-	#B(e, t) {
+	#V(e, t) {
 		let n = e.ctn;
 		n.filters ??= [], n.filters = [...n.filters, b.bldFilters(t)], e.aFltHArg.push(t);
 	}
-	#V(e) {
-		return this.#F(e, (t) => {
-			let n = this.#x[this.#Z({ layer: t })];
+	#H(e) {
+		return this.#I(e, (t) => {
+			let n = this.#x[this.#Q({ layer: t })];
 			if (e.page === "both") {
 				let e = n.fore, t = n.back;
 				e.ctn.filters = null, t.ctn.filters = null, e.aFltHArg = [], t.aFltHArg = [];
@@ -670,52 +679,52 @@ var I = class e {
 			r.ctn.filters = null, r.aFltHArg = [];
 		}), !1;
 	}
-	#H(e) {
-		return this.#F(e, (t) => {
-			let n = this.#x[this.#Z({ layer: t })];
+	#U(e) {
+		return this.#I(e, (t) => {
+			let n = this.#x[this.#Q({ layer: t })];
 			if (e.page === "both") {
-				this.#U(n.fore, e), this.#U(n.back, e);
+				this.#W(n.fore, e), this.#W(n.back, e);
 				return;
 			}
 			let r = n.getPage(e);
-			this.#U(r, e);
+			this.#W(r, e);
 		}), !1;
 	}
-	#U(e, t) {
+	#W(e, t) {
 		let n = e.ctn;
 		if (!n.filters) throw "フィルターがありません";
 		let r = u(f(t, "index", 0)), i = n.filters.length;
 		if (i <= r) throw `フィルターの個数（${String(i)}）を越えています`;
 		e.aFltHArg[r].enabled = n.filters[r].enabled = m(t, "enabled", !0);
 	}
-	#W(e) {
+	#G(e) {
 		let { text: t } = e;
 		if (!t) throw "textは必須です";
-		let n = this.#G(e);
-		delete e.text, this.setNormalChWait(), this.#f.isSkipping ? e.wait = 0 : "wait" in e && f(e, "wait", NaN), this.#m("add｜" + F(e), n);
+		let n = this.#K(e);
+		delete e.text, this.setNormalChWait(), this.#f.isSkipping ? e.wait = 0 : "wait" in e && f(e, "wait", NaN), this.#m("add｜" + I(e), n);
 		let r = m(e, "record", !0), i = this.val.doRecLog();
 		return r || this.val.setVal_Nochk("save", "sn.doRecLog", r), n.tagCh(t.replaceAll("[r]", "\n")), this.val.setVal_Nochk("save", "sn.doRecLog", i), this.#m("add_close｜", n), !1;
 	}
-	#G = (e) => {
-		throw this.#X(), 0;
+	#K = (e) => {
+		throw this.#Z(), 0;
 	};
-	#K(e) {
-		let t = this.#Z(e, this.#C), n = this.#x[t].getPage(e);
+	#q(e) {
+		let t = this.#Q(e, this.#C), n = this.#x[t].getPage(e);
 		if (!(n instanceof O)) throw t + "はTxtLayerではありません";
 		return n;
 	}
 	setNormalChWait() {
 		O.msecChWait = this.scrItr.normalWait;
 	}
-	#q = (e) => {
-		throw this.#X(), 0;
+	#J = (e) => {
+		throw this.#Z(), 0;
 	};
-	#J(e) {
+	#Y(e) {
 		let { layer: t } = e;
 		if (!t) throw "[current] layerは必須です";
 		let n = this.#x[t];
 		if (!n || !(n.getPage(e) instanceof O)) throw `${t}はTxtLayerではありません`;
-		this.#Y = n, this.#a.pagebreak(), this.#C = t, this.val.setVal_Nochk("save", "const.sn.mesLayer", t);
+		this.#X = n, this.#a.pagebreak(), this.#C = t, this.val.setVal_Nochk("save", "const.sn.mesLayer", t);
 		for (let e of this.#S) {
 			let { fore: n, back: r } = this.#x[e];
 			n instanceof O && (n.isCur = r.isCur = e === t);
@@ -723,16 +732,16 @@ var I = class e {
 		return !1;
 	}
 	get currentTxtlayForeNeedErr() {
-		return this.#X(), this.currentTxtlayFore;
+		return this.#Z(), this.currentTxtlayFore;
 	}
 	get currentTxtlayFore() {
-		return this.#Y ? this.#Y.fore : null;
+		return this.#X ? this.#X.fore : null;
 	}
-	#Y = void 0;
-	#X = () => {
+	#X = void 0;
+	#Z = () => {
 		throw "文字レイヤーがありません。文字表示や操作する前に、[add_lay layer=（レイヤ名） class=txt]で文字レイヤを追加して下さい";
 	};
-	#Z(e, t = "") {
+	#Q(e, t = "") {
 		let n = e.layer ?? t;
 		if (n.includes(",")) throw "layer名に「,」は使えません";
 		if (!(n in this.#x)) throw "属性 layer【" + n + "】が不正です。レイヤーがありません";
@@ -741,46 +750,46 @@ var I = class e {
 	recPagebreak() {
 		this.#a.pagebreak();
 	}
-	#Q(e) {
-		let t = this.#G(e);
+	#$(e) {
+		let t = this.#K(e);
 		return e.layer === this.#C && e.page === "fore" && this.#a.pagebreak(), t.clearText(), !1;
 	}
-	#$(e) {
-		return this.#m("endlink｜", this.#G(e)), !1;
-	}
 	#ee(e) {
-		return m(e, "rec_page_break", !0) && this.#a.pagebreak(), this.#Y && (this.#Y.fore.clearLay(e), this.#Y.back.clearLay(e)), !1;
+		return this.#m("endlink｜", this.#K(e)), !1;
 	}
 	#te(e) {
-		if (!e.pic) throw "[graph] picは必須です";
-		return this.#m("grp｜" + F(e), this.#G(e)), !1;
+		return m(e, "rec_page_break", !0) && this.#a.pagebreak(), this.#X && (this.#X.fore.clearLay(e), this.#X.back.clearLay(e)), !1;
 	}
 	#ne(e) {
-		if (!e.fn && !e.label && !e.url) throw "fn,label,url いずれかは必須です";
-		return e.fn ??= this.scrItr.scriptFn, e.style ??= "background-color: rgba(255,0,0,0.5);", e.style_hover ??= "background-color: rgba(255,0,0,0.9);", e.style_clicked ??= e.style, this.#m("link｜" + F(e), this.#G(e)), !1;
+		if (!e.pic) throw "[graph] picは必須です";
+		return this.#m("grp｜" + I(e), this.#K(e)), !1;
 	}
 	#re(e) {
-		return this.#W({
+		if (!e.fn && !e.label && !e.url) throw "fn,label,url いずれかは必須です";
+		return e.fn ??= this.scrItr.scriptFn, e.style ??= "background-color: rgba(255,0,0,0.5);", e.style_hover ??= "background-color: rgba(255,0,0,0.9);", e.style_clicked ??= e.style, this.#m("link｜" + I(e), this.#K(e)), !1;
+	}
+	#ie(e) {
+		return this.#G({
 			...e,
 			text: "\n"
 		});
 	}
-	#ie(e) {
+	#ae(e) {
 		let { t, r: n } = e;
 		if (!t) throw "[ruby2] tは必須です";
 		if (!n) throw "[ruby2] rは必須です";
-		return e.text = "｜" + encodeURIComponent(t) + "《" + encodeURIComponent(n) + "》", delete e.t, delete e.r, this.#W(e);
-	}
-	#ae(e) {
-		return this.#m("span｜" + F(e), this.#G(e)), !1;
+		return e.text = "｜" + encodeURIComponent(t) + "《" + encodeURIComponent(n) + "》", delete e.t, delete e.r, this.#G(e);
 	}
 	#oe(e) {
-		if (!e.t) throw "[tcy] tは必須です";
-		return this.#m("tcy｜" + F(e), this.#G(e)), !1;
+		return this.#m("span｜" + I(e), this.#K(e)), !1;
 	}
-	#se({ layer: e }) {
+	#se(e) {
+		if (!e.t) throw "[tcy] tは必須です";
+		return this.#m("tcy｜" + I(e), this.#K(e)), !1;
+	}
+	#ce({ layer: e }) {
 		console.group("🥟 [dump_lay]");
-		for (let t of this.#P(e)) {
+		for (let t of this.#F(e)) {
 			let { fore: e, back: n } = this.#x[t];
 			try {
 				console.info(`%c${e.name.slice(0, -7)} %o`, `color:#${h.isDarkMode ? "49F" : "05A"};`, JSON.parse(`{"back":{${n.dump()}}, "fore":{${e.dump()}}}`));
@@ -790,12 +799,12 @@ var I = class e {
 		}
 		return console.groupEnd(), !1;
 	}
-	#ce(e) {
-		let t = this.#Z(e, this.#C), n = m(e, "enabled", !0);
-		return this.#G(e).enabled = n, this.val.setVal_Nochk("save", "const.sn.layer." + t + ".enabled", n), !1;
-	}
 	#le(e) {
-		return M.argChk_page(e, "back"), e.fn ??= this.scrItr.scriptFn, this.#G(e).addButton(e), this.scrItr.recodeDesign(e), !1;
+		let t = this.#Q(e, this.#C), n = m(e, "enabled", !0);
+		return this.#K(e).enabled = n, this.val.setVal_Nochk("save", "const.sn.layer." + t + ".enabled", n), !1;
+	}
+	#ue(e) {
+		return M.argChk_page(e, "back"), e.fn ??= this.scrItr.scriptFn, this.#K(e).addButton(e), this.scrItr.recodeDesign(e), !1;
 	}
 	record() {
 		let e = {};
@@ -828,11 +837,11 @@ var I = class e {
 				let i = r > t ? t : r - 1, { fore: a, back: o } = n;
 				this.#t.setChildIndex(a.ctn, i), this.#n.setChildIndex(o.ctn, i);
 			}
-			e();
+			this.#D(), e();
 		})), t;
 	}
 };
 //#endregion
-export { I as LayerMng };
+export { L as LayerMng };
 
 //# sourceMappingURL=LayerMng.js.map

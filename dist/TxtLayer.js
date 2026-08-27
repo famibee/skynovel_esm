@@ -373,7 +373,7 @@ var M = class e extends n {
 	}
 	static destroy() {
 		for (let t of e.#n) t.kill();
-		e.#n.clear(), e.#E = Object.create(null), e.#O = Object.create(null), e.delBreak();
+		e.#n.clear(), e.#D = Object.create(null), e.#k = Object.create(null), e.delBreak();
 	}
 	#a = document.createElement("span");
 	#o = new n();
@@ -435,29 +435,33 @@ var M = class e extends n {
 				!r.style.opacity && "alpha" in t && (n.opacity = String(this.ctn.alpha));
 			} else this.#a.style.cssText = "";
 		} else "alpha" in t && (n.opacity = String(this.ctn.alpha));
-		if ("width" in t && (n.width = String(t.width ?? "0") + "px"), "height" in t && (n.height = String(t.height ?? "0") + "px"), "pl" in t && (n.paddingLeft = String(t.pl ?? "0") + "px"), "pr" in t && (n.paddingRight = String(t.pr ?? "0") + "px"), "pt" in t && (n.paddingTop = String(t.pt ?? "0") + "px"), "pb" in t && (n.paddingBottom = String(t.pb ?? "0") + "px"), this.#l.lay(t), this.#p(), this.#m = this.ctn.position.x, n.transformOrigin = `${String(this.ctn.pivot.x)}px ${String(this.ctn.pivot.y)}px`, this.cvsResize(), n.display = this.ctn.visible ? "inline" : "none", ":redraw" in t && this.#b > 0) {
+		if ("width" in t && (n.width = String(t.width ?? "0") + "px"), "height" in t && (n.height = String(t.height ?? "0") + "px"), "pl" in t && (n.paddingLeft = String(t.pl ?? "0") + "px"), "pr" in t && (n.paddingRight = String(t.pr ?? "0") + "px"), "pt" in t && (n.paddingTop = String(t.pt ?? "0") + "px"), "pb" in t && (n.paddingBottom = String(t.pb ?? "0") + "px"), this.#l.lay(t), this.#p(), this.#h = this.ctn.position.x, n.transformOrigin = `${String(this.ctn.pivot.x)}px ${String(this.ctn.pivot.y)}px`, this.cvsResize(), n.display = this.ctn.visible ? "inline" : "none", ":redraw" in t && this.#x > 0) {
 			let e = [this.#a.innerHTML.replaceAll(/(animation-delay: )\d+ms/g, "$10ms"), "<span class='sn_ch' data-add='{\"ch_in_style\":\"default\"}'>&emsp;</span>"];
-			this.#P(), this.goTxt(e, !0);
+			this.#F(), this.goTxt(e, !0);
 		}
 	}
 	#f = 0;
 	#p() {
 		let e = this.#a.style, t = parseFloat(e.fontSize || "0");
-		this.#d.fontsize = t, this.#d.pad_left = parseFloat(e.paddingLeft || "0"), this.#d.pad_right = parseFloat(e.paddingRight || "0"), this.#d.pad_top = parseFloat(e.paddingTop || "0"), this.#d.pad_bottom = parseFloat(e.paddingBottom || "0"), this.#d.$width = parseFloat(e.width || "0"), this.#d.$height = parseFloat(e.height || "0"), this.position.set(this.#d.pad_left, this.#d.pad_top), this.#h = e.writingMode === "vertical-rl", this.#g = 0, this.#_ = 0;
+		this.#d.fontsize = t, this.#d.pad_left = parseFloat(e.paddingLeft || "0"), this.#d.pad_right = parseFloat(e.paddingRight || "0"), this.#d.pad_top = parseFloat(e.paddingTop || "0"), this.#d.pad_bottom = parseFloat(e.paddingBottom || "0"), this.#d.$width = parseFloat(e.width || "0"), this.#d.$height = parseFloat(e.height || "0"), this.position.set(this.#d.pad_left, this.#d.pad_top), this.#g = e.writingMode === "vertical-rl", this.#_ = 0, this.#v = 0;
 		let n = e.lineHeight ?? "0";
-		this.#f = this.#h ? 0 : (n.endsWith("px") ? parseFloat(n) : t * parseFloat(n) - t) / 2;
+		this.#f = this.#g ? 0 : (n.endsWith("px") ? parseFloat(n) : t * parseFloat(n) - t) / 2;
 	}
 	cvsResize() {
 		let e = this.#a.style, t = this.sys.cvsScale;
-		e.left = `${String(this.sys.ofsLeft4elm + this.#m * t)}px`, e.top = `${String(this.sys.ofsTop4elm + this.ctn.position.y * t)}px`, e.transform = `rotate(${String(this.ctn.angle)}deg) scale(${String(this.ctn.scale.x * t)}, ${String(this.ctn.scale.y * t)})`;
+		e.left = `${String(this.sys.ofsLeft4elm + this.#h * t)}px`, e.top = `${String(this.sys.ofsTop4elm + this.ctn.position.y * t)}px`, e.transform = `rotate(${String(this.ctn.angle)}deg) scale(${String(this.ctn.scale.x * t)}, ${String(this.ctn.scale.y * t)})`, this.#m && (e.zIndex = this.#m);
 	}
-	#m = 0;
-	#h = !1;
+	#m = "";
+	setDomZ(e) {
+		this.#m = String(e), this.#a.style.zIndex = this.#m;
+	}
+	#h = 0;
+	#g = !1;
 	get tategaki() {
-		return this.#h;
+		return this.#g;
 	}
-	#g = 0;
 	#_ = 0;
+	#v = 0;
 	get infTL() {
 		return this.#d;
 	}
@@ -470,26 +474,26 @@ var M = class e extends n {
 	setMySize(e, t) {
 		this.#d.$width = e, this.#d.$height = t, this.#a.style.width = String(this.#d.$width) + "px", this.#a.style.height = String(this.#d.$height) + "px";
 	}
-	#v = [];
-	goTxt(e, t) {
-		let n = () => this.#S(e, t);
-		this.#v.push(n) === 1 && n();
-	}
 	#y = [];
-	#b = 0;
-	static #x = "<span class='sn_ch sn_ch_last'>&emsp;</span>";
-	#S(i, a) {
-		e.#k.visible = !1;
-		let o = this.#y.length, s = "";
+	goTxt(e, t) {
+		let n = () => this.#C(e, t);
+		this.#y.push(n) === 1 && n();
+	}
+	#b = [];
+	#x = 0;
+	static #S = "<span class='sn_ch sn_ch_last'>&emsp;</span>";
+	#C(i, a) {
+		e.#A.visible = !1;
+		let o = this.#b.length, s = "";
 		if (o === 0) {
-			if (e.#e.oCfg.debug.masume && (f.debugLog && console.log(`🍌 masume ${this.name} v:${String(this.visible)} l:${String(this.x)} t:${String(this.y)} a:${String(this.alpha)} pl:${String(this.#d.pad_left)} pr:${String(this.#d.pad_right)} pt:${String(this.#d.pad_top)} pb:${String(this.#d.pad_bottom)} w:${String(this.#d.$width)} h:${String(this.#d.$height)}`), this.#s.clear().beginFill(3407616, .2).lineStyle(1, 3407616, 1).drawRect(-this.#d.pad_left, -this.#d.pad_top, this.#d.$width, this.#d.$height).endFill().beginFill(13311, .2).lineStyle(2, 13311, 1).drawRect(0, 0, this.#d.$width - this.#d.pad_left - this.#d.pad_right, this.#d.$height - this.#d.pad_top - this.#d.pad_bottom).endFill()), this.#a.innerHTML = [...i].join("").replaceAll(/[\n\t]/g, "") + e.#x, !this.#l.break_fixed) {
+			if (e.#e.oCfg.debug.masume && (f.debugLog && console.log(`🍌 masume ${this.name} v:${String(this.visible)} l:${String(this.x)} t:${String(this.y)} a:${String(this.alpha)} pl:${String(this.#d.pad_left)} pr:${String(this.#d.pad_right)} pt:${String(this.#d.pad_top)} pb:${String(this.#d.pad_bottom)} w:${String(this.#d.$width)} h:${String(this.#d.$height)}`), this.#s.clear().beginFill(3407616, .2).lineStyle(1, 3407616, 1).drawRect(-this.#d.pad_left, -this.#d.pad_top, this.#d.$width, this.#d.$height).endFill().beginFill(13311, .2).lineStyle(2, 13311, 1).drawRect(0, 0, this.#d.$width - this.#d.pad_left - this.#d.pad_right, this.#d.$height - this.#d.pad_top - this.#d.pad_bottom).endFill()), this.#a.innerHTML = [...i].join("").replaceAll(/[\n\t]/g, "") + e.#S, !this.#l.break_fixed) {
 				let e = globalThis.getComputedStyle(this.#a), t = parseFloat(e.fontSize);
-				this.#h ? (this.#l.break_fixed_left = (this.#d.$width - this.#d.pad_left - this.#d.pad_right - t * 1.5) * this.sys.cvsScale, this.#l.break_fixed_top = 0) : (this.#l.break_fixed_left = 0, this.#l.break_fixed_top = t / 2 * this.sys.cvsScale);
+				this.#g ? (this.#l.break_fixed_left = (this.#d.$width - this.#d.pad_left - this.#d.pad_right - t * 1.5) * this.sys.cvsScale, this.#l.break_fixed_top = 0) : (this.#l.break_fixed_left = 0, this.#l.break_fixed_top = t / 2 * this.sys.cvsScale);
 			}
-		} else s = this.#a.innerHTML, --o, this.#a.getElementsByClassName("sn_ch_last").item(0)?.remove(), this.#a.querySelectorAll(":scope > br").forEach((e) => e.remove()), this.#a.insertAdjacentHTML("beforeend", i.slice(this.#b).join("").replaceAll(/[\n\t]/g, "") + e.#x);
+		} else s = this.#a.innerHTML, --o, this.#a.getElementsByClassName("sn_ch_last").item(0)?.remove(), this.#a.querySelectorAll(":scope > br").forEach((e) => e.remove()), this.#a.insertAdjacentHTML("beforeend", i.slice(this.#x).join("").replaceAll(/[\n\t]/g, "") + e.#S);
 		this.#a.querySelectorAll(".sn_ch:has(> ruby)").forEach((e) => {
 			e.style.background = "";
-		}), this.#b = i.length;
+		}), this.#x = i.length;
 		let c = this.sys.cvsScale, l = this.#a.getBoundingClientRect(), u = l.left + this.#d.pad_left, p = l.top + this.#d.pad_top, m;
 		if (c === 1) m = (e, n) => {
 			let r = e.getBoundingClientRect();
@@ -502,22 +506,22 @@ var M = class e extends n {
 				return new t((a.left - e) / c - u, (a.top - n) / c - p, a.width / c, (a.height + ("gjqy".includes(i) ? this.#f : 0)) / c);
 			};
 		}
-		let [h, g] = this.#l.hyph(this.#a, m, this.#h, o, s);
-		this.#y = h;
-		let v = _.ease(this.#j);
+		let [h, g] = this.#l.hyph(this.#a, m, this.#g, o, s);
+		this.#b = h;
+		let v = _.ease(this.#M);
 		for (let t = o; t < g; ++t) {
-			let i = this.#y[t], { elm: { dataset: a, parentElement: o }, rect: s } = i, c = JSON.parse(a.arg ?? "{\"delay\": 0}"), l = JSON.parse(a.add ?? "{}"), u = e.#E[l.ch_in_style];
+			let i = this.#b[t], { elm: { dataset: a, parentElement: o }, rect: s } = i, c = JSON.parse(a.arg ?? "{\"delay\": 0}"), l = JSON.parse(a.add ?? "{}"), u = e.#D[l.ch_in_style];
 			if (this.#u(i), a.cmd === "grp") {
 				let e = new n();
 				this.#o.addChild(e), new y(c.pic, e, (t) => {
-					this.#w(e, c, l, s, v, u ?? {}), e.parent || e.removeChild(t);
+					this.#T(e, c, l, s, v, u ?? {}), e.parent || e.removeChild(t);
 				});
 			}
 			if (a.lnk) {
 				let n = o.closest("[data-arg]"), i = JSON.parse(n.dataset.arg ?? "{}");
 				i.key = `lnk=[${String(t)}] ` + this.name;
 				let a = new r();
-				this.#w(a, i, l, s, v, u ?? {});
+				this.#T(a, i, l, s, v, u ?? {});
 				let c = i.style ?? "", f = c + (i.style_hover ?? ""), p = c + (i.style_clicked ?? ""), m = i.r_style ?? "", h = m + (i.r_style_hover ?? ""), g = m + (i.r_style_clicked ?? ""), _ = Array.from(n.getElementsByTagName("rt"));
 				for (let e of _) e.dataset.st_r_bk = e.style.cssText;
 				let y = n.style.cssText, b = (e, t) => {
@@ -528,37 +532,37 @@ var M = class e extends n {
 			}
 		}
 		let b = Array.from(this.#a.getElementsByClassName("sn_ch_yet"));
-		this.#C = () => {
-			this.#C = () => !1;
+		this.#w = () => {
+			this.#w = () => !1;
 			for (let e of b) e.className = "sn_ch";
-			e.#k.position.set(this.#l.break_fixed_left, this.#l.break_fixed_top), e.#k.visible = !0, this.noticeCompTxt();
-			let t = this.#v.shift();
-			return this.#v.length > 0 && t(), !0;
+			e.#A.position.set(this.#l.break_fixed_left, this.#l.break_fixed_top), e.#A.visible = !0, this.noticeCompTxt();
+			let t = this.#y.shift();
+			return this.#y.length > 0 && t(), !0;
 		};
 		for (let e of b) e.className = e.className.replace("sn_ch_yet sn", "go");
 		o > 0 && ++o;
 		let x;
 		for (let e = g - 2; e >= 0; --e) {
-			let { elm: t } = this.#y[e];
+			let { elm: t } = this.#b[e];
 			if (t.tagName === "SPAN") {
 				x = t.parentElement?.tagName === "RUBY" ? t.parentElement.parentElement ?? t : t;
 				break;
 			}
 		}
 		if (!x || a || o === g) {
-			this.#C();
+			this.#w();
 			return;
 		}
 		let S = () => {
-			x.removeEventListener("animationend", S), this.#C();
+			x.removeEventListener("animationend", S), this.#w();
 		};
 		x.addEventListener("animationend", S, {
 			once: !0,
-			signal: this.#N.signal
+			signal: this.#P.signal
 		});
 	}
-	#C = () => !1;
-	#w(t, n, r, i, a, o) {
+	#w = () => !1;
+	#T(t, n, r, i, a, o) {
 		t.alpha = 0, n.x && (i.x = n.x.startsWith("=") ? i.x + parseInt(n.x.slice(1)) : parseInt(n.x)), n.y && (i.y = n.y.startsWith("=") ? i.y + parseInt(n.y.slice(1)) : parseInt(n.y)), n.width && (i.width = parseInt(n.width)), n.height && (i.height = parseInt(n.height)), n.wait && (o.wait = n.wait), t.width = i.width, t.height = i.height, o.x ? t.position.set(o.x.startsWith("=") ? i.x + t.width * o.nx : o.nx, o.y.startsWith("=") ? i.y + t.height * o.ny : o.ny) : t.position.set(i.x, i.y);
 		let s = new g(t).to({
 			alpha: 1,
@@ -575,29 +579,29 @@ var M = class e extends n {
 			sp: t,
 			tw: s
 		};
-		this.#T.push(c);
+		this.#E.push(c);
 	}
-	#T = [];
+	#E = [];
 	skipChIn() {
-		let e = this.#C();
-		for (let t of this.#T) t.tw && (t.tw.stop().end(), e = !0);
-		return this.#T = [], e;
+		let e = this.#w();
+		for (let t of this.#E) t.tw && (t.tw.stop().end(), e = !0);
+		return this.#E = [], e;
 	}
-	static #E = Object.create(null);
-	static #D = /[{\s.,*{]/;
+	static #D = Object.create(null);
+	static #O = /[{\s.,*{]/;
 	static initChStyle() {
-		e.#E = Object.create(null), e.#O = Object.create(null);
+		e.#D = Object.create(null), e.#k = Object.create(null);
 	}
 	static getChInStyle(t) {
-		return e.#E[t];
+		return e.#D[t];
 	}
 	static ch_in_style(t) {
 		let { name: n } = t;
 		if (!n) throw "nameは必須です";
-		if (e.#D.test(n)) throw `name【${n}】に使えない文字が含まれます`;
-		if (n in e.#E) throw `name【${n}】はすでにあります`;
+		if (e.#O.test(n)) throw `name【${n}】に使えない文字が含まれます`;
+		if (n in e.#D) throw `name【${n}】はすでにあります`;
 		let r = String(t.x ?? "=0"), i = String(t.y ?? "=0");
-		return e.#E[n] = {
+		return e.#D[n] = {
 			wait: l(t, "wait", 500),
 			alpha: l(t, "alpha", 0),
 			x: r,
@@ -611,17 +615,17 @@ var M = class e extends n {
 			ease: t.ease ?? "ease-out"
 		};
 	}
-	static #O = Object.create(null);
+	static #k = Object.create(null);
 	static getChOutStyle(t) {
-		return e.#O[t];
+		return e.#k[t];
 	}
 	static ch_out_style(t) {
 		let { name: n } = t;
 		if (!n) throw "nameは必須です";
-		if (e.#D.test(n)) throw `name【${n}】に使えない文字が含まれます`;
-		if (n in e.#O) throw `name【${n}】はすでにあります`;
+		if (e.#O.test(n)) throw `name【${n}】に使えない文字が含まれます`;
+		if (n in e.#k) throw `name【${n}】はすでにあります`;
 		let r = String(t.x ?? "=0"), i = String(t.y ?? "=0");
-		return e.#O[n] = {
+		return e.#k[n] = {
 			wait: l(t, "wait", 500),
 			alpha: l(t, "alpha", 0),
 			x: r,
@@ -635,24 +639,24 @@ var M = class e extends n {
 			ease: t.ease ?? "ease-out"
 		};
 	}
-	static #k = new n();
-	static #A = new y();
+	static #A = new n();
+	static #j = new y();
 	dispBreak(t) {
 		e.delBreak();
-		let n = e.#k;
-		n.visible = !1, this.addChild(n), e.#A.destroy(), e.#A = new y(t.pic, n, (e) => {
+		let n = e.#A;
+		n.visible = !1, this.addChild(n), e.#j.destroy(), e.#j = new y(t.pic, n, (e) => {
 			n.parent ? (e.x = l(t, "x", 0), e.y = l(t, "y", 0), e.width = l(t, "width", this.#d.fontsize), e.height = l(t, "height", this.#d.fontsize)) : n.removeChild(e);
 		});
 	}
 	static delBreak() {
-		let t = e.#k;
-		t.parent?.removeChild(t), e.#A.destroy();
+		let t = e.#A;
+		t.parent?.removeChild(t), e.#j.destroy();
 	}
-	#j = "Quadratic.Out";
 	#M = "Quadratic.Out";
-	#N = new AbortController();
-	#P() {
-		this.#s.clear(), this.#y = [], this.#b = 0, this.#v = [], this.#N.abort(), this.#N = new AbortController(), this.skipChIn();
+	#N = "Quadratic.Out";
+	#P = new AbortController();
+	#F() {
+		this.#s.clear(), this.#b = [], this.#x = 0, this.#y = [], this.#P.abort(), this.#P = new AbortController(), this.skipChIn();
 		let t = document.createElement("span");
 		t.style.cssText = this.#a.style.cssText, t.classList.value = this.#a.classList.value;
 		let r = this.#a, i = Array.from(r.getElementsByClassName("sn_ch"));
@@ -661,7 +665,7 @@ var M = class e extends n {
 		i.forEach((t) => {
 			let n = JSON.parse(t.dataset.add ?? t.children[0]?.getAttribute("data-add") ?? t.children[0]?.children[0]?.getAttribute("data-add") ?? "{}");
 			if (!n.ch_out_style) return;
-			let r = e.#O[n.ch_out_style];
+			let r = e.#k[n.ch_out_style];
 			if (r) {
 				if (r.wait === 0) {
 					t.style.display = "none";
@@ -683,31 +687,31 @@ var M = class e extends n {
 				};
 				e.addEventListener("animationend", t, {
 					once: !0,
-					signal: this.#N.signal
+					signal: this.#P.signal
 				});
 			} else o();
 		}
 		this.#a = t;
 	}
 	reNew() {
-		this.#P();
+		this.#F();
 		let t = new e(this.ctn, this.canFocus, this.sys);
-		return t.#d = this.#d, t.#a.style.cssText = this.#a.style.cssText, t.#m = this.#m, t.name = this.name, t.#p(), t.#F = this.#F, t.#j = this.#j, t.#M = this.#M, this.#l.reNew(t.#l), this.destroy(), t;
+		return t.#d = this.#d, t.#a.style.cssText = this.#a.style.cssText, t.#h = this.#h, t.name = this.name, t.#p(), t.#I = this.#I, t.#M = this.#M, t.#N = this.#N, this.#l.reNew(t.#l), this.destroy(), t;
 	}
-	#F = void 0;
+	#I = void 0;
 	record() {
 		return {
 			infTL: this.#d,
 			cssText: this.#a.style.cssText,
-			left: this.#m,
-			ch_filter: this.#F,
-			fi_easing: this.#j,
-			fo_easing: this.#M,
+			left: this.#h,
+			ch_filter: this.#I,
+			fi_easing: this.#M,
+			fo_easing: this.#N,
 			hyph: this.#l.record()
 		};
 	}
 	playback(e) {
-		this.#d = e.infTL, this.position.set(this.#d.pad_left, this.#d.pad_top), this.#a.style.cssText = e.cssText, this.#m = e.left, this.#p(), this.#F = e.ch_filter, this.#j = e.fi_easing, this.#M = e.fo_easing, this.#l.playback(e.hyph);
+		this.#d = e.infTL, this.position.set(this.#d.pad_left, this.#d.pad_top), this.#a.style.cssText = e.cssText, this.#h = e.left, this.#p(), this.#I = e.ch_filter, this.#M = e.fi_easing, this.#N = e.fo_easing, this.#l.playback(e.hyph);
 	}
 	get cssText() {
 		return this.#a.style.cssText;
@@ -715,14 +719,14 @@ var M = class e extends n {
 	set cssText(e) {
 		this.#a.style.cssText = e;
 	}
-	#I = void 0;
+	#L = void 0;
 	snapshot(e, n) {
 		j((i) => {
-			this.#I = r.from(i), this.#h && (this.#I.x += f.stageW - (this.#m + this.#d.$width)), this.#I.y -= this.#_, this.#I.texture.frame = new t(0, 0, Math.min(this.#I.width, this.#d.$width - this.#m), Math.min(this.#I.height, this.#d.$height)), this.#o.addChild(this.#I), e.render(this.#I, { clear: !1 }), n();
-		}, this.#a, this.#d, this.#g, this.#_, !1);
+			this.#L = r.from(i), this.#g && (this.#L.x += f.stageW - (this.#h + this.#d.$width)), this.#L.y -= this.#v, this.#L.texture.frame = new t(0, 0, Math.min(this.#L.width, this.#d.$width - this.#h), Math.min(this.#L.height, this.#d.$height)), this.#o.addChild(this.#L), e.render(this.#L, { clear: !1 }), n();
+		}, this.#a, this.#d, this.#_, this.#v, !1);
 	}
 	snapshot_end() {
-		this.#I &&= (this.#o.removeChild(this.#I), void 0);
+		this.#L &&= (this.#o.removeChild(this.#L), void 0);
 	}
 	makeDesignCast(e) {}
 	showDesignCast() {}
@@ -735,7 +739,7 @@ var M = class e extends n {
 		return `"txt":"${this.#a.textContent.replaceAll(/(["\\])/g, "\\$1")}", "style":{${e.join(",")}}`;
 	}
 	destroy() {
-		e.delBreak(), this.#a.parentElement.removeChild(this.#a), this.#a = document.createElement("span"), this.removeChild(this.#o), this.removeChild(this.#s), this.#s.clear(), this.#u = () => {}, this.#v = [], this.#y = [], this.#b = 0, this.#T = [], this.#N.abort(), this.#F = void 0, super.destroy();
+		e.delBreak(), this.#a.parentElement.removeChild(this.#a), this.#a = document.createElement("span"), this.removeChild(this.#o), this.removeChild(this.#s), this.#s.clear(), this.#u = () => {}, this.#y = [], this.#b = [], this.#x = 0, this.#E = [], this.#P.abort(), this.#I = void 0, super.destroy();
 	}
 }, N = class e extends m {
 	static #e;
@@ -878,6 +882,9 @@ var M = class e extends n {
 	}
 	cvsResize() {
 		this.#_.cvsResize();
+	}
+	setDomZ(e) {
+		this.#_.setDomZ(e);
 	}
 	cvsResizeChildren() {
 		for (let e of this.#x.children) e.cvsResize();

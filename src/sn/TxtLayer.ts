@@ -288,6 +288,7 @@ export class TxtLayer extends Layer {
 
 
 	override cvsResize() {this.#txs.cvsResize()}
+	override setDomZ(z: number) {this.#txs.setDomZ(z)}
 	override cvsResizeChildren() {
 		for (const b of this.#cntBtn.children) b.cvsResize();
 	}

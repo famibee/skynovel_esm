@@ -13,7 +13,7 @@ var i = class i extends r {
 	constructor() {
 		super();
 		let e = this.htm.style;
-		e.position = "absolute", e.left = e.top = "0", e.width = `${String(n.stageW)}px`, e.height = `${String(n.stageH)}px`, e.pointerEvents = "none", e.overflow = "visible", i.#e.view.parentElement.appendChild(this.htm), i.#e.ticker.add(this.#l, this);
+		e.position = "absolute", e.left = e.top = "0", e.width = `${String(n.stageW)}px`, e.height = `${String(n.stageH)}px`, e.pointerEvents = "none", e.overflow = "visible", i.#e.view.parentElement.appendChild(this.htm), i.#e.ticker.add(this.#u, this);
 	}
 	#r = "";
 	#i = "";
@@ -21,7 +21,8 @@ var i = class i extends r {
 	#o = "";
 	#s = "";
 	#c = "";
-	#l = () => {
+	#l = "";
+	#u = () => {
 		let e = this.ctn, { cvsScale: t, ofsLeft4elm: n, ofsTop4elm: r } = i.#t, a = `${String(n + e.position.x * t)}px`;
 		a !== this.#i && (this.htm.style.left = this.#i = a);
 		let o = `${String(r + e.position.y * t)}px`;
@@ -32,22 +33,47 @@ var i = class i extends r {
 		c !== this.#o && (this.htm.style.transformOrigin = this.#o = c);
 		let l = String(e.alpha);
 		l !== this.#s && (this.htm.style.opacity = this.#s = l);
-		let u = e.visible && i.#n(this) ? "" : "none";
+		let u = !this.#m && e.visible && i.#n(this) ? "" : "none";
 		u !== this.#c && (this.htm.style.display = this.#c = u);
 	};
 	cvsResize() {
-		this.#l();
+		this.#u();
+	}
+	setDomZ(e) {
+		let t = String(e);
+		t !== this.#l && (this.htm.style.zIndex = this.#l = t);
 	}
 	destroy() {
-		super.destroy(), i.#e.ticker.remove(this.#l, this), this.htm.remove();
+		super.destroy(), i.#e.ticker.remove(this.#u, this), this.htm.remove();
 	}
-	#u;
-	snapshotByCanvas(n, r, i) {
-		let a = e.from(n);
-		a.baseTexture.update(), this.#u = new t(a), this.ctn.addChild(this.#u), r.render(this.ctn, { clear: !1 }), i();
+	plgCvs;
+	get #d() {
+		return this.plgCvs ?? this.htm.querySelector("canvas");
+	}
+	#f(n) {
+		let r = e.from(n);
+		r.baseTexture.update();
+		let i = new t(r), a = this.htm.style, o = a.transform, s = a.display;
+		a.transform = "none", a.display = "";
+		let c = n.getBoundingClientRect(), l = this.htm.getBoundingClientRect();
+		return a.transform = o, a.display = s, i.position.set(c.left - l.left, c.top - l.top), i.width = c.width, i.height = c.height, this.ctn.addChild(i), i;
+	}
+	#p;
+	snapshotByCanvas(e, t, n) {
+		this.#p = this.#f(e), t.render(this.ctn, { clear: !1 }), n();
 	}
 	snapshot_end() {
-		this.#u &&= (this.ctn.removeChild(this.#u), this.#u.destroy(), void 0);
+		this.#p &&= (this.ctn.removeChild(this.#p), this.#p.destroy(), void 0);
+	}
+	#m = !1;
+	#h;
+	transBake() {
+		if (this.#m) return;
+		let e = this.#d;
+		e && (this.#h = this.#f(e), this.#m = !0, this.#u());
+	}
+	transUnbake() {
+		this.#m = !1, this.#h &&= (this.ctn.removeChild(this.#h), this.#h.destroy(), void 0), this.#u();
 	}
 };
 //#endregion

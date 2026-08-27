@@ -53,6 +53,7 @@ export declare class TxtStage extends Container {
     constructor(ctn: Sprite, canFocus: () => boolean, sys: SysBase);
     lay(hArg: TArg): void;
     cvsResize(): void;
+    setDomZ(z: number): void;
     get tategaki(): boolean;
     get infTL(): T_InfTxLay;
     get getWidth(): number;

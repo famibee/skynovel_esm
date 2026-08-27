@@ -232,10 +232,12 @@ var _ = class {
 		this.#i.defer(() => {
 			e(), this.sys.destroy(), o.destroy(!1);
 		}), this.cvs = o.view, this.cvs.id = y + "_act", i || document.body.appendChild(this.cvs);
-		let c = document.createElement("canvas").getContext("2d");
-		if (!c) throw "#init cc err";
-		s.cc4ColorName = c;
-		let [{ Variable: d }, { PropParser: f }, { SoundMng: p }, { ScriptIterator: m }, { LayerMng: h }, { EventMng: g }, { Button: _ }] = await Promise.all([
+		let c = getComputedStyle(this.cvs);
+		c.position === "static" && (this.cvs.style.position = "relative"), c.zIndex === "auto" && (this.cvs.style.zIndex = "0");
+		let d = document.createElement("canvas").getContext("2d");
+		if (!d) throw "#init cc err";
+		s.cc4ColorName = d;
+		let [{ Variable: f }, { PropParser: p }, { SoundMng: m }, { ScriptIterator: h }, { LayerMng: g }, { EventMng: _ }, { Button: v }] = await Promise.all([
 			import("./Variable.js"),
 			import("./PropParser.js"),
 			import("./SoundMng.js"),
@@ -244,15 +246,15 @@ var _ = class {
 			import("./EventMng.js"),
 			import("./Button.js")
 		]);
-		_.init(n);
-		let v = new d(this.sys, n, this.#e), b = new f(v, n.oCfg.init.escape);
-		this.#o = (e, t, n, r) => v.setVal_Nochk(e, t, n, r), this.#l = (e) => b.getValAmpersand(e), this.#u = (e) => b.parse(e), await Promise.allSettled(this.sys.init(this.#e, o, v));
-		let x = new p(n, this.#e, v, this, this.sys);
-		this.#i.defer(() => x.destroy()), this.#t = new m(n, this.#e, this, v, b, x, this.sys), this.#i.defer(() => this.#t.destroy());
-		let S = new l(this.sys, this.#e, this.#t);
-		this.#i.defer(() => S.destroy()), this.errScript = (e, t) => {
+		v.init(n);
+		let b = new f(this.sys, n, this.#e), x = new p(b, n.oCfg.init.escape);
+		this.#o = (e, t, n, r) => b.setVal_Nochk(e, t, n, r), this.#l = (e) => x.getValAmpersand(e), this.#u = (e) => x.parse(e), await Promise.allSettled(this.sys.init(this.#e, o, b));
+		let S = new m(n, this.#e, b, this, this.sys);
+		this.#i.defer(() => S.destroy()), this.#t = new h(n, this.#e, this, b, x, S, this.sys), this.#i.defer(() => this.#t.destroy());
+		let C = new l(this.sys, this.#e, this.#t);
+		this.#i.defer(() => C.destroy()), this.errScript = (e, t) => {
 			if (this.stop(), l.myTrace(e), s.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
-		}, this.#n = new h(n, this.#e, o, v, this, this.#t, this.sys, x, b), this.#i.defer(() => this.#n.destroy()), this.#r = new g(n, this.#e, o, this, this.#n, v, x, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
+		}, this.#n = new g(n, this.#e, o, b, this, this.#t, this.sys, S, x), this.#i.defer(() => this.#n.destroy()), this.#r = new _(n, this.#e, o, this, this.#n, b, S, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
 			this.stop(), this.#s = !1;
 			let e = () => !0;
 			for (let t in this.#e) this.#e[t] = e;

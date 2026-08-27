@@ -196,6 +196,9 @@ var { BlurFilter: l, ColorMatrixFilter: u, NoiseFilter: d } = r, f = class r {
 	}
 	renderStart(e) {}
 	renderEnd() {}
+	setDomZ(e) {}
+	transBake() {}
+	transUnbake() {}
 	clearLay(t) {
 		this.ctn.alpha = 1, this.ctn.blendMode = e.NORMAL, this.ctn.pivot.set(0, 0), this.ctn.angle = 0, this.ctn.scale.set(1, 1), s(t, "clear_filter", !1) && (this.ctn.filters = null, this.aFltHArg = []);
 	}

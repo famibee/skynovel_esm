@@ -54,6 +54,7 @@ export declare class TxtLayer extends Layer {
     set name(nm: string);
     get name(): string;
     cvsResize(): void;
+    setDomZ(z: number): void;
     cvsResizeChildren(): void;
     protected procSetX(x: number): void;
     protected procSetY(y: number): void;
