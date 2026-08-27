@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0](https://github.com/famibee/skynovel_esm/compare/v2.0.25...v2.1.0) (2026-08-27)
+
+
+### Features
+
+* プラグインレイヤ用のDOMオーバーレイ基底クラス PlgLayer を追加 ([edbf49c](https://github.com/famibee/skynovel_esm/commit/edbf49cc4cd02c1eaba4d79fb7cd3028342a31f3))
+
 ## [2.0.25](https://github.com/famibee/skynovel_esm/compare/v2.0.24...v2.0.25) (2026-08-25)
 
 
