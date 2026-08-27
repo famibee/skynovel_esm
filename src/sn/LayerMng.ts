@@ -13,6 +13,7 @@ import type {T_Variable, T_Main, T_HPage, T_GetFrm, T_PropParser} from './CmnInt
 import {Pages} from './Pages';
 import {Layer} from './Layer';
 import {GrpLayer} from './GrpLayer';
+import {PlgLayer} from './PlgLayer';
 import {SpritesMng} from './SpritesMng';
 import {type T_cmdTxt_JSON, TxtLayer} from './TxtLayer';
 import {RubySpliter} from './RubySpliter';
@@ -84,6 +85,7 @@ export class LayerMng implements T_GetFrm {
 		this.#log = new Log(this.cfg.oCfg, hTag, val);
 		TxtLayer.init(cfg, hTag, val, this.#log, me=> this.#hPages[me.layname]!.fore === me, appPixi);
 		GrpLayer.init(main, cfg, appPixi, sys, sndMng, val);
+		PlgLayer.setup(appPixi, sys, me=> this.#hPages[me.layname]?.fore === me);
 		FrameMng.init(cfg, sys, main);
 
 		this.#frmMng = new FrameMng(hTag, appPixi, val);

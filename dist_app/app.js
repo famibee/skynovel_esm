@@ -4,22 +4,23 @@ import { t as o } from "./SysBase.js";
 import { t as s } from "./DebugMng.js";
 import "./Config.js";
 import { t as c } from "./Layer.js";
+import { t as l } from "./PlgLayer.js";
 //#region src/IpcRenderer.ts
-var l = class {
+var u = class {
 	send(e, ...t) {
 		window.electron.ipcRenderer.send(e, ...t);
 	}
 	invoke(e, ...t) {
 		return window.electron.ipcRenderer.invoke(e, ...t);
 	}
-}, u = class {
+}, d = class {
 	on(e, t) {
 		return window.electron.ipcRenderer.on(e, t);
 	}
 	once(e, t) {
 		return window.electron.ipcRenderer.once(e, t);
 	}
-}, d = "doc_crypto", f = class extends o {
+}, f = "doc_crypto", p = class extends o {
 	constructor(...[e = {}, t = {
 		cur: "prj/",
 		crypto: !1,
@@ -40,8 +41,8 @@ var l = class {
 		platform: "",
 		arch: ""
 	};
-	#t = new l();
-	#n = new u();
+	#t = new u();
+	#n = new d();
 	use4ViteElectron(e, t, n, r) {
 		return e.startsWith("userdata:/") ? (n.use((e, n) => void this.readFile(t, "base64").then((n) => {
 			let r = new Image();
@@ -144,7 +145,7 @@ var l = class {
 		return r.debugLog && s.myTrace(`[update_check] url=${t}`, "D"), this.#r(t + "_index.json").then(async (e) => {
 			let n = {
 				title: "アプリ更新",
-				icon: this.#e.getAppPath + `/${this.arg.crypto ? d : "doc"}/icon.png`,
+				icon: this.#e.getAppPath + `/${this.arg.crypto ? f : "doc"}/icon.png`,
 				buttons: ["OK", "Cancel"],
 				defaultId: 0,
 				cancelId: 1,
@@ -227,6 +228,6 @@ var l = class {
 	}
 };
 //#endregion
-export { r as CmnLib, c as Layer, f as SysApp, n as argChk_Boolean, t as argChk_Num };
+export { r as CmnLib, c as Layer, l as PlgLayer, p as SysApp, n as argChk_Boolean, t as argChk_Num };
 
 //# sourceMappingURL=app.js.map

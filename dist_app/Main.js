@@ -197,7 +197,9 @@ var _ = class {
 	static async generate(e) {
 		r();
 		let t = new n(e);
-		return await t.#a().catch((e) => console.error("Main.generate err e:%o", e)), t;
+		return await t.#a().catch((t) => {
+			console.error("Main.generate err e:%o", t), e.setTitleInfo(t instanceof Error ? t.message : String(t));
+		}), t;
 	}
 	cvs;
 	#e = Object.create(null);

@@ -1,8 +1,9 @@
 import { l as e, s as t, t as n, u as r } from "./CmnLib.js";
 import { t as i } from "./SysBase.js";
 import { t as a } from "./Layer.js";
+import { t as o } from "./PlgLayer.js";
 //#region src/sn/localStore.ts
-var o = {
+var s = {
 	get(e) {
 		let t = localStorage.getItem(e);
 		if (t != null) try {
@@ -17,15 +18,15 @@ var o = {
 	remove(e) {
 		localStorage.removeItem(e);
 	}
-}, s = 160, c = 500, l = new EventTarget(), u = !1;
-function d() {
-	let e = globalThis.outerWidth - globalThis.innerWidth > s || globalThis.outerHeight - globalThis.innerHeight > s;
-	e !== u && (u = e, e && l.dispatchEvent(new Event("open")));
+}, c = 160, l = 500, u = new EventTarget(), d = !1;
+function f() {
+	let e = globalThis.outerWidth - globalThis.innerWidth > c || globalThis.outerHeight - globalThis.innerHeight > c;
+	e !== d && (d = e, e && u.dispatchEvent(new Event("open")));
 }
-globalThis.addEventListener("resize", d, { passive: !0 }), setInterval(d, c);
+globalThis.addEventListener("resize", f, { passive: !0 }), setInterval(f, l);
 //#endregion
 //#region src/sn/SysWeb.ts
-var f = class extends i {
+var p = class extends i {
 	#e;
 	constructor(...[e = {}, t = {
 		cur: "prj/",
@@ -66,22 +67,22 @@ var f = class extends i {
 		e["const.sn.isDebugger"] = n === "localhost" || n === "127.0.0.1";
 		let r = this.cfg.headNs;
 		this.flushSub = this.arg.crypto ? async () => {
-			o.set(r + "sys_", await this.enc(JSON.stringify(this.data.sys))), o.set(r + "mark_", await this.enc(JSON.stringify(this.data.mark))), o.set(r + "kidoku_", await this.enc(JSON.stringify(this.data.kidoku)));
+			s.set(r + "sys_", await this.enc(JSON.stringify(this.data.sys))), s.set(r + "mark_", await this.enc(JSON.stringify(this.data.mark))), s.set(r + "kidoku_", await this.enc(JSON.stringify(this.data.kidoku)));
 		} : () => {
-			o.set(r + "sys", this.data.sys), o.set(r + "mark", this.data.mark), o.set(r + "kidoku", this.data.kidoku);
+			s.set(r + "sys", this.data.sys), s.set(r + "mark", this.data.mark), s.set(r + "kidoku", this.data.kidoku);
 		};
 		let i = r + (this.arg.crypto ? "sys_" : "sys");
-		if (e["const.sn.isFirstBoot"] = o.get(i) === void 0) {
+		if (e["const.sn.isFirstBoot"] = s.get(i) === void 0) {
 			this.data.sys = {}, this.data.mark = {}, this.data.kidoku = {}, t(this.data);
 			return;
 		}
 		if (!this.arg.crypto) {
-			this.data.sys = o.get(r + "sys"), this.data.mark = o.get(r + "mark"), this.data.kidoku = o.get(r + "kidoku"), t(this.data);
+			this.data.sys = s.get(r + "sys"), this.data.mark = s.get(r + "mark"), this.data.kidoku = s.get(r + "kidoku"), t(this.data);
 			return;
 		}
 		let a = "";
 		try {
-			a = "sys", this.data.sys = JSON.parse(await this.dec("json", o.get(r + "sys_"))), a += String(this.val.getVal("sys:TextLayer.Back.Alpha", 1)), a = "mark", this.data.mark = JSON.parse(await this.dec("json", o.get(r + "mark_"))), a = "kidoku", this.data.kidoku = JSON.parse(await this.dec("json", o.get(r + "kidoku_")));
+			a = "sys", this.data.sys = JSON.parse(await this.dec("json", s.get(r + "sys_"))), a += String(this.val.getVal("sys:TextLayer.Back.Alpha", 1)), a = "mark", this.data.mark = JSON.parse(await this.dec("json", s.get(r + "mark_"))), a = "kidoku", this.data.kidoku = JSON.parse(await this.dec("json", s.get(r + "kidoku_")));
 		} catch (e) {
 			console.error(`セーブデータ（${a}）が壊れています。一度クリアする必要があります(a) %o`, e);
 		}
@@ -98,7 +99,7 @@ var f = class extends i {
 				this.isFullScr = !!e.webkitFullscreenElement;
 			});
 		}
-		return this.cfg.oCfg.debug.devtool || this.elc.add(l, "open", () => {
+		return this.cfg.oCfg.debug.devtool || this.elc.add(u, "open", () => {
 			console.error("DevToolは禁止されています。許可する場合は【プロジェクト設定】の【devtool】をONに。"), this.main?.destroy();
 		}, {
 			once: !0,
@@ -158,6 +159,6 @@ var f = class extends i {
 	}
 };
 //#endregion
-export { n as CmnLib, a as Layer, f as SysWeb, t as argChk_Boolean, e as argChk_Num };
+export { n as CmnLib, a as Layer, o as PlgLayer, p as SysWeb, t as argChk_Boolean, e as argChk_Num };
 
 //# sourceMappingURL=web.js.map

@@ -28,7 +28,12 @@ export class Main implements T_Main {
 
 		const m = new Main(sys);
 		await m.#init()
-		.catch((e: unknown)=> console.error('Main.generate err e:%o', e));
+		.catch((e: unknown)=> {
+			console.error('Main.generate err e:%o', e);
+			sys.setTitleInfo(e instanceof Error ? e.message : String(e));
+				// ここで失敗すると[title]タグまで到達しないため#main_titleは空のまま。
+				//	setTitleInfo()に渡ったエラー内容がそのままdocument.titleに出る
+		});
 
 		return m;
 	}

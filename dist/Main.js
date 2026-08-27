@@ -7,9 +7,14 @@ var d = "userdata:/", f = "downloads:/", p = class e extends l {
 	sys;
 	static async generate(t) {
 		let n = new e(t), r = t.arg.cur + "prj.json", i = await t.fetch(r);
-		if (!i.ok) throw Error(i.statusText);
-		let a = await t.dec(r, await i.text());
-		return await n.load(JSON.parse(a)), n;
+		if (!i.ok) throw Error(`プロジェクトが見つかりません: ${r} (${i.status} ${i.statusText})`);
+		let a = await t.dec(r, await i.text()), o;
+		try {
+			o = JSON.parse(a);
+		} catch {
+			throw Error(`プロジェクトが見つかりません（JSONとして解析できませんでした）: ${r}`);
+		}
+		return await n.load(o), n;
 	}
 	constructor(e) {
 		super(e), this.sys = e;
@@ -219,7 +224,9 @@ var b = class {
 	static async generate(e) {
 		r();
 		let t = new n(e);
-		return await t.#a().catch((e) => console.error("Main.generate err e:%o", e)), t;
+		return await t.#a().catch((t) => {
+			console.error("Main.generate err e:%o", t), e.setTitleInfo(t instanceof Error ? t.message : String(t));
+		}), t;
 	}
 	cvs;
 	#e = Object.create(null);
