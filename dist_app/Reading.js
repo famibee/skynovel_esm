@@ -3028,23 +3028,24 @@ var Ma = ja(), Na = class {
 		}
 		return r;
 	}
-	static tween(e, t, r, i, o, s, c, l = !0) {
-		let u = this.#t.isSkipping ? 0 : n(t, "time", NaN);
+	static tween(e, t, r, i, o, s, c, l = !0, u = "") {
+		let d = this.#t.isSkipping ? 0 : n(t, "time", NaN);
 		this.#e[e]?.tw?.kill();
-		let d = new Na(r).to(i, u).onUpdate((e) => o(e));
-		this.setTwProp(d, t), this.#e[e] = {
-			tw: d,
-			onEnd: c
+		let f = new Na(r).to(i, d).onUpdate((e) => o(e));
+		this.setTwProp(f, t), this.#e[e] = {
+			tw: f,
+			onEnd: c,
+			layer: u
 		};
-		let { path: f } = t, p = d;
-		if (f) {
-			a.debugLog && console.group(`🍝 [${t[":タグ名"] ?? ""}] path=${f}= start(${String(r.x)},${String(r.y)},${String(r.alpha)})`);
-			for (let { groups: e } of f.matchAll(this.#i)) {
-				let { x: n, x2: i, y: o, y2: s, o: c, o2: l, json: d } = e, f = {};
-				if (d) try {
-					f = JSON.parse(d);
+		let { path: p } = t, m = f;
+		if (p) {
+			a.debugLog && console.group(`🍝 [${t[":タグ名"] ?? ""}] path=${p}= start(${String(r.x)},${String(r.y)},${String(r.alpha)})`);
+			for (let { groups: e } of p.matchAll(this.#i)) {
+				let { x: n, x2: i, y: o, y2: s, o: c, o2: l, json: u } = e, f = {};
+				if (u) try {
+					f = JSON.parse(u);
 				} catch (e) {
-					console.error(`🍝 json=${d} ` + String(e));
+					console.error(`🍝 json=${u} ` + String(e));
 					continue;
 				}
 				else {
@@ -3055,24 +3056,24 @@ var Ma = ja(), Na = class {
 					let r = c ?? l;
 					r && (f.alpha = Number(r));
 				}
-				let m = this.cnvTweenArg(f, r);
-				a.debugLog && console.info(`🍝 ${d ?? `{x:${String(n)} y:${String(o)} o:${String(c)}}`} => hTo:${JSON.stringify(m)}`);
-				let h = new Na(r).to(m, u);
-				this.setTwProp(h, t), p.chain(h), p = h;
+				let p = this.cnvTweenArg(f, r);
+				a.debugLog && console.info(`🍝 ${u ?? `{x:${String(n)} y:${String(o)} o:${String(c)}}`} => hTo:${JSON.stringify(p)}`);
+				let h = new Na(r).to(p, d);
+				this.setTwProp(h, t), m.chain(h), m = h;
 			}
 			a.debugLog && console.groupEnd();
 		}
-		p.onComplete(() => {
+		m.onComplete(() => {
 			let t = this.#e[e];
-			t?.tw && (delete this.#e[e], t.tw = void 0, d.stop(), t.onEnd?.(), s(), $.notifyEndProc(Fa + e));
+			t?.tw && (delete this.#e[e], t.tw = void 0, f.stop(), t.onEnd?.(), s(), $.notifyEndProc(Fa + e));
 		});
-		let { chain: m } = t;
-		if (m) {
-			let e = this.#e[m];
-			if (!e?.tw) throw `${m}は存在しない・または終了したトゥイーンです`;
-			delete e.onEnd, e.tw.chain(d);
-		} else l && d.start();
-		return d;
+		let { chain: h } = t;
+		if (h) {
+			let e = this.#e[h];
+			if (!e?.tw) throw `${h}は存在しない・または終了したトゥイーンです`;
+			delete e.onEnd, e.tw.chain(f);
+		} else l && f.start();
+		return f;
 	}
 	static #i = /\(\s*(?:(?<x>[-=\d.]+)|(['"])(?<x2>.*?)\2)?(?:\s*,\s*(?:(?<y>[-=\d.]+)|(['"])(?<y2>.*?)\5)?(?:\s*,\s*(?:(?<o>[-=\d.]+)|(['"])(?<o2>.*?)\8))?)?|(?<json>\{[^{}]*})/g;
 	static wt(e) {
@@ -3082,6 +3083,9 @@ var Ma = ja(), Na = class {
 	}
 	static stopEndTrans() {
 		this.#e[Pa]?.tw?.stop().end();
+	}
+	static stopTsyByLayer(e) {
+		for (let [t, n] of Object.entries(this.#e)) n.layer && e.includes(n.layer) && (n.tw?.kill(), delete this.#e[t]);
 	}
 	static wait_tsy(e) {
 		let t = this.#a(e), n = this.#e[t]?.tw;

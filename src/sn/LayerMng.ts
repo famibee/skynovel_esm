@@ -543,7 +543,7 @@ export class LayerMng implements T_GetFrm {
 
 	//MARK: レイヤ設定の消去
 	#clear_lay(hArg: TArg) {
-		this.#foreachLayers(hArg, layer=> {
+		const aLn = this.#foreachLayers(hArg, layer=> {
 			//if (name === this.strTxtlay && hArg.page !== 'back') this.recText('', true);
 				// 改ページ
 			const pg = this.#hPages[this.#argChk_layer({layer})]!;
@@ -556,6 +556,7 @@ export class LayerMng implements T_GetFrm {
 			}
 			pg.getPage(hArg).clearLay(hArg);
 		});
+		CmnTween.stopTsyByLayer(aLn);	// 片付いたレイヤを動かしている[tsy]も畳む（clearLayは見た目を戻すだけ）
 
 		return false;
 	}
@@ -832,7 +833,8 @@ void main() {
 		const {layer, render, name} = hArg;
 		if (! layer) throw 'layerは必須です';
 
-		const pg = this.#hPages[this.#argChk_layer(hArg)]!;
+		const ln = this.#argChk_layer(hArg);
+		const pg = this.#hPages[ln]!;
 		const lay = pg.fore;
 
 		let finishBlendLayer = ()=> { /* empty */ };
@@ -852,7 +854,7 @@ void main() {
 			if (arrive) Object.assign(lay, hTo);
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
 			if (backlay) for (const nm of CmnTween.aLayerPrpNm) (<any>spBack)[nm] = lay[nm];
-		});
+		}, true, ln);	// ln＝[er]/[clear_lay]でこのレイヤが片付くときトゥイーンを畳む手掛かり
 		// hArg[':id'] = pg.fore.name.slice(0, -7);
 		// this.scrItr.getDesignInfo(hArg);	// 必ず[':id'] を設定すること
 
@@ -1041,6 +1043,7 @@ void main() {
 		if (this.#pgTxtlay) {
 			this.#pgTxtlay.fore.clearLay(hArg);
 			this.#pgTxtlay.back.clearLay(hArg);
+			CmnTween.stopTsyByLayer([this.#pgTxtlay.fore.layname]);	// 文字レイヤを動かしている[tsy]も畳む
 		}
 
 		return false;

@@ -147,6 +147,8 @@ export class Tw {
 type ITwInf = {
 	tw		: Tw | undefined;
 	onEnd?	: ()=> void;
+	layer?	: string;	// [tsy]が動かしているレイヤ名。[er]/[clear_lay]でそのレイヤが
+						// 片付くときトゥイーンも畳むための手掛かり（[trans]・[tsy_frame]は空）
 }
 
 export const TW_NM_TRANS = 'trans\n';	// 改行でスクリプトから絶対指定できない値に
@@ -322,7 +324,7 @@ export class CmnTween {
 
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	static	tween(tw_nm: string, hArg: TArg, hNow: any, hTo: any, onUpdate: (d: any)=> void, onComplete: ()=> void, onEnd: ()=> void, start = true): Tw {
+	static	tween(tw_nm: string, hArg: TArg, hNow: any, hTo: any, onUpdate: (d: any)=> void, onComplete: ()=> void, onEnd: ()=> void, start = true, layer = ''): Tw {
 		const time = this.#evtMng.isSkipping ?0 :argChk_Num(hArg, 'time', NaN);
 
 		this.#hTwInf[tw_nm]?.tw?.kill();	// 同名トゥイーンの二重起動対策（bluesnovel ScriptMng.ts:764で先に直された不具合）
@@ -331,7 +333,7 @@ export class CmnTween {
 		.to(hTo, time)
 		.onUpdate(d=> onUpdate(d));
 		this.setTwProp(tw, hArg);
-		this.#hTwInf[tw_nm] = {tw, onEnd};
+		this.#hTwInf[tw_nm] = {tw, onEnd, layer};
 
 		const {path} = hArg;
 		let twLast = tw;
@@ -426,6 +428,26 @@ export class CmnTween {
 	// レイヤのトランジションの停止
 	static	stopEndTrans() {this.#hTwInf[TW_NM_TRANS]?.tw?.stop().end()}
 		// stop()とend()は別
+
+	// [er]/[clear_lay]で片付くレイヤを動かしている[tsy]のトゥイーンを畳む。
+	//	Layer.clearLay()はctnのプロパティを既定へ戻すだけでこちらへ何も伝えないため、
+	//	放っておくとクリア後もトゥイーンのonUpdateが初期化した見た目（alpha／angle／
+	//	scale／pivot）を毎フレーム上書きし続ける。
+	//	[stop_tsy]と違いend()は呼ばない——レイヤは既定へ戻される最中で、トゥイーンの
+	//	最終値を入れ直すと打ち消し合う。arrive／backlayのonEndも同じ理由で発火させない
+	//	（kill()はコールバックを黙らせたままchain先のpath区間も辿って道連れにする）。
+	//	[wait_tsy]待機中はスクリプトが止まり[er]/[clear_lay]自体が来ないので待ち状態は触らない。
+	//	→ 分家 bluesnovel では LayerMng.#stopTsyByLayer() 相当（clearLay／clearTxtLay に配線）。
+	static	stopTsyByLayer(aLayNm: readonly string[]) {
+		for (const [tw_nm, ti] of Object.entries(this.#hTwInf)) {
+			if (! ti.layer) continue;	// [trans]・[tsy_frame]はレイヤに紐付かない
+			if (! aLayNm.includes(ti.layer)) continue;
+
+			ti.tw?.kill();
+			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+			delete this.#hTwInf[tw_nm];
+		}
+	}
 
 
 	// トゥイーン終了待ち

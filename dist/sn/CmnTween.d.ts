@@ -31,9 +31,10 @@ export declare class CmnTween {
     static ease(nm: string | undefined): (k: number) => number;
     static readonly aLayerPrpNm: (keyof Layer)[];
     static cnvTweenArg(hArg: TArg, lay: any): TArg;
-    static tween(tw_nm: string, hArg: TArg, hNow: any, hTo: any, onUpdate: (d: any) => void, onComplete: () => void, onEnd: () => void, start?: boolean): Tw;
+    static tween(tw_nm: string, hArg: TArg, hNow: any, hTo: any, onUpdate: (d: any) => void, onComplete: () => void, onEnd: () => void, start?: boolean, layer?: string): Tw;
     static wt(hArg: TArg): boolean;
     static stopEndTrans(): void;
+    static stopTsyByLayer(aLayNm: readonly string[]): void;
     static wait_tsy(hArg: TArg): boolean;
     static stop_tsy(hArg: TArg): boolean;
     static pause_tsy(hArg: TArg): boolean;

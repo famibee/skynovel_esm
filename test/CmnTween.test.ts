@@ -160,6 +160,52 @@ it('resume_tsy_targets_correct_tween', ()=> {
 });
 
 
+// ==== stopTsyByLayer()（[er]/[clear_lay]で片付くレイヤの[tsy]を畳む） ====
+// Layer.clearLay()は見た目を戻すだけでCmnTweenへ何も伝えないため、放置すると
+// クリア後もトゥイーンのonUpdateが毎フレーム上書きし続ける。第9引数layerを手掛かりに畳む。
+it('stopTsyByLayer_kills_matching_layer_and_detaches', ()=> {
+	const hNow = {x: 0};
+	let completed = false, ended = false;
+	const tw = CmnTween.tween('nm_over_lay', <TArg>{time: 1000}, hNow, {x: 100},
+		()=> { /* empty */ }, ()=> {completed = true}, ()=> {ended = true},
+		false, 'myLay');	// tw_nmはnm、レイヤ手掛かりはmyLay
+	tw.start();
+
+	CmnTween.stopTsyByLayer(['myLay']);
+
+	// 管理情報から外れ、名前引きの操作はもう届かない
+	CmnTween.pause_tsy(<TArg>{name: 'nm_over_lay'});
+	expect(tw.isPaused()).toBe(false);
+	// [stop_tsy]と違いend()は呼ばないので、コールバックは黙ったまま
+	tw.end();
+	expect(completed).toBe(false);
+	expect(ended).toBe(false);
+});
+it('stopTsyByLayer_leaves_other_layers_untouched', ()=> {
+	const twA = CmnTween.tween('twA', <TArg>{time: 1000}, {x: 0}, {x: 100},
+		()=> { /* empty */ }, ()=> { /* empty */ }, ()=> { /* empty */ }, false, 'layA');
+	twA.start();
+	const twB = CmnTween.tween('twB', <TArg>{time: 1000}, {x: 0}, {x: 100},
+		()=> { /* empty */ }, ()=> { /* empty */ }, ()=> { /* empty */ }, false, 'layB');
+	twB.start();
+
+	CmnTween.stopTsyByLayer(['layA']);
+
+	CmnTween.pause_tsy(<TArg>{name: 'twB'});
+	expect(twB.isPaused()).toBe(true);	// layBは無傷
+});
+it('stopTsyByLayer_ignores_entries_without_layer (trans/tsy_frame)', ()=> {
+	const twFrm = CmnTween.tween('frm\n999', <TArg>{time: 1000}, {x: 0}, {x: 100},
+		()=> { /* empty */ }, ()=> { /* empty */ }, ()=> { /* empty */ }, false);	// layer未指定
+	twFrm.start();
+
+	CmnTween.stopTsyByLayer(['frm\n999']);	// レイヤ名リストにキーが混ざっても畳まない
+
+	CmnTween.pause_tsy(<TArg>{id: '999'});
+	expect(twFrm.isPaused()).toBe(true);
+});
+
+
 // ==== stopAllTw() 不具合再発防止 ====
 // CHANGELOG 2.0.1「ロード直後にトゥイーン管理情報までクリアしていた件」の対象。
 // [load]系タグからは CmnTween.stopAllTw() が呼ばれる想定（ScriptIterator#loadFromMark）。

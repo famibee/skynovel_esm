@@ -504,14 +504,15 @@ var L = class e {
 		}
 	}
 	#O(e) {
-		return this.#I(e, (t) => {
+		let t = this.#I(e, (t) => {
 			let n = this.#x[this.#Q({ layer: t })];
 			if (e.page === "both") {
 				n.fore.clearLay(e), n.back.clearLay(e);
 				return;
 			}
 			n.getPage(e).clearLay(e);
-		}), !1;
+		});
+		return S.stopTsyByLayer(t), !1;
 	}
 	static #k = "\nprecision mediump float;\n\nvarying vec2 vTextureCoord;\nuniform sampler2D uSampler;\n\nuniform sampler2D rule;\nuniform float vague;\nuniform float tick;\n\nuniform vec4 inputPixel;\nuniform highp vec4 outputFrame;\nvec2 getUV(vec2 coord) {\n	return coord * inputPixel.xy / outputFrame.zw;\n}\n\nvoid main() {\n	vec4 fg = texture2D(uSampler, vTextureCoord);\n	vec4 ru = texture2D(rule, getUV(vTextureCoord));\n\n	float v = ru.r - tick;\n	gl_FragColor = abs(v) < vague\n		? vec4(fg.rgb, 1) *fg.a *(0.5 +v /vague *0.5)\n		: 0.0 <= v ? fg : vec4(0);\n}";
 	#A = t.create({
@@ -645,12 +646,12 @@ var L = class e {
 	#z(e) {
 		let { layer: t, render: n, name: r } = e;
 		if (!t) throw "layerは必須です";
-		let i = this.#x[this.#Q(e)], a = i.fore, o = () => {};
-		n && (this.#f.isSkipping ? a.renderStart(!0) : (a.renderStart(!1), o = () => a.renderEnd()));
-		let s = S.cnvTweenArg(e, a), c = m(e, "arrive", !1), l = m(e, "backlay", !1), u = i.back.ctn;
-		return S.tween(r ?? t, e, a, S.cnvTweenArg(e, a), () => {}, o, () => {
-			if (c && Object.assign(a, s), l) for (let e of S.aLayerPrpNm) u[e] = a[e];
-		}), "filter" in e && (a.ctn.filters = [y.bldFilters(e)], a.aFltHArg = [e]), !1;
+		let i = this.#Q(e), a = this.#x[i], o = a.fore, s = () => {};
+		n && (this.#f.isSkipping ? o.renderStart(!0) : (o.renderStart(!1), s = () => o.renderEnd()));
+		let c = S.cnvTweenArg(e, o), l = m(e, "arrive", !1), u = m(e, "backlay", !1), d = a.back.ctn;
+		return S.tween(r ?? t, e, o, S.cnvTweenArg(e, o), () => {}, s, () => {
+			if (l && Object.assign(o, c), u) for (let e of S.aLayerPrpNm) d[e] = o[e];
+		}, !0, i), "filter" in e && (o.ctn.filters = [y.bldFilters(e)], o.aFltHArg = [e]), !1;
 	}
 	#B(e) {
 		return this.#I(e, (t) => {
@@ -758,7 +759,7 @@ var L = class e {
 		return this.#m("endlink｜", this.#K(e)), !1;
 	}
 	#te(e) {
-		return m(e, "rec_page_break", !0) && this.#a.pagebreak(), this.#X && (this.#X.fore.clearLay(e), this.#X.back.clearLay(e)), !1;
+		return m(e, "rec_page_break", !0) && this.#a.pagebreak(), this.#X && (this.#X.fore.clearLay(e), this.#X.back.clearLay(e), S.stopTsyByLayer([this.#X.fore.layname])), !1;
 	}
 	#ne(e) {
 		if (!e.pic) throw "[graph] picは必須です";
