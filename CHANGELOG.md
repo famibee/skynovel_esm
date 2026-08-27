@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0](https://github.com/famibee/skynovel_esm/compare/v2.1.0...v2.2.0) (2026-08-27)
+
+
+### Features
+
+* PlgLayer に z順管理と [trans] 参加を追加 ([3183735](https://github.com/famibee/skynovel_esm/commit/3183735add15430dfadb48418f1958cc899f51bf))
+
 ## [2.1.0](https://github.com/famibee/skynovel_esm/compare/v2.0.25...v2.1.0) (2026-08-27)
 
 
