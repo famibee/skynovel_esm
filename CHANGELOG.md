@@ -6,6 +6,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.2](https://github.com/famibee/skynovel_esm/compare/v2.2.1...v2.2.2) (2026-09-03)
+
+
+### Bug Fixes
+
+* **sn:** フィルタ工場の仮引数を hArg へ戻す＋文字演出/バック生成の重複除去（/simplify 第4弾） ([d93d55d](https://github.com/famibee/skynovel_esm/commit/d93d55dac41d237c1d58ef93ecd5cdf605a57e81))
+
+
+### Performance Improvements
+
+* **sn:** ConfigBase.searchPath の拡張子群包含判定を #extInGroup() へ集約（/simplify 第8弾） ([fdd89c6](https://github.com/famibee/skynovel_esm/commit/fdd89c6cc8261c76f953a247b8fb3995be829c8f))
+* **sn:** LayerMng のレイヤ対象解決とレンダゲートを共通化（/simplify 本家版・第3弾） ([1b1e2da](https://github.com/famibee/skynovel_esm/commit/1b1e2dabf227b7647a97a20935e6d9664861bb15))
+* **sn:** システム基盤の重複除去（SysBase.setData／SysWeb.#clickDL）（/simplify 第7弾） ([10036f5](https://github.com/famibee/skynovel_esm/commit/10036f533056c6191aa890e477193c69d7a417bb))
+* **sn:** パースユーティリティ群のホットパス regex 定数化ほか（/simplify 本家版・第1弾） ([53620ad](https://github.com/famibee/skynovel_esm/commit/53620ad65ab34f512fe2ea38853dedf7a753c5fd))
+* **sn:** フィルタ定義 hBldFilter の ColorMatrixFilter 系を工場化（/simplify 本家版・第2弾続き） ([6e71575](https://github.com/famibee/skynovel_esm/commit/6e715753e83e8d554de778009e59da6a2b3481fe))
+* **sn:** 描画層 Layer/Pages の重複除去（/simplify 本家版・第2弾） ([aa50b82](https://github.com/famibee/skynovel_esm/commit/aa50b82432504e0701b5ef760a557eb6ae11dc4e))
+* **sn:** 改行カウントを Grammar.numLF() へ集約＋Variable の RegExp 生成整理（/simplify 第5弾） ([61859fb](https://github.com/famibee/skynovel_esm/commit/61859fb1c3a1c7dead03615db76b321387c85c35))
+* **sn:** 音声・入力層の重複除去（getVol 共有／resvSe／Button.#applyStyleJson）（/simplify 第6弾） ([7ef5cea](https://github.com/famibee/skynovel_esm/commit/7ef5ceaa7c105b04bc4e2d82fef8666dde146a94))
+
 ## [2.2.1](https://github.com/famibee/skynovel_esm/compare/v2.2.0...v2.2.1) (2026-08-27)
 
 
