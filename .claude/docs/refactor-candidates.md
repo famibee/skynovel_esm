@@ -17,7 +17,9 @@
 - 第 1 適用（2026-09-03）… **`PropParser` / `Grammar` / `Config` / `RubySpliter` 済**
   （下記。単体 757 件・tsc 通過。挙動不変）。パース群で残るのは `CmnLib` の数値パース
   横断確認（下記・要 `Variable` 読解）と `ConfigBase` の小ヘルパ（低優先）のみ。
-- 第 2 パス（2026-09-03）… 描画層のうち `Pages` / `GrpLayer` / `Layer` を読了。
+- 第 2 パス（2026-09-03）… 描画層のうち `Pages` / `GrpLayer` / `Layer` / `LayerMng` / `SpritesMng` を読了。
+  `SpritesMng` は pixi loader の GC/キャッシュ落とし穴コメント（「continue は御法度」等）が
+  多く、掃除で失うものが大きいので**触らない**と判断。
 - 第 2 適用（2026-09-03）… **`Pages` / `Layer`（`#scaledWH` 抽出＋`hBldFilter` の CMF 工場化）済**。
   工場化に伴い `test/Layer_filter.test.ts`（20 件）を新設＝ColorMatrixFilter 系 19 個が
   「工場経由」と「pixi 直呼び」で同じ `.matrix` を生むことを保証（分家からのテスト輸入でなく
@@ -96,9 +98,24 @@
   （`b_width/2` 等）が違い、iPhone6 対策で順序注意コメント（`Layer.ts:570`）もあるため
   テーブル化は避け、helper 差し込みだけなら可。効果小。
 
-### 描画層 — 未分析
+### LayerMng.ts — 済（2026-09-03）
 
-- `LayerMng`（39.9K・最大）/ `TxtLayer`（31.8K）/ `TxtStage`（33.3K）/ `SpritesMng`（14.8K）
+- ~~`[clear_lay]`/`[add_filter]`/`[clear_filter]`/`[enable_filter]` が
+  「`#foreachLayers` → `page==='both'` なら fore/back 両方、でなければ `getPage(hArg)` 片面」を
+  4 箇所コピペ~~ … 済。`#eachTargetPage(hArg, (l: Layer)=> void)` へ集約（分家 第1弾
+  `eachTargetLay` 共通化と同型・同ロジック）。`#add_filter2` は消滅、4 メソッドが各 2〜4 行に。
+- ~~「動きが無いレイヤは 1 回だけ焼く」自己書き換えラッパを `GrpLayer.renderStart` と
+  `LayerMng.#trans`（back / fore）で 3 回手書き~~ … 済。`Layer.renderGate(body, animated)`
+  へ集約（`let fnc = ...; if (! still) {const old = fnc; fnc = ()=> {fnc = noop; old()}}` の 4 行 → 1 行）。
+  **render ホットパスで本家に unit なし**＝`tsy.e2e.ts`＋`[trans]` サンプルで要実機確認。
+
+### SpritesMng.ts — 見送り（触らない）
+
+- pixi の Loader/TextureCache 相互作用に関する回帰防止コメントが密（`#csv2Sprites` の
+  「continue は厳禁、御法度」、`#dec2cachePicMov` の revokeObjectURL タイミング等）。
+  `#sortAFrameName` の regex 1 本くらいしか機械的な整理対象が無く、リスク＞リターン。
+
+### TxtLayer.ts（31.8K）/ TxtStage.ts（33.3K）— 未分析
 
 ## 未分析
 

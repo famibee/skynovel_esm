@@ -145,6 +145,13 @@ var { BlurFilter: l, ColorMatrixFilter: u, NoiseFilter: d } = r, f = class r {
 	}
 	renderStart(e) {}
 	renderEnd() {}
+	static renderGate(e, t) {
+		if (t) return e;
+		let n = () => {
+			n = () => {}, e();
+		};
+		return () => n();
+	}
 	setDomZ(e) {}
 	transBake() {}
 	transUnbake() {}

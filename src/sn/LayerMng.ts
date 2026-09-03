@@ -541,21 +541,20 @@ export class LayerMng implements T_GetFrm {
 		}
 	}
 
+	// hArg.layer が指す各レイヤの対象ページへ fnc を適用する。page=both なら fore/back 両方、
+	//	それ以外は getPage(hArg) の片面だけ（[clear_lay]/[*_filter] 共通。page=both は
+	//	an時代・瀬戸愛羅さんより https://famibee.blog.fc2.com/blog-entry-205.html）
+	#eachTargetPage(hArg: TArg, fnc: (l: Layer)=> void): readonly string[] {
+		return this.#foreachLayers(hArg, layer=> {
+			const pg = this.#hPages[this.#argChk_layer({layer})]!;
+			if (hArg.page === 'both') {fnc(pg.fore); fnc(pg.back); return}
+			fnc(pg.getPage(hArg));
+		});
+	}
+
 	//MARK: レイヤ設定の消去
 	#clear_lay(hArg: TArg) {
-		const aLn = this.#foreachLayers(hArg, layer=> {
-			//if (name === this.strTxtlay && hArg.page !== 'back') this.recText('', true);
-				// 改ページ
-			const pg = this.#hPages[this.#argChk_layer({layer})]!;
-			// page=both で両面削除
-			// an時代・瀬戸愛羅さんより https://famibee.blog.fc2.com/blog-entry-205.html
-			if (hArg.page === 'both') {
-				pg.fore.clearLay(hArg);
-				pg.back.clearLay(hArg);
-				return;
-			}
-			pg.getPage(hArg).clearLay(hArg);
-		});
+		const aLn = this.#eachTargetPage(hArg, l=> l.clearLay(hArg));
 		CmnTween.stopTsyByLayer(aLn);	// 片付いたレイヤを動かしている[tsy]も畳む（clearLayは見た目を戻すだけ）
 
 		return false;
@@ -685,28 +684,20 @@ void main() {
 		const {ticker, renderer} = this.appPixi;
 		renderer.render(this.#back, {renderTexture: this.#rtTransBack});	// clear: true
 
-		let fncRenderBack = ()=> {
+		const fncRenderBack = Layer.renderGate(()=> {
 			for (const ctn of aBackTransAfter) renderer.render(
 				ctn,
 				{renderTexture: this.#rtTransBack, clear: false}
 			);
-		};
-		if (! aBack.some(lay=> lay.containMovement)) {
-			const oldFnc = fncRenderBack;	// 動きがないなら最初に一度
-			fncRenderBack = ()=> {fncRenderBack = ()=> { /* empty */ }; oldFnc()};
-		}
+		}, aBack.some(lay=> lay.containMovement));
 
 		const render = ()=> renderer.render(this.#fore, {renderTexture: this.#rtTransFore});	// clear: true
 		render();
-		let fncRenderFore = ()=> {
+		const fncRenderFore = Layer.renderGate(()=> {
 			this.#fore.visible = true;
 			render();
 			this.#fore.visible = false;
-		};
-		if (! aLayFore.some(lay=> lay.containMovement)) {
-			const oldFnc = fncRenderFore;	// 動きがないなら最初に一度
-			fncRenderFore = ()=> {fncRenderFore = ()=> { /* empty */ }; oldFnc()};
-		}
+		}, aLayFore.some(lay=> lay.containMovement));
 		const fncRender = ()=> {
 			fncRenderBack();
 			this.#spTransBack.visible = true;
@@ -869,40 +860,19 @@ void main() {
 
 	//MARK: フィルター追加
 	#add_filter(hArg: TArg) {
-		this.#foreachLayers(hArg, layer=> {
-			const pg = this.#hPages[this.#argChk_layer({layer})]!;
-			if (hArg.page === 'both') {	// page=both で両面に
-				this.#add_filter2(pg.fore, hArg);
-				this.#add_filter2(pg.back, hArg);
-				return;
-			}
-			const l = pg.getPage(hArg);
-			this.#add_filter2(l, hArg);
+		this.#eachTargetPage(hArg, l=> {
+			const s = l.ctn;
+			s.filters ??= [];
+			s.filters = [...s.filters, Layer.bldFilters(hArg)];
+			l.aFltHArg.push(hArg);
 		});
 
 		return false;
 	}
-	#add_filter2(l: Layer, hArg: TArg) {
-		const s = l.ctn;
-		s.filters ??= [];
-		s.filters = [...s.filters, Layer.bldFilters(hArg)];
-		l.aFltHArg.push(hArg);
-	}
 
 	//MARK: フィルター全削除
 	#clear_filter(hArg: TArg) {
-		this.#foreachLayers(hArg, layer=> {
-			const pg = this.#hPages[this.#argChk_layer({layer})]!;
-			if (hArg.page === 'both') {	// page=both で両面に
-				const f = pg.fore;
-				const b = pg.back;
-				f.ctn.filters = null;
-				b.ctn.filters = null;
-				f.aFltHArg = [];
-				b.aFltHArg = [];
-				return;
-			}
-			const l = pg.getPage(hArg);
+		this.#eachTargetPage(hArg, l=> {
 			l.ctn.filters = null;
 			l.aFltHArg = [];
 		});
@@ -912,16 +882,7 @@ void main() {
 
 	//MARK: フィルター個別切替
 	#enable_filter(hArg: TArg) {
-		this.#foreachLayers(hArg, layer=> {
-			const pg = this.#hPages[this.#argChk_layer({layer})]!;
-			if (hArg.page === 'both') {	// page=both で両面に
-				this.#enable_filter2(pg.fore, hArg);
-				this.#enable_filter2(pg.back, hArg);
-				return;
-			}
-			const l = pg.getPage(hArg);
-			this.#enable_filter2(l, hArg);
-		});
+		this.#eachTargetPage(hArg, l=> this.#enable_filter2(l, hArg));
 
 		return false;
 	}

@@ -270,6 +270,15 @@ export class Layer {
 	renderStart(_isSkipping: boolean) { /* empty */ }
 	renderEnd() { /* empty */ }
 
+	// 呼ぶたび body を走らせるラッパを返すが、animated が false のときは初回だけ走って
+	//	以降 no-op になる（[tsy render]・[trans] の「動きが無いレイヤは 1 回だけ焼く」共通形。
+	//	GrpLayer.renderStart / LayerMng.#trans で 3 回同じ自己書き換えを書いていた）
+	static	renderGate(body: ()=> void, animated: boolean): ()=> void {
+		if (animated) return body;
+		let f = ()=> {f = ()=> { /* empty */ }; body()};
+		return ()=> f();
+	}
+
 	// DOM オーバーレイ（PlgLayer.htm / TxtStage）を持つレイヤ用。PIXI childIndex 由来の
 	//	重なり順を CSS z-index へ写す。PIXI 描画に乗るレイヤは無関係なので no-op
 	setDomZ(_z: number) { /* empty */ }

@@ -82,19 +82,13 @@ var l = class {
 			return;
 		}
 		this.#d = new n(this.#u), this.#d.visible = !1, this.ctn.addChildAt(this.#d, 0), this.#d.position.set(-this.ctn.x, -this.ctn.y);
-		let t = () => {
+		let t = o.renderGate(() => {
 			let e = this.ctn.alpha;
 			this.ctn.alpha = 1;
 			for (let e of this.ctn.children) e.visible = !0;
 			this.#d.visible = !1, l.#e.renderer.render(this.ctn, { renderTexture: this.#u }), this.ctn.alpha = e;
 			for (let e of this.ctn.children) e.visible = !1;
-		};
-		if (!this.containMovement) {
-			let e = t;
-			t = () => {
-				t = () => {}, e();
-			};
-		}
+		}, this.containMovement);
 		this.#f = () => {
 			t(), this.#d.visible = !0;
 		}, l.#e.ticker.add(this.#f);

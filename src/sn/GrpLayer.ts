@@ -122,7 +122,7 @@ export class GrpLayer extends Layer {
 		this.ctn.addChildAt(this.#spTsy, 0);
 		this.#spTsy.position.set(-this.ctn.x, -this.ctn.y);
 
-		let fncRenderFore = ()=> {
+		const fncRenderFore = Layer.renderGate(()=> {
 			const a = this.ctn.alpha;
 			this.ctn.alpha = 1;
 			for (const s of this.ctn.children) s.visible = true;
@@ -130,11 +130,7 @@ export class GrpLayer extends Layer {
 			GrpLayer.#appPixi.renderer.render(this.ctn, {renderTexture: this.#rtTsy});	// clear: true
 			this.ctn.alpha = a;
 			for (const s of this.ctn.children) s.visible = false;
-		}
-		if (! this.containMovement) {
-			const oldFnc = fncRenderFore;	// 動きがないなら最初に一度
-			fncRenderFore = ()=> {fncRenderFore = ()=> { /* empty */ }; oldFnc()};
-		}
+		}, this.containMovement);
 		this.#fncRender = ()=> {
 			fncRenderFore();
 			this.#spTsy.visible = true;
