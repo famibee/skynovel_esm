@@ -5,6 +5,7 @@ import type { SysBase } from './SysBase';
 import type { TArg } from './Grammar';
 export declare const BUF_BGM = "BGM";
 export declare const BUF_SE = "SE";
+export declare function getVol(hArg: TArg, def: number): number;
 export declare function xchgbuf({ buf: buf1, buf2 }: TArg): void;
 export declare class SndBuf {
     #private;

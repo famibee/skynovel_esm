@@ -23,6 +23,7 @@ export declare class SysBase implements T_SysRoots, T_SysBase {
     fetch: (url: string, init?: RequestInit) => Promise<Response>;
     protected readonly data: T_Data4Vari;
     initVal(_hTmp: T_H_TMP_DATA, _comp: (data: T_Data4Vari) => void): Promise<void>;
+    protected setData(o: T_Data4Vari): void;
     flush(): void;
     protected flushSub(): void;
     protected val: T_Variable;

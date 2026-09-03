@@ -43,6 +43,9 @@
   3 重複（`SysWeb._import`・`SysApp.initVal`/`_import`）を集約、`SysWeb.#clickDL(href, name)`
   で `<a download>` クリックの 3 重複（`_export`・`savePic`・`outputFile`）を集約。
   単体 777 件・分家 1771 件・tsc 通過。**これでスイープ完了。**
+- 第 8 適用（2026-09-03）… `ConfigBase.searchPath` の拡張子群包含判定 4 箇所を
+  `#extInGroup(grp, ext)` helper へ集約（下記「ConfigBase.ts」参照）。**これで /simplify
+  スイープの掃除候補は消化完了**（残るは modern-web-guidance の別イニシアチブのみ）。
 - 実機確認（2026-09-03）… 描画層 第 3〜4 弾（本家 unit なし）を e2e で確認：
   `Layer.renderGate` は `tsy.e2e.ts` の `[trans]/[wt]` テスト（全 53 → 57 pass）。
   `#defChStyle`（in/out 別ハッシュ・join 既定・重複チェック）／`#pctOrPx`（addStyle の
@@ -87,11 +90,13 @@
 - ~~`RubySpliter.putTxtRb` の `/^\w+｜{"/` / `/^\*.?$/` 毎回リテラル生成~~ … 済。
   `REG_RB_JSON` / `REG_RB_SESAME` モジュール定数へ（テキスト描画のルビ 1 件ごとに通る）。
 
-### ConfigBase.ts — 低優先
+### ConfigBase.ts — 済（2026-09-03）
 
-- `searchPath` に `` `|${grp}|`.includes(`|${ext}|`) `` の「拡張子がパイプ区切り群に含まれるか」
-  判定が 4 箇所。`#extInGroup(grp, ext)` の private helper へ寄せられるが、各所で
-  `search_exts` を先に組んで使い回しており、単純置換だと逆に増える箇所もある。効果小。
+- ~~`searchPath` の `` `|${grp}|`.includes(`|${ext}|`) `` 「拡張子がパイプ区切り群に含まれるか」
+  判定が 4 箇所~~ … 済。`#extInGroup(grp, ext)` private helper へ集約、使い回し用の
+  `const search_exts = `|${extptn}|`` ローカルも廃止（helper 内で毎回組むが対象は h_exts の
+  数エントリ、hcnt>1 の重複チェックも稀で影響なし）。単体 777 件・tsc 通過。minify 後は 4 箇所
+  ともインライン化され `includes` は 1 箇所に。
 
 ### CmnLib.ts
 

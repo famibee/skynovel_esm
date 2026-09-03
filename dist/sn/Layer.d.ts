@@ -53,6 +53,7 @@ export declare class Layer {
     get containMovement(): boolean;
     renderStart(_isSkipping: boolean): void;
     renderEnd(): void;
+    static renderGate(body: () => void, animated: boolean): () => void;
     setDomZ(_z: number): void;
     transBake(): void;
     transUnbake(): void;
