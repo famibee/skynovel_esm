@@ -17,9 +17,12 @@
 - 第 1 適用（2026-09-03）… **`PropParser` / `Grammar` / `Config` / `RubySpliter` 済**
   （下記。単体 757 件・tsc 通過。挙動不変）。パース群で残るのは `CmnLib` の数値パース
   横断確認（下記・要 `Variable` 読解）と `ConfigBase` の小ヘルパ（低優先）のみ。
-- 第 2 パス（2026-09-03）… 描画層のうち `Pages` / `GrpLayer` / `Layer` / `LayerMng` / `SpritesMng` を読了。
-  `SpritesMng` は pixi loader の GC/キャッシュ落とし穴コメント（「continue は御法度」等）が
-  多く、掃除で失うものが大きいので**触らない**と判断。
+- 第 2 パス（2026-09-03）… 描画層を全ファイル読了（`Pages`/`GrpLayer`/`Layer`/`LayerMng`/
+  `SpritesMng`/`TxtLayer`/`TxtStage`）。`SpritesMng` は pixi loader の GC/キャッシュ落とし穴
+  コメントが多く**触らない**と判断。
+- 第 3〜4 適用（2026-09-03）… `LayerMng`（`#eachTargetPage`・`renderGate`）＝`1b1e2da`、
+  `TxtLayer`/`TxtStage`（`#defChStyle`・`#remakeBackColor`・`#pctOrPx`）＝未コミット。
+  分家 1771 件＋本家 777 件・tsc 通過。
 - 第 2 適用（2026-09-03）… **`Pages` / `Layer`（`#scaledWH` 抽出＋`hBldFilter` の CMF 工場化）済**。
   工場化に伴い `test/Layer_filter.test.ts`（20 件）を新設＝ColorMatrixFilter 系 19 個が
   「工場経由」と「pixi 直呼び」で同じ `.matrix` を生むことを保証（分家からのテスト輸入でなく
@@ -115,7 +118,27 @@
   「continue は厳禁、御法度」、`#dec2cachePicMov` の revokeObjectURL タイミング等）。
   `#sortAFrameName` の regex 1 本くらいしか機械的な整理対象が無く、リスク＞リターン。
 
-### TxtLayer.ts（31.8K）/ TxtStage.ts（33.3K）— 未分析
+### TxtLayer.ts / TxtStage.ts — 済（2026-09-03）
+
+- ~~`TxtStage.ch_in_style` と `ch_out_style` が ~60 行ほぼ完全重複（違いは格納先 map と
+  `join` 既定＝出現 true／消去 false だけ）~~ … 済。`#defChStyle(hArg, hStore, joinDef)` へ
+  （分家 ChStyle 系の掃除と同型）。※ `gallery/?cur=ch_in_out` で目視確認可。
+- ~~`TxtLayer.#drawBack`（b_color 分岐）と `chgBackAlpha` が「既存 #b_do 破棄 →
+  今の TxtStage サイズで Graphics 矩形を作り直して最背面へ」を重複~~ … 済。
+  `#remakeBackColor(alpha)` helper へ。
+- ~~`#ch_in_style`/`#ch_out_style`（TxtLayer 側 static）の translate 量整形
+  `x.startsWith('=') ? %  : px` の 2 行重複~~ … 済。`TxtLayer.#pctOrPx(raw, n)` へ。
+- **触らなかったもの**：`#putCh` の巨大 switch（各 case が生成する span 文字列は 1 文字ずつが
+  ブラウザ禁則・ルビレイアウトに直結。`grp`/`tcy` の構造類似はあるが差分が load-bearing）、
+  `#mkStyle_r_align` vs `#mkStyle_r_align4ff`（Firefox は `ruby-align`、他は `text-align`/
+  `padding`＝本質的に別物）、`#clearText` の GC タイミングコメント群。
+
+### フィルタ工場化（`6e71575`）の追い直し — 済
+
+- `6e71575` で `Layer.#cmf((f, h)=> ...)` としたら分家 `test/argdef_parity.test.ts` が落ちた
+  （`upstreamDefaults()` が本家ソースを `argChk_*(hArg, '名前', ...)` 前提で走査するため、
+  ラムダ仮引数を `h` にすると `b`/`scale`/`multiply` を見失う）。`(f, hArg)=> ...` へ戻して修復。
+  **本家ソースで `argChk_*` の第1引数を `hArg` 以外にしない**こと（分家パリティテストの制約）。
 
 ## 未分析
 

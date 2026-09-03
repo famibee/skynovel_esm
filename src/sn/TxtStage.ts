@@ -615,47 +615,26 @@ export class TxtStage extends Container {
 	}
 	static	getChInStyle(name: string) {return TxtStage.#hChInStyle[name]}
 	static	ch_in_style(hArg: TArg): T_ChInOutStyle {
-		const {name} = hArg;
-		if (! name) throw 'nameは必須です';
-		if (TxtStage.#REG_NG_CHSTYLE_NAME_CHR.test(name)) throw `name【${name}】に使えない文字が含まれます`;
-		if (name in TxtStage.#hChInStyle) throw `name【${name}】はすでにあります`;
-
-		const x = String(hArg.x ?? '=0');
-		const y = String(hArg.y ?? '=0');
-		const ret = TxtStage.#hChInStyle[name] = {
-			wait	: argChk_Num(hArg, 'wait', 500),	// アニメ・FI時間
-			alpha	: argChk_Num(hArg, 'alpha', 0),
-			x,	// 初期x値
-			y,	// [tsy]と同様に絶対・相対指定可能
-			// {x:500}			X位置を500に
-			// {x:'=500'}		現在のX位置に+500加算した位置
-			// {x:'=-500'}		現在のX位置に-500加算した位置
-			// {x:'250,500'}	+250から＋500までの間でランダムな値をX位置に
-			// {x:'=250,500'}	+250から＋500までの間でランダムな値を現在のX位置に加算
-			nx		: parseFloat(x.at(0) === '=' ? x.slice(1) : x),
-			ny		: parseFloat(y.at(0) === '=' ? y.slice(1) : y),
-			scale_x	: argChk_Num(hArg, 'scale_x', 1),
-			scale_y	: argChk_Num(hArg, 'scale_y', 1),
-			rotate	: argChk_Num(hArg, 'rotate', 0),
-			join	: argChk_Boolean(hArg, 'join', true),
-						// 文字を順番に出すか（true）同時か（false）
-			ease	: hArg.ease ?? 'ease-out',
-		};
-		return ret;
+		return TxtStage.#defChStyle(hArg, TxtStage.#hChInStyle, true);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	static	#hChOutStyle: {[nm: string]: T_ChInOutStyle}= Object.create(null);
 	static	getChOutStyle(name: string) {return TxtStage.#hChOutStyle[name]}
 	static	ch_out_style(hArg: TArg): T_ChInOutStyle {
+		return TxtStage.#defChStyle(hArg, TxtStage.#hChOutStyle, false);
+	}
+
+	// [ch_in_style]/[ch_out_style] 共通。join の既定だけ違う（出現は順番＝true、消去は同時＝false）
+	static	#defChStyle(hArg: TArg, hStore: {[nm: string]: T_ChInOutStyle}, joinDef: boolean): T_ChInOutStyle {
 		const {name} = hArg;
 		if (! name) throw 'nameは必須です';
 		if (TxtStage.#REG_NG_CHSTYLE_NAME_CHR.test(name)) throw `name【${name}】に使えない文字が含まれます`;
-		if (name in TxtStage.#hChOutStyle) throw `name【${name}】はすでにあります`;
+		if (name in hStore) throw `name【${name}】はすでにあります`;
 
 		const x = String(hArg.x ?? '=0');
 		const y = String(hArg.y ?? '=0');
-		const ret = TxtStage.#hChOutStyle[name] = {
+		return hStore[name] = {
 			wait	: argChk_Num(hArg, 'wait', 500),	// アニメ・FI時間
 			alpha	: argChk_Num(hArg, 'alpha', 0),
 			x,	// 初期x値
@@ -670,11 +649,10 @@ export class TxtStage extends Container {
 			scale_x	: argChk_Num(hArg, 'scale_x', 1),
 			scale_y	: argChk_Num(hArg, 'scale_y', 1),
 			rotate	: argChk_Num(hArg, 'rotate', 0),
-			join	: argChk_Boolean(hArg, 'join', false),
+			join	: argChk_Boolean(hArg, 'join', joinDef),
 						// 文字を順番に出すか（true）同時か（false）
 			ease	: hArg.ease ?? 'ease-out',
 		};
-		return ret;
 	}
 
 	static	readonly	#cntBreak	= new Container;

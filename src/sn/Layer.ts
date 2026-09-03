@@ -173,25 +173,25 @@ export class Layer {
 		},
 		// ColorMatrixFilter 系。各エントリは f へ効果を積むだけ（`multiply` は共通で
 		//	「true なら現在の行列に乗算、false なら置き換え」＝pixi 既定の引数）
-		black_and_white:	Layer.#cmf((f, h)=> f.blackAndWhite(argChk_Boolean(h, 'multiply', false))),	// 白黒
-		brightness:			Layer.#cmf((f, h)=> f.brightness(argChk_Num(h, 'b', 0.5), argChk_Boolean(h, 'multiply', false))),	// 明るさ (b:0〜1、0 は黒)
-		browni:				Layer.#cmf((f, h)=> f.browni(argChk_Boolean(h, 'multiply', true))),	// おいしいブラウニー
-		color_tone:			Layer.#cmf((f, h)=> f.colorTone(argChk_Num(h, 'desaturation', 0.5), argChk_Num(h, 'toned', 0.5), argChk_Num(h, 'light_color', 0xFFE580), argChk_Num(h, 'dark_color', 0xFFE580), argChk_Boolean(h, 'multiply', false))),	// カラートーン（グラデーションマップ風）
-		contrast:			Layer.#cmf((f, h)=> f.contrast(argChk_Num(h, 'amount', 0.5), argChk_Boolean(h, 'multiply', false))),	// コントラスト (amount:0〜1)
-		grayscale:			Layer.#cmf((f, h)=> f.grayscale(argChk_Num(h, 'scale', 0.5), argChk_Boolean(h, 'multiply', false))),	// グレースケール (scale:0〜1、0 は黒)
-		hue:				Layer.#cmf((f, h)=> f.hue(argChk_Num(h, 'f_rotation', 90), argChk_Boolean(h, 'multiply', false))),	// 色相（度単位。既定 90＝0 だと変化なしで分かりづらいので）
-		kodachrome:			Layer.#cmf((f, h)=> f.kodachrome(argChk_Boolean(h, 'multiply', true))),	// コダクローム（1935 Eastman Kodak）
-		lsd:				Layer.#cmf((f, h)=> f.lsd(argChk_Boolean(h, 'multiply', false))),	// LSD 効果
-		negative:			Layer.#cmf((f, h)=> f.negative(argChk_Boolean(h, 'multiply', false))),	// ネガ（RGB マトリクスの逆）
-		night:				Layer.#cmf((f, h)=> f.night(argChk_Num(h, 'intensity', 0.5), argChk_Boolean(h, 'multiply', false))),	// ナイト
-		polaroid:			Layer.#cmf((f, h)=> f.polaroid(argChk_Boolean(h, 'multiply', false))),	// ポラロイド
-		predator:			Layer.#cmf((f, h)=> f.predator(argChk_Num(h, 'amount', 0.5), argChk_Boolean(h, 'multiply', false))),	// 捕食者効果
-		saturate:			Layer.#cmf((f, h)=> f.saturate(argChk_Num(h, 'amount', 0.5), argChk_Boolean(h, 'multiply', false))),	// 彩度 (amount:0〜1)
-		sepia:				Layer.#cmf((f, h)=> f.sepia(argChk_Boolean(h, 'multiply', false))),	// セピア
-		technicolor:		Layer.#cmf((f, h)=> f.technicolor(argChk_Boolean(h, 'multiply', true))),	// テクニカラー（1916）
-		tint:				Layer.#cmf((f, h)=> f.tint(argChk_Num(h, 'f_color', 0x888888), argChk_Boolean(h, 'multiply', false))),	// 色合い（f_color は 16 進）
-		to_bgr:				Layer.#cmf((f, h)=> f.toBGR(argChk_Boolean(h, 'multiply', false))),	// 赤↔青
-		vintage:			Layer.#cmf((f, h)=> f.vintage(argChk_Boolean(h, 'multiply', true))),	// ビンテージ
+		black_and_white:	Layer.#cmf((f, hArg)=> f.blackAndWhite(argChk_Boolean(hArg, 'multiply', false))),	// 白黒
+		brightness:			Layer.#cmf((f, hArg)=> f.brightness(argChk_Num(hArg, 'b', 0.5), argChk_Boolean(hArg, 'multiply', false))),	// 明るさ (b:0〜1、0 は黒)
+		browni:				Layer.#cmf((f, hArg)=> f.browni(argChk_Boolean(hArg, 'multiply', true))),	// おいしいブラウニー
+		color_tone:			Layer.#cmf((f, hArg)=> f.colorTone(argChk_Num(hArg, 'desaturation', 0.5), argChk_Num(hArg, 'toned', 0.5), argChk_Num(hArg, 'light_color', 0xFFE580), argChk_Num(hArg, 'dark_color', 0xFFE580), argChk_Boolean(hArg, 'multiply', false))),	// カラートーン（グラデーションマップ風）
+		contrast:			Layer.#cmf((f, hArg)=> f.contrast(argChk_Num(hArg, 'amount', 0.5), argChk_Boolean(hArg, 'multiply', false))),	// コントラスト (amount:0〜1)
+		grayscale:			Layer.#cmf((f, hArg)=> f.grayscale(argChk_Num(hArg, 'scale', 0.5), argChk_Boolean(hArg, 'multiply', false))),	// グレースケール (scale:0〜1、0 は黒)
+		hue:				Layer.#cmf((f, hArg)=> f.hue(argChk_Num(hArg, 'f_rotation', 90), argChk_Boolean(hArg, 'multiply', false))),	// 色相（度単位。既定 90＝0 だと変化なしで分かりづらいので）
+		kodachrome:			Layer.#cmf((f, hArg)=> f.kodachrome(argChk_Boolean(hArg, 'multiply', true))),	// コダクローム（1935 Eastman Kodak）
+		lsd:				Layer.#cmf((f, hArg)=> f.lsd(argChk_Boolean(hArg, 'multiply', false))),	// LSD 効果
+		negative:			Layer.#cmf((f, hArg)=> f.negative(argChk_Boolean(hArg, 'multiply', false))),	// ネガ（RGB マトリクスの逆）
+		night:				Layer.#cmf((f, hArg)=> f.night(argChk_Num(hArg, 'intensity', 0.5), argChk_Boolean(hArg, 'multiply', false))),	// ナイト
+		polaroid:			Layer.#cmf((f, hArg)=> f.polaroid(argChk_Boolean(hArg, 'multiply', false))),	// ポラロイド
+		predator:			Layer.#cmf((f, hArg)=> f.predator(argChk_Num(hArg, 'amount', 0.5), argChk_Boolean(hArg, 'multiply', false))),	// 捕食者効果
+		saturate:			Layer.#cmf((f, hArg)=> f.saturate(argChk_Num(hArg, 'amount', 0.5), argChk_Boolean(hArg, 'multiply', false))),	// 彩度 (amount:0〜1)
+		sepia:				Layer.#cmf((f, hArg)=> f.sepia(argChk_Boolean(hArg, 'multiply', false))),	// セピア
+		technicolor:		Layer.#cmf((f, hArg)=> f.technicolor(argChk_Boolean(hArg, 'multiply', true))),	// テクニカラー（1916）
+		tint:				Layer.#cmf((f, hArg)=> f.tint(argChk_Num(hArg, 'f_color', 0x888888), argChk_Boolean(hArg, 'multiply', false))),	// 色合い（f_color は 16 進）
+		to_bgr:				Layer.#cmf((f, hArg)=> f.toBGR(argChk_Boolean(hArg, 'multiply', false))),	// 赤↔青
+		vintage:			Layer.#cmf((f, hArg)=> f.vintage(argChk_Boolean(hArg, 'multiply', true))),	// ビンテージ
 	};
 	// ColorMatrixFilter を生成し apply で効果を積んで返す共通形
 	static	#cmf(apply: (f: InstanceType<typeof ColorMatrixFilter>, hArg: TArg)=> void): (hArg: TArg)=> Filter {

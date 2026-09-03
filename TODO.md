@@ -18,10 +18,9 @@
 - [ ] `src/sn/` パースユーティリティ群 … `PropParser`/`Grammar`/`Config`/`RubySpliter` は適用済み。
       残り：`CmnLib` の数値パース重複（`Variable.#castAuto` と横断確認してから）／
       `ConfigBase` の小ヘルパ（低優先）
-- [ ] `src/sn/` 描画層 … `Pages`/`Layer`/`GrpLayer`/`LayerMng` は適用済み（`#eachTargetPage`・
-      `Layer.renderGate`・`#scaledWH`・フィルタ工場化）。`SpritesMng` は見送り確定。
-      残り：`TxtLayer`（31.8K）/ `TxtStage`（33.3K）の分析。
-      ※ `Layer.renderGate` は render ホットパス。`tsy.e2e.ts`＋`[trans]` サンプルで実機確認を
+- [ ] `src/sn/` 描画層 … 全ファイル適用済み or 見送り確定（`SpritesMng`・`#putCh` switch・
+      `#mkStyle_r_align4ff` は触らない）。**実機確認の宿題**：`Layer.renderGate`＝`tsy.e2e.ts`＋
+      `[trans]` サンプル、`#defChStyle`＝`gallery/?cur=ch_in_out`、`#remakeBackColor`＝`[lay b_color=]`
 - [ ] `src/sn/` 実行エンジン（`ScriptIterator` / `Main` / `Variable` / `CallStack` / `Areas`）の分析
 - [ ] `src/sn/` 音声・入力層（`SoundMng` / `SndBuf` / `SndCtx` / `EventMng` / `FocusMng` /
       `GamepadMng` / `Button`）の分析

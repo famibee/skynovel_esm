@@ -437,7 +437,7 @@ var M = class e extends n {
 		} else "alpha" in t && (n.opacity = String(this.ctn.alpha));
 		if ("width" in t && (n.width = String(t.width ?? "0") + "px"), "height" in t && (n.height = String(t.height ?? "0") + "px"), "pl" in t && (n.paddingLeft = String(t.pl ?? "0") + "px"), "pr" in t && (n.paddingRight = String(t.pr ?? "0") + "px"), "pt" in t && (n.paddingTop = String(t.pt ?? "0") + "px"), "pb" in t && (n.paddingBottom = String(t.pb ?? "0") + "px"), this.#l.lay(t), this.#p(), this.#h = this.ctn.position.x, n.transformOrigin = `${String(this.ctn.pivot.x)}px ${String(this.ctn.pivot.y)}px`, this.cvsResize(), n.display = this.ctn.visible ? "inline" : "none", ":redraw" in t && this.#x > 0) {
 			let e = [this.#a.innerHTML.replaceAll(/(animation-delay: )\d+ms/g, "$10ms"), "<span class='sn_ch' data-add='{\"ch_in_style\":\"default\"}'>&emsp;</span>"];
-			this.#F(), this.goTxt(e, !0);
+			this.#I(), this.goTxt(e, !0);
 		}
 	}
 	#f = 0;
@@ -483,7 +483,7 @@ var M = class e extends n {
 	#x = 0;
 	static #S = "<span class='sn_ch sn_ch_last'>&emsp;</span>";
 	#C(i, a) {
-		e.#A.visible = !1;
+		e.#j.visible = !1;
 		let o = this.#b.length, s = "";
 		if (o === 0) {
 			if (e.#e.oCfg.debug.masume && (f.debugLog && console.log(`🍌 masume ${this.name} v:${String(this.visible)} l:${String(this.x)} t:${String(this.y)} a:${String(this.alpha)} pl:${String(this.#d.pad_left)} pr:${String(this.#d.pad_right)} pt:${String(this.#d.pad_top)} pb:${String(this.#d.pad_bottom)} w:${String(this.#d.$width)} h:${String(this.#d.$height)}`), this.#s.clear().beginFill(3407616, .2).lineStyle(1, 3407616, 1).drawRect(-this.#d.pad_left, -this.#d.pad_top, this.#d.$width, this.#d.$height).endFill().beginFill(13311, .2).lineStyle(2, 13311, 1).drawRect(0, 0, this.#d.$width - this.#d.pad_left - this.#d.pad_right, this.#d.$height - this.#d.pad_top - this.#d.pad_bottom).endFill()), this.#a.innerHTML = [...i].join("").replaceAll(/[\n\t]/g, "") + e.#S, !this.#l.break_fixed) {
@@ -508,7 +508,7 @@ var M = class e extends n {
 		}
 		let [h, g] = this.#l.hyph(this.#a, m, this.#g, o, s);
 		this.#b = h;
-		let v = _.ease(this.#M);
+		let v = _.ease(this.#N);
 		for (let t = o; t < g; ++t) {
 			let i = this.#b[t], { elm: { dataset: a, parentElement: o }, rect: s } = i, c = JSON.parse(a.arg ?? "{\"delay\": 0}"), l = JSON.parse(a.add ?? "{}"), u = e.#D[l.ch_in_style];
 			if (this.#u(i), a.cmd === "grp") {
@@ -535,7 +535,7 @@ var M = class e extends n {
 		this.#w = () => {
 			this.#w = () => !1;
 			for (let e of b) e.className = "sn_ch";
-			e.#A.position.set(this.#l.break_fixed_left, this.#l.break_fixed_top), e.#A.visible = !0, this.noticeCompTxt();
+			e.#j.position.set(this.#l.break_fixed_left, this.#l.break_fixed_top), e.#j.visible = !0, this.noticeCompTxt();
 			let t = this.#y.shift();
 			return this.#y.length > 0 && t(), !0;
 		};
@@ -558,7 +558,7 @@ var M = class e extends n {
 		};
 		x.addEventListener("animationend", S, {
 			once: !0,
-			signal: this.#P.signal
+			signal: this.#F.signal
 		});
 	}
 	#w = () => !1;
@@ -596,67 +596,53 @@ var M = class e extends n {
 		return e.#D[t];
 	}
 	static ch_in_style(t) {
-		let { name: n } = t;
-		if (!n) throw "nameは必須です";
-		if (e.#O.test(n)) throw `name【${n}】に使えない文字が含まれます`;
-		if (n in e.#D) throw `name【${n}】はすでにあります`;
-		let r = String(t.x ?? "=0"), i = String(t.y ?? "=0");
-		return e.#D[n] = {
-			wait: l(t, "wait", 500),
-			alpha: l(t, "alpha", 0),
-			x: r,
-			y: i,
-			nx: parseFloat(r.at(0) === "=" ? r.slice(1) : r),
-			ny: parseFloat(i.at(0) === "=" ? i.slice(1) : i),
-			scale_x: l(t, "scale_x", 1),
-			scale_y: l(t, "scale_y", 1),
-			rotate: l(t, "rotate", 0),
-			join: d(t, "join", !0),
-			ease: t.ease ?? "ease-out"
-		};
+		return e.#A(t, e.#D, !0);
 	}
 	static #k = Object.create(null);
 	static getChOutStyle(t) {
 		return e.#k[t];
 	}
 	static ch_out_style(t) {
-		let { name: n } = t;
-		if (!n) throw "nameは必須です";
-		if (e.#O.test(n)) throw `name【${n}】に使えない文字が含まれます`;
-		if (n in e.#k) throw `name【${n}】はすでにあります`;
-		let r = String(t.x ?? "=0"), i = String(t.y ?? "=0");
-		return e.#k[n] = {
+		return e.#A(t, e.#k, !1);
+	}
+	static #A(t, n, r) {
+		let { name: i } = t;
+		if (!i) throw "nameは必須です";
+		if (e.#O.test(i)) throw `name【${i}】に使えない文字が含まれます`;
+		if (i in n) throw `name【${i}】はすでにあります`;
+		let a = String(t.x ?? "=0"), o = String(t.y ?? "=0");
+		return n[i] = {
 			wait: l(t, "wait", 500),
 			alpha: l(t, "alpha", 0),
-			x: r,
-			y: i,
-			nx: parseFloat(r.at(0) === "=" ? r.slice(1) : r),
-			ny: parseFloat(i.at(0) === "=" ? i.slice(1) : i),
+			x: a,
+			y: o,
+			nx: parseFloat(a.at(0) === "=" ? a.slice(1) : a),
+			ny: parseFloat(o.at(0) === "=" ? o.slice(1) : o),
 			scale_x: l(t, "scale_x", 1),
 			scale_y: l(t, "scale_y", 1),
 			rotate: l(t, "rotate", 0),
-			join: d(t, "join", !1),
+			join: d(t, "join", r),
 			ease: t.ease ?? "ease-out"
 		};
 	}
-	static #A = new n();
-	static #j = new y();
+	static #j = new n();
+	static #M = new y();
 	dispBreak(t) {
 		e.delBreak();
-		let n = e.#A;
-		n.visible = !1, this.addChild(n), e.#j.destroy(), e.#j = new y(t.pic, n, (e) => {
+		let n = e.#j;
+		n.visible = !1, this.addChild(n), e.#M.destroy(), e.#M = new y(t.pic, n, (e) => {
 			n.parent ? (e.x = l(t, "x", 0), e.y = l(t, "y", 0), e.width = l(t, "width", this.#d.fontsize), e.height = l(t, "height", this.#d.fontsize)) : n.removeChild(e);
 		});
 	}
 	static delBreak() {
-		let t = e.#A;
-		t.parent?.removeChild(t), e.#j.destroy();
+		let t = e.#j;
+		t.parent?.removeChild(t), e.#M.destroy();
 	}
-	#M = "Quadratic.Out";
 	#N = "Quadratic.Out";
-	#P = new AbortController();
-	#F() {
-		this.#s.clear(), this.#b = [], this.#x = 0, this.#y = [], this.#P.abort(), this.#P = new AbortController(), this.skipChIn();
+	#P = "Quadratic.Out";
+	#F = new AbortController();
+	#I() {
+		this.#s.clear(), this.#b = [], this.#x = 0, this.#y = [], this.#F.abort(), this.#F = new AbortController(), this.skipChIn();
 		let t = document.createElement("span");
 		t.style.cssText = this.#a.style.cssText, t.classList.value = this.#a.classList.value;
 		let r = this.#a, i = Array.from(r.getElementsByClassName("sn_ch"));
@@ -687,31 +673,31 @@ var M = class e extends n {
 				};
 				e.addEventListener("animationend", t, {
 					once: !0,
-					signal: this.#P.signal
+					signal: this.#F.signal
 				});
 			} else o();
 		}
 		this.#a = t;
 	}
 	reNew() {
-		this.#F();
+		this.#I();
 		let t = new e(this.ctn, this.canFocus, this.sys);
-		return t.#d = this.#d, t.#a.style.cssText = this.#a.style.cssText, t.#h = this.#h, t.name = this.name, t.#p(), t.#I = this.#I, t.#M = this.#M, t.#N = this.#N, this.#l.reNew(t.#l), this.destroy(), t;
+		return t.#d = this.#d, t.#a.style.cssText = this.#a.style.cssText, t.#h = this.#h, t.name = this.name, t.#p(), t.#L = this.#L, t.#N = this.#N, t.#P = this.#P, this.#l.reNew(t.#l), this.destroy(), t;
 	}
-	#I = void 0;
+	#L = void 0;
 	record() {
 		return {
 			infTL: this.#d,
 			cssText: this.#a.style.cssText,
 			left: this.#h,
-			ch_filter: this.#I,
-			fi_easing: this.#M,
-			fo_easing: this.#N,
+			ch_filter: this.#L,
+			fi_easing: this.#N,
+			fo_easing: this.#P,
 			hyph: this.#l.record()
 		};
 	}
 	playback(e) {
-		this.#d = e.infTL, this.position.set(this.#d.pad_left, this.#d.pad_top), this.#a.style.cssText = e.cssText, this.#h = e.left, this.#p(), this.#I = e.ch_filter, this.#M = e.fi_easing, this.#N = e.fo_easing, this.#l.playback(e.hyph);
+		this.#d = e.infTL, this.position.set(this.#d.pad_left, this.#d.pad_top), this.#a.style.cssText = e.cssText, this.#h = e.left, this.#p(), this.#L = e.ch_filter, this.#N = e.fi_easing, this.#P = e.fo_easing, this.#l.playback(e.hyph);
 	}
 	get cssText() {
 		return this.#a.style.cssText;
@@ -719,14 +705,14 @@ var M = class e extends n {
 	set cssText(e) {
 		this.#a.style.cssText = e;
 	}
-	#L = void 0;
+	#R = void 0;
 	snapshot(e, n) {
 		j((i) => {
-			this.#L = r.from(i), this.#g && (this.#L.x += f.stageW - (this.#h + this.#d.$width)), this.#L.y -= this.#v, this.#L.texture.frame = new t(0, 0, Math.min(this.#L.width, this.#d.$width - this.#h), Math.min(this.#L.height, this.#d.$height)), this.#o.addChild(this.#L), e.render(this.#L, { clear: !1 }), n();
+			this.#R = r.from(i), this.#g && (this.#R.x += f.stageW - (this.#h + this.#d.$width)), this.#R.y -= this.#v, this.#R.texture.frame = new t(0, 0, Math.min(this.#R.width, this.#d.$width - this.#h), Math.min(this.#R.height, this.#d.$height)), this.#o.addChild(this.#R), e.render(this.#R, { clear: !1 }), n();
 		}, this.#a, this.#d, this.#_, this.#v, !1);
 	}
 	snapshot_end() {
-		this.#L &&= (this.#o.removeChild(this.#L), void 0);
+		this.#R &&= (this.#o.removeChild(this.#R), void 0);
 	}
 	makeDesignCast(e) {}
 	showDesignCast() {}
@@ -739,7 +725,7 @@ var M = class e extends n {
 		return `"txt":"${this.#a.textContent.replaceAll(/(["\\])/g, "\\$1")}", "style":{${e.join(",")}}`;
 	}
 	destroy() {
-		e.delBreak(), this.#a.parentElement.removeChild(this.#a), this.#a = document.createElement("span"), this.removeChild(this.#o), this.removeChild(this.#s), this.#s.clear(), this.#u = () => {}, this.#y = [], this.#b = [], this.#x = 0, this.#E = [], this.#P.abort(), this.#I = void 0, super.destroy();
+		e.delBreak(), this.#a.parentElement.removeChild(this.#a), this.#a = document.createElement("span"), this.removeChild(this.#o), this.removeChild(this.#s), this.#s.clear(), this.#u = () => {}, this.#y = [], this.#b = [], this.#x = 0, this.#E = [], this.#F.abort(), this.#L = void 0, super.destroy();
 	}
 }, N = class e extends m {
 	static #e;
@@ -747,16 +733,16 @@ var M = class e extends n {
 	static #n;
 	static #r;
 	static init(e, t, n, r, i, a) {
-		this.#e = e, M.init(e, a), this.#t = n, this.#r = r, this.#n = i, n.setDoRecProc((e) => this.chgDoRec(e)), t.autowc = (e) => this.#d(e), t.autowc({
+		this.#e = e, M.init(e, a), this.#t = n, this.#r = r, this.#n = i, n.setDoRecProc((e) => this.chgDoRec(e)), t.autowc = (e) => this.#f(e), t.autowc({
 			enabled: !1,
 			text: "",
 			time: 0
-		}), t.ch_in_style = (e) => this.#i(e), t.ch_out_style = (e) => this.#a(e), M.initChStyle(), s(), u(e.matchPath(".+", p.FONT).flatMap((e) => Object.values(e).map((e) => `
+		}), t.ch_in_style = (e) => this.#a(e), t.ch_out_style = (e) => this.#o(e), M.initChStyle(), s(), u(e.matchPath(".+", p.FONT).flatMap((e) => Object.values(e).map((e) => `
 @font-face {
 	font-family: '${String(e)}';
 	src: url('${this.#e.searchPath(String(e), p.FONT)}');
 }
-`)).join("") + "\n.sn_tx {\n	pointer-events: none;\n	user-select: none;\n	-webkit-touch-callout: none;\n	box-sizing: border-box;\n}\n.sn_ch {\n	position: relative;\n	display: inline-block;\n}\n"), this.#i({
+`)).join("") + "\n.sn_tx {\n	pointer-events: none;\n	user-select: none;\n	-webkit-touch-callout: none;\n	box-sizing: border-box;\n}\n.sn_ch {\n	position: relative;\n	display: inline-block;\n}\n"), this.#a({
 			name: "default",
 			wait: 500,
 			alpha: 0,
@@ -767,7 +753,7 @@ var M = class e extends n {
 			rotate: 0,
 			join: !0,
 			ease: "ease-out"
-		}), this.#a({
+		}), this.#o({
 			name: "default",
 			wait: 0,
 			alpha: 0,
@@ -780,76 +766,79 @@ var M = class e extends n {
 			ease: "ease-out"
 		});
 	}
-	static #i(e) {
-		let { x: t, y: n, nx: r, ny: i, alpha: a, wait: o, ease: s, rotate: c, scale_x: l, scale_y: d } = M.ch_in_style(e), f = t.startsWith("=") ? `${String(r * 100)}%` : `${String(r)}px`, p = n.startsWith("=") ? `${String(i * 100)}%` : `${String(i)}px`, { name: m = "" } = e;
+	static #i(e, t) {
+		return e.startsWith("=") ? `${String(t * 100)}%` : `${String(t)}px`;
+	}
+	static #a(t) {
+		let { x: n, y: r, nx: i, ny: a, alpha: o, wait: s, ease: c, rotate: l, scale_x: d, scale_y: f } = M.ch_in_style(t), p = e.#i(n, i), m = e.#i(r, a), { name: h = "" } = t;
 		return u(`
-.sn_ch_in_${m} {
+.sn_ch_in_${h} {
 	position: relative;
 	display: inline-block;
 }
-.go_ch_in_${m} {
-	opacity: ${String(a)};
+.go_ch_in_${h} {
+	opacity: ${String(o)};
 	position: relative;
 	display: inline-block;
-	animation: sn_ch_in_${m} ${String(o)}ms ${s} 0s both;
+	animation: sn_ch_in_${h} ${String(s)}ms ${c} 0s both;
 }
-@keyframes sn_ch_in_${m} {
-	from {transform: rotate(${String(c)}deg) scale(${String(l)}, ${String(d)}) translate(${f}, ${p})}
+@keyframes sn_ch_in_${h} {
+	from {transform: rotate(${String(l)}deg) scale(${String(d)}, ${String(f)}) translate(${p}, ${m})}
 	to {opacity: 1; transform: none;}
 }
 `), !1;
 	}
-	static #a(e) {
-		let { x: t, y: n, nx: r, ny: i, alpha: a, wait: o, ease: s, rotate: c, scale_x: l, scale_y: d } = M.ch_out_style(e), f = t.startsWith("=") ? `${String(r * 100)}%` : `${String(r)}px`, p = n.startsWith("=") ? `${String(i * 100)}%` : `${String(i)}px`, { name: m = "" } = e;
+	static #o(t) {
+		let { x: n, y: r, nx: i, ny: a, alpha: o, wait: s, ease: c, rotate: l, scale_x: d, scale_y: f } = M.ch_out_style(t), p = e.#i(n, i), m = e.#i(r, a), { name: h = "" } = t;
 		return u(`
-.go_ch_out_${m} {
+.go_ch_out_${h} {
 	position: relative;
 	display: inline-block;
-	animation: go_ch_out_${m} ${String(o)}ms ${s} 0s both;
+	animation: go_ch_out_${h} ${String(s)}ms ${c} 0s both;
 }
-@keyframes go_ch_out_${m} {
+@keyframes go_ch_out_${h} {
 	to {
-		opacity: ${String(a)};
-		transform: rotate(${String(c)}deg) scale(${String(l)}, ${String(d)}) translate(${f}, ${p});
+		opacity: ${String(o)};
+		transform: rotate(${String(l)}deg) scale(${String(d)}, ${String(f)}) translate(${p}, ${m});
 	}
 `), !1;
 	}
-	static #o = 10;
+	static #s = 10;
 	static set msecChWait(t) {
-		e.#o = t;
+		e.#s = t;
 	}
 	static get msecChWait() {
-		return e.#o;
+		return e.#s;
 	}
-	static #s;
 	static #c;
+	static #l;
 	static setEvtMng(e, t, n) {
-		this.#s = e, this.#c = t, M.setEvtMng(e, n);
+		this.#c = e, this.#l = t, M.setEvtMng(e, n);
 	}
-	static #l = !1;
-	static #u = {};
-	static #d(e) {
-		this.#l = d(e, "enabled", this.#l), this.#t.setVal_Nochk("save", "const.sn.autowc.enabled", this.#l);
+	static #u = !1;
+	static #d = {};
+	static #f(e) {
+		this.#u = d(e, "enabled", this.#u), this.#t.setVal_Nochk("save", "const.sn.autowc.enabled", this.#u);
 		let { text: t } = e;
 		if ("text" in e != "time" in e) throw "[autowc] textとtimeは同時指定必須です";
 		if (this.#t.setVal_Nochk("save", "const.sn.autowc.text", t), !t) return this.#t.setVal_Nochk("save", "const.sn.autowc.time", ""), !1;
 		let n = t.length;
-		if (this.#l && n === 0) throw "[autowc] enabled === false かつ text === \"\" は許されません";
+		if (this.#u && n === 0) throw "[autowc] enabled === false かつ text === \"\" は許されません";
 		let r = String(e.time).split(",");
 		if (r.length !== n) throw "[autowc] text文字数とtimeに記述された待ち時間（コンマ区切り）は同数にして下さい";
-		this.#u = {};
-		for (let e = 0; e < n; ++e) this.#u[t[e]] = c(r[e]);
+		this.#d = {};
+		for (let e = 0; e < n; ++e) this.#d[t[e]] = c(r[e]);
 		return this.#t.setVal_Nochk("save", "const.sn.autowc.time", e.time), !1;
 	}
-	#f = 0;
 	#p = 0;
-	#m = !1;
-	#h = void 0;
-	#g = "";
-	#_ = new M(this.ctn, () => this.canFocus(), e.#c);
-	#v = new x();
-	#y = document.createElement("span");
-	static #b = {
+	#m = 0;
+	#h = !1;
+	#g = void 0;
+	#_ = "";
+	#v = new M(this.ctn, () => this.canFocus(), e.#l);
+	#y = new x();
+	#b = document.createElement("span");
+	static #x = {
 		"text-align": 0,
 		"text-align-last": 0,
 		height: 0,
@@ -859,9 +848,9 @@ var M = class e extends n {
 		"padding-top": 0,
 		"padding-bottom": 0
 	};
-	#x = new n();
+	#S = new n();
 	constructor() {
-		super(), this.ctn.addChild(this.#_), this.#v.init(this.#B), this.ctn.addChild(this.#x), this.#x.name = "cntBtn", this.lay({
+		super(), this.ctn.addChild(this.#v), this.#y.init(this.#H), this.ctn.addChild(this.#S), this.#S.name = "cntBtn", this.lay({
 			style: `width: ${String(f.stageW)}px; height: ${String(f.stageH)}px; font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', '游ゴシック Medium', meiryo, sans-serif; color: white; font-size: 24px; line-height: 1.5; padding: 16px;`,
 			in_style: "default",
 			out_style: "default",
@@ -869,132 +858,135 @@ var M = class e extends n {
 		});
 	}
 	destroy() {
-		this.#h &&= (this.ctn.removeChild(this.#h).destroy(), void 0), e.#r.pagebreak(), this.#_.destroy();
+		this.#g &&= (this.ctn.removeChild(this.#g).destroy(), void 0), e.#r.pagebreak(), this.#v.destroy();
 	}
 	static destroy() {
-		this.#l = !1, this.#u = {}, this.#P = (e) => e;
+		this.#u = !1, this.#d = {}, this.#I = (e) => e;
 	}
 	set name(e) {
-		this.name_ = e, this.#_.name = e;
+		this.name_ = e, this.#v.name = e;
 	}
 	get name() {
 		return this.name_;
 	}
 	cvsResize() {
-		this.#_.cvsResize();
+		this.#v.cvsResize();
 	}
 	setDomZ(e) {
-		this.#_.setDomZ(e);
+		this.#v.setDomZ(e);
 	}
 	cvsResizeChildren() {
-		for (let e of this.#x.children) e.cvsResize();
+		for (let e of this.#S.children) e.cvsResize();
 	}
 	procSetX(e) {
-		this.#_.lay({ x: e });
+		this.#v.lay({ x: e });
 	}
 	procSetY(e) {
-		this.#_.lay({ y: e });
+		this.#v.lay({ y: e });
 	}
 	lay(t) {
-		if (super.lay(t), m.setXY(this.ctn, t, this.ctn), t[":id_tag"] = this.name_.slice(0, -7), x.setting(t), this.#k(t), this.#_.lay(t), "r_align" in t && (this.#L = t.r_align ?? ""), this.#F = f.isSafari ? this.#_.tategaki ? (e, t) => `text-align: start; height: ${String(t)}em; padding-top: ${e}; padding-bottom: ${e};` : (e, t) => `text-align: start; width: ${String(t)}em; padding-left: ${e}; padding-right: ${e};` : this.#_.tategaki ? (e) => `text-align: justify; text-align-last: justify; padding-top: ${e}; padding-bottom: ${e};` : (e) => `text-align: justify; text-align-last: justify; padding-left: ${e}; padding-right: ${e};`, f.isFirefox && (this.#I = this.#R), "r_style" in t) {
+		if (super.lay(t), m.setXY(this.ctn, t, this.ctn), t[":id_tag"] = this.name_.slice(0, -7), x.setting(t), this.#j(t), this.#v.lay(t), "r_align" in t && (this.#z = t.r_align ?? ""), this.#L = f.isSafari ? this.#v.tategaki ? (e, t) => `text-align: start; height: ${String(t)}em; padding-top: ${e}; padding-bottom: ${e};` : (e, t) => `text-align: start; width: ${String(t)}em; padding-left: ${e}; padding-right: ${e};` : this.#v.tategaki ? (e) => `text-align: justify; text-align-last: justify; padding-top: ${e}; padding-bottom: ${e};` : (e) => `text-align: justify; text-align-last: justify; padding-left: ${e}; padding-right: ${e};`, f.isFirefox && (this.#R = this.#B), "r_style" in t) {
 			if (t.r_style) {
 				let n = document.createElement("span");
 				n.style.cssText = t.r_style;
-				let r = n.style.length, i = this.#y.style;
+				let r = n.style.length, i = this.#b.style;
 				for (let t = 0; t < r; ++t) {
 					let r = n.style[t];
-					if (r in e.#b) {
+					if (r in e.#x) {
 						h.myTrace(`${String(r)}は指定できません`, "W");
 						continue;
 					}
 					let a = n.style[r];
 					a && (i[r] = a);
 				}
-			} else this.#y.style.cssText = "";
+			} else this.#b.style.cssText = "";
 		}
-		if ("alpha" in t) for (let e of this.#x.children) e.alpha = this.ctn.alpha;
-		this.#S(t), this.#T(t);
-		let n = v.procID + `TxtLayer lay name:${this.name_}`, r = this.#O(t, (e) => {
+		if ("alpha" in t) for (let e of this.#S.children) e.alpha = this.ctn.alpha;
+		this.#C(t), this.#E(t);
+		let n = v.procID + `TxtLayer lay name:${this.name_}`, r = this.#k(t, (e) => {
 			e && v.endProc(n);
 		});
 		return r && v.beginProc(n), r;
 	}
-	#S(e) {
+	#C(e) {
 		let { in_style: t } = e;
 		if (!t) return;
 		let n = M.getChInStyle(t);
 		if (!n) throw `存在しないin_style【${t}】です`;
-		this.#C = t, this.#w = n.join;
+		this.#w = t, this.#T = n.join;
 	}
-	#C = "";
-	#w = !0;
+	#w = "";
+	#T = !0;
 	get width() {
-		return this.#_.getWidth;
+		return this.#v.getWidth;
 	}
 	get height() {
-		return this.#_.getHeight;
+		return this.#v.getHeight;
 	}
-	#T(e) {
+	#E(e) {
 		let { out_style: t } = e;
 		if (t) {
 			if (!M.getChOutStyle(t)) throw `存在しないout_style【${t}】です`;
-			this.#E = t;
+			this.#D = t;
 		}
 	}
-	#E = "";
-	#D = new y();
-	#O(t, n) {
-		if ("back_clear" in t) return d(t, "back_clear", !1) && (this.#f = 0, this.#p = 0, this.#m = !1, this.#g = ""), n(!1), !1;
-		this.#p = l(t, "b_alpha", this.#p), this.#m = d(t, "b_alpha_isfixed", this.#m);
-		let r = (this.#m ? 1 : Number(e.#t.getVal("sys:TextLayer.Back.Alpha"))) * this.#p;
+	#D = "";
+	#O = new y();
+	#k(t, n) {
+		if ("back_clear" in t) return d(t, "back_clear", !1) && (this.#p = 0, this.#m = 0, this.#h = !1, this.#_ = ""), n(!1), !1;
+		this.#m = l(t, "b_alpha", this.#m), this.#h = d(t, "b_alpha_isfixed", this.#h);
+		let r = (this.#h ? 1 : Number(e.#t.getVal("sys:TextLayer.Back.Alpha"))) * this.#m;
 		if (t.b_pic) {
-			if (this.#g !== t.b_pic) return this.#g = t.b_pic, this.#h && (this.ctn.removeChild(this.#h), this.#h.destroy()), this.#D = new y(this.#g, this.ctn, (e) => {
-				this.#h = e, e.name = "back(pic)", e.visible = r > 0, e.alpha = r, this.#_.setMySize(e.width, e.height), this.ctn.setChildIndex(e, 0), n(!0);
-			}), this.#D.ret;
-		} else "b_color" in t && (this.#f = o(t, "b_color", 0), this.#h && (this.ctn.removeChild(this.#h), this.#h.destroy()), this.#g = "", this.ctn.addChildAt((this.#h = new i()).beginFill(this.#f, r).lineStyle(void 0).drawRect(0, 0, this.#_.getWidth, this.#_.getHeight).endFill(), 0), this.#h.name = "back(color)");
-		return this.#h && (this.#h.visible = r > 0, this.#h.alpha = r), n(!1), !1;
+			if (this.#_ !== t.b_pic) return this.#_ = t.b_pic, this.#g && (this.ctn.removeChild(this.#g), this.#g.destroy()), this.#O = new y(this.#_, this.ctn, (e) => {
+				this.#g = e, e.name = "back(pic)", e.visible = r > 0, e.alpha = r, this.#v.setMySize(e.width, e.height), this.ctn.setChildIndex(e, 0), n(!0);
+			}), this.#O.ret;
+		} else "b_color" in t && (this.#p = o(t, "b_color", 0), this.#_ = "", this.#A(r));
+		return this.#g && (this.#g.visible = r > 0, this.#g.alpha = r), n(!1), !1;
+	}
+	#A(e) {
+		this.#g && (this.ctn.removeChild(this.#g), this.#g.destroy()), this.ctn.addChildAt((this.#g = new i()).beginFill(this.#p, e).lineStyle(void 0).drawRect(0, 0, this.#v.getWidth, this.#v.getHeight).endFill(), 0), this.#g.name = "back(color)";
 	}
 	chgBackAlpha(e) {
-		let t = this.#m ? this.#p : e * this.#p;
-		this.#h instanceof i && (this.#h && (this.ctn.removeChild(this.#h), this.#h.destroy()), this.ctn.addChildAt((this.#h = new i()).beginFill(this.#f, t).lineStyle(void 0).drawRect(0, 0, this.#_.getWidth, this.#_.getHeight).endFill(), 0), this.#h.name = "back(color)"), this.#h && (this.#h.visible = t > 0, this.#h.alpha = t);
+		let t = this.#h ? this.#m : e * this.#m;
+		this.#g instanceof i && this.#A(t), this.#g && (this.#g.visible = t > 0, this.#g.alpha = t);
 	}
-	#k(e) {
-		"noffs" in e && (this.#M = e.noffs ?? "", this.#N = RegExp(`[　${this.#M}]`)), "ffs" in e && (this.#A ??= "", this.#j = this.#A === "" ? () => "" : (e) => this.#N.test(e) ? "" : ` font-feature-settings: ${this.#A};`);
+	#j(e) {
+		"noffs" in e && (this.#P = e.noffs ?? "", this.#F = RegExp(`[　${this.#P}]`)), "ffs" in e && (this.#M ??= "", this.#N = this.#M === "" ? () => "" : (e) => this.#F.test(e) ? "" : ` font-feature-settings: ${this.#M};`);
 	}
-	#A = "";
-	#j = (e) => "";
 	#M = "";
-	#N = /[　]/;
+	#N = (e) => "";
+	#P = "";
+	#F = /[　]/;
 	static chgDoRec(e) {
-		this.#P = e ? (e) => e : (e) => `<span class='offrec'>${e}</span>`;
+		this.#I = e ? (e) => e : (e) => `<span class='offrec'>${e}</span>`;
 	}
-	static #P = (e) => e;
+	static #I = (e) => e;
 	isCur = !1;
-	#F = () => "";
-	#I = (e, t, n, r = "") => {
+	#L = () => "";
+	#R = (e, t, n, r = "") => {
 		if (!n) return ` style='${r}'`;
 		let i = e.length * 2;
 		if (i - t.length < 0) return ` style='text-align: ${n}; ${r}'`;
 		let a = "";
 		switch (n) {
 			case "justify":
-				a = this.#F("0", i);
+				a = this.#L("0", i);
 				break;
 			case "121":
-				a = this.#F(`calc(${String((i - t.length) / (t.length * 2))}em)`, i);
+				a = this.#L(`calc(${String((i - t.length) / (t.length * 2))}em)`, i);
 				break;
 			case "even":
-				a = this.#F(`calc(${String((i - t.length) / (t.length + 1))}em)`, i);
+				a = this.#L(`calc(${String((i - t.length) / (t.length + 1))}em)`, i);
 				break;
 			case "1ruby":
-				a = this.#F("1em", i);
+				a = this.#L("1em", i);
 				break;
 			default: a = `text-align: ${n};`;
 		}
 		return ` style='${a} ${r}'`;
 	};
-	#L = "";
-	#R(e, t, n, r = "") {
+	#z = "";
+	#B(e, t, n, r = "") {
 		if (!n) return ` style='${r}'`;
 		let i = e.length * 2;
 		if (i - t.length < 0) return ` style='text-align: ${n}; ${r}'`;
@@ -1018,34 +1010,34 @@ var M = class e extends n {
 			case "even":
 				{
 					let e = ` ${String((i - t.length) / (t.length + 1))}em;`;
-					a = "ruby-align: space-between; " + (this.#_.tategaki ? `padding-top:${e} padding-bottom:${e}` : `padding-left:${e} padding-right:${e}`);
+					a = "ruby-align: space-between; " + (this.#v.tategaki ? `padding-top:${e} padding-bottom:${e}` : `padding-left:${e} padding-right:${e}`);
 				}
 				break;
 			case "1ruby":
-				a = "ruby-align: space-between; " + (this.#_.tategaki ? "padding-top: 1em; padding-bottom: 1em;" : "padding-left: 1em; padding-right: 1em;");
+				a = "ruby-align: space-between; " + (this.#v.tategaki ? "padding-top: 1em; padding-bottom: 1em;" : "padding-left: 1em; padding-right: 1em;");
 				break;
 			default: a = `text-align: ${n};`;
 		}
 		return ` style='${a} ${r}'`;
 	}
 	tagCh(e) {
-		this.#v.putTxt(e);
+		this.#y.putTxt(e);
 	}
-	#z = !1;
+	#V = !1;
 	get needGoTxt() {
-		return this.#z;
+		return this.#V;
 	}
-	#B = (t, n) => {
+	#H = (t, n) => {
 		let r = n;
 		e.#e.oCfg.debug.putCh && console.log(`🖊 文字表示 text:\`${t}\`(${t.charCodeAt(0).toString(16)}) ruby:\`${r}\` name:\`${this.name_}\``);
 		let i = r.split("｜"), a = "", [o, ...s] = i, l = s.join("｜");
 		switch (i.length) {
 			case 1:
-				if (this.#z = !0, t === "\n") {
-					this.#W ? (this.#W = !1, a = "<ruby>&emsp;<rt>&emsp;</rt></ruby><br/>") : a = "<br/>";
+				if (this.#V = !0, t === "\n") {
+					this.#K ? (this.#K = !1, a = "<ruby>&emsp;<rt>&emsp;</rt></ruby><br/>") : a = "<br/>";
 					break;
 				}
-				this.#W && (this.#W = !1, r === "" && (r = "&emsp;")), a = this.#V(t, r, this.#L);
+				this.#K && (this.#K = !1, r === "" && (r = "&emsp;")), a = this.#U(t, r, this.#z);
 				break;
 			default: switch (o) {
 				case "start":
@@ -1056,120 +1048,120 @@ var M = class e extends n {
 				case "121":
 				case "even":
 				case "1ruby":
-					this.#W = !1, this.#z = !0, a = this.#V(t, l, o);
+					this.#K = !1, this.#V = !0, a = this.#U(t, l, o);
 					break;
 				case "gotxt":
-					this.#J(), this.#z ? (this.isCur && e.#r.recText(this.#G.join("").replace(/^<ruby>&emsp;<rt>&emsp;<\/rt><\/ruby>(<br\/>)+/, "").replaceAll(/style='(anim\S+ [^;]+;\s*)+/g, "style='").replaceAll(/( style=''| data-(add|arg|cmd)='[^']+'|\n+|\t+)/g, "").replaceAll(/class='sn_ch[^']+/g, "class='sn_ch").replaceAll("display: none;", "").replaceAll("class='offrec'", "style='display: none;'")), this.#_.goTxt(this.#G, this.#U === 0), this.#z = !1, this.#U = 0) : this.isCur && this.#_.noticeCompTxt();
+					this.#X(), this.#V ? (this.isCur && e.#r.recText(this.#q.join("").replace(/^<ruby>&emsp;<rt>&emsp;<\/rt><\/ruby>(<br\/>)+/, "").replaceAll(/style='(anim\S+ [^;]+;\s*)+/g, "style='").replaceAll(/( style=''| data-(add|arg|cmd)='[^']+'|\n+|\t+)/g, "").replaceAll(/class='sn_ch[^']+/g, "class='sn_ch").replaceAll("display: none;", "").replaceAll("class='offrec'", "style='display: none;'")), this.#v.goTxt(this.#q, this.#G === 0), this.#V = !1, this.#G = 0) : this.isCur && this.#v.noticeCompTxt();
 					return;
 				case "add":
 					{
-						let e = JSON.parse(l), { style: t = "", wait: n = null } = e, { cl: r, sty: i } = this.#H(!0, n ? c(n) : null);
-						this.#G.push(`<span${r} style='${i} display: inline; ${t}'>`), delete e.style, this.#q(e);
+						let e = JSON.parse(l), { style: t = "", wait: n = null } = e, { cl: r, sty: i } = this.#W(!0, n ? c(n) : null);
+						this.#q.push(`<span${r} style='${i} display: inline; ${t}'>`), delete e.style, this.#Y(e);
 					}
 					return;
 				case "add_close":
-					this.#G.push("</span>"), this.#J();
+					this.#q.push("</span>"), this.#X();
 					return;
 				case "grp":
-					this.#z = !0;
+					this.#V = !0;
 					{
 						let e = JSON.parse(l);
-						if (e.id ??= String(this.#G.length), e.id === "break") {
-							this.#_.dispBreak(e);
+						if (e.id ??= String(this.#q.length), e.id === "break") {
+							this.#v.dispBreak(e);
 							return;
 						}
-						this.#W = !1, e.delay = this.#U, e.r ??= "", e.style ??= "", e.r_style ??= "";
-						let { r: t, wait: n = null, r_style: r } = e, { cl: i, sty: o, lnk: s } = this.#H(!0, n ? c(n) : null);
-						a = `<span${i} style='${o} ${e.style}'><ruby><span data-cmd='grp' data-arg='${JSON.stringify(e)}'${s} style='${o} display: inline;'>&emsp;</span><rt${s}${this.#I("　", t, this.#L, this.#y.style.cssText + (this.#K.at(-1)?.o.r_style ?? "") + r)}>${e.r}</rt></ruby></span>`;
+						this.#K = !1, e.delay = this.#G, e.r ??= "", e.style ??= "", e.r_style ??= "";
+						let { r: t, wait: n = null, r_style: r } = e, { cl: i, sty: o, lnk: s } = this.#W(!0, n ? c(n) : null);
+						a = `<span${i} style='${o} ${e.style}'><ruby><span data-cmd='grp' data-arg='${JSON.stringify(e)}'${s} style='${o} display: inline;'>&emsp;</span><rt${s}${this.#R("　", t, this.#z, this.#b.style.cssText + (this.#J.at(-1)?.o.r_style ?? "") + r)}>${e.r}</rt></ruby></span>`;
 					}
 					break;
 				case "tcy":
-					this.#W = !1, this.#z = !0;
+					this.#K = !1, this.#V = !0;
 					{
 						let { t: n = "", r: i = "", wait: o = null, style: s = "", r_style: u = "" } = JSON.parse(l);
-						e.#t.doRecLog() && (this.#X += t + (r ? `《${r}》` : ""), this.#Z += n);
-						let d = f.isSafari ? i.replaceAll(/[A-Za-z0-9]/g, (e) => String.fromCharCode(e.charCodeAt(0) + 65248)) : i, { cl: p, sty: m, lnk: h } = this.#H(!0, o ? c(o) : null);
-						a = `<span${p} style='${m}${this.#j(n)} ${s}'><ruby><span${h} style='${m} display: inline; text-combine-upright: all;'>${n}</span><rt${h}${this.#I(n, d, this.#L, this.#y.style.cssText + (this.#K.at(-1)?.o.r_style ?? "") + u)}>${d}</rt></ruby></span>`;
+						e.#t.doRecLog() && (this.#Q += t + (r ? `《${r}》` : ""), this.#$ += n);
+						let d = f.isSafari ? i.replaceAll(/[A-Za-z0-9]/g, (e) => String.fromCharCode(e.charCodeAt(0) + 65248)) : i, { cl: p, sty: m, lnk: h } = this.#W(!0, o ? c(o) : null);
+						a = `<span${p} style='${m}${this.#N(n)} ${s}'><ruby><span${h} style='${m} display: inline; text-combine-upright: all;'>${n}</span><rt${h}${this.#R(n, d, this.#z, this.#b.style.cssText + (this.#J.at(-1)?.o.r_style ?? "") + u)}>${d}</rt></ruby></span>`;
 					}
 					break;
 				case "del":
 					M.delBreak();
 					return;
 				case "span":
-					this.#z = !0, this.#Y(JSON.parse(l));
+					this.#V = !0, this.#Z(JSON.parse(l));
 					return;
 				case "link":
-					this.#z = !0;
+					this.#V = !0;
 					{
 						let e = JSON.parse(l);
 						e[":link"] = " data-lnk='@'";
-						let { cl: t, sty: n, curpos: r } = this.#H(!1, e.wait ? c(e.wait) : null);
-						this.#G.push(`<span${t} style='${n} display: inline; ${e.style ?? ""}' ${r} data-arg='${l}'>`), delete e.style, this.#Y(e);
+						let { cl: t, sty: n, curpos: r } = this.#W(!1, e.wait ? c(e.wait) : null);
+						this.#q.push(`<span${t} style='${n} display: inline; ${e.style ?? ""}' ${r} data-arg='${l}'>`), delete e.style, this.#Z(e);
 					}
 					return;
 				case "endlink":
-					this.#z = !0, this.#G.push("</span>"), this.#J();
+					this.#V = !0, this.#q.push("</span>"), this.#X();
 					return;
-				default: this.#z = !0, a = this.#V(t, r, this.#L);
+				default: this.#V = !0, a = this.#U(t, r, this.#z);
 			}
 		}
-		this.#G.push(e.#P(a));
+		this.#q.push(e.#I(a));
 	};
-	#V(t, n, r) {
+	#U(t, n, r) {
 		let i = t === " " ? "&nbsp;" : t === "　" ? "&emsp;" : t;
-		e.#t.doRecLog() && (this.#X += i + (n ? `《${n}》` : ""), t !== " " && (this.#Z += t));
-		let { cl: a, sty: o, lnk: s } = this.#H(!0, null, t);
-		return n ? `<span${a} style='${o} ${this.#j(t)}'><ruby>${Array.from(t).map((e, n) => `<span${a}${s} style='${n > 0 ? this.#H(!0, null, t).sty : o} display: inline;'>${e === " " ? "&nbsp;" : e === "　" ? "&emsp;" : e}</span>`).join("")}<rt${s}${this.#I(t, n, r, this.#y.style.cssText + (this.#K.at(-1)?.o.r_style ?? ""))}>${n}</rt></ruby></span>` : `<span${a} style='${o} ${this.#j(t)}'${s}>${i}</span>`;
+		e.#t.doRecLog() && (this.#Q += i + (n ? `《${n}》` : ""), t !== " " && (this.#$ += t));
+		let { cl: a, sty: o, lnk: s } = this.#W(!0, null, t);
+		return n ? `<span${a} style='${o} ${this.#N(t)}'><ruby>${Array.from(t).map((e, n) => `<span${a}${s} style='${n > 0 ? this.#W(!0, null, t).sty : o} display: inline;'>${e === " " ? "&nbsp;" : e === "　" ? "&emsp;" : e}</span>`).join("")}<rt${s}${this.#R(t, n, r, this.#b.style.cssText + (this.#J.at(-1)?.o.r_style ?? ""))}>${n}</rt></ruby></span>` : `<span${a} style='${o} ${this.#N(t)}'${s}>${i}</span>`;
 	}
-	#H(t, n, r = "\n") {
-		let i = this.#w ? n ?? this.#K.at(0)?.o.wait ?? (e.#l ? e.#u[r.at(0) ?? ""] ?? 0 : e.msecChWait) : 0;
-		e.#s.isSkipping ? this.#U = 0 : t && this.#w && (this.#U += c(i));
-		let a = `data-add='{"ch_in_style":"${this.#C}", "ch_out_style":"${this.#E}"}'`;
+	#W(t, n, r = "\n") {
+		let i = this.#T ? n ?? this.#J.at(0)?.o.wait ?? (e.#u ? e.#d[r.at(0) ?? ""] ?? 0 : e.msecChWait) : 0;
+		e.#c.isSkipping ? this.#G = 0 : t && this.#T && (this.#G += c(i));
+		let a = `data-add='{"ch_in_style":"${this.#w}", "ch_out_style":"${this.#D}"}'`;
 		return {
-			cl: ` class='sn_ch sn_ch_yet sn_ch_in_${this.#C}'`,
-			sty: `animation-delay: ${String(this.#U)}ms;${this.#K.at(-1)?.o.style ?? ""}`,
-			lnk: (this.#K.at(0)?.o[":link"] ?? "") + " " + a,
+			cl: ` class='sn_ch sn_ch_yet sn_ch_in_${this.#w}'`,
+			sty: `animation-delay: ${String(this.#G)}ms;${this.#J.at(-1)?.o.style ?? ""}`,
+			lnk: (this.#J.at(0)?.o[":link"] ?? "") + " " + a,
 			curpos: a
 		};
 	}
-	#U = 0;
-	#W = !0;
-	#G = [];
-	#K = [];
-	#q(e) {
-		this.#K.push({
-			o: e,
-			r_align: this.#L,
-			ch_in_style: this.#C,
-			ch_out_style: this.#E
-		}), e.r_align && (this.#L = e.r_align), this.#S(e), this.#T(e);
-	}
-	#J() {
-		let e = this.#K.pop();
-		e && (this.#L = e.r_align, this.#S({ in_style: e.ch_in_style }), this.#T({ out_style: e.ch_out_style }));
-	}
+	#G = 0;
+	#K = !0;
+	#q = [];
+	#J = [];
 	#Y(e) {
-		let t = this.#K.at(-1);
+		this.#J.push({
+			o: e,
+			r_align: this.#z,
+			ch_in_style: this.#w,
+			ch_out_style: this.#D
+		}), e.r_align && (this.#z = e.r_align), this.#C(e), this.#E(e);
+	}
+	#X() {
+		let e = this.#J.pop();
+		e && (this.#z = e.r_align, this.#C({ in_style: e.ch_in_style }), this.#E({ out_style: e.ch_out_style }));
+	}
+	#Z(e) {
+		let t = this.#J.at(-1);
 		if (!t) {
-			this.#q(e);
+			this.#Y(e);
 			return;
 		}
 		t.o = {
 			...t.o,
 			...e
-		}, !e.style && !e.r_style && (t.o.style = "", t.o.r_style = ""), e.r_align && (this.#L = e.r_align), this.#S(e), this.#T(e);
+		}, !e.style && !e.r_style && (t.o.style = "", t.o.r_style = ""), e.r_align && (this.#z = e.r_align), this.#C(e), this.#E(e);
 	}
-	click = () => !this.ctn.interactiveChildren || !this.ctn.visible ? !1 : this.#_.skipChIn();
+	click = () => !this.ctn.interactiveChildren || !this.ctn.visible ? !1 : this.#v.skipChIn();
 	clearText() {
-		this.ctn.removeChild(this.#_), this.ctn.addChild(this.#_ = this.#_.reNew()), this.#U = 0, this.#W = !0, this.#G = [], this.#X = "", this.#Z = "", e.#r.pagebreak();
+		this.ctn.removeChild(this.#v), this.ctn.addChild(this.#v = this.#v.reNew()), this.#G = 0, this.#K = !0, this.#q = [], this.#Q = "", this.#$ = "", e.#r.pagebreak();
 	}
-	#X = "";
-	#Z = "";
+	#Q = "";
+	#$ = "";
 	get pageText() {
-		return this.#X.replace("《&emsp;》", "");
+		return this.#Q.replace("《&emsp;》", "");
 	}
 	get pagePlainText() {
-		return this.#Z;
+		return this.#$;
 	}
 	get enabled() {
 		return this.ctn.interactiveChildren;
@@ -1178,66 +1170,66 @@ var M = class e extends n {
 		this.ctn.interactiveChildren = e;
 	}
 	addButton = (t) => new Promise((n) => {
-		t.key = `btn=[${String(this.#x.children.length)}] ` + this.name_, t[":id_tag"] = t.key.slice(0, -7), d(t, "hint_tate", this.#_.tategaki);
-		let r = new b(t, e.#s, () => n(), () => this.canFocus());
-		r.name = JSON.stringify(t).replaceAll("\"", "'"), this.#x.addChild(r);
+		t.key = `btn=[${String(this.#S.children.length)}] ` + this.name_, t[":id_tag"] = t.key.slice(0, -7), d(t, "hint_tate", this.#v.tategaki);
+		let r = new b(t, e.#c, () => n(), () => this.canFocus());
+		r.name = JSON.stringify(t).replaceAll("\"", "'"), this.#S.addChild(r);
 	});
 	canFocus() {
 		return (this.ctn.interactiveChildren ?? !1) && this.ctn.visible && e.#n(this);
 	}
 	clearLay(e) {
 		super.clearLay(e), this.clearText();
-		for (let e of this.#x.removeChildren()) e.destroy();
+		for (let e of this.#S.removeChildren()) e.destroy();
 	}
 	record = () => ({
 		...super.record(),
 		enabled: this.enabled,
-		r_cssText: this.#y.style.cssText,
-		r_align: this.#L,
-		b_do: this.#h === void 0 ? void 0 : this.#h instanceof r ? "Sprite" : "Graphics",
-		b_pic: this.#g,
-		b_color: this.#f,
-		b_alpha: this.#p,
-		b_alpha_isfixed: this.#m,
-		ffs: this.#A,
-		txs: this.#_.record(),
-		strNoFFS: this.#M,
-		btns: this.#x.children.map((e) => e.name)
+		r_cssText: this.#b.style.cssText,
+		r_align: this.#z,
+		b_do: this.#g === void 0 ? void 0 : this.#g instanceof r ? "Sprite" : "Graphics",
+		b_pic: this.#_,
+		b_color: this.#p,
+		b_alpha: this.#m,
+		b_alpha_isfixed: this.#h,
+		ffs: this.#M,
+		txs: this.#v.record(),
+		strNoFFS: this.#P,
+		btns: this.#S.children.map((e) => e.name)
 	});
 	playback(e, t) {
-		super.playback(e, t), this.enabled = e.enabled, this.#y.style.cssText = e.r_cssText, this.#L = e.r_align, this.cvsResize(), this.#k(e), this.#_.playback(e.txs), this.#p = e.b_alpha, this.#m = e.b_alpha_isfixed, t.push(new Promise((t) => {
+		super.playback(e, t), this.enabled = e.enabled, this.#b.style.cssText = e.r_cssText, this.#z = e.r_align, this.cvsResize(), this.#j(e), this.#v.playback(e.txs), this.#m = e.b_alpha, this.#h = e.b_alpha_isfixed, t.push(new Promise((t) => {
 			let n = e.b_do ? e.b_do === "Sprite" ? { b_pic: e.b_pic } : { b_color: e.b_color } : { b_pic: "" };
-			n.b_alpha = e.b_alpha, n.b_alpha_isfixed = e.b_alpha_isfixed, this.#O(n, (e) => {
+			n.b_alpha = e.b_alpha, n.b_alpha_isfixed = e.b_alpha_isfixed, this.#k(n, (e) => {
 				e && t();
 			}) || t();
 		}), ...e.btns.map((e) => this.addButton(JSON.parse(e.replaceAll("'", "\"")))).flat());
 	}
 	get cssText() {
-		return this.#_.cssText;
+		return this.#v.cssText;
 	}
 	set cssText(e) {
-		this.#_.cssText = e;
+		this.#v.cssText = e;
 	}
 	snapshot(e, t) {
-		e.render(this.ctn, { clear: !1 }), this.#_.snapshot(e, t);
+		e.render(this.ctn, { clear: !1 }), this.#v.snapshot(e, t);
 	}
 	snapshot_end() {
-		this.#_.snapshot_end();
+		this.#v.snapshot_end();
 	}
 	makeDesignCast(e) {
-		this.ctn.visible && this.#_.makeDesignCast(e);
+		this.ctn.visible && this.#v.makeDesignCast(e);
 	}
 	makeDesignCastChildren(e) {
-		if (this.ctn.visible) for (let t of this.#x.children) t.makeDesignCast(e);
+		if (this.ctn.visible) for (let t of this.#S.children) t.makeDesignCast(e);
 	}
 	showDesignCast() {
-		this.#_.showDesignCast();
+		this.#v.showDesignCast();
 	}
 	showDesignCastChildren() {
-		for (let e of this.#x.children) e.showDesignCast();
+		for (let e of this.#S.children) e.showDesignCast();
 	}
 	dump() {
-		return this.#B("", "gotxt｜"), super.dump() + `, "enabled":"${String(this.enabled)}", ${this.#_.dump()}, "b_pic":"${this.#g}", "b_color":"${String(this.#f)}", "b_alpha":${String(this.#p)}, "b_alpha_isfixed":"${String(this.#m)}", "width":${String(this.#_.getWidth)}, "height":${String(this.#_.getHeight)}, "pixi_obj":[${this.ctn.children.map((e) => `{"class":"${e instanceof r ? "Sprite" : e instanceof i ? "Graphics" : e instanceof n ? "Container" : "?"}", "name":"${e.name}", "alpha":${String(e.alpha)}, "x":${String(e.x)}, "y":${String(e.y)}, "visible":"${String(e.visible)}"}`).join(",")}], "button":[${this.#x.children.map((e) => e.children[0]?.name ?? "{}").join(",")}]`;
+		return this.#H("", "gotxt｜"), super.dump() + `, "enabled":"${String(this.enabled)}", ${this.#v.dump()}, "b_pic":"${this.#_}", "b_color":"${String(this.#p)}", "b_alpha":${String(this.#m)}, "b_alpha_isfixed":"${String(this.#h)}", "width":${String(this.#v.getWidth)}, "height":${String(this.#v.getHeight)}, "pixi_obj":[${this.ctn.children.map((e) => `{"class":"${e instanceof r ? "Sprite" : e instanceof i ? "Graphics" : e instanceof n ? "Container" : "?"}", "name":"${e.name}", "alpha":${String(e.alpha)}, "x":${String(e.x)}, "y":${String(e.y)}, "visible":"${String(e.visible)}"}`).join(",")}], "button":[${this.#S.children.map((e) => e.children[0]?.name ?? "{}").join(",")}]`;
 	}
 };
 //#endregion

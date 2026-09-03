@@ -144,11 +144,16 @@ export class TxtLayer extends Layer {
 		});
 	}
 
+	// ch_in/out_style の translate 量：頭が '=' なら比率（%）、でなければ px
+	static	#pctOrPx(raw: string, n: number): string {
+		return raw.startsWith('=') ? `${String(n *100)}%` : `${String(n)}px`;
+	}
+
 	// 文字出現演出
 	static	#ch_in_style(hArg: TArg) {
 		const {x, y, nx, ny, alpha, wait, ease, rotate, scale_x, scale_y} = TxtStage.ch_in_style(hArg);
-		const x2 = x.startsWith('=') ?`${String(nx *100)}%` :`${String(nx)}px`;
-		const y2 = y.startsWith('=') ?`${String(ny *100)}%` :`${String(ny)}px`;
+		const x2 = TxtLayer.#pctOrPx(x, nx);
+		const y2 = TxtLayer.#pctOrPx(y, ny);
 		const {name=''} = hArg;
 		addStyle(`
 .sn_ch_in_${name} {
@@ -172,8 +177,8 @@ export class TxtLayer extends Layer {
 	// 文字消去演出
 	static	#ch_out_style(hArg: TArg) {
 		const {x, y, nx, ny, alpha, wait, ease, rotate, scale_x, scale_y} = TxtStage.ch_out_style(hArg);
-		const x2 = x.startsWith('=') ?`${String(nx *100)}%` :`${String(nx)}px`;
-		const y2 = y.startsWith('=') ?`${String(ny *100)}%` :`${String(ny)}px`;
+		const x2 = TxtLayer.#pctOrPx(x, nx);
+		const y2 = TxtLayer.#pctOrPx(y, ny);
 		const {name=''} = hArg;
 		addStyle(`
 .go_ch_out_${name} {
@@ -415,20 +420,8 @@ export class TxtLayer extends Layer {
 		}
 		else if ('b_color' in hArg) {
 			this.#b_color = argChk_Color(hArg, 'b_color', 0x000000);
-			if (this.#b_do) {
-				this.ctn.removeChild(this.#b_do);	// Graphics かも
-				this.#b_do.destroy();	// Graphics かも
-				//this.#sps.destroy();	// Graphics かもなので使用不可
-			}
 			this.#b_pic = '';	// 忘れずクリア
-			this.ctn.addChildAt(
-				(this.#b_do = new Graphics)
-				.beginFill(this.#b_color, alpha)
-				.lineStyle(undefined)
-				.drawRect(0, 0, this.#txs.getWidth, this.#txs.getHeight)
-				.endFill(), 0);
-			this.#b_do.name = 'back(color)';
-			//cacheAsBitmap = true;	// これを有効にするとスナップショットが撮れない？？
+			this.#remakeBackColor(alpha);
 		}
 
 		if (this.#b_do) {
@@ -441,25 +434,27 @@ export class TxtLayer extends Layer {
 
 		return false;
 	}
+	// 単色バック（Graphics 矩形）を今の TxtStage サイズ・指定 alpha で作り直して最背面へ。
+	//	既存 #b_do は破棄（Sprite かもしれないので #sps.destroy() でなく直接 removeChild+destroy）
+	#remakeBackColor(alpha: number): void {
+		if (this.#b_do) {
+			this.ctn.removeChild(this.#b_do);
+			this.#b_do.destroy();
+		}
+		this.ctn.addChildAt(
+			(this.#b_do = new Graphics)
+			.beginFill(this.#b_color, alpha)
+			.lineStyle(undefined)
+			.drawRect(0, 0, this.#txs.getWidth, this.#txs.getHeight)
+			.endFill(), 0);
+		this.#b_do.name = 'back(color)';
+		//cacheAsBitmap = true;	// これを有効にするとスナップショットが撮れない？？
+	}
 	chgBackAlpha(g_alpha: number): void {
 		const alpha = this.#b_alpha_isfixed
 			? this.#b_alpha
 			: g_alpha * this.#b_alpha;
-		if (this.#b_do instanceof Graphics) {
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			if (this.#b_do) {
-				this.ctn.removeChild(this.#b_do);
-				this.#b_do.destroy();
-			}
-			this.ctn.addChildAt(
-				(this.#b_do = new Graphics)
-				.beginFill(this.#b_color, alpha)
-				.lineStyle(undefined)
-				.drawRect(0, 0, this.#txs.getWidth, this.#txs.getHeight)
-				.endFill(), 0);
-			this.#b_do.name = 'back(color)';
-			//cacheAsBitmap = true;	// これを有効にするとスナップショットが撮れない？？
-		}
+		if (this.#b_do instanceof Graphics) this.#remakeBackColor(alpha);
 		if (this.#b_do) {
 			this.#b_do.visible = alpha > 0;
 				// 透明の時は表示しない。こうしないと透明テキストレイヤ下のボタンが
