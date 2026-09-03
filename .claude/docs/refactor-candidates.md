@@ -292,8 +292,20 @@
 本家の DOM 面で「引く価値がある」候補（着手は要判断・挙動変更を伴う）：
 
 - **`EventMng` の `.sn_hint` ツールチップ**（`HintPos.ts` の手書き flip/clamp 計算 →
-  CSS anchor positioning + Popover API の `position-aware-tooltips` / `interest-triggered-tooltips`）。
-  `HintPos.test.ts` が張り付いた動作品で、置換は**挙動変更を伴う書き直し**。効果は大きいが別タスク。
+  CSS anchor positioning + Popover API）。ガイド `position-aware-tooltips` /
+  `interest-triggered-tooltips` を引いた（2026-09-03）結果 **見送り**：
+  - `HintPos.ts` が代替している flip / preventOverflow / arrow 再配置のうち、flip 後の
+    矢印向き切り替えは **Anchor position container queries** が必須。これは Chrome 143+
+    （2025-12）のみで **Firefox / Safari 未対応**。
+  - CSS anchor positioning 本体（`position-area` / `position-try-fallbacks`）も
+    Chrome 系のみで Baseline 入りしておらず、Firefox / Safari では中央表示にフォールバック。
+  - 本家は Web 版で Firefox / Safari を対象にしている（`TxtLayer.#mkStyle_r_align4ff` の
+    Firefox 分岐が証左）。そのため CSS 化しても **`HintPos.ts` の JS 実装をフォールバックで
+    残す必要があり、差し引きコード増**。`hint_opt` の popper 形式 JSON 互換も別途維持が要る。
+  - 結論：Chrome シェアが十分でも「JS フォールバック必須」の間は着手しない。将来
+    anchor positioning が Baseline widely available になったら再評価。
 - `SysBase.toast()`（デバッガトースト → `persistent-toast-notifications` 相当。効果小）。
 - `SysWeb.#clickDL`（`<a download>`。今は素の DOM で十分。File System Access API は過剰）。
 - `[snapshot]` / `capturePage`（`export-html-media-from-canvas`。現状で動いており必要性薄）。
+
+いずれも現時点で着手する理由なし。**modern-web-guidance イニシアチブはここで一旦クローズ**。
