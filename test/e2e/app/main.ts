@@ -18,6 +18,7 @@ import {Reading} from '../../../src/sn/Reading';
 import {SndBuf} from '../../../src/sn/SndBuf';
 import {SndCtx} from '../../../src/sn/SndCtx';
 import {CmnTween} from '../../../src/sn/CmnTween';
+import {TxtStage} from '../../../src/sn/TxtStage';
 
 // SndBuf.live は解放漏れの最も直接的な指標。unload()でしか除去されないので、
 //	「再生と停止を繰り返しても増えない」が SndBuf の検査そのものになる
@@ -81,4 +82,9 @@ const anySys = <any>sys;
 		retMs	: sb.retMs,
 	})),
 	glbVolume: ()=> SndCtx.globalVol,
+
+	// [ch_in_style]/[ch_out_style] で登録された演出定義（TxtStage.#defChStyle の結果）。
+	//	prj_draw 用。getChInStyle / getChOutStyle は public static
+	chStyle	: (io: 'in' | 'out', nm: string)=>
+		io === 'in' ? TxtStage.getChInStyle(nm) : TxtStage.getChOutStyle(nm),
 };

@@ -43,6 +43,13 @@
   3 重複（`SysWeb._import`・`SysApp.initVal`/`_import`）を集約、`SysWeb.#clickDL(href, name)`
   で `<a download>` クリックの 3 重複（`_export`・`savePic`・`outputFile`）を集約。
   単体 777 件・分家 1771 件・tsc 通過。**これでスイープ完了。**
+- 実機確認（2026-09-03）… 描画層 第 3〜4 弾（本家 unit なし）を e2e で確認：
+  `Layer.renderGate` は `tsy.e2e.ts` の `[trans]/[wt]` テスト（全 53 → 57 pass）。
+  `#defChStyle`（in/out 別ハッシュ・join 既定・重複チェック）／`#pctOrPx`（addStyle の
+  `@keyframes` の `translate` 量）／`#remakeBackColor`（`[lay b_color=]`→`Back.Alpha` 変更→
+  `back_clear` の経路で停止しない）は **新設 `test/e2e/draw.e2e.ts`＋`prj_draw/`**（4 件）。
+  `main.ts` に `TxtStage.getChInStyle/getChOutStyle` を覗く `chStyle` プローブを追加
+  （`src/` 無改変。分家からの輸入でなく本家 pixi 実装向けの新規）。
 - 第 2 適用（2026-09-03）… **`Pages` / `Layer`（`#scaledWH` 抽出＋`hBldFilter` の CMF 工場化）済**。
   工場化に伴い `test/Layer_filter.test.ts`（20 件）を新設＝ColorMatrixFilter 系 19 個が
   「工場経由」と「pixi 直呼び」で同じ `.matrix` を生むことを保証（分家からのテスト輸入でなく
@@ -264,3 +271,24 @@
 - `CmnLib` 数値パース統合（`Variable.#castAuto` の「ゆるさ」が後方互換）
 - `SndBuf` の `St*` 状態機械（2026-08 howler 撤去で再構築・`// ok` 検証済み）
 - `FocusMng.prev`/`next` 統合（負数剰余の書き換えリスク＞効果、unit なし）
+
+
+## modern-web-guidance（別イニシアチブ。スイープ範囲外）
+
+本スイープで回したのは `/simplify` の 4 観点（Reuse / Simplification / Efficiency / Altitude）
+のみ。TODO 見出しにあった「＋modern-web-guidance」は**別扱い**にした。理由：
+
+- `modern-web-guidance` スキルは「UI/CSS/DOM を**新規実装する前に**引くルックアップ」。
+  ヒットするガイドは Popover / anchor positioning / View Transitions / container queries /
+  scroll-driven animations など**新しいプラットフォーム機能の導入**系。
+- 本スイープの憲章は「挙動不変の整理に限る」「本家に新機能を追加しない」。上記の導入は
+  挙動変更＝新機能追加になり、両方に反する。
+
+本家の DOM 面で「引く価値がある」候補（着手は要判断・挙動変更を伴う）：
+
+- **`EventMng` の `.sn_hint` ツールチップ**（`HintPos.ts` の手書き flip/clamp 計算 →
+  CSS anchor positioning + Popover API の `position-aware-tooltips` / `interest-triggered-tooltips`）。
+  `HintPos.test.ts` が張り付いた動作品で、置換は**挙動変更を伴う書き直し**。効果は大きいが別タスク。
+- `SysBase.toast()`（デバッガトースト → `persistent-toast-notifications` 相当。効果小）。
+- `SysWeb.#clickDL`（`<a download>`。今は素の DOM で十分。File System Access API は過剰）。
+- `[snapshot]` / `capturePage`（`export-html-media-from-canvas`。現状で動いており必要性薄）。

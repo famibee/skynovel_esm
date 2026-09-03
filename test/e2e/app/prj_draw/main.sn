@@ -1,0 +1,34 @@
+; ***** 文字演出・バック単色 検査用シナリオ（draw.e2e.ts が使用）*****
+;	/simplify 本家スイープ 第3〜4弾の実機確認：
+;		・TxtStage.#defChStyle（[ch_in_style]/[ch_out_style] の共通化。join 既定が in=true / out=false）
+;		・TxtLayer.#pctOrPx（translate 量：頭が '=' なら % 、でなければ px）
+;		・TxtLayer.#remakeBackColor（[lay b_color=] と Back.Alpha 変更でバック矩形を作り直す）
+;	画像・音・フォント等の外部資材に依存させない。文字レイヤのみ。
+[add_lay layer=mes class=txt]
+[current layer=mes]
+
+; --- 独自の文字出現・消去演出を定義（#defChStyle 経由）---
+;	e2e_in : x='=1.5'（比率→#pctOrPx で 150%）, y=-40（px）。join 未指定＝in の既定 true
+;	e2e_out: x=-25（px）, y 未指定（'=0'→0%）。join 未指定＝out の既定 false
+;	e2e_out_join: join=true を明示（既定と反対）
+[ch_in_style name=e2e_in x='=1.5' y=-40 wait=400 rotate=30]
+[ch_out_style name=e2e_out x=-25 wait=350]
+[ch_out_style name=e2e_out_join wait=200 join=true]
+
+[lay layer=mes in_style=e2e_in out_style=e2e_out]
+ていぎ。[p]
+
+; --- バック単色（#remakeBackColor）。[lay b_color=] → Back.Alpha 変更 → back_clear の3経路 ---
+[lay layer=mes b_color=0xcc2244 b_alpha=1]
+あか。[p]
+
+[let name=sys:TextLayer.Back.Alpha text=0.3]
+うすく。[p]
+
+[lay layer=mes back_clear=true]
+けした。[s]
+
+; --- 同名の再定義は #defChStyle の重複チェックで弾かれる（ここへ来ると停止する）---
+*dup
+[ch_in_style name=e2e_in x='=1']
+NGdup。[s]

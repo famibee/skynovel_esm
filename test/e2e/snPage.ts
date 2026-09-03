@@ -15,7 +15,7 @@
 import {expect, type Page} from '@playwright/test';
 import type {T_TARGET} from './app/probe';
 
-export type T_PRJ = 'leak' | 'crypto' | 'sound' | 'tsy' | 'gesture' | 'frame';
+export type T_PRJ = 'leak' | 'crypto' | 'sound' | 'tsy' | 'gesture' | 'frame' | 'draw';
 
 // 文字レイヤ本体。TxtStage は canvas の親（＝body）へ直に足すので、位置ではなくクラスで拾う。
 //	表裏ページぶん存在し、裏は空なので「中身のある物」を採る
@@ -198,4 +198,30 @@ export async function sndBufList(page: Page): Promise<T_SNDBUF[]> {
 // SndCtxのグローバル音量（sys:sn.sound.global_volume が反映される）
 export async function glbVolume(page: Page): Promise<number> {
 	return page.evaluate(()=> (<any>globalThis).__sn.glbVolume() as number);
+}
+
+
+// ---- 文字演出（prj_draw）用 ------------------------------------------------
+
+// [ch_in_style]/[ch_out_style] で登録された演出定義（TxtStage.#defChStyle の結果）。
+//	未登録なら undefined。join/wait/nx などの既定・格納先を検証する
+export type T_CHSTYLE = {
+	wait: number; alpha: number; x: string; y: string;
+	nx: number; ny: number; scale_x: number; scale_y: number;
+	rotate: number; join: boolean; ease: string;
+};
+export async function chStyle(
+	page: Page, io: 'in' | 'out', nm: string,
+): Promise<T_CHSTYLE | undefined> {
+	return page.evaluate(
+		([io, nm])=> (<any>globalThis).__sn.chStyle(io, nm) as T_CHSTYLE | undefined,
+		[io, nm] as const,
+	);
+}
+
+// <head> に注入された全 <style> の連結テキスト（TxtLayer.#ch_in_style / #ch_out_style が
+//	addStyle() で足す @keyframes を見る＝#pctOrPx の出力確認）
+export async function headStyleText(page: Page): Promise<string> {
+	return page.evaluate(()=> Array.from(document.querySelectorAll('style'))
+		.map(s=> s.textContent ?? '').join('\n'));
 }
