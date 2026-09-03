@@ -506,16 +506,22 @@ export class Layer {
 		}, "filters": [${this.aFltHArg.map(f=> `"${f.filter ?? ''}"`).join(',')}]`;
 	}
 
+	// base の bounds を ret の拡縮率（絶対値。等倍なら実測そのまま）で見た表示サイズ。
+	//	setXY / setXYByPos 共通の前処理
+	static	#scaledWH(base: DisplayObject, ret: DisplayObject): {b_width: number; b_height: number} {
+		const rct_base = base.getBounds();
+		const r_absclX = ret.scale.x < 0 ? -ret.scale.x : ret.scale.x;
+		const r_absclY = ret.scale.y < 0 ? -ret.scale.y : ret.scale.y;
+		return {
+			b_width	: r_absclX === 1 ? rct_base.width  : rct_base.width  *r_absclX,
+			b_height: r_absclY === 1 ? rct_base.height : rct_base.height *r_absclY,
+		};
+	}
+
 	static	setXY(base: DisplayObject, hArg: TArg, ret: Container, isGrp = false, isButton = false): void {
 		if (hArg.pos) {Layer.setXYByPos(base, hArg.pos, ret); return}
 
-		const rct_base = base.getBounds();
-		const r_absclX	= ret.scale.x < 0? -ret.scale.x : ret.scale.x;
-		const b_width	= r_absclX === 1
-						? rct_base.width : rct_base.width *r_absclX;
-		const r_absclY	= ret.scale.y < 0? -ret.scale.y : ret.scale.y;
-		const b_height	= r_absclY === 1
-						? rct_base.height: rct_base.height*r_absclY;
+		const {b_width, b_height} = Layer.#scaledWH(base, ret);
 
 		// an時代・瀬戸愛羅さんより https://famibee.blog.fc2.com/blog-entry-253.html
 		// 横位置計算
@@ -586,11 +592,7 @@ export class Layer {
 	static	setXYByPos(base: DisplayObject, pos: string, ret: DisplayObject): void {
 		if (pos === 'stay') return;
 
-		const rct_base = base.getBounds();
-		const r_absclX = ret.scale.x < 0? -ret.scale.x : ret.scale.x;
-		const b_width = r_absclX === 1? rct_base.width : rct_base.width *r_absclX;
-		const r_absclY = ret.scale.y < 0? -ret.scale.y : ret.scale.y;
-		const b_height = r_absclY === 1? rct_base.height: rct_base.height*r_absclY;
+		const {b_width, b_height} = Layer.#scaledWH(base, ret);
 
 		let c = 0;	// 忘れたけど、プルプルするからintなんだっけ
 		if (! pos || pos === 'c') {c = CmnLib.stageW *0.5}

@@ -239,20 +239,27 @@ var { BlurFilter: l, ColorMatrixFilter: u, NoiseFilter: d } = r, f = class r {
 	dump() {
 		return ` "idx":${String(this.ctn.parent.getChildIndex(this.ctn))}, "visible":"${String(this.ctn.visible)}", "left":${String(this.ctn.x)}, "top":${String(this.ctn.y)}, "alpha":${String(this.ctn.alpha)}, "rotation":${String(this.ctn.angle)}, "name":"${this.name_}", "scale_x":${String(this.ctn.scale.x)}, "scale_y":${String(this.ctn.scale.y)}, "filters": [${this.aFltHArg.map((e) => `"${e.filter ?? ""}"`).join(",")}]`;
 	}
+	static #n(e, t) {
+		let n = e.getBounds(), r = t.scale.x < 0 ? -t.scale.x : t.scale.x, i = t.scale.y < 0 ? -t.scale.y : t.scale.y;
+		return {
+			b_width: r === 1 ? n.width : n.width * r,
+			b_height: i === 1 ? n.height : n.height * i
+		};
+	}
 	static setXY(e, t, n, i = !1, s = !1) {
 		if (t.pos) {
 			r.setXYByPos(e, t.pos, n);
 			return;
 		}
-		let l = e.getBounds(), u = n.scale.x < 0 ? -n.scale.x : n.scale.x, d = u === 1 ? l.width : l.width * u, f = n.scale.y < 0 ? -n.scale.y : n.scale.y, p = f === 1 ? l.height : l.height * f, m = n.x;
-		"left" in t ? (m = a(t, "left", 0), m > -1 && m < 1 && (m *= c.stageW)) : "center" in t ? (m = a(t, "center", 0), m > -1 && m < 1 && (m *= c.stageW), m -= (s ? d / 3 : d) / 2) : "right" in t ? (m = a(t, "right", 0), m > -1 && m < 1 && (m *= c.stageW), m -= s ? d / 3 : d) : "s_right" in t && (m = a(t, "s_right", 0), m > -1 && m < 1 && (m *= c.stageW), m = c.stageW - m - (s ? d / 3 : d)), n.x = o(n.scale.x < 0 ? m + (s ? d / 3 : d) : m);
-		let h = n.y;
-		"top" in t ? (h = a(t, "top", 0), h > -1 && h < 1 && (h *= c.stageH)) : "middle" in t ? (h = a(t, "middle", 0), h > -1 && h < 1 && (h *= c.stageH), h -= p / 2) : "bottom" in t ? (h = a(t, "bottom", 0), h > -1 && h < 1 && (h *= c.stageH), h -= p) : "s_bottom" in t && (h = a(t, "s_bottom", 0), h > -1 && h < 1 && (h *= c.stageH), h = c.stageH - h - p), n.y = o(n.scale.y < 0 ? h + p : h), i && !("left" in t) && !("center" in t) && !("right" in t) && !("s_right" in t) && !("top" in t) && !("middle" in t) && !("bottom" in t) && !("s_bottom" in t) && r.setXYByPos(e, "c", n);
+		let { b_width: l, b_height: u } = r.#n(e, n), d = n.x;
+		"left" in t ? (d = a(t, "left", 0), d > -1 && d < 1 && (d *= c.stageW)) : "center" in t ? (d = a(t, "center", 0), d > -1 && d < 1 && (d *= c.stageW), d -= (s ? l / 3 : l) / 2) : "right" in t ? (d = a(t, "right", 0), d > -1 && d < 1 && (d *= c.stageW), d -= s ? l / 3 : l) : "s_right" in t && (d = a(t, "s_right", 0), d > -1 && d < 1 && (d *= c.stageW), d = c.stageW - d - (s ? l / 3 : l)), n.x = o(n.scale.x < 0 ? d + (s ? l / 3 : l) : d);
+		let f = n.y;
+		"top" in t ? (f = a(t, "top", 0), f > -1 && f < 1 && (f *= c.stageH)) : "middle" in t ? (f = a(t, "middle", 0), f > -1 && f < 1 && (f *= c.stageH), f -= u / 2) : "bottom" in t ? (f = a(t, "bottom", 0), f > -1 && f < 1 && (f *= c.stageH), f -= u) : "s_bottom" in t && (f = a(t, "s_bottom", 0), f > -1 && f < 1 && (f *= c.stageH), f = c.stageH - f - u), n.y = o(n.scale.y < 0 ? f + u : f), i && !("left" in t) && !("center" in t) && !("right" in t) && !("s_right" in t) && !("top" in t) && !("middle" in t) && !("bottom" in t) && !("s_bottom" in t) && r.setXYByPos(e, "c", n);
 	}
 	static setXYByPos(e, t, n) {
 		if (t === "stay") return;
-		let r = e.getBounds(), i = n.scale.x < 0 ? -n.scale.x : n.scale.x, a = i === 1 ? r.width : r.width * i, s = n.scale.y < 0 ? -n.scale.y : n.scale.y, l = s === 1 ? r.height : r.height * s, u = 0;
-		u = !t || t === "c" ? c.stageW * .5 : t === "r" ? c.stageW - a * .5 : t === "l" ? a * .5 : o(t), n.x = o(u - a * .5), n.y = c.stageH - l, n.scale.x < 0 && (n.x += a), n.scale.y < 0 && (n.y += l);
+		let { b_width: i, b_height: a } = r.#n(e, n), s = 0;
+		s = !t || t === "c" ? c.stageW * .5 : t === "r" ? c.stageW - i * .5 : t === "l" ? i * .5 : o(t), n.x = o(s - i * .5), n.y = c.stageH - a, n.scale.x < 0 && (n.x += i), n.scale.y < 0 && (n.y += a);
 	}
 	static setXYCenter(e) {
 		let t = e.getBounds();

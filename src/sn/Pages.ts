@@ -30,27 +30,27 @@ export class Pages {
 		b.ctn.name = b.name = nm +'B';
 		fore.addChild(f.ctn);
 		back.addChild(b.ctn);
-		argChk_Boolean(hArg, 'visible', true);
-		argChk_Boolean(hArg, 'visible', true);// SKYNovelではデフォルトはtrueとする
+		argChk_Boolean(hArg, 'visible', true);	// SKYNovelではデフォルトはtrueとする
 		ret.isWait = f.lay(hArg) || b.lay(hArg);
 		this.#pg = {fore: f, back: b};
 		back.visible = false;
 
-		// 組み込み変数
+		// 組み込み変数 const.sn.lay.<層名>.<fore|back>.<属性>
 		const valnm = `const.sn.lay.${layname}`;
 		val.setVal_Nochk('tmp', valnm, true);
-		val.defTmp(valnm +'.fore.alpha', ()=> this.#pg.fore.alpha);
-		val.defTmp(valnm +'.back.alpha', ()=> this.#pg.back.alpha);
-		val.defTmp(valnm +'.fore.height', ()=> this.#pg.fore.height);
-		val.defTmp(valnm +'.back.height', ()=> this.#pg.back.height);
-		val.defTmp(valnm +'.fore.visible', ()=> this.#pg.fore.ctn.visible);
-		val.defTmp(valnm +'.back.visible', ()=> this.#pg.back.ctn.visible);
-		val.defTmp(valnm +'.fore.width', ()=> this.#pg.fore.width);
-		val.defTmp(valnm +'.back.width', ()=> this.#pg.back.width);
-		val.defTmp(valnm +'.fore.x', ()=> this.#pg.fore.x);
-		val.defTmp(valnm +'.back.x', ()=> this.#pg.back.x);
-		val.defTmp(valnm +'.fore.y', ()=> this.#pg.fore.y);
-		val.defTmp(valnm +'.back.y', ()=> this.#pg.back.y);
+		const hGetter: {[prop: string]: (l: Layer)=> number | boolean} = {
+			alpha:		l=> l.alpha,
+			height:		l=> l.height,
+			visible:	l=> l.ctn.visible,
+			width:		l=> l.width,
+			x:			l=> l.x,
+			y:			l=> l.y,
+		};
+		for (const side of ['fore', 'back'] as const) {
+			for (const [prop, get] of Object.entries(hGetter)) {
+				val.defTmp(`${valnm}.${side}.${prop}`, ()=> get(this.#pg[side]));
+			}
+		}
 	}
 	destroy() {
 		this.#pg.fore.destroy();

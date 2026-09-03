@@ -17,6 +17,10 @@
 - 第 1 適用（2026-09-03）… **`PropParser` / `Grammar` / `Config` / `RubySpliter` 済**
   （下記。単体 757 件・tsc 通過。挙動不変）。パース群で残るのは `CmnLib` の数値パース
   横断確認（下記・要 `Variable` 読解）と `ConfigBase` の小ヘルパ（低優先）のみ。
+- 第 2 パス（2026-09-03）… 描画層のうち `Pages` / `GrpLayer` / `Layer` を読了。
+- 第 2 適用（2026-09-03）… **`Pages` / `Layer` 済**（下記。単体 757 件・tsc 通過）。
+  `Layer.hBldFilter` の CMF 工場化は**候補どまり**（本家に filter テストが皆無なので
+  `../tmp_esm_uc` か sn_gallery のフィルタサンプル実走が要る）。
 
 ## Simplification / Efficiency
 
@@ -67,9 +71,37 @@
   `argChk_Boolean` 内、`CmnLib.ts:255-257` の `PropParser` `UnaryNegate`/`Unaryplus`）。
   リファレンス目的の変換表コメント（`CmnLib.ts:100-109`）は残す。
 
-## Altitude（未分析）
+## 描画層
 
-- 描画層（`LayerMng` / `Layer` / `GrpLayer` / `TxtLayer` / `TxtStage` / `Pages` / `SpritesMng`）
+### Pages.ts — 済（2026-09-03）
+
+- ~~`argChk_Boolean(hArg, 'visible', true)` が連続 2 回~~ … 済（2 行目は no-op。コメントを残して 1 行に）。
+- ~~組み込み変数 `const.sn.lay.<層名>.<fore|back>.<属性>` の `defTmp` が 12 行手書き~~ … 済。
+  `{alpha,height,visible,width,x,y}` の getter テーブル × `['fore','back']` の二重ループへ
+  （登録順が prop 交互→side 交互に変わるが独立定義なので無害）。
+
+### Layer.ts
+
+- ~~`setXY` と `setXYByPos` が「`ret` の拡縮率で見た `base` の表示サイズ」前処理を丸ごと重複~~
+  … 済。`Layer.#scaledWH(base, ret)` へ抽出（5 行 ×2 → 1 行 ×2）。
+- **候補（未適用）**：`hBldFilter` の ColorMatrixFilter 系 ~22 個のうち、`multiply` 1 引数だけの
+  10 個（`black_and_white`/`browni`/`kodachrome`/`lsd`/`negative`/`polaroid`/`sepia`/
+  `technicolor`/`to_bgr`/`vintage`）と「数値 1 個＋`multiply`」の 6 個（`brightness`/`contrast`/
+  `grayscale`/`saturate`/`night`/`predator`。`hue`＝`f_rotation`/90、`tint`＝`f_color`/0x888888 も
+  同型）は `cmfMul(method, mulDef)` / `cmfNum(method, key, numDef, mulDef)` の 2 工場へ寄せられる
+  （~90 行 → ~25 行）。`color_tone`（数値 4）・`color_matrix`（20 要素）・`blur`・`noise` は据え置き。
+  **本家に filter のテストが皆無**なので適用前にフィルタサンプル実走が要る。
+- **候補（低優先）**：`setXY` の `if (v > -1 && v < 1) v *= CmnLib.stageW/H`（＝0..1 は画面比率）が
+  x 4 分岐・y 4 分岐で 8 回。`norm(v, dim)` helper で短くはなるが、各分岐は続く相殺項
+  （`b_width/2` 等）が違い、iPhone6 対策で順序注意コメント（`Layer.ts:570`）もあるため
+  テーブル化は避け、helper 差し込みだけなら可。効果小。
+
+### 描画層 — 未分析
+
+- `LayerMng`（39.9K・最大）/ `TxtLayer`（31.8K）/ `TxtStage`（33.3K）/ `SpritesMng`（14.8K）
+
+## 未分析
+
 - 実行エンジン（`ScriptIterator` / `Main` / `Variable`）
 - 音声・入力層（`SoundMng` / `SndBuf` / `SndCtx` / `EventMng` / `FocusMng` / `GamepadMng` / `Button`）
 - システム基盤（`SysBase` / `SysWeb` / `SysApp` / `CmnInterface`）＋ `src/*.ts`

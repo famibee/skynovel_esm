@@ -26,12 +26,21 @@ var M = class e {
 		let l = c(), u = c();
 		l.layname = u.layname = e;
 		let d = i[":id_tag"] = `layer:${e} cls:${t} page:`;
-		l.ctn.name = l.name = d + "A", u.ctn.name = u.name = d + "B", n.addChild(l.ctn), r.addChild(u.ctn), m(i, "visible", !0), m(i, "visible", !0), s.isWait = l.lay(i) || u.lay(i), this.#e = {
+		l.ctn.name = l.name = d + "A", u.ctn.name = u.name = d + "B", n.addChild(l.ctn), r.addChild(u.ctn), m(i, "visible", !0), s.isWait = l.lay(i) || u.lay(i), this.#e = {
 			fore: l,
 			back: u
 		}, r.visible = !1;
 		let f = `const.sn.lay.${e}`;
-		o.setVal_Nochk("tmp", f, !0), o.defTmp(f + ".fore.alpha", () => this.#e.fore.alpha), o.defTmp(f + ".back.alpha", () => this.#e.back.alpha), o.defTmp(f + ".fore.height", () => this.#e.fore.height), o.defTmp(f + ".back.height", () => this.#e.back.height), o.defTmp(f + ".fore.visible", () => this.#e.fore.ctn.visible), o.defTmp(f + ".back.visible", () => this.#e.back.ctn.visible), o.defTmp(f + ".fore.width", () => this.#e.fore.width), o.defTmp(f + ".back.width", () => this.#e.back.width), o.defTmp(f + ".fore.x", () => this.#e.fore.x), o.defTmp(f + ".back.x", () => this.#e.back.x), o.defTmp(f + ".fore.y", () => this.#e.fore.y), o.defTmp(f + ".back.y", () => this.#e.back.y);
+		o.setVal_Nochk("tmp", f, !0);
+		let p = {
+			alpha: (e) => e.alpha,
+			height: (e) => e.height,
+			visible: (e) => e.ctn.visible,
+			width: (e) => e.width,
+			x: (e) => e.x,
+			y: (e) => e.y
+		};
+		for (let e of ["fore", "back"]) for (let [t, n] of Object.entries(p)) o.defTmp(`${f}.${e}.${t}`, () => n(this.#e[e]));
 	}
 	destroy() {
 		this.#e.fore.destroy(), this.#e.back.destroy();
