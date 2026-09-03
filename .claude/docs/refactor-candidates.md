@@ -18,9 +18,10 @@
   （下記。単体 757 件・tsc 通過。挙動不変）。パース群で残るのは `CmnLib` の数値パース
   横断確認（下記・要 `Variable` 読解）と `ConfigBase` の小ヘルパ（低優先）のみ。
 - 第 2 パス（2026-09-03）… 描画層のうち `Pages` / `GrpLayer` / `Layer` を読了。
-- 第 2 適用（2026-09-03）… **`Pages` / `Layer` 済**（下記。単体 757 件・tsc 通過）。
-  `Layer.hBldFilter` の CMF 工場化は**候補どまり**（本家に filter テストが皆無なので
-  `../tmp_esm_uc` か sn_gallery のフィルタサンプル実走が要る）。
+- 第 2 適用（2026-09-03）… **`Pages` / `Layer`（`#scaledWH` 抽出＋`hBldFilter` の CMF 工場化）済**。
+  工場化に伴い `test/Layer_filter.test.ts`（20 件）を新設＝ColorMatrixFilter 系 19 個が
+  「工場経由」と「pixi 直呼び」で同じ `.matrix` を生むことを保証（分家からのテスト輸入でなく
+  本家の pixi 実装向けに新規。機能追加ではない）。単体 777 件・tsc 通過。
 
 ## Simplification / Efficiency
 
@@ -84,13 +85,12 @@
 
 - ~~`setXY` と `setXYByPos` が「`ret` の拡縮率で見た `base` の表示サイズ」前処理を丸ごと重複~~
   … 済。`Layer.#scaledWH(base, ret)` へ抽出（5 行 ×2 → 1 行 ×2）。
-- **候補（未適用）**：`hBldFilter` の ColorMatrixFilter 系 ~22 個のうち、`multiply` 1 引数だけの
-  10 個（`black_and_white`/`browni`/`kodachrome`/`lsd`/`negative`/`polaroid`/`sepia`/
-  `technicolor`/`to_bgr`/`vintage`）と「数値 1 個＋`multiply`」の 6 個（`brightness`/`contrast`/
-  `grayscale`/`saturate`/`night`/`predator`。`hue`＝`f_rotation`/90、`tint`＝`f_color`/0x888888 も
-  同型）は `cmfMul(method, mulDef)` / `cmfNum(method, key, numDef, mulDef)` の 2 工場へ寄せられる
-  （~90 行 → ~25 行）。`color_tone`（数値 4）・`color_matrix`（20 要素）・`blur`・`noise` は据え置き。
-  **本家に filter のテストが皆無**なので適用前にフィルタサンプル実走が要る。
+- ~~`hBldFilter` の ColorMatrixFilter 系 19 個が `const f = new ColorMatrixFilter; f.xxx(...); return f`
+  の 3 行ボイラープレート反復~~ … 済。`Layer.#cmf((f, h)=> f.xxx(...))` の 1 工場へ
+  （各エントリ 1 行に。`multiply` の意味説明も 19 回 → 1 回）。`color_tone`（引数 5）も
+  同じ工場に乗る。`color_matrix`（20 要素）・`blur`・`noise` は形が違うので据え置き。
+  約 175 行 → 約 25 行。`test/Layer_filter.test.ts` で `.matrix` パリティを担保。
+  なお sn_gallery `prj/filter/` の目視確認も可（工場化のリスクは行列一致テストでほぼ潰れている）。
 - **候補（低優先）**：`setXY` の `if (v > -1 && v < 1) v *= CmnLib.stageW/H`（＝0..1 は画面比率）が
   x 4 分岐・y 4 分岐で 8 回。`norm(v, dim)` helper で短くはなるが、各分岐は続く相殺項
   （`b_width/2` 等）が違い、iPhone6 対策で順序注意コメント（`Layer.ts:570`）もあるため

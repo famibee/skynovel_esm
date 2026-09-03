@@ -86,83 +86,32 @@ var { BlurFilter: l, ColorMatrixFilter: u, NoiseFilter: d } = r, f = class r {
 			} else t.matrix[0] = i(a(e, "rtor", 1)), t.matrix[1] = i(a(e, "gtor", 0)), t.matrix[2] = i(a(e, "btor", 0)), t.matrix[3] = i(a(e, "ator", 0)), t.matrix[4] = i(a(e, "pr", 0)), t.matrix[5] = i(a(e, "rtog", 0)), t.matrix[6] = i(a(e, "gtog", 1)), t.matrix[7] = i(a(e, "btog", 0)), t.matrix[8] = i(a(e, "atog", 0)), t.matrix[9] = i(a(e, "pg", 0)), t.matrix[10] = i(a(e, "rtob", 0)), t.matrix[11] = i(a(e, "gtob", 0)), t.matrix[12] = i(a(e, "btob", 1)), t.matrix[13] = i(a(e, "atob", 0)), t.matrix[14] = i(a(e, "pb", 0)), t.matrix[15] = i(a(e, "rtoa", 0)), t.matrix[16] = i(a(e, "gtoa", 0)), t.matrix[17] = i(a(e, "btoa", 0)), t.matrix[18] = i(a(e, "atoa", 1)), t.matrix[19] = i(a(e, "pa", 0));
 			return t;
 		},
-		black_and_white: (e) => {
-			let t = new u();
-			return t.blackAndWhite(s(e, "multiply", !1)), t;
-		},
-		brightness: (e) => {
-			let t = new u();
-			return t.brightness(a(e, "b", .5), s(e, "multiply", !1)), t;
-		},
-		browni: (e) => {
-			let t = new u();
-			return t.browni(s(e, "multiply", !0)), t;
-		},
-		color_tone: (e) => {
-			let t = new u();
-			return t.colorTone(a(e, "desaturation", .5), a(e, "toned", .5), a(e, "light_color", 16770432), a(e, "dark_color", 16770432), s(e, "multiply", !1)), t;
-		},
-		contrast: (e) => {
-			let t = new u();
-			return t.contrast(a(e, "amount", .5), s(e, "multiply", !1)), t;
-		},
-		grayscale: (e) => {
-			let t = new u();
-			return t.grayscale(a(e, "scale", .5), s(e, "multiply", !1)), t;
-		},
-		hue: (e) => {
-			let t = new u();
-			return t.hue(a(e, "f_rotation", 90), s(e, "multiply", !1)), t;
-		},
-		kodachrome: (e) => {
-			let t = new u();
-			return t.kodachrome(s(e, "multiply", !0)), t;
-		},
-		lsd: (e) => {
-			let t = new u();
-			return t.lsd(s(e, "multiply", !1)), t;
-		},
-		negative: (e) => {
-			let t = new u();
-			return t.negative(s(e, "multiply", !1)), t;
-		},
-		night: (e) => {
-			let t = new u();
-			return t.night(a(e, "intensity", .5), s(e, "multiply", !1)), t;
-		},
-		polaroid: (e) => {
-			let t = new u();
-			return t.polaroid(s(e, "multiply", !1)), t;
-		},
-		predator: (e) => {
-			let t = new u();
-			return t.predator(a(e, "amount", .5), s(e, "multiply", !1)), t;
-		},
-		saturate: (e) => {
-			let t = new u();
-			return t.saturate(a(e, "amount", .5), s(e, "multiply", !1)), t;
-		},
-		sepia: (e) => {
-			let t = new u();
-			return t.sepia(s(e, "multiply", !1)), t;
-		},
-		technicolor: (e) => {
-			let t = new u();
-			return t.technicolor(s(e, "multiply", !0)), t;
-		},
-		tint: (e) => {
-			let t = new u();
-			return t.tint(a(e, "f_color", 8947848), s(e, "multiply", !1)), t;
-		},
-		to_bgr: (e) => {
-			let t = new u();
-			return t.toBGR(s(e, "multiply", !1)), t;
-		},
-		vintage: (e) => {
-			let t = new u();
-			return t.vintage(s(e, "multiply", !0)), t;
-		}
+		black_and_white: r.#e((e, t) => e.blackAndWhite(s(t, "multiply", !1))),
+		brightness: r.#e((e, t) => e.brightness(a(t, "b", .5), s(t, "multiply", !1))),
+		browni: r.#e((e, t) => e.browni(s(t, "multiply", !0))),
+		color_tone: r.#e((e, t) => e.colorTone(a(t, "desaturation", .5), a(t, "toned", .5), a(t, "light_color", 16770432), a(t, "dark_color", 16770432), s(t, "multiply", !1))),
+		contrast: r.#e((e, t) => e.contrast(a(t, "amount", .5), s(t, "multiply", !1))),
+		grayscale: r.#e((e, t) => e.grayscale(a(t, "scale", .5), s(t, "multiply", !1))),
+		hue: r.#e((e, t) => e.hue(a(t, "f_rotation", 90), s(t, "multiply", !1))),
+		kodachrome: r.#e((e, t) => e.kodachrome(s(t, "multiply", !0))),
+		lsd: r.#e((e, t) => e.lsd(s(t, "multiply", !1))),
+		negative: r.#e((e, t) => e.negative(s(t, "multiply", !1))),
+		night: r.#e((e, t) => e.night(a(t, "intensity", .5), s(t, "multiply", !1))),
+		polaroid: r.#e((e, t) => e.polaroid(s(t, "multiply", !1))),
+		predator: r.#e((e, t) => e.predator(a(t, "amount", .5), s(t, "multiply", !1))),
+		saturate: r.#e((e, t) => e.saturate(a(t, "amount", .5), s(t, "multiply", !1))),
+		sepia: r.#e((e, t) => e.sepia(s(t, "multiply", !1))),
+		technicolor: r.#e((e, t) => e.technicolor(s(t, "multiply", !0))),
+		tint: r.#e((e, t) => e.tint(a(t, "f_color", 8947848), s(t, "multiply", !1))),
+		to_bgr: r.#e((e, t) => e.toBGR(s(t, "multiply", !1))),
+		vintage: r.#e((e, t) => e.vintage(s(t, "multiply", !0)))
 	};
+	static #e(e) {
+		return (t) => {
+			let n = new u();
+			return e(n, t), n;
+		};
+	}
 	static setBlendmode(e, t) {
 		let { blendmode: i } = t;
 		if (!i) return;
@@ -172,20 +121,20 @@ var { BlurFilter: l, ColorMatrixFilter: u, NoiseFilter: d } = r, f = class r {
 	}
 	static getBlendmodeNum(t) {
 		if (!t) return e.NORMAL;
-		let n = r.#e[t];
+		let n = r.#t[t];
 		if (n !== void 0) return n;
 		throw `${t} はサポートされない blendmode です`;
 	}
-	static #e = {
+	static #t = {
 		normal: e.NORMAL,
 		add: e.ADD,
 		multiply: e.MULTIPLY,
 		screen: e.SCREEN
 	};
 	static getNum2Blendmode(e) {
-		return r.#t[e] ?? "normal";
+		return r.#n[e] ?? "normal";
 	}
-	static #t = {
+	static #n = {
 		0: "normal",
 		1: "add",
 		2: "multiply",
@@ -239,7 +188,7 @@ var { BlurFilter: l, ColorMatrixFilter: u, NoiseFilter: d } = r, f = class r {
 	dump() {
 		return ` "idx":${String(this.ctn.parent.getChildIndex(this.ctn))}, "visible":"${String(this.ctn.visible)}", "left":${String(this.ctn.x)}, "top":${String(this.ctn.y)}, "alpha":${String(this.ctn.alpha)}, "rotation":${String(this.ctn.angle)}, "name":"${this.name_}", "scale_x":${String(this.ctn.scale.x)}, "scale_y":${String(this.ctn.scale.y)}, "filters": [${this.aFltHArg.map((e) => `"${e.filter ?? ""}"`).join(",")}]`;
 	}
-	static #n(e, t) {
+	static #r(e, t) {
 		let n = e.getBounds(), r = t.scale.x < 0 ? -t.scale.x : t.scale.x, i = t.scale.y < 0 ? -t.scale.y : t.scale.y;
 		return {
 			b_width: r === 1 ? n.width : n.width * r,
@@ -251,14 +200,14 @@ var { BlurFilter: l, ColorMatrixFilter: u, NoiseFilter: d } = r, f = class r {
 			r.setXYByPos(e, t.pos, n);
 			return;
 		}
-		let { b_width: l, b_height: u } = r.#n(e, n), d = n.x;
+		let { b_width: l, b_height: u } = r.#r(e, n), d = n.x;
 		"left" in t ? (d = a(t, "left", 0), d > -1 && d < 1 && (d *= c.stageW)) : "center" in t ? (d = a(t, "center", 0), d > -1 && d < 1 && (d *= c.stageW), d -= (s ? l / 3 : l) / 2) : "right" in t ? (d = a(t, "right", 0), d > -1 && d < 1 && (d *= c.stageW), d -= s ? l / 3 : l) : "s_right" in t && (d = a(t, "s_right", 0), d > -1 && d < 1 && (d *= c.stageW), d = c.stageW - d - (s ? l / 3 : l)), n.x = o(n.scale.x < 0 ? d + (s ? l / 3 : l) : d);
 		let f = n.y;
 		"top" in t ? (f = a(t, "top", 0), f > -1 && f < 1 && (f *= c.stageH)) : "middle" in t ? (f = a(t, "middle", 0), f > -1 && f < 1 && (f *= c.stageH), f -= u / 2) : "bottom" in t ? (f = a(t, "bottom", 0), f > -1 && f < 1 && (f *= c.stageH), f -= u) : "s_bottom" in t && (f = a(t, "s_bottom", 0), f > -1 && f < 1 && (f *= c.stageH), f = c.stageH - f - u), n.y = o(n.scale.y < 0 ? f + u : f), i && !("left" in t) && !("center" in t) && !("right" in t) && !("s_right" in t) && !("top" in t) && !("middle" in t) && !("bottom" in t) && !("s_bottom" in t) && r.setXYByPos(e, "c", n);
 	}
 	static setXYByPos(e, t, n) {
 		if (t === "stay") return;
-		let { b_width: i, b_height: a } = r.#n(e, n), s = 0;
+		let { b_width: i, b_height: a } = r.#r(e, n), s = 0;
 		s = !t || t === "c" ? c.stageW * .5 : t === "r" ? c.stageW - i * .5 : t === "l" ? i * .5 : o(t), n.x = o(s - i * .5), n.y = c.stageH - a, n.scale.x < 0 && (n.x += i), n.scale.y < 0 && (n.y += a);
 	}
 	static setXYCenter(e) {

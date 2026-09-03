@@ -171,179 +171,32 @@ export class Layer {
 			}
 			return f;
 		},
-		black_and_white: hArg=> {	// 白黒
-			const f = new ColorMatrixFilter;
-			f.blackAndWhite(
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		brightness: hArg=> {	// 明るさを調整
-			const f = new ColorMatrixFilter;
-			f.brightness(
-				argChk_Num(hArg, 'b', 0.5),
-					// 明るさの値 (0 ～ 1、0 は黒)
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		browni: hArg=> {	// おいしいブラウニー
-			const f = new ColorMatrixFilter;
-			f.browni(
-				argChk_Boolean(hArg, 'multiply', true),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		color_tone: hArg=> {	// カラートーン。グラデーション マップのようなもので、正確に何をするのかはわかりませんが、遊んでみると面白いです。
-			const f = new ColorMatrixFilter;
-			f.colorTone(
-				argChk_Num(hArg, 'desaturation', 0.5),
-				argChk_Num(hArg, 'toned', 0.5),
-				argChk_Num(hArg, 'light_color', 0xFFE580),
-				argChk_Num(hArg, 'dark_color', 0xFFE580),
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		contrast: hArg=> {	// コントラスト マトリクスを設定し、暗い部分と明るい部分の分離を増やします。 コントラストを上げる : シャドウをより暗くし、ハイライトをより明るくします。 コントラストを下げる : シャドウを上げ、ハイライトを下げます。
-			const f = new ColorMatrixFilter;
-			f.contrast(
-				argChk_Num(hArg, 'amount', 0.5),
-					// コントラストの値 (0-1)
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		grayscale: hArg=> {	// グレースケール
-			const f = new ColorMatrixFilter;
-			f.grayscale(
-				argChk_Num(hArg, 'scale', 0.5),
-					// グレーの値 (0 ～ 1、0 は黒)
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		hue: hArg=> {	// 色相
-			const f = new ColorMatrixFilter;
-			f.hue(
-				argChk_Num(hArg, 'f_rotation', 90),	// 0だと変化なしで分かりづらいので
-					// 度単位
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		kodachrome: hArg=> {	// コダクローム。1935 年に Eastman Kodak によって導入されたカラー リバーサル フィルム。(Dominic Szablewski に感謝)
-			const f = new ColorMatrixFilter;
-			f.kodachrome(
-				argChk_Boolean(hArg, 'multiply', true),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		lsd: hArg=> {	// LSD効果、現在の行列を乗算します
-			const f = new ColorMatrixFilter;
-			f.lsd(
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		negative: hArg=> {	// ネガティブ画像 (古典的なRGBマトリックスの逆)
-			const f = new ColorMatrixFilter;
-			f.negative(
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		night: hArg=> {	// ナイトエフェクト
-			const f = new ColorMatrixFilter;
-			f.night(
-				argChk_Num(hArg, 'intensity', 0.5),
-					// 夜の効果の強さ
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		polaroid: hArg=> {	// ポラロイド
-			const f = new ColorMatrixFilter;
-			f.polaroid(
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		predator: hArg=> {	// 捕食者効果、新しい独立したマトリックスを設定して現在のマトリックスを消去します
-			const f = new ColorMatrixFilter;
-			f.predator(
-				argChk_Num(hArg, 'amount', 0.5),
-					// 捕食者は自分の将来の犠牲者をどれほど感じているか
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		saturate: hArg=> {	// 彩度。色の間の分離を増やします。 彩度を増やす: コントラスト、明るさ、シャープネスを増やします。
-			const f = new ColorMatrixFilter;
-			f.saturate(
-				argChk_Num(hArg, 'amount', 0.5),
-					// 飽和量(0～1)
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		sepia: hArg=> {		// セピア
-			const f = new ColorMatrixFilter;
-			f.sepia(
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		technicolor: hArg=> {	// テクニカラー。1916 年に発明されたカラー動画プロセス (Dominic Szablewski に感謝)
-			const f = new ColorMatrixFilter;
-			f.technicolor(
-				argChk_Boolean(hArg, 'multiply', true),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		tint: hArg=> {	// 色合い。カラー マトリクスの対角線上に各チャネルを設定します。 これを使用すると、スプライト、テキスト、グラフィックス、メッシュなどの一部の表示オブジェクトの色合いフィールドと同様の色合い効果をコンテナ上で実現できます。
-			const f = new ColorMatrixFilter;
-			f.tint(
-				argChk_Num(hArg, 'f_color', 0x888888),
-					// 色合いの色。 これは 16 進数値です。
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		to_bgr: hArg=> {	// 赤→青、青→赤
-			const f = new ColorMatrixFilter;
-			f.toBGR(
-				argChk_Boolean(hArg, 'multiply', false),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
-		vintage: hArg=> {	// ビンテージ
-			const f = new ColorMatrixFilter;
-			f.vintage(
-				argChk_Boolean(hArg, 'multiply', true),
-					// true の場合、現在の行列と行列を乗算
-			);
-			return f;
-		},
+		// ColorMatrixFilter 系。各エントリは f へ効果を積むだけ（`multiply` は共通で
+		//	「true なら現在の行列に乗算、false なら置き換え」＝pixi 既定の引数）
+		black_and_white:	Layer.#cmf((f, h)=> f.blackAndWhite(argChk_Boolean(h, 'multiply', false))),	// 白黒
+		brightness:			Layer.#cmf((f, h)=> f.brightness(argChk_Num(h, 'b', 0.5), argChk_Boolean(h, 'multiply', false))),	// 明るさ (b:0〜1、0 は黒)
+		browni:				Layer.#cmf((f, h)=> f.browni(argChk_Boolean(h, 'multiply', true))),	// おいしいブラウニー
+		color_tone:			Layer.#cmf((f, h)=> f.colorTone(argChk_Num(h, 'desaturation', 0.5), argChk_Num(h, 'toned', 0.5), argChk_Num(h, 'light_color', 0xFFE580), argChk_Num(h, 'dark_color', 0xFFE580), argChk_Boolean(h, 'multiply', false))),	// カラートーン（グラデーションマップ風）
+		contrast:			Layer.#cmf((f, h)=> f.contrast(argChk_Num(h, 'amount', 0.5), argChk_Boolean(h, 'multiply', false))),	// コントラスト (amount:0〜1)
+		grayscale:			Layer.#cmf((f, h)=> f.grayscale(argChk_Num(h, 'scale', 0.5), argChk_Boolean(h, 'multiply', false))),	// グレースケール (scale:0〜1、0 は黒)
+		hue:				Layer.#cmf((f, h)=> f.hue(argChk_Num(h, 'f_rotation', 90), argChk_Boolean(h, 'multiply', false))),	// 色相（度単位。既定 90＝0 だと変化なしで分かりづらいので）
+		kodachrome:			Layer.#cmf((f, h)=> f.kodachrome(argChk_Boolean(h, 'multiply', true))),	// コダクローム（1935 Eastman Kodak）
+		lsd:				Layer.#cmf((f, h)=> f.lsd(argChk_Boolean(h, 'multiply', false))),	// LSD 効果
+		negative:			Layer.#cmf((f, h)=> f.negative(argChk_Boolean(h, 'multiply', false))),	// ネガ（RGB マトリクスの逆）
+		night:				Layer.#cmf((f, h)=> f.night(argChk_Num(h, 'intensity', 0.5), argChk_Boolean(h, 'multiply', false))),	// ナイト
+		polaroid:			Layer.#cmf((f, h)=> f.polaroid(argChk_Boolean(h, 'multiply', false))),	// ポラロイド
+		predator:			Layer.#cmf((f, h)=> f.predator(argChk_Num(h, 'amount', 0.5), argChk_Boolean(h, 'multiply', false))),	// 捕食者効果
+		saturate:			Layer.#cmf((f, h)=> f.saturate(argChk_Num(h, 'amount', 0.5), argChk_Boolean(h, 'multiply', false))),	// 彩度 (amount:0〜1)
+		sepia:				Layer.#cmf((f, h)=> f.sepia(argChk_Boolean(h, 'multiply', false))),	// セピア
+		technicolor:		Layer.#cmf((f, h)=> f.technicolor(argChk_Boolean(h, 'multiply', true))),	// テクニカラー（1916）
+		tint:				Layer.#cmf((f, h)=> f.tint(argChk_Num(h, 'f_color', 0x888888), argChk_Boolean(h, 'multiply', false))),	// 色合い（f_color は 16 進）
+		to_bgr:				Layer.#cmf((f, h)=> f.toBGR(argChk_Boolean(h, 'multiply', false))),	// 赤↔青
+		vintage:			Layer.#cmf((f, h)=> f.vintage(argChk_Boolean(h, 'multiply', true))),	// ビンテージ
 	};
+	// ColorMatrixFilter を生成し apply で効果を積んで返す共通形
+	static	#cmf(apply: (f: InstanceType<typeof ColorMatrixFilter>, hArg: TArg)=> void): (hArg: TArg)=> Filter {
+		return hArg=> {const f = new ColorMatrixFilter; apply(f, hArg); return f};
+	}
 
 	static	setBlendmode(cnt: Container, hArg: TArg) {
 		const {blendmode} = hArg;
