@@ -36,6 +36,13 @@
   `EventMng.button` の clickse/enterse/leavese 3 重複を `resvSe()` へ、`Button` の
   style/style_hover/style_clicked の JSON パース 3 重複を `#applyStyleJson()` へ。
   単体 777 件・分家 1771 件・tsc 通過。
+- 第 5 パス（2026-09-03）… システム基盤読了（`SysBase`/`SysWeb`/`SysApp`/`CmnInterface`）＋
+  `src/*.ts`。`CmnInterface` は型・ファクトリ宣言のみ、`web.ts`/`app.ts` は別エントリの
+  barrel、`appMain_cmn`/`IpcMain`/`IpcRenderer`/`preload` は宣言的な IPC 配線で整理対象なし。
+- 第 7 適用（2026-09-03）… `SysBase.setData(o)` で `this.data.{sys,mark,kidoku} = o.…` の
+  3 重複（`SysWeb._import`・`SysApp.initVal`/`_import`）を集約、`SysWeb.#clickDL(href, name)`
+  で `<a download>` クリックの 3 重複（`_export`・`savePic`・`outputFile`）を集約。
+  単体 777 件・分家 1771 件・tsc 通過。**これでスイープ完了。**
 - 第 2 適用（2026-09-03）… **`Pages` / `Layer`（`#scaledWH` 抽出＋`hBldFilter` の CMF 工場化）済**。
   工場化に伴い `test/Layer_filter.test.ts`（20 件）を新設＝ColorMatrixFilter 系 19 個が
   「工場経由」と「pixi 直呼び」で同じ `.matrix` を生むことを保証（分家からのテスト輸入でなく
@@ -227,10 +234,33 @@
   `#loaded_b_pic` の `setTransform` 引数、`constructor` の `this.x = ...` を代入式の値として
   `#o` に畳み込むイディオム（pixi プロパティと dump 用 `#o` の同時初期化）。
 
-## 未分析
+## システム基盤
 
-- システム基盤（`SysBase` / `SysWeb` / `SysApp` / `CmnInterface`）＋ `src/*.ts`
+### SysBase.ts / SysWeb.ts / SysApp.ts — 一部（2026-09-03）
 
-## 見送り済み
+- ~~復元・インポートで `this.data.{sys,mark,kidoku} = o.…` の 3 行反復（`SysWeb._import`・
+  `SysApp.initVal`/`_import`）~~ … 済。`SysBase.setData(o: T_Data4Vari)` へ。
+  `SysWeb.initVal` の per-key `store.get()` 3 連は取得元が別なので対象外。
+- ~~`SysWeb` の `<a download>` クリック 3 重複（`_export`・`savePic`・`outputFile`）~~ … 済。
+  `SysWeb.#clickDL(href, name)` へ（href は Blob URL か data: URL）。
+- **触らなかったもの**：`SysBase.loaded()` と `init()` のプラグイン API オブジェクトリテラル
+  （pre-init 最小版と本番版で中身が別物）、`#genImage`/`#genVideo`（Blob+ObjectURL は似るが
+  要素型・イベントが別）、`cvsResize` のギャラリー/フルスクリーン分岐（座標計算の塊）。
 
-（まだ無し）
+### CmnInterface.ts / src/*.ts — 触らない
+
+- `CmnInterface` は型・`creXXX_DATA()` ファクトリ宣言のみ（≒スキーマ）。
+- `web.ts`/`app.ts` は SysWeb/SysApp だけ差し替えた barrel re-export（別ビルドエントリ）。
+- `appMain_cmn`/`IpcMain`/`IpcRenderer`/`preload` は Electron 主プロセスの IPC 配線。
+  `ipc.handle('...', ...)` の羅列で宣言的、まとめる余地なし。
+
+## 見送り済み（分析の結論。着手不要）
+
+- `SpritesMng`（pixi Loader/TextureCache 落とし穴コメント密）
+- `TxtLayer.#putCh` の巨大 switch、`#mkStyle_r_align4ff`（Firefox 分岐）
+- `Main.#main` の TokenTop 判定（`const enum` 化しても得が薄い）
+- `ScriptIterator.#seekScript` / `#if`（吉里吉里互換・行番号補正が load-bearing）
+- `Areas`（`toString` 先頭カンマが互換性凍結）
+- `CmnLib` 数値パース統合（`Variable.#castAuto` の「ゆるさ」が後方互換）
+- `SndBuf` の `St*` 状態機械（2026-08 howler 撤去で再構築・`// ok` 検証済み）
+- `FocusMng.prev`/`next` 統合（負数剰余の書き換えリスク＞効果、unit なし）

@@ -135,10 +135,7 @@ export class SysApp extends SysBase {
 		}
 		else {
 			// データがある場合の処理
-			const o = <T_Data4Vari>await this.#em.invoke('Store_get');
-			this.data.sys = o.sys;
-			this.data.mark = o.mark;
-			this.data.kidoku = o.kidoku;
+			this.setData(<T_Data4Vari>await this.#em.invoke('Store_get'));
 		}
 
 		// ウインドウ位置
@@ -267,9 +264,7 @@ export class SysApp extends SysBase {
 
 			await this.#setStore();
 			const o = <T_Data4Vari>await this.#em.invoke('Store_get');
-			this.data.sys = o.sys;
-			this.data.mark = o.mark;
-			this.data.kidoku = o.kidoku;
+			this.setData(o);
 			this.flush = bkFlush;
 			this.flush();
 			this.val.updateData(o);

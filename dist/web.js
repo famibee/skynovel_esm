@@ -26,8 +26,12 @@ function f() {
 globalThis.addEventListener("resize", f, { passive: !0 }), setInterval(f, l);
 //#endregion
 //#region src/sn/SysWeb.ts
-var p = class extends i {
-	#e;
+var p = class a extends i {
+	static #e(e, t) {
+		let n = document.createElement("a");
+		n.href = e, n.download = t, n.click();
+	}
+	#t;
 	constructor(...[e = {}, t = {
 		cur: "prj/",
 		crypto: !1,
@@ -35,7 +39,7 @@ var p = class extends i {
 	}]) {
 		super(e, t);
 		let n = t.cur.split("/");
-		this.#e = n.length > 2 ? n.slice(0, -2).join("/") + "/" : "", this.loaded(e, t);
+		this.#t = n.length > 2 ? n.slice(0, -2).join("/") + "/" : "", this.loaded(e, t);
 	}
 	async loaded(...[r, i]) {
 		await super.loaded(r, i), document.querySelectorAll("[data-prj]").forEach((e) => {
@@ -56,11 +60,11 @@ var p = class extends i {
 			mode: "cors"
 		})), this.extPort = e(n.hDip, "port", this.extPort);
 		let s = a.get("cur");
-		s && (i.cur = this.#e + s + "/"), await this.run();
+		s && (i.cur = this.#t + s + "/"), await this.run();
 	}
-	#t = ":";
+	#n = ":";
 	async runSN(e) {
-		this.arg.cur = this.#e + e + "/", this.#t !== this.arg.cur && (this.#t = this.arg.cur, await this.run());
+		this.arg.cur = this.#t + e + "/", this.#n !== this.arg.cur && (this.#n = this.arg.cur, await this.run());
 	}
 	async initVal(e, t) {
 		let n = encodeURIComponent(document.location.hostname);
@@ -117,8 +121,8 @@ var p = class extends i {
 			sys: this.data.sys,
 			mark: this.data.mark,
 			kidoku: this.data.kidoku
-		}), t = this.arg.crypto ? await this.enc(e) : e, i = new Blob([t], { type: "text/json" }), a = document.createElement("a");
-		a.href = URL.createObjectURL(i), a.download = (this.arg.crypto ? "" : "no_crypto_") + this.cfg.headNs + r("-", "_", "") + ".swpd", a.click(), n.debugLog && console.log("プレイデータをエクスポートしました"), setTimeout(() => this.fire("sn:exported", new MouseEvent("click")), 10);
+		}), t = this.arg.crypto ? await this.enc(e) : e, i = new Blob([t], { type: "text/json" });
+		a.#e(URL.createObjectURL(i), (this.arg.crypto ? "" : "no_crypto_") + this.cfg.headNs + r("-", "_", "") + ".swpd"), n.debugLog && console.log("プレイデータをエクスポートしました"), setTimeout(() => this.fire("sn:exported", new MouseEvent("click")), 10);
 	})(), !1);
 	_import = () => (new Promise((e, t) => {
 		let n = document.createElement("input");
@@ -132,7 +136,7 @@ var p = class extends i {
 			console.error(`別のゲーム【プロジェクト名=${r.sys["const.sn.cfg.ns"]}】のプレイデータです`);
 			return;
 		}
-		this.data.sys = r.sys, this.data.mark = r.mark, this.data.kidoku = r.kidoku, this.flush(), this.val.updateData(r), n.debugLog && console.log("プレイデータをインポートしました"), this.fire("sn:imported", new MouseEvent("click"));
+		this.setData(r), this.flush(), this.val.updateData(r), n.debugLog && console.log("プレイデータをインポートしました"), this.fire("sn:imported", new MouseEvent("click"));
 	}).catch((e) => console.error(`異常なプレイデータです ${String(e)}`)), !1);
 	navigate_to = (e) => {
 		let { url: t } = e;
@@ -145,17 +149,15 @@ var p = class extends i {
 		});
 	}
 	async savePic(e, t) {
-		let r = document.createElement("a");
-		r.href = t, r.download = e, r.click(), n.debugLog && console.log("画像ファイルをダウンロードします");
+		a.#e(t, e), n.debugLog && console.log("画像ファイルをダウンロードします");
 	}
-	#n = {};
+	#r = {};
 	async appendFile(e, t) {
-		let n = (this.#n[e] ?? "") + t;
-		this.#n[e] = n, await this.outputFile(e, n);
+		let n = (this.#r[e] ?? "") + t;
+		this.#r[e] = n, await this.outputFile(e, n);
 	}
 	async outputFile(e, t) {
-		let n = new Blob([t], { type: "text/json" }), r = document.createElement("a");
-		r.href = URL.createObjectURL(n), r.download = e, r.click();
+		a.#e(URL.createObjectURL(new Blob([t], { type: "text/json" })), e);
 	}
 };
 //#endregion

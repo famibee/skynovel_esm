@@ -66,11 +66,7 @@ var u = class {
 			this.#t.invoke("flush", JSON.parse(JSON.stringify(this.data)));
 		}, await this.#a();
 		let i = e["const.sn.isFirstBoot"] = await this.#t.invoke("Store_isEmpty");
-		if (i) this.data.sys = a(), this.data.mark = {}, this.data.kidoku = {};
-		else {
-			let e = await this.#t.invoke("Store_get");
-			this.data.sys = e.sys, this.data.mark = e.mark, this.data.kidoku = e.kidoku;
-		}
+		i ? (this.data.sys = a(), this.data.mark = {}, this.data.kidoku = {}) : this.setData(await this.#t.invoke("Store_get"));
 		let o = t(this.data.sys, "const.sn.nativeWindow.x", 0), s = t(this.data.sys, "const.sn.nativeWindow.y", 0), c = this.data.sys["const.sn.nativeWindow.w"] || r.stageW, l = this.data.sys["const.sn.nativeWindow.h"] || r.stageH;
 		this.#n.on("save_win_inf", (t, { x: r, y: i, w: a, h: o }) => {
 			this.data.sys["const.sn.nativeWindow.x"] = r, this.data.sys["const.sn.nativeWindow.y"] = i, this.data.sys["const.sn.nativeWindow.w"] = a, this.data.sys["const.sn.nativeWindow.h"] = o, e["const.sn.screenResolutionX"] = screen.availWidth, e["const.sn.screenResolutionY"] = screen.availHeight, n(this.data);
@@ -125,7 +121,7 @@ var u = class {
 		let n = () => this.flush();
 		this.flush = () => {}, await this.#t.invoke("unzip", t, this.$path_userdata + "storage/"), await this.#a();
 		let i = await this.#t.invoke("Store_get");
-		this.data.sys = i.sys, this.data.mark = i.mark, this.data.kidoku = i.kidoku, this.flush = n, this.flush(), this.val.updateData(i), r.debugLog && console.log("プレイデータをインポートしました"), this.fire("sn:imported", new MouseEvent("click"));
+		this.setData(i), this.flush = n, this.flush(), this.val.updateData(i), r.debugLog && console.log("プレイデータをインポートしました"), this.fire("sn:imported", new MouseEvent("click"));
 	}).catch((e) => console.log(`[import] err: ${String(e)}`)), !1);
 	navigate_to = (e) => {
 		let { url: t } = e;

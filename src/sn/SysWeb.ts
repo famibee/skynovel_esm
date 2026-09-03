@@ -16,6 +16,15 @@ import {devToolsGuard} from './DevToolsGuard';
 
 
 export class SysWeb extends SysBase {
+	// ブラウザ版の「保存」はどれも `<a download>` のクリックに落ちる（_export / savePic /
+	//	outputFile）。href は Blob URL か data: URL
+	static	#clickDL(href: string, name: string) {
+		const a = document.createElement('a');
+		a.href = href;
+		a.download = name;
+		a.click();
+	}
+
 	#path_base;
 	constructor(...[hPlg = {}, arg = {cur: 'prj/', crypto: false, dip: ''}]: T_SysBaseParams) {	// DOMContentLoaded は呼び出し側でやる
 		super(hPlg, arg);
@@ -183,11 +192,11 @@ export class SysWeb extends SysBase {
 			const s2 = this.arg.crypto ?await this.enc(s) :s;
 			const blob = new Blob([s2], {'type':'text/json'});
 
-			const a = document.createElement('a');
-			a.href = URL.createObjectURL(blob);
-			a.download = (this.arg.crypto ?'' :'no_crypto_')
-				+ this.cfg.headNs + getDateStr('-', '_', '') +'.swpd';
-			a.click();
+			SysWeb.#clickDL(
+				URL.createObjectURL(blob),
+				(this.arg.crypto ?'' :'no_crypto_')
+					+ this.cfg.headNs + getDateStr('-', '_', '') +'.swpd',
+			);
 
 			if (CmnLib.debugLog) console.log('プレイデータをエクスポートしました');
 			setTimeout(()=> this.fire('sn:exported', new MouseEvent('click')), 10);
@@ -217,9 +226,7 @@ export class SysWeb extends SysBase {
 				return;
 			}
 
-			this.data.sys = o.sys;
-			this.data.mark = o.mark;
-			this.data.kidoku = o.kidoku;
+			this.setData(o);
 			this.flush();
 			this.val.updateData(o);
 
@@ -251,10 +258,7 @@ export class SysWeb extends SysBase {
 
 	// eslint-disable-next-line @typescript-eslint/require-await
 	override async savePic(path: string, data_url: string) {
-		const a = document.createElement('a');
-		a.href = data_url;
-		a.download = path;
-		a.click();
+		SysWeb.#clickDL(data_url, path);
 		if (CmnLib.debugLog) console.log('画像ファイルをダウンロードします');
 	}
 
@@ -267,11 +271,7 @@ export class SysWeb extends SysBase {
 	}
 	// eslint-disable-next-line @typescript-eslint/require-await
 	override async outputFile(path: string, data: string) {
-		const blob = new Blob([data], {'type':'text/json'});
-		const a = document.createElement('a');
-		a.href = URL.createObjectURL(blob);
-		a.download = path;
-		a.click();
+		SysWeb.#clickDL(URL.createObjectURL(new Blob([data], {'type':'text/json'})), path);
 	}
 
 }

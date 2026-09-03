@@ -102,6 +102,13 @@ export class SysBase implements T_SysRoots, T_SysBase {
 		kidoku	: {},
 	};
 	async	initVal(_hTmp: T_H_TMP_DATA, _comp: (data: T_Data4Vari)=> void) { /* empty */ }
+	// 復元・インポートで「パース済みオブジェクトの sys/mark/kidoku を this.data へ移す」を
+	// SysWeb / SysApp の計 3 箇所でやっていたのを集約
+	protected	setData(o: T_Data4Vari) {
+		this.data.sys = o.sys;
+		this.data.mark = o.mark;
+		this.data.kidoku = o.kidoku;
+	}
 	flush() {
 		// 立て続きの保存を回避し最短 500ms の間隔を開ける
 		if (this.#tidFlush) {this.#rsvFlush = true; return}	// 次の Timeout 時に予約

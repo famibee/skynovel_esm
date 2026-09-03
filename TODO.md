@@ -5,26 +5,12 @@
 > （release-please が `CHANGELOG.md` を自動生成しているため、bluesnovel 方式の手動転記は行わない）。
 > 冒頭から少しずつ進める。
 
-## /simplify＋modern-web-guidance 全体スイープ（2026-09-03 開始）
+## /simplify＋modern-web-guidance 全体スイープ（2026-09-03）
 
-分家 bluesnovel は独自コード（`src/ts/**`＋`src/components/**`＋`src/store/`）に `/simplify` を
-9 弾かけて掃き出し済み。本家由来コードぶんは「分家で分析だけしても本家との再取り込み衝突が
-増えるだけ」なので、**本家（このリポジトリ）側で回す**と決定（分家 `src/docs/refactor-candidates.md`）。
+`src/sn/**`＋`src/*.ts` 全体を 5 パスで読了・第 1〜7 適用済み（経緯は各コミット、控えは
+[.claude/docs/refactor-candidates.md](.claude/docs/refactor-candidates.md)）。残りは以下だけ：
 
-対象は `src/sn/**`（約 16000 行・43 ファイル）＋ `src/*.ts`。掃除でなく作り直しの範疇なので
-**1 項目ずつ設計判断＋実機（`tmp_esm_uc` 実走）確認しながら適用**、経緯は消す際のコミットメッセージへ。
-挙がった候補の控えは [.claude/docs/refactor-candidates.md](.claude/docs/refactor-candidates.md)。
-
-- [ ] `src/sn/` パースユーティリティ群 … `PropParser`/`Grammar`/`Config`/`RubySpliter` は適用済み。
-      残り：`CmnLib` の数値パース重複（`Variable.#castAuto` と横断確認してから）／
-      `ConfigBase` の小ヘルパ（低優先）
-- [ ] `src/sn/` 描画層 … 全ファイル適用済み or 見送り確定（`SpritesMng`・`#putCh` switch・
-      `#mkStyle_r_align4ff` は触らない）。**実機確認の宿題**：`Layer.renderGate`＝`tsy.e2e.ts`＋
-      `[trans]` サンプル、`#defChStyle`＝`gallery/?cur=ch_in_out`、`#remakeBackColor`＝`[lay b_color=]`
-- [x] `src/sn/` 実行エンジン（`ScriptIterator` / `Main` / `Variable` / `CallStack` / `Areas`）…
-      `Grammar.numLF()` 集約＋`Variable` の RegExp 生成整理のみ適用（第5弾）。`#seekScript`・
-      `#if`・`Areas`（先頭カンマ凍結）・`Main.#main` の TokenTop 判定は見送り
-- [x] `src/sn/` 音声・入力層（`SoundMng` / `SndBuf` / `SndCtx` / `EventMng` / `FocusMng` /
-      `GamepadMng` / `Button`）… `getVol` 共有・`resvSe`・`Button.#applyStyleJson` を適用（第6弾）。
-      `SndBuf` の St* 状態機械（howler 撤去で作り直し済）と `FocusMng` の prev/next 統合は見送り
-- [ ] `src/sn/` システム基盤（`SysBase` / `SysWeb` / `SysApp` / `CmnInterface`）＋ `src/*.ts` の分析
+- [ ] 描画層 第 3〜4 適用（`Layer.renderGate` / `#defChStyle` / `#remakeBackColor`）の**実機確認**。
+      本家に該当 e2e が無い：`renderGate`＝`tsy.e2e.ts`＋`[trans]` サンプル、
+      `#defChStyle`＝`gallery/?cur=ch_in_out`、`#remakeBackColor`＝`[lay b_color=]`
+- [ ] `ConfigBase.searchPath` の `#extInGroup(grp, ext)` helper 化（低優先・効果小）

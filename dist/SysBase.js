@@ -69,6 +69,9 @@ var o = class o {
 		kidoku: {}
 	};
 	async initVal(e, t) {}
+	setData(e) {
+		this.data.sys = e.sys, this.data.mark = e.mark, this.data.kidoku = e.kidoku;
+	}
 	flush() {
 		if (this.#e) {
 			this.#t = !0;
