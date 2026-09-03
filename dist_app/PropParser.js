@@ -1,6 +1,6 @@
 import { p as e } from "./CmnLib.js";
 //#region src/sn/PropParser.ts
-var t = /\[[^\]]+\]/g, n = {
+var t = /\[[^\]]+\]/g, n = /^0x[0-9a-fA-F]+/, r = /^(0|[1-9][0-9]*)\.[0-9]+/, i = /^(0|[1-9][0-9]*)/, a = /^(true|false)/, o = /^[A-Za-z_][A-Za-z0-9_]*/, s = (e) => Object.prototype.toString.call(e) === "[object String]", c = (e) => Object.prototype.toString.call(e) === "[object Number]", l = {
 	"**": {
 		bp: 13,
 		right: !0
@@ -35,7 +35,7 @@ var t = /\[[^\]]+\]/g, n = {
 		bp: 1,
 		right: !0
 	}
-}, r = class r {
+}, u = class u {
 	val;
 	#e;
 	#t;
@@ -44,55 +44,55 @@ var t = /\[[^\]]+\]/g, n = {
 		this.val = e, this.#e = t, this.#t = RegExp(`^(?:"(?:\\${t}["'#\\n]|[^"])*"|'(?:\\${t}["'#\\n]|[^'])*'|\\#(?:\\${t}["'#\\n]|[^#])*\\#)`);
 	}
 	#r(t) {
-		let n = [], r = 0;
-		for (; r < t.length;) {
-			let i = t.charCodeAt(r);
-			if (i === 32 || i === 9 || i === 10 || i === 13) {
-				++r;
+		let s = [], c = 0;
+		for (; c < t.length;) {
+			let l = t.charCodeAt(c);
+			if (l === 32 || l === 9 || l === 10 || l === 13) {
+				++c;
 				continue;
 			}
-			let a = t.slice(r), o;
-			if ((o = /^0x[0-9a-fA-F]+/.exec(a)) || (o = /^(0|[1-9][0-9]*)\.[0-9]+/.exec(a))) {
-				n.push({
+			let u = t.slice(c), d;
+			if ((d = n.exec(u)) || (d = r.exec(u))) {
+				s.push({
 					t: "NUM",
-					v: ["!num!", Number(o[0])]
-				}), r += o[0].length;
+					v: ["!num!", Number(d[0])]
+				}), c += d[0].length;
 				continue;
 			}
-			if (o = /^(0|[1-9][0-9]*)/.exec(a)) {
-				n.push({
+			if (d = i.exec(u)) {
+				s.push({
 					t: "NUM",
-					v: ["!num!", e(o[0])]
-				}), r += o[0].length;
+					v: ["!num!", e(d[0])]
+				}), c += d[0].length;
 				continue;
 			}
-			if (a.startsWith("null")) {
-				n.push({
+			if (u.startsWith("null")) {
+				s.push({
 					t: "NULL",
 					v: ["!str!", null]
-				}), r += 4;
+				}), c += 4;
 				continue;
 			}
-			if (o = /^(true|false)/.exec(a)) {
-				n.push({
+			if (d = a.exec(u)) {
+				s.push({
 					t: "BOOL",
-					v: ["!bool!", o[0] === "true"]
-				}), r += o[0].length;
+					v: ["!bool!", d[0] === "true"]
+				}), c += d[0].length;
 				continue;
 			}
-			if (o = this.#t.exec(a)) {
-				n.push({
+			if (d = this.#t.exec(u)) {
+				s.push({
 					t: "STR",
-					v: ["!str!", o[0].slice(1, -1).replaceAll(this.#e, "")]
-				}), r += o[0].length;
+					v: ["!str!", d[0].slice(1, -1).replaceAll(this.#e, "")]
+				}), c += d[0].length;
 				continue;
 			}
-			let s = a.slice(0, 3);
-			if (s === ">>>" || s === "===" || s === "!==") {
-				n.push({ t: s }), r += 3;
+			let f = u.slice(0, 3);
+			if (f === ">>>" || f === "===" || f === "!==") {
+				s.push({ t: f }), c += 3;
 				continue;
 			}
-			let c = a.slice(0, 2);
+			let p = u.slice(0, 2);
 			if ([
 				"**",
 				"++",
@@ -105,38 +105,38 @@ var t = /\[[^\]]+\]/g, n = {
 				"!=",
 				"&&",
 				"||"
-			].includes(c)) {
-				n.push({ t: c }), r += 2;
+			].includes(p)) {
+				s.push({ t: p }), c += 2;
 				continue;
 			}
-			let l = a.charAt(0);
-			if ("()!~*/%+-<>&^|:?¥".includes(l)) {
-				n.push({ t: l }), ++r;
+			let m = u.charAt(0);
+			if ("()!~*/%+-<>&^|:?¥".includes(m)) {
+				s.push({ t: m }), ++c;
 				continue;
 			}
-			let u = /^[A-Za-z_][A-Za-z0-9_]*/.exec(a);
-			if (u && a.charAt(u[0].length) === "(") {
-				n.push({
+			let h = o.exec(u);
+			if (h && u.charAt(h[0].length) === "(") {
+				s.push({
 					t: "FUNC",
-					v: u[0]
-				}), r += u[0].length;
+					v: h[0]
+				}), c += h[0].length;
 				continue;
 			}
-			if (o = this.#n.exec(a)) {
-				let e = o[0];
-				a.slice(e.length, e.length + 4) === "@str" && (e += "@str"), n.push({
+			if (d = this.#n.exec(u)) {
+				let e = d[0];
+				u.slice(e.length, e.length + 4) === "@str" && (e += "@str"), s.push({
 					t: "VAR",
 					v: e
-				}), r += e.length;
+				}), c += e.length;
 				continue;
 			}
-			throw Error(`(PropParser)不明な文字【${l}】です`);
+			throw Error(`(PropParser)不明な文字【${m}】です`);
 		}
-		return n;
+		return s;
 	}
 	#i(e) {
-		let t = this.#r(e), r = 0, i = () => t[r], a = () => {
-			let e = t[r++];
+		let t = this.#r(e), n = 0, r = () => t[n], i = () => {
+			let e = t[n++];
 			if (!e) throw Error("(PropParser)式が終端しています");
 			switch (e.t) {
 				case "NUM":
@@ -145,58 +145,58 @@ var t = /\[[^\]]+\]/g, n = {
 				case "STR": return e.v;
 				case "VAR": return this.#a(e.v);
 				case "FUNC": {
-					if (i()?.t !== "(") throw Error("(PropParser)関数呼び出しには開き括弧「(」が要ります");
-					++r;
-					let t = c(0);
-					if (i()?.t !== ")") throw Error("(PropParser)関数呼び出しの閉じ括弧「)」がありません");
-					return ++r, [e.v, t];
+					if (r()?.t !== "(") throw Error("(PropParser)関数呼び出しには開き括弧「(」が要ります");
+					++n;
+					let t = s(0);
+					if (r()?.t !== ")") throw Error("(PropParser)関数呼び出しの閉じ括弧「)」がありません");
+					return ++n, [e.v, t];
 				}
 				case "(": {
-					let e = c(0);
-					if (i()?.t !== ")") throw Error("(PropParser)閉じ括弧「)」がありません");
-					return ++r, e;
+					let e = s(0);
+					if (r()?.t !== ")") throw Error("(PropParser)閉じ括弧「)」がありません");
+					return ++n, e;
 				}
 				default: throw Error(`(PropParser)想定外のトークン【${e.t}】です`);
 			}
-		}, o = () => {
-			let e = a();
+		}, a = () => {
+			let e = i();
 			for (;;) {
-				let t = i()?.t;
+				let t = r()?.t;
 				if (t === "++") {
-					++r, e = ["PostfixInc", e];
+					++n, e = ["PostfixInc", e];
 					continue;
 				}
 				if (t === "--") {
-					++r, e = ["PostfixDec", e];
+					++n, e = ["PostfixDec", e];
 					continue;
 				}
 				break;
 			}
 			return e;
-		}, s = () => {
-			let e = i()?.t;
-			return e === "!" ? (++r, ["!", s()]) : e === "~" ? (++r, ["~", s()]) : e === "++" ? (++r, ["PrefixInc", s()]) : e === "--" ? (++r, ["PrefixDec", s()]) : e === "-" ? (++r, ["UnaryNegate", s()]) : o();
-		}, c = (e) => {
-			let t = s();
+		}, o = () => {
+			let e = r()?.t;
+			return e === "!" ? (++n, ["!", o()]) : e === "~" ? (++n, ["~", o()]) : e === "++" ? (++n, ["PrefixInc", o()]) : e === "--" ? (++n, ["PrefixDec", o()]) : e === "-" ? (++n, ["UnaryNegate", o()]) : a();
+		}, s = (e) => {
+			let t = o();
 			for (;;) {
-				let a = i(), o = a && n[a.t];
-				if (!o || o.bp < e) break;
-				++r;
-				let s = c(o.right ? o.bp : o.bp + 1);
+				let i = r(), a = i && l[i.t];
+				if (!a || a.bp < e) break;
+				++n;
+				let o = s(a.right ? a.bp : a.bp + 1);
 				t = [
-					a.t,
+					i.t,
 					t,
-					s
+					o
 				];
 			}
 			return t;
-		}, l = c(0);
-		if (r !== t.length) throw Error("(PropParser)余分なトークンが残っています");
-		return l;
+		}, c = s(0);
+		if (n !== t.length) throw Error("(PropParser)余分なトークンが残っています");
+		return c;
 	}
 	#a(e) {
 		let n = e.replaceAll(t, (e) => "." + this.parse(e.slice(1, -1))), r = this.val.getVal(n);
-		return r == null ? ["!str!", r] : typeof r == "boolean" ? ["!bool!", r] : Object.prototype.toString.call(r) === "[object String]" ? ["!str!", String(r)] : ["!num!", Number(r)];
+		return r == null ? ["!str!", r] : typeof r == "boolean" ? ["!bool!", r] : s(r) ? ["!str!", String(r)] : ["!num!", Number(r)];
 	}
 	parse(e) {
 		let t;
@@ -205,17 +205,18 @@ var t = /\[[^\]]+\]/g, n = {
 		} catch {
 			throw Error(`(PropParser)文法エラー【${e}】`);
 		}
-		return t[0] === "!str!" ? this.#u(t[1]) : this.#o(t);
+		return t[0] === "!str!" ? this.#d(t[1]) : this.#o(t);
 	}
 	#o(e) {
 		let t = e.shift();
 		if (t instanceof Array) return this.#o(t);
-		let n = this.#s[t];
+		let n = this.#c[t];
 		return n ? n(e) : Object(null);
 	}
-	#s = {
+	#s = (e) => (t) => e(Number(this.#o(t.shift())), Number(this.#o(t.shift())));
+	#c = {
 		"!num!": (e) => e.shift(),
-		"!str!": (e) => this.#u(e.shift()),
+		"!str!": (e) => this.#d(e.shift()),
 		"!bool!": (e) => e.shift(),
 		PostfixInc: (e) => {
 			throw Error("(PropParser)後置インクリメントは未サポートです");
@@ -229,57 +230,57 @@ var t = /\[[^\]]+\]/g, n = {
 		PrefixDec: (e) => {
 			throw Error("(PropParser)前置デクリメントは未サポートです");
 		},
-		"!": (e) => !this.#s.Boolean(e),
+		"!": (e) => !this.#c.Boolean(e),
 		"~": (e) => ~Number(this.#o(e.shift())),
-		UnaryNegate: (e) => -this.#s.Number(e),
-		"**": (e) => Number(this.#o(e.shift())) ** Number(this.#o(e.shift())),
-		"*": (e) => Number(this.#o(e.shift())) * Number(this.#o(e.shift())),
-		"/": (e) => Number(this.#o(e.shift())) / Number(this.#o(e.shift())),
-		"¥": (e) => Math.floor(this.#s["/"](e)),
-		"%": (e) => Number(this.#o(e.shift())) % Number(this.#o(e.shift())),
+		UnaryNegate: (e) => -this.#c.Number(e),
+		"**": this.#s((e, t) => e ** t),
+		"*": this.#s((e, t) => e * t),
+		"/": this.#s((e, t) => e / t),
+		"¥": (e) => Math.floor(this.#c["/"](e)),
+		"%": this.#s((e, t) => e % t),
 		"+": (e) => {
 			let t = this.#o(e.shift()), n = this.#o(e.shift());
-			return Object.prototype.toString.call(t) === "[object String]" || Object.prototype.toString.call(n) === "[object String]" ? String(t) + String(n) : Number(t) + Number(n);
+			return s(t) || s(n) ? String(t) + String(n) : Number(t) + Number(n);
 		},
-		"-": (e) => Number(this.#o(e.shift())) - Number(this.#o(e.shift())),
-		int: (t) => e(this.#c(t.shift())),
-		parseInt: (t) => e(this.#s.Number(t)),
+		"-": this.#s((e, t) => e - t),
+		int: (t) => e(this.#l(t.shift())),
+		parseInt: (t) => e(this.#c.Number(t)),
 		Number: (e) => {
 			let t = this.#o(e.shift());
-			return Object.prototype.toString.call(t) === "[object String]" ? this.#c(this.#i(String(t))) : Number(t);
+			return s(t) ? this.#l(this.#i(String(t))) : Number(t);
 		},
 		Boolean: (e) => {
 			let t = e.shift();
 			return t[0] === "!bool!" ? !!t[1] : !!this.#o(t);
 		},
-		ceil: (e) => Math.ceil(this.#c(e.shift())),
-		floor: (e) => Math.floor(this.#c(e.shift())),
-		round: (e) => Math.round(this.#c(e.shift())),
-		isNaN: (e) => Number.isNaN(this.#c(e.shift())),
-		"<<": (e) => Number(this.#o(e.shift())) << Number(this.#o(e.shift())),
-		">>": (e) => Number(this.#o(e.shift())) >> Number(this.#o(e.shift())),
-		">>>": (e) => Number(this.#o(e.shift())) >>> Number(this.#o(e.shift())),
-		"<": (e) => Number(this.#o(e.shift())) < Number(this.#o(e.shift())),
-		"<=": (e) => Number(this.#o(e.shift())) <= Number(this.#o(e.shift())),
-		">": (e) => Number(this.#o(e.shift())) > Number(this.#o(e.shift())),
-		">=": (e) => Number(this.#o(e.shift())) >= Number(this.#o(e.shift())),
+		ceil: (e) => Math.ceil(this.#l(e.shift())),
+		floor: (e) => Math.floor(this.#l(e.shift())),
+		round: (e) => Math.round(this.#l(e.shift())),
+		isNaN: (e) => Number.isNaN(this.#l(e.shift())),
+		"<<": this.#s((e, t) => e << t),
+		">>": this.#s((e, t) => e >> t),
+		">>>": this.#s((e, t) => e >>> t),
+		"<": this.#s((e, t) => e < t),
+		"<=": this.#s((e, t) => e <= t),
+		">": this.#s((e, t) => e > t),
+		">=": this.#s((e, t) => e >= t),
 		"==": (e) => {
 			let t = this.#o(e.shift()), n = this.#o(e.shift());
 			return t == null && n == null ? t == n : String(t) === String(n);
 		},
-		"!=": (e) => !this.#s["=="](e),
+		"!=": (e) => !this.#c["=="](e),
 		"===": (e) => {
 			let t = this.#o(e.shift()), n = this.#o(e.shift());
 			return Object.prototype.toString.call(t) == Object.prototype.toString.call(n) && String(t) === String(n);
 		},
-		"!==": (e) => !this.#s["==="](e),
-		"&": (e) => Number(this.#o(e.shift())) & Number(this.#o(e.shift())),
-		"^": (e) => Number(this.#o(e.shift())) ^ Number(this.#o(e.shift())),
-		"|": (e) => Number(this.#o(e.shift())) | Number(this.#o(e.shift())),
+		"!==": (e) => !this.#c["==="](e),
+		"&": this.#s((e, t) => e & t),
+		"^": this.#s((e, t) => e ^ t),
+		"|": this.#s((e, t) => e | t),
 		"&&": (e) => String(this.#o(e.shift())) === "true" && String(this.#o(e.shift())) === "true",
 		"||": (e) => String(this.#o(e.shift())) === "true" || String(this.#o(e.shift())) === "true",
 		"?": (e) => {
-			let t = this.#s.Boolean(e), n = e.shift();
+			let t = this.#c.Boolean(e), n = e.shift();
 			if (n[0] !== ":") throw Error("(PropParser)三項演算子の文法エラーです。: が見つかりません");
 			return this.#o(n[t ? 1 : 2]);
 		},
@@ -287,35 +288,35 @@ var t = /\[[^\]]+\]/g, n = {
 			throw Error("(PropParser)三項演算子の文法エラーです。? が見つかりません");
 		}
 	};
-	#c(e) {
+	#l(e) {
 		let t = this.#o(e);
-		if (Object.prototype.toString.call(t) !== "[object Number]") throw Error("(PropParser)引数【" + String(t) + "】が数値ではありません");
+		if (!c(t)) throw Error("(PropParser)引数【" + String(t) + "】が数値ではありません");
 		return Number(t);
 	}
-	#l = /(\$((tmp|sys|save|mp):)?[^\s!--/:-@[-^`{-~]+|#\{[^}]+})/g;
-	#u(e) {
-		return e == null ? e : String(e).replaceAll(this.#l, (e) => String(e.startsWith("$") ? this.val.getVal(e.slice(1)) : this.parse(e.slice(2, -1))));
+	#u = /(\$((tmp|sys|save|mp):)?[^\s!--/:-@[-^`{-~]+|#\{[^}]+})/g;
+	#d(e) {
+		return e == null ? e : String(e).replaceAll(this.#u, (e) => String(e.startsWith("$") ? this.val.getVal(e.slice(1)) : this.parse(e.slice(2, -1))));
 	}
 	getValAmpersand = (e) => e.startsWith("&") ? String(this.parse(e.slice(1))) : e;
-	static #d = /^((?<scope>\w+?):)?(?<name>[^\s :@]+)(?<at>@str)?$/;
+	static #f = /^((?<scope>\w+?):)?(?<name>[^\s :@]+)(?<at>@str)?$/;
 	static getValName(e) {
-		let t = this.#d.exec(e.trim())?.groups;
+		let t = this.#f.exec(e.trim())?.groups;
 		if (!t) return null;
-		let { scope: n = "tmp", name: i, at: a = "" } = t;
-		if (!r.#f.includes(n)) throw `[変数に値セット] scopeが異常【${n}】です`;
+		let { scope: n = "tmp", name: r, at: i = "" } = t;
+		if (!u.#p.includes(n)) throw `[変数に値セット] scopeが異常【${n}】です`;
 		return {
 			scope: n,
-			name: r.#p(i),
-			at: a
+			name: u.#m(r),
+			at: i
 		};
 	}
-	static #f = [
+	static #p = [
 		"tmp",
 		"sys",
 		"save",
 		"mp"
 	];
-	static #p(e) {
+	static #m(e) {
 		let t = 0, n = 0, r = e;
 		for (;;) {
 			if (t = r.indexOf("[\""), t < 0) {
@@ -329,6 +330,6 @@ var t = /\[[^\]]+\]/g, n = {
 	}
 };
 //#endregion
-export { r as PropParser };
+export { u as PropParser };
 
 //# sourceMappingURL=PropParser.js.map

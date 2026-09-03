@@ -1,33 +1,33 @@
 //#region src/sn/RubySpliter.ts
-var e = class e {
+var e = /^\w+｜{"/, t = /^\*.?$/, n = class n {
 	static #e = "ヽ";
-	static setting(t) {
-		t.sesame && (e.#e = t.sesame);
+	static setting(e) {
+		e.sesame && (n.#e = e.sesame);
 	}
 	static getSesame() {
-		return e.#e;
+		return n.#e;
 	}
 	static destroy() {
-		e.#e = "ヽ";
+		n.#e = "ヽ";
 	}
 	#t = () => {};
 	init(e) {
 		this.#t = e;
 	}
 	static #n;
-	static setEscape(t) {
-		e.#n = RegExp((t ? `(?<ce>\\${t}\\S)|` : "") + e.#r, "gs");
+	static setEscape(e) {
+		n.#n = RegExp((e ? `(?<ce>\\${e}\\S)|` : "") + n.#r, "gs");
 	}
 	static #r = "｜(?<str>[^《\\n]+)《(?<ruby>[^》\\n]+)》|(?:(?<kan>[⺀-⿟々〇〻㐀-鿿豈-﫿]+[ぁ-ヿ]*|[^　｜《》\\n])《(?<kan_ruby>[^》\\n]+)》)|(?<txt>[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]|[^｜《》]+?|.)";
-	putTxt(t) {
-		for (let { groups: n } of t.matchAll(e.#n)) {
-			let { ruby: e, kan_ruby: t, kan: r = "", ce: i, txt: a = "", str: o = "" } = n;
+	putTxt(e) {
+		for (let { groups: t } of e.matchAll(n.#n)) {
+			let { ruby: e, kan_ruby: n, kan: r = "", ce: i, txt: a = "", str: o = "" } = t;
 			if (e) {
 				this.putTxtRb(decodeURIComponent(o), e);
 				continue;
 			}
-			if (t) {
-				this.putTxtRb(r, t);
+			if (n) {
+				this.putTxtRb(r, n);
 				continue;
 			}
 			if (i) {
@@ -37,26 +37,26 @@ var e = class e {
 			for (let e of Array.from(a)) this.#t(e, "");
 		}
 	}
-	putTxtRb(t, n) {
-		if (/^\w+｜{"/.test(n)) {
-			this.#t(t, n);
+	putTxtRb(r, i) {
+		if (e.test(i)) {
+			this.#t(r, i);
 			return;
 		}
-		let r = Array.from(t), i = r.length;
-		if (/^\*.?$/.test(n)) {
-			let t = "center｜" + (n === "*" ? e.#e : n.charAt(1));
-			for (let e of r) this.#t(e, t);
+		let a = Array.from(r), o = a.length;
+		if (t.test(i)) {
+			let e = "center｜" + (i === "*" ? n.#e : i.charAt(1));
+			for (let t of a) this.#t(t, e);
 			return;
 		}
-		if (i === 1 || !n.includes(" ")) {
-			this.#t(t, decodeURIComponent(n));
+		if (o === 1 || !i.includes(" ")) {
+			this.#t(r, decodeURIComponent(i));
 			return;
 		}
-		let a = n.split(" "), o = a.length, s = o > i ? o : i;
-		for (let e = 0; e < s; ++e) this.#t(e < i ? r[e] : "", e < o ? decodeURIComponent(a[e]) : "");
+		let s = i.split(" "), c = s.length, l = c > o ? c : o;
+		for (let e = 0; e < l; ++e) this.#t(e < o ? a[e] : "", e < c ? decodeURIComponent(s[e]) : "");
 	}
 };
 //#endregion
-export { e as t };
+export { n as t };
 
 //# sourceMappingURL=RubySpliter.js.map

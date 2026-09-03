@@ -91,19 +91,19 @@ var h = class {
 	get isKomeParam() {
 		return this.#n;
 	}
-}, g = /(?<name>[^\s;\]]+)/;
-function _(e) {
+}, g = /(?<name>[^\s;\]]+)/, _ = /\r\n?/g, v = /^([^\]]+?])(.*)$/s, y = /^\[let_ml\s/, b = /^\[endlet_ml\s*]/;
+function x(e) {
 	let t = g.exec(e.slice(1, -1))?.groups;
 	if (!t) throw `タグ記述【${e}】異常です(タグ解析)`;
 	let n = t.name;
 	return [n, e.slice(1 + n.length, -1)];
 }
-function v(e) {
+function S(e) {
 	let t = g.exec(e.slice(1))?.groups;
 	if (!t) throw `タグ記述【${e}】異常です(タグ解析)`;
 	return t.name;
 }
-function y(e) {
+function C(e) {
 	let t = e.replaceAll("==", "＝").replaceAll("!=", "≠").split("="), n = t.length;
 	if (n < 2 || n > 3) throw "「&計算」書式では「=」指定が一つか二つ必要です";
 	let [r, i, a] = t;
@@ -114,7 +114,7 @@ function y(e) {
 		...n === 3 ? { cast: a.trim() } : {}
 	};
 }
-var b = class {
+var w = class {
 	cfg;
 	constructor(e) {
 		this.cfg = e, this.setEscape("");
@@ -157,9 +157,9 @@ var b = class {
 		this.#r += `${e}|`, this.#i += t, this.#n = RegExp(`(${this.#r}[^${this.#i}]+)`, "g");
 	}
 	resolveScript(e) {
-		let t = e.replaceAll(/\r\n?/g, "\n").match(this.#e)?.flatMap((e) => {
+		let t = e.replaceAll(_, "\n").match(this.#e)?.flatMap((e) => {
 			if (!this.testTagLetml(e)) return e;
-			let t = /^([^\]]+?])(.*)$/s.exec(e);
+			let t = v.exec(e);
 			if (!t) return e;
 			let [, n, r] = t;
 			return [n, r];
@@ -176,7 +176,7 @@ var b = class {
 		for (let t = e.len - 1; t >= 0; --t) {
 			let n = e.aToken[t];
 			if (!this.#a.test(n)) continue;
-			let [r, a] = _(n);
+			let [r, a] = x(n);
 			this.#c.parse(a);
 			let o = this.#c.hPrm.fn;
 			if (!o) continue;
@@ -193,10 +193,10 @@ var b = class {
 	}
 	#c = new h();
 	testTagLetml(e) {
-		return /^\[let_ml\s/.test(e);
+		return y.test(e);
 	}
 	testTagEndLetml(e) {
-		return /^\[endlet_ml\s*]/.test(e);
+		return b.test(e);
 	}
 	#l = void 0;
 	#u;
@@ -219,7 +219,7 @@ var b = class {
 	testNoTxt(e) {
 		return this.#u.test(e);
 	}
-}, x = /* @__PURE__ */ n({ Main: () => C }), S = "skynovel", C = class n {
+}, T = /* @__PURE__ */ n({ Main: () => D }), E = "skynovel", D = class n {
 	sys;
 	static async generate(e) {
 		r();
@@ -245,20 +245,20 @@ var b = class {
 			height: n.oCfg.window.height,
 			backgroundColor: a(String(n.oCfg.init.bg_color)),
 			resolution: globalThis.devicePixelRatio
-		}, i = document.getElementById(S);
+		}, i = document.getElementById(E);
 		if (i) {
 			let e = i.cloneNode(!0);
-			e.id = S, r.view = i;
+			e.id = E, r.view = i;
 			let t = i.parentNode;
 			this.#i.defer(() => t.appendChild(e));
 		} else {
 			let e = document.createElement("canvas");
-			e.id = S, r.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
+			e.id = E, r.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
 		}
 		let o = new t(r);
 		this.#i.defer(() => {
 			e(), this.sys.destroy(), o.destroy(!1);
-		}), this.cvs = o.view, this.cvs.id = S + "_act", i || document.body.appendChild(this.cvs);
+		}), this.cvs = o.view, this.cvs.id = E + "_act", i || document.body.appendChild(this.cvs);
 		let c = getComputedStyle(this.cvs);
 		c.position === "static" && (this.cvs.style.position = "relative"), c.zIndex === "auto" && (this.cvs.style.zIndex = "0");
 		let l = document.createElement("canvas").getContext("2d");
@@ -278,8 +278,8 @@ var b = class {
 		this.#o = (e, t, n, r) => y.setVal_Nochk(e, t, n, r), this.#l = (e) => b.getValAmpersand(e), this.#u = (e) => b.parse(e), await Promise.allSettled(this.sys.init(this.#e, o, y));
 		let x = new m(n, this.#e, y, this, this.sys);
 		this.#i.defer(() => x.destroy()), this.#t = new h(n, this.#e, this, y, b, x, this.sys), this.#i.defer(() => this.#t.destroy());
-		let C = new u(this.sys, this.#e, this.#t);
-		this.#i.defer(() => C.destroy()), this.errScript = (e, t) => {
+		let S = new u(this.sys, this.#e, this.#t);
+		this.#i.defer(() => S.destroy()), this.errScript = (e, t) => {
 			if (this.stop(), u.myTrace(e), s.debugLog && console.log("🍜 SKYNovel err!"), t) throw e;
 		}, this.#n = new g(n, this.#e, o, y, this, this.#t, this.sys, x, b), this.#i.defer(() => this.#n.destroy()), this.#r = new _(n, this.#e, o, this, this.#n, y, x, this.#t, this.sys), this.#i.defer(() => this.#r.destroy()), this.#i.defer(() => {
 			this.stop(), this.#s = !1;
@@ -328,7 +328,7 @@ var b = class {
 					}
 					if (n === 91) {
 						if (e = "タグ開始", this.#t.isBreak(t)) return;
-						let [n, r] = _(t);
+						let [n, r] = x(t);
 						e = `[${n}]例外`;
 						let i = (t.match(/\n/g) ?? []).length;
 						if (i > 0 && this.#t.addLineNum(i), await this.#t.タグ解析(n, r)) {
@@ -340,7 +340,7 @@ var b = class {
 					if (n === 38) {
 						if (!t.endsWith("&")) {
 							if (e = "変数計算", this.#t.isBreak(t)) return;
-							let n = y(t.slice(1));
+							let n = C(t.slice(1));
 							n.name = this.#l(n.name), n.text = String(this.#u(n.text)), this.#e.let(n);
 							continue;
 						}
@@ -359,6 +359,6 @@ var b = class {
 	#u;
 };
 //#endregion
-export { C as Main, h as a, _ as i, b as n, f as o, v as r, d as s, x as t };
+export { D as Main, h as a, x as i, w as n, f as o, S as r, d as s, T as t };
 
 //# sourceMappingURL=Main.js.map

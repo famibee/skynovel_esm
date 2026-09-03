@@ -338,6 +338,12 @@ export type Script = {
 
 
 export const	REG_TAG	= /(?<name>[^\s;\]]+)/;	// test用にexport
+
+// resolveScript / testTagLetml で毎回リテラル生成しないようくくり出し
+const REG_CRLF			= /\r\n?/g;
+const REG_LETML_SPLIT	= /^([^\]]+?])(.*)$/s;
+const REG_IS_LETML		= /^\[let_ml\s/;
+const REG_IS_ENDLETML	= /^\[endlet_ml\s*]/;
 export function	tagToken2Name_Args(token: string): [name: string, args: string] {
 	const e = REG_TAG.exec(token.slice(1, -1));
 	const g = e?.groups;
@@ -482,12 +488,12 @@ export class Grammar {
 
 	resolveScript(txt: string): Script {
 		const a: string[] = txt
-		.replaceAll(/\r\n?/g, '\n')
+		.replaceAll(REG_CRLF, '\n')
 		.match(this.#REG_TOKEN)
 		?.flatMap(tkn=> {
 			if (! this.testTagLetml(tkn)) return tkn;
 
-			const r = /^([^\]]+?])(.*)$/s.exec(tkn);
+			const r = REG_LETML_SPLIT.exec(tkn);
 			if (! r) return tkn;
 			const [, a, b] = r;
 			return [a!, b!];
@@ -539,8 +545,8 @@ export class Grammar {
 		readonly	#alzTagArg	= new AnalyzeTagArg;
 
 
-	testTagLetml(tkn: string): boolean {return /^\[let_ml\s/.test(tkn)}
-	testTagEndLetml(tkn: string): boolean {return /^\[endlet_ml\s*]/.test(tkn)}
+	testTagLetml(tkn: string): boolean {return REG_IS_LETML.test(tkn)}
+	testTagEndLetml(tkn: string): boolean {return REG_IS_ENDLETML.test(tkn)}
 
 
 	#hC2M	: {[char: string]: string} | undefined = undefined;

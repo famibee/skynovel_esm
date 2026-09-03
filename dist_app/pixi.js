@@ -685,8 +685,7 @@ var H = {
 		} while (c !== e);
 	}
 	function u(e, t, n, i) {
-		var a = [], o, s, c, l, u;
-		for (o = 0, s = t.length; o < s; o++) c = t[o] * i, l = o < s - 1 ? t[o + 1] * i : e.length, u = r(e, c, l, i, !1), u === u.next && (u.steiner = !0), a.push(v(u));
+		for (var a = [], o = 0, s = t.length, c, l, u; o < s; o++) c = t[o] * i, l = o < s - 1 ? t[o + 1] * i : e.length, u = r(e, c, l, i, !1), u === u.next && (u.steiner = !0), a.push(v(u));
 		for (a.sort(d), o = 0; o < a.length; o++) n = f(a[o], n);
 		return n;
 	}
@@ -1148,13 +1147,12 @@ var _t = function() {
 	}), e;
 }();
 function vt(e) {
-	var t = e.width, n = e.height, r = e.getContext("2d", { willReadFrequently: !0 }), i = r.getImageData(0, 0, t, n).data, a = i.length, o = {
+	for (var t = e.width, n = e.height, r = e.getContext("2d", { willReadFrequently: !0 }), i = r.getImageData(0, 0, t, n).data, a = i.length, o = {
 		top: null,
 		left: null,
 		right: null,
 		bottom: null
-	}, s = null, c, l, u;
-	for (c = 0; c < a; c += 4) i[c + 3] !== 0 && (l = c / 4 % t, u = ~~(c / 4 / t), o.top === null && (o.top = u), (o.left === null || l < o.left) && (o.left = l), (o.right === null || o.right < l) && (o.right = l + 1), (o.bottom === null || o.bottom < u) && (o.bottom = u));
+	}, s = null, c = 0, l, u; c < a; c += 4) i[c + 3] !== 0 && (l = c / 4 % t, u = ~~(c / 4 / t), o.top === null && (o.top = u), (o.left === null || l < o.left) && (o.left = l), (o.right === null || o.right < l) && (o.right = l + 1), (o.bottom === null || o.bottom < u) && (o.bottom = u));
 	return o.top !== null && (t = o.right - o.left, n = o.bottom - o.top + 1, s = r.getImageData(o.left, o.top, t, n)), {
 		height: n,
 		width: t,
@@ -1952,7 +1950,7 @@ var qt = function(e) {
 		this._bounds.clear(), this._calculateBounds();
 		for (var e = 0; e < this.children.length; e++) {
 			var t = this.children[e];
-			if (!(!t.visible || !t.renderable)) {
+			if (t.visible && t.renderable) {
 				if (t.calculateBounds(), t._mask) {
 					var n = t._mask.isMaskData ? t._mask.maskObject : t._mask;
 					n ? (n.calculateBounds(), this._bounds.addBoundsMask(t._bounds, n._bounds)) : this._bounds.addBounds(t._bounds);
@@ -3707,7 +3705,7 @@ var Pn = {
 		var e = this.current;
 		if (e) {
 			var t = e.glFramebuffers[this.CONTEXT_UID];
-			if (!(!t || t.stencil)) {
+			if (t && !t.stencil) {
 				e.stencil = !0;
 				var n = e.width, r = e.height, i = this.gl, a = i.createRenderbuffer();
 				i.bindRenderbuffer(i.RENDERBUFFER, a), t.msaaBuffer ? i.renderbufferStorageMultisample(i.RENDERBUFFER, t.multisample, i.DEPTH24_STENCIL8, n, r) : i.renderbufferStorage(i.RENDERBUFFER, i.DEPTH_STENCIL, n, r), t.stencil = a, i.framebufferRenderbuffer(i.FRAMEBUFFER, i.DEPTH_STENCIL_ATTACHMENT, i.RENDERBUFFER, a);
@@ -4436,7 +4434,7 @@ var Dr = "varying vec2 vTextureCoord;\n\nuniform sampler2D uSampler;\n\nvoid mai
 		n.type === B.SPRITE && this.maskStack.push(n);
 	}, e.prototype.pop = function(e) {
 		var t = this.maskStack.pop();
-		if (!(!t || t._target !== e)) {
+		if (t && t._target === e) {
 			if (t.enabled) switch (t.type) {
 				case B.SCISSOR:
 					this.renderer.scissor.pop(t);
@@ -5483,9 +5481,9 @@ var Xi = 9, Zi = 100, Qi = 0, $i = 0, ea = 2, ta = 1, na = -1e3, ra = -1e3, ia =
 		this._isActive || (this._isActive = !0, globalThis.document.addEventListener("mousemove", this._onMouseMove, !0), globalThis.removeEventListener("keydown", this._onKeyDown, !1), this.renderer.on("postrender", this.update, this), (e = this.renderer.view.parentNode) == null || e.appendChild(this.div));
 	}, e.prototype.deactivate = function() {
 		var e;
-		!this._isActive || this._isMobileAccessibility || (this._isActive = !1, globalThis.document.removeEventListener("mousemove", this._onMouseMove, !0), globalThis.addEventListener("keydown", this._onKeyDown, !1), this.renderer.off("postrender", this.update), (e = this.div.parentNode) == null || e.removeChild(this.div));
+		this._isActive && !this._isMobileAccessibility && (this._isActive = !1, globalThis.document.removeEventListener("mousemove", this._onMouseMove, !0), globalThis.addEventListener("keydown", this._onKeyDown, !1), this.renderer.off("postrender", this.update), (e = this.div.parentNode) == null || e.removeChild(this.div));
 	}, e.prototype.updateAccessibleObjects = function(e) {
-		if (!(!e.visible || !e.accessibleChildren)) {
+		if (e.visible && e.accessibleChildren) {
 			e.accessible && e.interactive && (e._accessibleActive || this.addChild(e), e.renderId = this.renderId);
 			var t = e.children;
 			if (t) for (var n = 0; n < t.length; n++) this.updateAccessibleObjects(t[n]);
@@ -5716,16 +5714,16 @@ var fa = 1, pa = {
 	}, t.prototype.setTargetElement = function(e, t) {
 		t === void 0 && (t = 1), this.removeTickerListener(), this.removeEvents(), this.interactionDOMElement = e, this.resolution = t, this.addEvents(), this.addTickerListener();
 	}, t.prototype.addTickerListener = function() {
-		this.tickerAdded || !this.interactionDOMElement || !this._useSystemTicker || (en.system.add(this.tickerUpdate, this, Qt.INTERACTION), this.tickerAdded = !0);
+		!this.tickerAdded && this.interactionDOMElement && this._useSystemTicker && (en.system.add(this.tickerUpdate, this, Qt.INTERACTION), this.tickerAdded = !0);
 	}, t.prototype.removeTickerListener = function() {
 		this.tickerAdded &&= (en.system.remove(this.tickerUpdate, this), !1);
 	}, t.prototype.addEvents = function() {
-		if (!(this.eventsAdded || !this.interactionDOMElement)) {
+		if (!this.eventsAdded && this.interactionDOMElement) {
 			var e = this.interactionDOMElement.style;
 			globalThis.navigator.msPointerEnabled ? (e.msContentZooming = "none", e.msTouchAction = "none") : this.supportsPointerEvents && (e.touchAction = "none"), this.supportsPointerEvents ? (globalThis.document.addEventListener("pointermove", this.onPointerMove, this._eventListenerOptions), this.interactionDOMElement.addEventListener("pointerdown", this.onPointerDown, this._eventListenerOptions), this.interactionDOMElement.addEventListener("pointerleave", this.onPointerOut, this._eventListenerOptions), this.interactionDOMElement.addEventListener("pointerover", this.onPointerOver, this._eventListenerOptions), globalThis.addEventListener("pointercancel", this.onPointerCancel, this._eventListenerOptions), globalThis.addEventListener("pointerup", this.onPointerUp, this._eventListenerOptions)) : (globalThis.document.addEventListener("mousemove", this.onPointerMove, this._eventListenerOptions), this.interactionDOMElement.addEventListener("mousedown", this.onPointerDown, this._eventListenerOptions), this.interactionDOMElement.addEventListener("mouseout", this.onPointerOut, this._eventListenerOptions), this.interactionDOMElement.addEventListener("mouseover", this.onPointerOver, this._eventListenerOptions), globalThis.addEventListener("mouseup", this.onPointerUp, this._eventListenerOptions)), this.supportsTouchEvents && (this.interactionDOMElement.addEventListener("touchstart", this.onPointerDown, this._eventListenerOptions), this.interactionDOMElement.addEventListener("touchcancel", this.onPointerCancel, this._eventListenerOptions), this.interactionDOMElement.addEventListener("touchend", this.onPointerUp, this._eventListenerOptions), this.interactionDOMElement.addEventListener("touchmove", this.onPointerMove, this._eventListenerOptions)), this.eventsAdded = !0;
 		}
 	}, t.prototype.removeEvents = function() {
-		if (!(!this.eventsAdded || !this.interactionDOMElement)) {
+		if (this.eventsAdded && this.interactionDOMElement) {
 			var e = this.interactionDOMElement.style;
 			globalThis.navigator.msPointerEnabled ? (e.msContentZooming = "", e.msTouchAction = "") : this.supportsPointerEvents && (e.touchAction = ""), this.supportsPointerEvents ? (globalThis.document.removeEventListener("pointermove", this.onPointerMove, this._eventListenerOptions), this.interactionDOMElement.removeEventListener("pointerdown", this.onPointerDown, this._eventListenerOptions), this.interactionDOMElement.removeEventListener("pointerleave", this.onPointerOut, this._eventListenerOptions), this.interactionDOMElement.removeEventListener("pointerover", this.onPointerOver, this._eventListenerOptions), globalThis.removeEventListener("pointercancel", this.onPointerCancel, this._eventListenerOptions), globalThis.removeEventListener("pointerup", this.onPointerUp, this._eventListenerOptions)) : (globalThis.document.removeEventListener("mousemove", this.onPointerMove, this._eventListenerOptions), this.interactionDOMElement.removeEventListener("mousedown", this.onPointerDown, this._eventListenerOptions), this.interactionDOMElement.removeEventListener("mouseout", this.onPointerOut, this._eventListenerOptions), this.interactionDOMElement.removeEventListener("mouseover", this.onPointerOver, this._eventListenerOptions), globalThis.removeEventListener("mouseup", this.onPointerUp, this._eventListenerOptions)), this.supportsTouchEvents && (this.interactionDOMElement.removeEventListener("touchstart", this.onPointerDown, this._eventListenerOptions), this.interactionDOMElement.removeEventListener("touchcancel", this.onPointerCancel, this._eventListenerOptions), this.interactionDOMElement.removeEventListener("touchend", this.onPointerUp, this._eventListenerOptions), this.interactionDOMElement.removeEventListener("touchmove", this.onPointerMove, this._eventListenerOptions)), this.interactionDOMElement = null, this.eventsAdded = !1;
 		}
@@ -6090,7 +6088,7 @@ var Z = function() {
 					this.type = e.TYPE.VIDEO, this._loadSourceElement("video");
 					break;
 				case e.LOAD_TYPE.XHR:
-				default: Sa === void 0 && (Sa = !!(globalThis.XDomainRequest && !("withCredentials" in new XMLHttpRequest()))), Sa && this.crossOrigin ? this._loadXdr() : this._loadXhr();
+				default: Sa === void 0 && (Sa = !(!globalThis.XDomainRequest || "withCredentials" in new XMLHttpRequest())), Sa && this.crossOrigin ? this._loadXdr() : this._loadXhr();
 			}
 		}
 	}, e.prototype._hasFlag = function(e) {
@@ -6566,12 +6564,12 @@ function Ya(e, t) {
 		},
 		trys: [],
 		ops: []
-	}, r, i, a, o;
-	return o = {
+	}, r, i, a, o = {
 		next: s(0),
 		throw: s(1),
 		return: s(2)
-	}, typeof Symbol == "function" && (o[Symbol.iterator] = function() {
+	};
+	return typeof Symbol == "function" && (o[Symbol.iterator] = function() {
 		return this;
 	}), o;
 	function s(e) {
@@ -7480,7 +7478,7 @@ var fs = function() {
 	}, e.prototype.reset = function() {
 		this.style = null, this.size = 0, this.start = 0, this.attribStart = 0, this.attribSize = 0;
 	}, e;
-}(), gs, _s = (gs = {}, gs[Tt.POLY] = ts, gs[Tt.CIRC] = ns, gs[Tt.ELIP] = ns, gs[Tt.RECT] = rs, gs[Tt.RREC] = os, gs), vs = [], ys = [], bs = function() {
+}(), gs = {}, _s = (gs[Tt.POLY] = ts, gs[Tt.CIRC] = ns, gs[Tt.ELIP] = ns, gs[Tt.RECT] = rs, gs[Tt.RREC] = os, gs), vs = [], ys = [], bs = function() {
 	function e(e, t, n, r) {
 		t === void 0 && (t = null), n === void 0 && (n = null), r === void 0 && (r = null), this.points = [], this.holes = [], this.shape = e, this.lineStyle = n, this.fillStyle = t, this.matrix = r, this.type = e.type;
 	}
@@ -8554,7 +8552,7 @@ var Ws = {
 	}
 	return t.prototype.updateText = function(e) {
 		var n = this._style;
-		if (this.localStyleID !== n.styleID && (this.dirty = !0, this.localStyleID = n.styleID), !(!this.dirty && e)) {
+		if (this.localStyleID !== n.styleID && (this.dirty = !0, this.localStyleID = n.styleID), this.dirty || !e) {
 			this._font = this._style.toFontString();
 			var r = this.context, i = Us.measureText(this._text || " ", this._style, this._style.wordWrap, this.canvas), a = i.width, o = i.height, s = i.lines, c = i.lineHeight, l = i.lineWidths, u = i.maxLineWidth, d = i.fontProperties;
 			this.canvas.width = Math.ceil(Math.ceil(Math.max(1, a) + n.padding * 2) * this._resolution), this.canvas.height = Math.ceil(Math.ceil(Math.max(1, o) + n.padding * 2) * this._resolution), r.scale(this._resolution, this._resolution), r.clearRect(0, 0, this.canvas.width, this.canvas.height), r.font = this._font, r.lineWidth = n.strokeThickness, r.textBaseline = n.textBaseline, r.lineJoin = n.lineJoin, r.miterLimit = n.miterLimit;
@@ -8988,7 +8986,7 @@ var dc = new U();
 		this.uvMatrix && (this.uvMatrix.texture = this._texture), this._cachedTint = 16777215;
 	}, t.prototype._render = function(e) {
 		var t = this._texture;
-		!t || !t.valid || (this.tileTransform.updateLocalTransform(), this.uvMatrix.update(), e.batch.setObjectRenderer(e.plugins[this.pluginName]), e.plugins[this.pluginName].render(this));
+		t && t.valid && (this.tileTransform.updateLocalTransform(), this.uvMatrix.update(), e.batch.setObjectRenderer(e.plugins[this.pluginName]), e.plugins[this.pluginName].render(this));
 	}, t.prototype._calculateBounds = function() {
 		var e = this._width * -this._anchor._x, t = this._height * -this._anchor._y, n = this._width * (1 - this._anchor._x), r = this._height * (1 - this._anchor._y);
 		this._bounds.addFrame(this.transform, e, t, n, r);
@@ -9067,7 +9065,7 @@ var xc = function() {
 		this.uvBuffer = e, this.uvMatrix = t, this.data = null, this._bufferUpdateId = -1, this._textureUpdateId = -1, this._updateID = 0;
 	}
 	return e.prototype.update = function(e) {
-		if (!(!e && this._bufferUpdateId === this.uvBuffer._updateID && this._textureUpdateId === this.uvMatrix._updateID)) {
+		if (e || this._bufferUpdateId !== this.uvBuffer._updateID || this._textureUpdateId !== this.uvMatrix._updateID) {
 			this._bufferUpdateId = this.uvBuffer._updateID, this._textureUpdateId = this.uvMatrix._updateID;
 			var t = this.uvBuffer.data;
 			(!this.data || this.data.length !== t.length) && (this.data = new Float32Array(t.length)), this.uvMatrix.multiplyUvs(t, this.data), this._updateID++;
