@@ -5,12 +5,12 @@
 	http://opensource.org/licenses/mit-license.php
 ** ***** END LICENSE BLOCK ***** */
 
-import {type IEvtMng, argChk_Boolean, argChk_Num} from './CmnLib';
+import {type IEvtMng, argChk_Boolean} from './CmnLib';
 import type {T_HTag, TArg} from './Grammar';
 import type {T_Variable, T_Main, T_NoticeChgVolume} from './CmnInterface';
 import type {Config} from './Config';
 import type {SysBase} from './SysBase';
-import {BUF_BGM, BUF_SE, SndBuf, xchgbuf} from './SndBuf';
+import {BUF_BGM, BUF_SE, SndBuf, xchgbuf, getVol} from './SndBuf';
 import {SndCtx} from './SndCtx';
 
 
@@ -69,7 +69,7 @@ export class SoundMng {
 	#volume(hArg: TArg) {
 		const {buf = BUF_SE} = hArg;
 		const vnV = 'const.sn.sound.'+ buf +'.volume';
-		const arg_vol = this.#getVol(hArg, 1);
+		const arg_vol = getVol(hArg, 1);
 		if (Number(this.val.getVal('sys:'+ vnV)) === arg_vol) return false;
 
 		this.val.setVal_Nochk('sys', vnV, arg_vol)	// 基準音量（sys:）
@@ -79,12 +79,6 @@ export class SoundMng {
 		hArg.time = 0;
 		hArg.volume = Number(this.val.getVal('save:'+ vnV));	// 目標音量（save:）
 		return this.#fadese(hArg);
-	}
-	#getVol(hArg: TArg, def: number) {
-		const vol = argChk_Num(hArg, 'volume', def);
-		if (vol < 0) return 0;
-		if (vol > 1) return 1;
-		return vol;
 	}
 
 	//MARK: BGM/効果音のフェードアウト（loadから使うのでマクロ化禁止）

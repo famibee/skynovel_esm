@@ -39,6 +39,25 @@ export class Button extends Container {
 		);
 	}
 
+	// style / style_hover / style_clicked は「hArg[nm] を JSON パースして TextStyle へ流し込む」
+	//	処理が同型。パース成功時はマージ元オブジェクトを返す（style だけ #o にも展開する）、
+	//	属性が無ければ undefined（呼び元が既定の見た目調整を行う）
+	static	#applyStyleJson(style: TextStyle, hArg: TArg, nm: 'style' | 'style_hover' | 'style_clicked'): {[nm: string]: unknown} | undefined {
+		const raw = hArg[nm];
+		if (! raw) return undefined;
+
+		let o: {[nm: string]: unknown};
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		try {o = JSON.parse(raw)}
+		catch (e) {
+			if (e instanceof SyntaxError) throw new Error(mesErrJSON(hArg, nm, e.message));
+			throw 'fn:Button.ts ' + nm;
+		}
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		for (const [k, v] of Object.entries(o)) (<any>style)[k] = v;
+		return o;
+	}
+
 	setText(_text: string) { /* empty */ }
 	getBtnBounds = ()=> this.#rctBtnTxt;
 		// 文字ボタンは背景画像を含まない位置指定なので、その当たり判定用
@@ -133,19 +152,9 @@ export class Button extends Container {
 			fontSize	: height,
 			padding		: 5,
 		});
-		if (hArg.style) try {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			const o = JSON.parse(hArg.style);
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-			for (const [nm, v] of Object.entries(o)) (<any>style)[nm] = v;
+		const oStyle = Button.#applyStyleJson(style, hArg, 'style');
 		//	style = {...style, ...JSON.parse(hArg.style)};	// 上手くいかない
-
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			this.#o = {...this.#o, ...o};
-		} catch (e) {
-			if (e instanceof SyntaxError) throw new Error(mesErrJSON(hArg, 'style', e.message));
-			else throw 'fn:Button.ts style';
-		}
+		if (oStyle) this.#o = {...this.#o, ...oStyle};
 
 		const txt = new Text(hArg.text ?? '', style);
 		txt.alpha = argChk_Num(hArg, 'alpha', txt.alpha);	// 上にまとめない
@@ -197,28 +206,10 @@ export class Button extends Container {
 		if (! this.#o.enabled) {if (! isStop) resolve(); return}
 
 		const style_hover = style.clone();
-		if (hArg.style_hover) try {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			const o = JSON.parse(hArg.style_hover);
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-			for (const [nm, v] of Object.entries(o)) (<any>style_hover)[nm] = v;
-		} catch (e) {
-			if (e instanceof SyntaxError) throw new Error(mesErrJSON(hArg, 'style_hover', e.message));
-			else throw 'fn:Button.ts style_hover';
-		}
-		else style_hover.fill = 'white';
+		if (! Button.#applyStyleJson(style_hover, hArg, 'style_hover')) style_hover.fill = 'white';
 
 		const style_clicked = style_hover.clone();
-		if (hArg.style_clicked) try {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			const o = JSON.parse(hArg.style_clicked);
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-			for (const [nm, v] of Object.entries(o)) (<any>style_clicked)[nm] = v;
-		} catch (e) {
-			if (e instanceof SyntaxError) throw new Error(mesErrJSON(hArg, 'style_clicked', e.message));
-			else throw 'fn:Button.ts style_clicked';
-		}
-		else style_clicked.dropShadow = false;
+		if (! Button.#applyStyleJson(style_clicked, hArg, 'style_clicked')) style_clicked.dropShadow = false;
 
 		this.normal = ()=> {txt.style = style};
 		this.#hover = ()=> {

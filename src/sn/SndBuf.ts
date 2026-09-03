@@ -65,7 +65,7 @@ function	delLoopPlay(buf: string) {
 	val.flush();
 }
 
-function	getVol(hArg: TArg, def: number): number {
+export	function	getVol(hArg: TArg, def: number): number {
 	const vol = argChk_Num(hArg, 'volume', def);
 	if (vol < 0) return 0;
 	if (vol > 1) return 1;

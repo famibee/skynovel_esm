@@ -408,7 +408,7 @@ var M = 8, N = 500, P = class t {
 		let u = e.hint ? () => this.#m(e, t) : () => {}, f = () => {
 			n(), this.#d.hidden = !0;
 		}, g = () => (u(), r());
-		if (t.on("pointerover", g), t.on("pointerout", () => {
+		t.on("pointerover", g), t.on("pointerout", () => {
 			this.#t.isFocus(t) ? g() : f();
 		}), t.on("pointerdown", () => {
 			this.#d.hidden = !0;
@@ -416,19 +416,15 @@ var M = 8, N = 500, P = class t {
 			i(), e instanceof h && e.normal();
 		}), t.on("pointerup", l.isMobile ? f : () => {
 			this.#t.isFocus(t) ? g() : f();
-		}), this.#t.add(t, g, f), e.clickse && (e.clicksebuf ??= "SYS", this.cfg.searchPath(e.clickse, d.SOUND), t.on("pointerdown", () => this.hTag.playse({
-			fn: e.clickse,
-			...e.clicksebuf ? { buf: e.clicksebuf } : {},
-			join: !1
-		}))), e.enterse && (e.entersebuf ??= "SYS", this.cfg.searchPath(e.enterse, d.SOUND), t.on("pointerover", () => this.hTag.playse({
-			fn: e.enterse,
-			...e.entersebuf ? { buf: e.entersebuf } : {},
-			join: !1
-		}))), e.leavese && (e.leavesebuf ??= "SYS", this.cfg.searchPath(e.leavese, d.SOUND), t.on("pointerout", () => this.hTag.playse({
-			fn: e.leavese,
-			...e.leavesebuf ? { buf: e.leavesebuf } : {},
-			join: !1
-		}))), e.onenter) {
+		}), this.#t.add(t, g, f);
+		let _ = (e, n, r) => {
+			e && (this.cfg.searchPath(e, d.SOUND), t.on(r, () => this.hTag.playse({
+				fn: e,
+				buf: n ?? "SYS",
+				join: !1
+			})));
+		};
+		if (_(e.clickse, e.clicksebuf, "pointerdown"), _(e.enterse, e.entersebuf, "pointerover"), _(e.leavese, e.leavesebuf, "pointerout"), e.onenter) {
 			let n = o + e.onenter.toLowerCase(), r = {
 				fn: e.fn,
 				label: e.onenter,

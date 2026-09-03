@@ -29,6 +29,13 @@
 - 第 5 適用（2026-09-03）… `Grammar.numLF()` 新設＝`ScriptIterator`(6)＋`Main`(1) の
   `(s.match(/\n/g)??[]).length` を集約、`Variable.#let_replace`/`#let_search` の RegExp 生成
   三項を `new RegExp(reg, flags || undefined)` へ。単体 777 件・分家 1771 件・tsc 通過。
+- 第 4 パス（2026-09-03）… 音声・入力層読了（`SoundMng`/`SndBuf`/`SndCtx`/`EventMng`/
+  `FocusMng`/`GamepadMng`/`Button`）。`SndBuf` の St* 状態機械は 2026-08 の howler 撤去で
+  作り直したばかり＋各行 `// ok` 印で検証済みのため**触らない**。
+- 第 6 適用（2026-09-03）… `SndBuf.getVol` を export して `SoundMng.#getVol`（完全重複）を廃止、
+  `EventMng.button` の clickse/enterse/leavese 3 重複を `resvSe()` へ、`Button` の
+  style/style_hover/style_clicked の JSON パース 3 重複を `#applyStyleJson()` へ。
+  単体 777 件・分家 1771 件・tsc 通過。
 - 第 2 適用（2026-09-03）… **`Pages` / `Layer`（`#scaledWH` 抽出＋`hBldFilter` の CMF 工場化）済**。
   工場化に伴い `test/Layer_filter.test.ts`（20 件）を新設＝ColorMatrixFilter 系 19 個が
   「工場経由」と「pixi 直呼び」で同じ `.matrix` を生むことを保証（分家からのテスト輸入でなく
@@ -175,9 +182,53 @@
   と明記、`record`/`erase` の領域マージ分岐もテスト（`AreasTest.test.ts`）が張り付いており
   整理対象なし。
 
+## 音声・入力層
+
+### SoundMng.ts / SndBuf.ts — 一部（2026-09-03）
+
+- ~~`SoundMng.#getVol` と `SndBuf.getVol`（module 関数）が完全重複~~ … 済。`SndBuf.getVol` を
+  export して `SoundMng` から import、`SoundMng.#getVol` を削除。
+- **触らなかったもの**：`SndBuf` の `St*` 状態機械（`StLoading`〜`StStop`）。2026-08 の howler
+  撤去で作り直したばかりで、ファイル冒頭に修正済み不備の一覧、各メソッドに `// ok` 印。
+  `onend/onfade/stopse/ws/fade/wf` の空実装反復は「状態ごとに意図的に無視」の明示なので
+  基底クラス化しない。`'const.sn.sound.'+ buf +'.'` の prefix 生成が十数箇所あるが helper に
+  すると各所の `vn +'xxx'` 連結がかえって読みにくく、効果小。
+
+### SndCtx.ts / GamepadMng.ts — 触らない
+
+- どちらも howler 撤去・`gamepad.js` 撤去に伴う新設で既に素直。音量クランプ
+  `v < 0 ? 0 : v > 1 ? 1 : v` が `SndCtx.setGlobalVol` / `getVol` / `SndBuf` の pan で 3 種
+  あるが、pan は範囲が `-1..1` で別物、`clamp01` helper 化の効果は薄い。
+
+### EventMng.ts — 一部（2026-09-03）
+
+- ~~`button()` の clickse / enterse / leavese が「fn 存在チェック → ポインターイベントで
+  `[playse]`」の 3 重複~~ … 済。ローカル関数 `resvSe(se, sebuf, ev)` へ。
+  旧実装の `hArg.Xsebuf ??= 'SYS'`（hArg 破壊）は `buf: sebuf ?? 'SYS'` に置換（呼び出し後に
+  誰も読まない値なので破壊をやめた）。
+- 候補（未適用）：`#modKey4MouseEvent` と `SysBase.modKey` は似ているが、後者は
+  `e.key === 'Alt' ? '' : 'alt+'` の自己修飾キー除外があり `MouseEvent` には `e.key` が無い。
+  型を偽ってまで統合する価値なし。
+
+### FocusMng.ts — 候補（未適用）
+
+- `prev()` と `next()` がほぼ同型（`#allOff` → len チェック → idx ラップ → 巡回ループ →
+  `on()` で確定）。`#step(dir: 1 | -1)` へ寄せられるが、負数を含む剰余計算の書き換えは
+  巡回方向のオフバイワンを踏みやすく、本家に FocusMng の unit なし（gamepad/キー操作の
+  フォーカス送りは e2e 頼み）。効果に対しリスク高で見送り。
+
+### Button.ts — 一部（2026-09-03）
+
+- ~~`style` / `style_hover` / `style_clicked` の「`hArg[nm]` を JSON パースして `TextStyle` へ
+  流し込む」処理が 3 重複~~ … 済。`static #applyStyleJson(style, hArg, nm)` へ。
+  戻り値（マージ元オブジェクト or undefined）で「`style` は `#o` にも展開」「属性無しなら
+  既定の見た目調整」の分岐を呼び元に残した。
+- **触らなかったもの**：`#loaded_pic`（3 分割スプライトシートの Rectangle 切り出し）、
+  `#loaded_b_pic` の `setTransform` 引数、`constructor` の `this.x = ...` を代入式の値として
+  `#o` に畳み込むイディオム（pixi プロパティと dump 用 `#o` の同時初期化）。
+
 ## 未分析
 
-- 音声・入力層（`SoundMng` / `SndBuf` / `SndCtx` / `EventMng` / `FocusMng` / `GamepadMng` / `Button`）
 - システム基盤（`SysBase` / `SysWeb` / `SysApp` / `CmnInterface`）＋ `src/*.ts`
 
 ## 見送り済み

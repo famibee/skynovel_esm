@@ -395,34 +395,16 @@ export class EventMng implements IEvtMng {
 		// フォーカス処理対象として登録
 		this.#fcs.add(ctnBtn, hv, nr);
 
-		// 音関係
-		if (hArg.clickse) {	//	clickse	クリック時に効果音
-			hArg.clicksebuf ??= 'SYS';
-			this.cfg.searchPath(hArg.clickse, SEARCH_PATH_ARG_EXT.SOUND);// 存在チェック
-			ctnBtn.on('pointerdown', ()=> this.hTag.playse({
-				fn : hArg.clickse!,
-				...hArg.clicksebuf	?{buf: hArg.clicksebuf}	:{},
-				join: false,
-			}));
-		}
-		if (hArg.enterse) {	//	enterse	ボタン上にマウスカーソルが載った時に効果音
-			hArg.entersebuf ??= 'SYS';
-			this.cfg.searchPath(hArg.enterse, SEARCH_PATH_ARG_EXT.SOUND);// 存在チェック
-			ctnBtn.on('pointerover', ()=> this.hTag.playse({
-				fn: hArg.enterse!,
-				...hArg.entersebuf	?{buf: hArg.entersebuf}	:{},
-				join: false,
-			}));
-		}
-		if (hArg.leavese) {	//	leavese	ボタン上からマウスカーソルが外れた時に効果音
-			hArg.leavesebuf ??= 'SYS';
-			this.cfg.searchPath(hArg.leavese, SEARCH_PATH_ARG_EXT.SOUND);// 存在チェック
-			ctnBtn.on('pointerout', ()=> this.hTag.playse({
-				fn : hArg.leavese!,
-				...hArg.leavesebuf	?{buf: hArg.leavesebuf}	:{},
-				join: false,
-			}));
-		}
+		// 音関係。clickse（クリック時）／enterse（カーソルが載った時）／leavese（外れた時）は
+		//	「効果音 fn の存在チェック → 対応ポインターイベントで [playse]」が共通なのでまとめる
+		const resvSe = (se: string | undefined, sebuf: string | undefined, ev: string)=> {
+			if (! se) return;
+			this.cfg.searchPath(se, SEARCH_PATH_ARG_EXT.SOUND);	// 存在チェック
+			ctnBtn.on(ev, ()=> this.hTag.playse({fn: se, buf: sebuf ?? 'SYS', join: false}));
+		};
+		resvSe(hArg.clickse, hArg.clicksebuf, 'pointerdown');
+		resvSe(hArg.enterse, hArg.entersebuf, 'pointerover');
+		resvSe(hArg.leavese, hArg.leavesebuf, 'pointerout');
 
 		if (hArg.onenter) {
 			// マウス重なり（フォーカス取得）時、ラベルコール。必ず[return]で戻ること

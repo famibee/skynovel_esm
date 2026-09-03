@@ -24,6 +24,7 @@
 - [x] `src/sn/` 実行エンジン（`ScriptIterator` / `Main` / `Variable` / `CallStack` / `Areas`）…
       `Grammar.numLF()` 集約＋`Variable` の RegExp 生成整理のみ適用（第5弾）。`#seekScript`・
       `#if`・`Areas`（先頭カンマ凍結）・`Main.#main` の TokenTop 判定は見送り
-- [ ] `src/sn/` 音声・入力層（`SoundMng` / `SndBuf` / `SndCtx` / `EventMng` / `FocusMng` /
-      `GamepadMng` / `Button`）の分析
+- [x] `src/sn/` 音声・入力層（`SoundMng` / `SndBuf` / `SndCtx` / `EventMng` / `FocusMng` /
+      `GamepadMng` / `Button`）… `getVol` 共有・`resvSe`・`Button.#applyStyleJson` を適用（第6弾）。
+      `SndBuf` の St* 状態機械（howler 撤去で作り直し済）と `FocusMng` の prev/next 統合は見送り
 - [ ] `src/sn/` システム基盤（`SysBase` / `SysWeb` / `SysApp` / `CmnInterface`）＋ `src/*.ts` の分析
