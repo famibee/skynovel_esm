@@ -21,8 +21,14 @@
   `SpritesMng`/`TxtLayer`/`TxtStage`）。`SpritesMng` は pixi loader の GC/キャッシュ落とし穴
   コメントが多く**触らない**と判断。
 - 第 3〜4 適用（2026-09-03）… `LayerMng`（`#eachTargetPage`・`renderGate`）＝`1b1e2da`、
-  `TxtLayer`/`TxtStage`（`#defChStyle`・`#remakeBackColor`・`#pctOrPx`）＝未コミット。
+  `TxtLayer`/`TxtStage`（`#defChStyle`・`#remakeBackColor`・`#pctOrPx`）＝`d93d55d`。
   分家 1771 件＋本家 777 件・tsc 通過。
+- 第 3 パス（2026-09-03）… 実行エンジン読了（`ScriptIterator`/`Main`/`Variable`/`CallStack`/
+  `Areas`）。`Areas` は「先頭カンマ」が互換性凍結、`Main.#main` の TokenTop 判定は既存コメントで
+  可読性担保のため**触らない**。
+- 第 5 適用（2026-09-03）… `Grammar.numLF()` 新設＝`ScriptIterator`(6)＋`Main`(1) の
+  `(s.match(/\n/g)??[]).length` を集約、`Variable.#let_replace`/`#let_search` の RegExp 生成
+  三項を `new RegExp(reg, flags || undefined)` へ。単体 777 件・分家 1771 件・tsc 通過。
 - 第 2 適用（2026-09-03）… **`Pages` / `Layer`（`#scaledWH` 抽出＋`hBldFilter` の CMF 工場化）済**。
   工場化に伴い `test/Layer_filter.test.ts`（20 件）を新設＝ColorMatrixFilter 系 19 個が
   「工場経由」と「pixi 直呼び」で同じ `.matrix` を生むことを保証（分家からのテスト輸入でなく
@@ -68,11 +74,13 @@
 
 ### CmnLib.ts
 
-- **数値属性パースが複数実装**（要横断確認）。`argChk_Num`（`CmnLib.ts:79`。hash 破壊的更新・
-  `0x` 分岐・必須チェック）／`PropParser.#fncSub_ChkNum` ／ `Variable.#castAuto`（未読）が
-  それぞれ「文字列→数値」を持つ。分家は `CmnLib.parseArgNum(v, errHead)` へ非破壊部分を
-  統合した（第2弾）。本家は本家シグネチャ（`argChk_*` は本家 API 再 export 対象）を壊さない
-  範囲で内部の重複だけ寄せられるか要検討。
+- **数値属性パースが複数実装**（横断確認 → 統合は見送り）。`argChk_Num`（`CmnLib.ts:79`。
+  hash 破壊的更新・`0x` 分岐・必須チェック）／`PropParser.#fncSub_ChkNum` ／
+  `Variable.#castAuto`（`Variable.ts:609`。`/^-?[\d.]+$/` にマッチしたら `parseFloat`）が
+  それぞれ「文字列→数値」を持つ。ただし用途が別物 ―― `argChk_Num` は属性の必須／型エラー、
+  `#castAuto` は「`getVal` の戻り値をなるべく数値・真偽値に寄せる」ゆるい推測で、正規表現も
+  `"1.2.3"` や `"."` を通す**互換性込みのゆるさ**。共通化すると `#castAuto` を厳しくする
+  ことになり後方非互換。**触らない**。分家 `CmnLib.parseArgNum` への統合は分家側だけの話。
 - **コメントアウトされた `console.log` / `t-r-a-c-e` の残骸**（`CmnLib.ts:111-118` の
   `argChk_Boolean` 内、`CmnLib.ts:255-257` の `PropParser` `UnaryNegate`/`Unaryplus`）。
   リファレンス目的の変換表コメント（`CmnLib.ts:100-109`）は残す。
@@ -140,9 +148,35 @@
   ラムダ仮引数を `h` にすると `b`/`scale`/`multiply` を見失う）。`(f, hArg)=> ...` へ戻して修復。
   **本家ソースで `argChk_*` の第1引数を `hArg` 以外にしない**こと（分家パリティテストの制約）。
 
+## 実行エンジン
+
+### ScriptIterator.ts / Main.ts — 済（2026-09-03）
+
+- ~~`(s.match(/\n/g) ?? []).length`（トークン内の改行数）が `ScriptIterator` に 6 箇所・
+  `Main` に 1 箇所。走査ループ内なので毎回リテラル生成~~ … 済。`Grammar.numLF(s)` へ集約。
+- **触らなかったもの**：`#seekScript`（無名ラベル before/after・派生ファイルの空行埋めなど
+  吉里吉里互換の塊）、`#if` の深度カウンタ＋行番号補正ループ（`zLn` 補正が load-bearing）、
+  `#dump_stack` と `#aStack` のコールスタック走査類似（一方は console 整形・他方は
+  デバッガ配列で консьюmer が別）、`Main.#main` の TokenTop 判定（`uc === 9/10/38/…` は
+  各行のコメントで可読性担保、`const enum` 化しても得が薄い）。
+
+### Variable.ts — 一部（2026-09-03）
+
+- ~~`#let_replace` / `#let_search` の `! flags ? new RegExp(reg) : new RegExp(reg, flags)`~~
+  … 済。`new RegExp(reg, flags || undefined)` へ（`undefined` はフラグ無し扱いで等価）。
+- 候補（未適用・低優先）：`#let_abs`〜`#let_substr` の 8 メソッドが末尾で
+  `hArg.text = …; this.#let(hArg); return false` を反復。`#letText(hArg, text)` helper に
+  寄せられるが本家に unit なし（`tmp_esm_uc` の e2e 頼み）で効果も小。
+- `#castAuto` の数値パースは CmnLib 横断確認済み → 上記「CmnLib.ts」参照（統合は非互換で見送り）。
+
+### CallStack.ts / Areas.ts — 触らない
+
+- `CallStack` は 41 行の素な値クラス。`Areas` は `toString` 先頭カンマが「互換性に問題あり凍結」
+  と明記、`record`/`erase` の領域マージ分岐もテスト（`AreasTest.test.ts`）が張り付いており
+  整理対象なし。
+
 ## 未分析
 
-- 実行エンジン（`ScriptIterator` / `Main` / `Variable`）
 - 音声・入力層（`SoundMng` / `SndBuf` / `SndCtx` / `EventMng` / `FocusMng` / `GamepadMng` / `Button`）
 - システム基盤（`SysBase` / `SysWeb` / `SysApp` / `CmnInterface`）＋ `src/*.ts`
 

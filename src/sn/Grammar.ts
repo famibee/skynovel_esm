@@ -344,6 +344,11 @@ const REG_CRLF			= /\r\n?/g;
 const REG_LETML_SPLIT	= /^([^\]]+?])(.*)$/s;
 const REG_IS_LETML		= /^\[let_ml\s/;
 const REG_IS_ENDLETML	= /^\[endlet_ml\s*]/;
+
+// トークン内の改行数（行番号加算用）。ScriptIterator / Main のトークン走査ループで
+// 何度も呼ぶので `(s.match(/\n/g) ?? []).length` のリテラル生成を一箇所に集約
+const REG_LF			= /\n/g;
+export function	numLF(s: string): number {return (s.match(REG_LF) ?? []).length}
 export function	tagToken2Name_Args(token: string): [name: string, args: string] {
 	const e = REG_TAG.exec(token.slice(1, -1));
 	const g = e?.groups;

@@ -387,10 +387,7 @@ export class Variable implements T_Variable {
 	#let_replace(hArg: TArg) {
 		if (! hArg.reg) throw 'regは必須です';
 
-		const {flags} = hArg;
-		const reg = ! flags
-			? new RegExp(hArg.reg)
-			: new RegExp(hArg.reg, flags);
+		const reg = new RegExp(hArg.reg, hArg.flags || undefined);
 		hArg.text = (hArg.text ?? '').replace(reg, String(hArg.val));
 		this.#let(hArg);
 
@@ -410,10 +407,7 @@ export class Variable implements T_Variable {
 	#let_search(hArg: TArg) {
 		if (! hArg.reg) throw 'regは必須です';
 
-		const {flags} = hArg;
-		const reg = ! flags
-			? new RegExp(hArg.reg)
-			: new RegExp(hArg.reg, flags);
+		const reg = new RegExp(hArg.reg, hArg.flags || undefined);
 		hArg.text = String((hArg.text ?? '').search(reg));
 		this.#let(hArg);
 

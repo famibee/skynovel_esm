@@ -5,11 +5,11 @@ import { n as s } from "./ConfigBase.js";
 import { t as c } from "./DebugMng.js";
 import { n as l, r as u, t as d } from "./Reading.js";
 import { t as f } from "./RubySpliter.js";
-import { a as p, i as m, n as h, r as g } from "./Main.js";
-import { n as _, r as v, t as y } from "./CallStack.js";
+import { a as p, i as m, n as h, o as g, r as _ } from "./Main.js";
+import { n as v, r as y, t as b } from "./CallStack.js";
 import "./SndBuf.js";
 //#region src/sn/ScriptIterator.ts
-var b = class b {
+var x = class x {
 	cfg;
 	hTag;
 	main;
@@ -45,7 +45,7 @@ var b = class b {
 	}
 	#i = [];
 	#a;
-	#o = new p();
+	#o = new g();
 	constructor(e, t, n, r, i, o, s) {
 		this.cfg = e, this.hTag = t, this.main = n, this.val = r, this.prpPrs = i, this.sndMng = o, this.sys = s, t.let_ml = (e) => this.#k(e), t.endlet_ml = () => !1, t.dump_stack = () => this.#A(), t.dump_script = (e) => this.#M(e), t.else = t.elsif = t.endif = () => this.#z(), t.if = (e) => this.#B(e), t.call = (e) => this.#V(e), t.jump = (e) => this.#U(e), t.pop_stack = (e) => this.#W(e), t.return = (e) => this.#G(e), t.bracket2macro = (e) => this.#fe(e), t.char2macro = (e) => this.#pe(e), t.endmacro = (e) => this.#G(e), t.macro = (e) => this.#he(e), t.load = (e) => this.#ve(e), t.reload_script = (e) => this.#ye(e), t.record_place = () => this.#xe(), t.save = (e) => this.#Se(e), e.oCfg.debug.token && (this.#Z = (e) => {
 			e.trim() !== "" && console.log(`🌱 トークン ${this.#t}:${String(this.#r)} (i:${String(this.#n)} cs:${String(this.#i.length)}) %c【${e}】`, "background-color:#350;");
@@ -59,8 +59,8 @@ var b = class b {
 			}, this.#c.auth = (t) => {
 				let n = t.hBreakpoint.hFn2hLineBP;
 				for (let [e, t] of Object.entries(n)) this.#s(e, t);
-				b.#_ = {};
-				for (let e of t.hBreakpoint.aFunc) b.#_[e.name] = 1;
+				x.#_ = {};
+				for (let e of t.hBreakpoint.aFunc) x.#_[e.name] = 1;
 				if (t.stopOnEntry) {
 					let t;
 					for (; t = this.nextToken();) {
@@ -77,7 +77,7 @@ var b = class b {
 	}
 	noticeWait = () => {};
 	#s(e, t) {
-		b.#g[this.#u(e)] = t;
+		x.#g[this.#u(e)] = t;
 	}
 	destroy() {
 		this.isBreak = this.#xe = () => !1;
@@ -85,7 +85,7 @@ var b = class b {
 	#c = {
 		auth: () => {},
 		disconnect: () => {
-			b.#g = {}, b.#_ = {}, this.isBreak = () => !1, this.#c.continue({}), this.#v = 0;
+			x.#g = {}, x.#_ = {}, this.isBreak = () => !1, this.#c.continue({}), this.#v = 0;
 		},
 		restart: () => {
 			this.isBreak = () => !1;
@@ -95,8 +95,8 @@ var b = class b {
 			this.#v === 0 && (this.#v = 1, this.main.setLoop(!1, `変数 ${String(e.dataId)}【${String(e.old_v)}】→【${String(e.new_v)}】データブレーク`), this.sys.callHook("stopOnDataBreakpoint", {}), this.sys.send2Dbg("stopOnDataBreakpoint", {}));
 		},
 		set_func_break: (e) => {
-			b.#_ = {};
-			for (let t of e.a) b.#_[t.name] = 1;
+			x.#_ = {};
+			for (let t of e.a) x.#_[t.name] = 1;
 			this.sys.send2Dbg(e.ri, {});
 		},
 		stack: (e) => this.sys.send2Dbg(e.ri, { a: this.#x() }),
@@ -159,9 +159,9 @@ var b = class b {
 				this.#b(), this.#v = 0;
 				break;
 			default:
-				if (g(e) in b.#_) return this.#v = 2, this.main.setLoop(!1, `関数 ${e} ブレーク`), this.sys.callHook("stopOnBreakpoint", {}), this.sys.send2Dbg("stopOnBreakpoint", {}), !0;
+				if (m(e) in x.#_) return this.#v = 2, this.main.setLoop(!1, `関数 ${e} ブレーク`), this.sys.callHook("stopOnBreakpoint", {}), this.sys.send2Dbg("stopOnBreakpoint", {}), !0;
 				{
-					let e = b.#g[this.#u(this.#t)];
+					let e = x.#g[this.#u(this.#t)];
 					if (!e) break;
 					let t = e[this.#r];
 					if (!t) break;
@@ -178,11 +178,11 @@ var b = class b {
 		return !1;
 	}
 	#b() {
-		let e = b.#g[n(this.#t)]?.[this.#r];
+		let e = x.#g[n(this.#t)]?.[this.#r];
 		e?.hitCondition && --e.hitCondition;
 	}
 	#x() {
-		let e = +(this.#v === 3), t = this.#e.aToken[this.#n - 1 + e], n = this.#u(this.#t), r = g(t), i = r ? `[${r}]` : t, a = String(this.val.getVal("mp:const.sn.macro") ?? "{}");
+		let e = +(this.#v === 3), t = this.#e.aToken[this.#n - 1 + e], n = this.#u(this.#t), r = m(t), i = r ? `[${r}]` : t, a = String(this.val.getVal("mp:const.sn.macro") ?? "{}");
 		if (this.#n === 0) return [{
 			fn: n,
 			ln: 1,
@@ -203,7 +203,7 @@ var b = class b {
 			if (!n) continue;
 			let r = n.aToken[t.idx - 1];
 			if (!r) continue;
-			let i = this.#j(n, t.idx), a = g(r);
+			let i = this.#j(n, t.idx), a = m(r);
 			s.push({
 				fn: this.#u(t.fn),
 				ln: i.ln,
@@ -226,7 +226,7 @@ var b = class b {
 			let t = this.prpPrs.parse(e), n = String(t);
 			if (n === "null" || n === "undefined" || !t) return !1;
 		}
-		let o = {}, s = this.#i.at(-1)?.csArg ?? _(), c = this.#i.length;
+		let o = {}, s = this.#i.at(-1)?.csArg ?? v(), c = this.#i.length;
 		if (this.#o.isKomeParam) {
 			if (c === 0) throw "属性「*」はマクロのみ有効です";
 			o = { ...s };
@@ -313,7 +313,7 @@ var b = class b {
 		if (!t) throw "nameは必須です";
 		let n = "", r = this.#e.len;
 		for (; this.#n < r && (n = this.#e.aToken[this.#n], n === ""); ++this.#n);
-		return e.text = n, e.cast = "str", this.hTag.let(e), this.#n += 2, this.#r += (n.match(/\n/g) ?? []).length, !1;
+		return e.text = n, e.cast = "str", this.hTag.let(e), this.#n += 2, this.#r += _(n), !1;
 	}
 	#A() {
 		if (this.#n === 0) return console.group(`🥟 [dump_stack] スクリプト現在地 fn:${this.#t} line:1 col:0`), console.groupEnd(), !1;
@@ -375,7 +375,7 @@ var b = class b {
 			return;
 		}
 		let e = "";
-		for (let t = this.#n - 1; t >= 0 && (e = String(this.#e.aToken[t]) + e, !((e.match(/\n/g) ?? []).length >= this.#L)); --t);
+		for (let t = this.#n - 1; t >= 0 && (e = String(this.#e.aToken[t]) + e, !(_(e) >= this.#L)); --t);
 		let t = e.split("\n").slice(-this.#L), n = t.length;
 		console.group(`🥟 Error line (from ${String(n)} rows before) fn:${this.#t}`);
 		let r = String(this.#r).length, i = this.#j(this.#e, this.#n);
@@ -408,7 +408,7 @@ var b = class b {
 				continue;
 			}
 			if (i !== 91) continue;
-			let [o, s] = m(t);
+			let [o, s] = p(t);
 			if (!(o in this.hTag)) throw `未定義のタグ[${o}]です`;
 			switch (this.#o.parse(s), o) {
 				case "if":
@@ -449,7 +449,7 @@ var b = class b {
 			":hMp": this.val.cloneMp(),
 			":lenIfStk": this.#R.length
 		};
-		this.#e.aLNum[this.#n] = this.#r, this.#K || (n[":resvToken"] = "", this.#q()), this.#i.push(new y(this.#t, this.#n, n)), this.#R.unshift(-1);
+		this.#e.aLNum[this.#n] = this.#r, this.#K || (n[":resvToken"] = "", this.#q()), this.#i.push(new b(this.#t, this.#n, n)), this.#R.unshift(-1);
 	}
 	#U(e) {
 		return i(e, "count", !0) || this.#de(), this.#R[0] = -1, this.#Y(e.fn, e.label);
@@ -457,7 +457,7 @@ var b = class b {
 	#W(e) {
 		if (i(e, "clear", !1)) this.#i = [];
 		else if (!this.#i.pop()) throw "スタックが空です";
-		return this.#q(), this.#R = [-1], this.val.setMp(v()), !1;
+		return this.#q(), this.#R = [-1], this.val.setMp(y()), !1;
 	}
 	#G(e) {
 		let t = this.#i.pop();
@@ -548,7 +548,7 @@ var b = class b {
 				for (let t = 0; t < i; ++t) {
 					e.aLNum[t] ||= o;
 					let n = e.aToken[t];
-					n.startsWith("\n") ? o += n.length : o += (n.match(/\n/g) ?? []).length;
+					n.startsWith("\n") ? o += n.length : o += _(n);
 				}
 				e.aLNum[i] = o;
 			}
@@ -585,7 +585,7 @@ var b = class b {
 			e.aLNum[t] ||= o;
 			let n = e.aToken[t];
 			if (d) {
-				this.#a.testTagEndLetml(n) ? d = !1 : o += (n.match(/\n/g) ?? []).length;
+				this.#a.testTagEndLetml(n) ? d = !1 : o += _(n);
 				continue;
 			}
 			let r = n.charCodeAt(0);
@@ -600,7 +600,7 @@ var b = class b {
 				};
 				continue;
 			}
-			r === 91 && (o += (n.match(/\n/g) ?? []).length, this.#a.testTagLetml(n) && (d = !0));
+			r === 91 && (o += _(n), this.#a.testTagLetml(n) && (d = !0));
 		}
 		throw d ? "[let_ml]の終端・[endlet_ml]がありません" : (c.myTrace(`[jump系] ラベル【${s}】がありません`, "ET"), "Dummy");
 	}
@@ -627,7 +627,7 @@ var b = class b {
 		for (let t = e.len - 1; t >= 0; --t) {
 			let r = e.aToken[t];
 			if (!this.#oe.test(r)) continue;
-			let [i, a] = m(r);
+			let [i, a] = p(r);
 			this.#o.parse(a);
 			let o = this.#o.hPrm.fn;
 			if (!o) continue;
@@ -682,7 +682,7 @@ var b = class b {
 		if (!t) throw "nameは必須です";
 		if (t in this.hTag) throw `[${t}]はタグかすでに定義済みのマクロです`;
 		if (this.#me.test(t)) throw `[${t}]はマクロ名として異常です`;
-		let n = this.#r, r = new y(this.#t, this.#n);
+		let n = this.#r, r = new b(this.#t, this.#n);
 		for (this.#ge += "|" + t, this.#_e = RegExp(`\\[(${this.#ge})\\b`), this.hTag[t] = (t) => (this.#H(t), this.val.setMp({
 			...t,
 			"const.sn.macro": JSON.stringify({ name: e.name }),
@@ -692,7 +692,7 @@ var b = class b {
 			let e = this.#e.aToken[this.#n];
 			if (e.search(this.#te) > -1) return ++this.#n, !1;
 			let t = e.charCodeAt(0);
-			t === 10 ? this.#r += e.length : t === 91 && (this.#r += (e.match(/\n/g) ?? []).length);
+			t === 10 ? this.#r += e.length : t === 91 && (this.#r += _(e));
 		}
 		throw `マクロ[${t}]定義の終端・[endmacro]がありません`;
 	}
@@ -705,7 +705,7 @@ var b = class b {
 		return this.loadFromMark(e, n, 2);
 	}
 	loadFromMark(e, t, n = 0) {
-		this.hTag.clear_event({}), this.val.mark2save(t), this.val.setMp(v()), this.#O.recPagebreak();
+		this.hTag.clear_event({}), this.val.mark2save(t), this.val.setMp(y()), this.#O.recPagebreak();
 		let r = [];
 		n !== 1 && (r = this.sndMng.playLoopFromSaveObj(n === 2)), i(e, "do_rec", !0) && (this.#be = {
 			hSave: this.val.cloneSave(),
@@ -805,6 +805,6 @@ var b = class b {
 	}
 };
 //#endregion
-export { b as ScriptIterator };
+export { x as ScriptIterator };
 
 //# sourceMappingURL=ScriptIterator.js.map

@@ -14,7 +14,7 @@ import type {T_Main, T_Variable, T_Mark, T_PropParser, T_HEvt2Fnc} from './CmnIn
 import {creSAVEDATA} from './CmnInterface';
 import type {Config} from './Config';
 import {CallStack, creCSArg, creMP, type ICallStackArg} from './CallStack';
-import {Grammar, tagToken2Name_Args, tagToken2Name} from './Grammar';
+import {Grammar, tagToken2Name_Args, tagToken2Name, numLF} from './Grammar';
 import {AnalyzeTagArg} from './AnalyzeTagArg';
 import {RubySpliter} from './RubySpliter';
 import type {EventMng} from './EventMng';
@@ -729,7 +729,7 @@ export class ScriptIterator {
 		hArg.cast = 'str';
 		this.hTag.let(hArg);
 		this.#idxToken += 2;
-		this.#lineNum += (ml.match(/\n/g) ?? []).length;
+		this.#lineNum += numLF(ml);
 
 		return false;
 	}
@@ -847,7 +847,7 @@ export class ScriptIterator {
 		let s = '';
 		for (let i=this.#idxToken -1; i>=0; --i) {
 			s = String(this.#script.aToken[i]) + s;
-			if ((s.match(/\n/g) ?? []).length >= this.#dumpErrLine) break;
+			if (numLF(s) >= this.#dumpErrLine) break;
 		}
 		const a = s.split('\n').slice(-this.#dumpErrLine);
 		const len = a.length;
@@ -1152,7 +1152,7 @@ export class ScriptIterator {
 
 					const tkn = st.aToken[j]!;
 					if (tkn.startsWith('\n')) ln += tkn.length;	// \n 改行
-					else ln += (tkn.match(/\n/g) ?? []).length;
+					else ln += numLF(tkn);
 				}
 				st.aLNum[idx] = ln;
 			}
@@ -1201,7 +1201,7 @@ export class ScriptIterator {
 			const tkn = st.aToken[i]!;
 			if (in_let_ml) {
 				if (this.#grm.testTagEndLetml(tkn)) in_let_ml = false;
-				else ln += (tkn.match(/\n/g) ?? []).length;
+				else ln += numLF(tkn);
 				continue;
 			}
 
@@ -1213,7 +1213,7 @@ export class ScriptIterator {
 			}
 			if (uc !== 91) continue;	// [ タグ開始
 
-			ln += (tkn.match(/\n/g) ?? []).length;
+			ln += numLF(tkn);
 			if (this.#grm.testTagLetml(tkn)) in_let_ml = true;
 		}
 		if (in_let_ml) throw '[let_ml]の終端・[endlet_ml]がありません';
@@ -1403,7 +1403,7 @@ export class ScriptIterator {
 
 			const uc = token.charCodeAt(0);	// TokenTopUnicode
 			if (uc === 10) this.#lineNum += token.length;	// \n 改行
-			else if (uc === 91) this.#lineNum += (token.match(/\n/g) ?? []).length;	// [ タグ開始
+			else if (uc === 91) this.#lineNum += numLF(token);	// [ タグ開始
 		}
 		throw `マクロ[${name}]定義の終端・[endmacro]がありません`;
 	}

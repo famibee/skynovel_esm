@@ -230,8 +230,8 @@ var u = class e {
 	}
 	#y(e) {
 		if (!e.reg) throw "regは必須です";
-		let { flags: t } = e, n = t ? new RegExp(e.reg, t) : new RegExp(e.reg);
-		return e.text = (e.text ?? "").replace(n, String(e.val)), this.#m(e), !1;
+		let t = new RegExp(e.reg, e.flags || void 0);
+		return e.text = (e.text ?? "").replace(t, String(e.val)), this.#m(e), !1;
 	}
 	#b(e) {
 		let n = t(e, "text", 0);
@@ -239,8 +239,8 @@ var u = class e {
 	}
 	#x(e) {
 		if (!e.reg) throw "regは必須です";
-		let { flags: t } = e, n = t ? new RegExp(e.reg, t) : new RegExp(e.reg);
-		return e.text = String((e.text ?? "").search(n)), this.#m(e), !1;
+		let t = new RegExp(e.reg, e.flags || void 0);
+		return e.text = String((e.text ?? "").search(t)), this.#m(e), !1;
 	}
 	#S(e) {
 		let r = t(e, "pos", 0);

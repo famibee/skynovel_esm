@@ -64,19 +64,22 @@ var f = class {
 	get isKomeParam() {
 		return this.#n;
 	}
-}, p = /(?<name>[^\s;\]]+)/, m = /\r\n?/g, h = /^([^\]]+?])(.*)$/s, g = /^\[let_ml\s/, _ = /^\[endlet_ml\s*]/;
-function v(e) {
+}, p = /(?<name>[^\s;\]]+)/, m = /\r\n?/g, h = /^([^\]]+?])(.*)$/s, g = /^\[let_ml\s/, _ = /^\[endlet_ml\s*]/, v = /\n/g;
+function y(e) {
+	return (e.match(v) ?? []).length;
+}
+function b(e) {
 	let t = p.exec(e.slice(1, -1))?.groups;
 	if (!t) throw `タグ記述【${e}】異常です(タグ解析)`;
 	let n = t.name;
 	return [n, e.slice(1 + n.length, -1)];
 }
-function y(e) {
+function x(e) {
 	let t = p.exec(e.slice(1))?.groups;
 	if (!t) throw `タグ記述【${e}】異常です(タグ解析)`;
 	return t.name;
 }
-function b(e) {
+function S(e) {
 	let t = e.replaceAll("==", "＝").replaceAll("!=", "≠").split("="), n = t.length;
 	if (n < 2 || n > 3) throw "「&計算」書式では「=」指定が一つか二つ必要です";
 	let [r, i, a] = t;
@@ -87,7 +90,7 @@ function b(e) {
 		...n === 3 ? { cast: a.trim() } : {}
 	};
 }
-var x = class {
+var C = class {
 	cfg;
 	constructor(e) {
 		this.cfg = e, this.setEscape("");
@@ -149,7 +152,7 @@ var x = class {
 		for (let t = e.len - 1; t >= 0; --t) {
 			let n = e.aToken[t];
 			if (!this.#a.test(n)) continue;
-			let [r, a] = v(n);
+			let [r, a] = b(n);
 			this.#c.parse(a);
 			let o = this.#c.hPrm.fn;
 			if (!o) continue;
@@ -192,7 +195,7 @@ var x = class {
 	testNoTxt(e) {
 		return this.#u.test(e);
 	}
-}, S = /* @__PURE__ */ n({ Main: () => w }), C = "skynovel", w = class n {
+}, w = /* @__PURE__ */ n({ Main: () => E }), T = "skynovel", E = class n {
 	sys;
 	static async generate(e) {
 		r();
@@ -218,20 +221,20 @@ var x = class {
 			height: n.oCfg.window.height,
 			backgroundColor: a(String(n.oCfg.init.bg_color)),
 			resolution: globalThis.devicePixelRatio
-		}, i = document.getElementById(C);
+		}, i = document.getElementById(T);
 		if (i) {
 			let e = i.cloneNode(!0);
-			e.id = C, r.view = i;
+			e.id = T, r.view = i;
 			let t = i.parentNode;
 			this.#i.defer(() => t.appendChild(e));
 		} else {
 			let e = document.createElement("canvas");
-			e.id = C, r.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
+			e.id = T, r.view = e, document.body.appendChild(e), this.#i.defer(() => document.body.removeChild(e));
 		}
 		let o = new t(r);
 		this.#i.defer(() => {
 			e(), this.sys.destroy(), o.destroy(!1);
-		}), this.cvs = o.view, this.cvs.id = C + "_act", i || document.body.appendChild(this.cvs);
+		}), this.cvs = o.view, this.cvs.id = T + "_act", i || document.body.appendChild(this.cvs);
 		let c = getComputedStyle(this.cvs);
 		c.position === "static" && (this.cvs.style.position = "relative"), c.zIndex === "auto" && (this.cvs.style.zIndex = "0");
 		let d = document.createElement("canvas").getContext("2d");
@@ -301,9 +304,9 @@ var x = class {
 					}
 					if (n === 91) {
 						if (e = "タグ開始", this.#t.isBreak(t)) return;
-						let [n, r] = v(t);
+						let [n, r] = b(t);
 						e = `[${n}]例外`;
-						let i = (t.match(/\n/g) ?? []).length;
+						let i = y(t);
 						if (i > 0 && this.#t.addLineNum(i), await this.#t.タグ解析(n, r)) {
 							this.stop();
 							return;
@@ -313,7 +316,7 @@ var x = class {
 					if (n === 38) {
 						if (!t.endsWith("&")) {
 							if (e = "変数計算", this.#t.isBreak(t)) return;
-							let n = b(t.slice(1));
+							let n = S(t.slice(1));
 							n.name = this.#l(n.name), n.text = String(this.#u(n.text)), this.#e.let(n);
 							continue;
 						}
@@ -332,6 +335,6 @@ var x = class {
 	#u;
 };
 //#endregion
-export { w as Main, f as a, v as i, x as n, y as r, S as t };
+export { E as Main, b as a, x as i, C as n, f as o, y as r, w as t };
 
 //# sourceMappingURL=Main.js.map

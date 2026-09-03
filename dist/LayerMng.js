@@ -10,7 +10,7 @@ import { Button as T } from "./Button.js";
 import { t as E } from "./RubySpliter.js";
 import { TxtLayer as D, t as O } from "./TxtLayer.js";
 import { GrpLayer as k, t as A } from "./GrpLayer.js";
-import { o as j } from "./Main.js";
+import { s as j } from "./Main.js";
 //#region src/sn/Pages.ts
 var M = class e {
 	cls;

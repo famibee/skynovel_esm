@@ -11,7 +11,7 @@ import type {T_Main, Scope, T_VAL_BSNU, T_VAL_DATA} from './CmnInterface';
 import type {SysBase} from './SysBase';
 import {DebugMng} from './DebugMng';
 import {Config} from './Config';
-import {splitAmpersand, tagToken2Name_Args} from './Grammar';
+import {splitAmpersand, tagToken2Name_Args, numLF} from './Grammar';
 import type {ScriptIterator} from './ScriptIterator';
 import type {LayerMng} from './LayerMng';
 import type {EventMng} from './EventMng';
@@ -242,7 +242,7 @@ export class Main implements T_Main {
 					const [tag_name, args] = tagToken2Name_Args(token);
 					errHd = `[${tag_name}]例外`;
 
-					const cl = (token.match(/\n/g) ?? []).length;
+					const cl = numLF(token);
 					if (cl > 0) this.#scrItr.addLineNum(cl);
 					if (await this.#scrItr.タグ解析(
 						<keyof T_HTag>tag_name, args
