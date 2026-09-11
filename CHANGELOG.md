@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.3](https://github.com/famibee/skynovel_esm/compare/v2.2.2...v2.2.3) (2026-09-11)
+
+
+### Bug Fixes
+
+* **grammar:** splitAmpersand()が===を含む式を誤分解するバグを修正 ([b511940](https://github.com/famibee/skynovel_esm/commit/b511940fc8172ee8b6437b9c0eb88366b543e6c4))
+
 ## [2.2.2](https://github.com/famibee/skynovel_esm/compare/v2.2.1...v2.2.2) (2026-09-03)
 
 
