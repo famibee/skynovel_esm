@@ -293,8 +293,7 @@ function j(t, n, r, i, a, o = !0) {
 			}
 		}
 		function i(e, i, a) {
-			if (o()) return Promise.resolve(e);
-			return Promise.resolve(e).then(n).then((t) => {
+			return o() ? Promise.resolve(e) : Promise.resolve(e).then(n).then((t) => {
 				let n = Promise.resolve(e);
 				for (let e of t) n = n.then((t) => r(t, e, i, a));
 				return n;
