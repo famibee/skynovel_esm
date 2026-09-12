@@ -75,6 +75,7 @@ export class SysApp extends SysBase {
 		downloads	: '',
 		userData	: '',
 		getVersion	: '',
+		homepage	: '',
 		env			: {},
 		platform	: '',
 		arch		: '',
@@ -310,7 +311,6 @@ export class SysApp extends SysBase {
 		.then(async url=> {
 			if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] url=${url}`, 'D');
 
-			const o = await this.#fetch2web(url +'_index.json');
 			const mbo: MessageBoxOptions = {
 				title	: 'アプリ更新',
 				icon	: this.#hInfo.getAppPath +`/${
@@ -321,12 +321,37 @@ export class SysApp extends SysBase {
 				cancelId	: 1,
 				message	: `アプリ【${this.cfg.oCfg.book.title}】に更新があります。\nダウンロードしますか？`,
 			};
+
+			let o: T_FETCH;
+			try {
+				o = await this.#fetch2web(url +'_index.json');
+			}
+			catch (e) {
+				// パッチサーバー自体に繋がらない（DNS切れ等で配布元が更新機能を止めている場合が多い）。
+				//	従来はここでthrowし外側のcatchがmyTrace(…, 'ET')で画面デバッグ欄に出すだけで、
+				//	通常配布のプレイヤーには生の例外しか見えず不親切だった（分家bluesnovelと同じ
+				//	改修。src/docs/TODO.md「過去アプリのケア」参照）
+				await this.#updChkConnFailed(mbo, e);
+				return;
+			}
 			if (o.ok) await this.#idxjs_found(o, url, mbo);
 			else await this.#idxjs_not_found(url, mbo);
 		})
 		.catch((e: unknown)=> DebugMng.myTrace(String(e), 'ET'));
 
 		return false;
+	}
+	async #updChkConnFailed(mbo: MessageBoxOptions, e: unknown) {
+		DebugMng.myTrace(String(e), 'E');
+		await this.#em.invoke('showMessageBox', {
+			...mbo,
+			buttons	: ['OK'],
+			defaultId	: 0,
+			cancelId	: 0,
+			message	: `アプリ【${this.cfg.oCfg.book.title}】の更新確認に失敗しました。\n更新サーバーに接続できません。`,
+			detail	: '配布元がアップデート機能の提供を終了している可能性があります。'
+				+ (this.#hInfo.homepage ? `\n配布元にお問い合わせください: ${this.#hInfo.homepage}` : ''),
+		});
 	}
 	// userData直下に upd_url.json（暗号化可）があれば、シナリオ指定のurlより優先して使う
 	// （配布済みアプリのパッチサーバーURLが恒久的に死んだ場合の唯一の変更手段。TODO.md参照）
