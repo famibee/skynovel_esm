@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0](https://github.com/famibee/skynovel_esm/compare/v2.2.3...v2.3.0) (2026-09-12)
+
+
+### Features
+
+* **app:** update_checkのURLをuserData直下のupd_url.jsonで上書き可能にする ([fadfc1a](https://github.com/famibee/skynovel_esm/commit/fadfc1a45db25dd5e6e5ac17193a481deb51dae9))
+
+
+### Bug Fixes
+
+* **app:** update_checkがサーバーに接続できない場合のエラーメッセージを改善 ([f95b7ac](https://github.com/famibee/skynovel_esm/commit/f95b7accbde2ff77f81b47e86509653de4f18c29))
+* **app:** マルチモニタ構成変更後にウインドウが画面外へ出て非表示になる不具合を修正 ([e64221c](https://github.com/famibee/skynovel_esm/commit/e64221c5cf21d01ace86126b05a5732be5554ddc))
+
 ## [2.2.3](https://github.com/famibee/skynovel_esm/compare/v2.2.2...v2.2.3) (2026-09-11)
 
 
