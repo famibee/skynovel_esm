@@ -5,9 +5,14 @@
 > （release-please が `CHANGELOG.md` を自動生成しているため、bluesnovel 方式の手動転記は行わない）。
 > 冒頭から少しずつ進める。
 
-（空）
-
----
+- **`update_check` URL上書き機構の生成コマンド（`sn_extension`側）** … 配布済みアプリ側の
+  読込・優先処理は `SysApp.ts` の `update_check`（`#resolveUpdUrl()`）に実装済み
+  （`userData` 直下の `upd_url.json` を確認し、あれば `dec('json', tx)` で復号して優先使用、
+  無ければ従来通りスクリプト内蔵の既定URLにフォールバック）。
+  残作業：上書きファイルの生成をこのリポジトリとは別の `sn_extension` にCLI/コマンドとして
+  追加すること（プロジェクトごとの `pass.json` の鍵で `Encryptor.enc()` した結果を
+  `upd_url.json` として出力）。配布は作者のブログ等、既存の告知手段を想定（署名検証等の
+  改竄対策は不要と判断——任意ファイル設置が可能な状況は既により重大な侵害のため）。
 
 ## 保留中（着手条件待ち・作業なし）
 

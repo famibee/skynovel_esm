@@ -20,7 +20,7 @@ var u = class {
 	once(e, t) {
 		return window.electron.ipcRenderer.once(e, t);
 	}
-}, f = "doc_crypto", p = class extends o {
+}, f = "doc_crypto", p = "upd_url.json", m = class extends o {
 	constructor(...[e = {}, t = {
 		cur: "prj/",
 		crypto: !1,
@@ -138,8 +138,9 @@ var u = class {
 		let { url: t } = e;
 		if (!t) throw "[update_check] urlは必須です";
 		if (!t.endsWith("/")) throw "[update_check] urlの末尾は/にして下さい";
-		return r.debugLog && s.myTrace(`[update_check] url=${t}`, "D"), this.#r(t + "_index.json").then(async (e) => {
-			let n = {
+		return this.#o(t).then(async (e) => {
+			r.debugLog && s.myTrace(`[update_check] url=${e}`, "D");
+			let t = await this.#r(e + "_index.json"), n = {
 				title: "アプリ更新",
 				icon: this.#e.getAppPath + `/${this.arg.crypto ? f : "doc"}/icon.png`,
 				buttons: ["OK", "Cancel"],
@@ -147,25 +148,36 @@ var u = class {
 				cancelId: 1,
 				message: `アプリ【${this.cfg.oCfg.book.title}】に更新があります。\nダウンロードしますか？`
 			};
-			e.ok ? await this.#o(e, t, n) : await this.#s(t, n);
+			t.ok ? await this.#s(t, e, n) : await this.#c(e, n);
 		}).catch((e) => s.myTrace(String(e), "ET")), !1;
 	};
-	async #o(e, t, n) {
+	async #o(e) {
+		let t = this.$path_userdata + p;
+		try {
+			if (!await this.#t.invoke("existsSync", t)) return e;
+			let n = await this.readFile(t, "utf8"), { url: i } = JSON.parse(await this.dec("json", n));
+			if (!i || !i.endsWith("/")) throw `${p} の url が不正です（末尾/が必要）`;
+			return r.debugLog && s.myTrace(`[update_check] ${p} でURLを上書きしました url=${i}`, "D"), i;
+		} catch (t) {
+			return s.myTrace(`[update_check] ${p} 読込失敗、既定URLにフォールバック ${String(t)}`, "ET"), e;
+		}
+	}
+	async #s(e, t, n) {
 		r.debugLog && s.myTrace("[update_check] _index.jsonを取得しました", "D");
 		let i = JSON.parse(e.txt);
-		if (!await this.#c(i.version, n)) return;
+		if (!await this.#l(i.version, n)) return;
 		let a = this.#e.platform + "_" + this.#e.arch, o = i[a];
 		if (o) {
 			let { cn: e, path: r } = o;
-			await this.#l(t, a + "-" + e, r), await this.#u(n);
+			await this.#u(t, a + "-" + e, r), await this.#d(n);
 			return;
 		}
-		let c = "", l = RegExp("^" + this.#e.platform + "_"), u = Object.entries(i).flatMap(([e, { path: n, cn: r }]) => l.test(e) ? (c += "\n- " + n, this.#l(t, e + "-" + r, n)) : []);
+		let c = "", l = RegExp("^" + this.#e.platform + "_"), u = Object.entries(i).flatMap(([e, { path: n, cn: r }]) => l.test(e) ? (c += "\n- " + n, this.#u(t, e + "-" + r, n)) : []);
 		n.message = `CPU = ${this.#e.arch}\nに対応するファイルが見つかりません。同じOSのファイルをすべてダウンロードしますか？`, n.detail = `${String(u.length)} 個ファイルがあります` + c;
 		let { response: d } = await this.#t.invoke("showMessageBox", n);
-		d > 0 || (await Promise.allSettled(u), await this.#u(n));
+		d > 0 || (await Promise.allSettled(u), await this.#d(n));
 	}
-	async #s(e, t) {
+	async #c(e, t) {
 		let n = await this.#r(e + `latest${r.isMac ? "-mac" : ""}.yml`);
 		if (!n.ok) {
 			if (r.debugLog) throw "[update_check] .ymlが見つかりません";
@@ -174,7 +186,7 @@ var u = class {
 		r.debugLog && s.myTrace("[update_check] .ymlを取得しました", "D");
 		let i = n.txt, a = /version: (.+)/.exec(i)?.[1];
 		if (!a) throw "[update_check] .yml に version が見つかりません";
-		if (!await this.#c(a, t)) return;
+		if (!await this.#l(a, t)) return;
 		let o = /path: (.+)/.exec(i);
 		if (!o) throw "[update_check] path が見つかりません";
 		let [, c] = o;
@@ -189,16 +201,16 @@ var u = class {
 			"",
 			""
 		];
-		await this.#l(e, d + "-" + this.#e.arch + f, c), await this.#u(t);
+		await this.#u(e, d + "-" + this.#e.arch + f, c), await this.#d(t);
 	}
-	async #c(e, t) {
+	async #l(e, t) {
 		let n = this.#e.getVersion;
 		if (r.debugLog && s.myTrace(`[update_check] 現在ver=${n} 新規ver=${e}`, "D"), e === n) return r.debugLog && s.myTrace("[update_check] バージョン更新なし", "I"), !1;
 		t.detail = `現在 NOW ver ${n}\n新規 NEW ver ${e}`;
 		let { response: i } = await this.#t.invoke("showMessageBox", t);
 		return i > 0 ? !1 : (r.debugLog && s.myTrace("[update_check] アプリダウンロード開始", "D"), !0);
 	}
-	async #l(e, t, n) {
+	async #u(e, t, n) {
 		r.debugLog && s.myTrace(`[update_check] アプリファイルDL試行... url=${e + t}`, "D");
 		let i = await this.#i(e + t);
 		if (!i.ok) {
@@ -208,7 +220,7 @@ var u = class {
 		let a = this.#e.downloads + "/" + n;
 		r.debugLog && s.myTrace(`[update_check] pathDL=${a}`, "D"), await this.writeFile(a, new DataView(i.ab));
 	}
-	async #u(e) {
+	async #d(e) {
 		r.debugLog && s.myTrace("アプリファイルを保存しました", "D"), e.buttons.pop(), e.message = `アプリ【${this.cfg.oCfg.book.title}】の更新パッケージを\nダウンロードしました`, await this.#t.invoke("showMessageBox", e);
 	}
 	window = (e) => {
@@ -224,6 +236,6 @@ var u = class {
 	}
 };
 //#endregion
-export { r as CmnLib, c as Layer, l as PlgLayer, p as SysApp, n as argChk_Boolean, t as argChk_Num };
+export { r as CmnLib, c as Layer, l as PlgLayer, m as SysApp, n as argChk_Boolean, t as argChk_Num };
 
 //# sourceMappingURL=app.js.map

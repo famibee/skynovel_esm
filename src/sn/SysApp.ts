@@ -22,6 +22,9 @@ import type {readFile} from 'fs-extra';
 
 
 const	FLD_CRYPT_DOC	= 'doc_crypto';
+const	FN_UPD_URL_OVERRIDE	= 'upd_url.json';	// userData直下、update_checkのURLをアプリ再配布無しで差し替えるための上書きファイル
+
+type T_upd_url_override = {url: string};
 
 type T_upd__index_json_pkg = {
 	[pkg_name: string]: {
@@ -299,13 +302,15 @@ export class SysApp extends SysBase {
 
 	// 更新チェック
 	protected override readonly	update_check: TTag = hArg=> {
-		const {url} = hArg;
-		if (! url) throw '[update_check] urlは必須です';
-		if (! url.endsWith('/')) throw '[update_check] urlの末尾は/にして下さい';
-		if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] url=${url}`, 'D');
+		const {url: urlArg} = hArg;
+		if (! urlArg) throw '[update_check] urlは必須です';
+		if (! urlArg.endsWith('/')) throw '[update_check] urlの末尾は/にして下さい';
 
-		void this.#fetch2web(url +'_index.json')
-		.then(async o=> {
+		void this.#resolveUpdUrl(urlArg)
+		.then(async url=> {
+			if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] url=${url}`, 'D');
+
+			const o = await this.#fetch2web(url +'_index.json');
 			const mbo: MessageBoxOptions = {
 				title	: 'アプリ更新',
 				icon	: this.#hInfo.getAppPath +`/${
@@ -322,6 +327,25 @@ export class SysApp extends SysBase {
 		.catch((e: unknown)=> DebugMng.myTrace(String(e), 'ET'));
 
 		return false;
+	}
+	// userData直下に upd_url.json（暗号化可）があれば、シナリオ指定のurlより優先して使う
+	// （配布済みアプリのパッチサーバーURLが恒久的に死んだ場合の唯一の変更手段。TODO.md参照）
+	async #resolveUpdUrl(defaultUrl: string): Promise<string> {
+		const path = this.$path_userdata + FN_UPD_URL_OVERRIDE;
+		try {
+			if (! await this.#em.invoke('existsSync', path)) return defaultUrl;
+
+			const tx = await this.readFile(path, <Parameters<typeof readFile>[1]><unknown>'utf8');
+			const {url} = <T_upd_url_override>JSON.parse(await this.dec('json', tx));
+			if (! url || ! url.endsWith('/')) throw `${FN_UPD_URL_OVERRIDE} の url が不正です（末尾/が必要）`;
+
+			if (CmnLib.debugLog) DebugMng.myTrace(`[update_check] ${FN_UPD_URL_OVERRIDE} でURLを上書きしました url=${url}`, 'D');
+			return url;
+		}
+		catch (e) {
+			DebugMng.myTrace(`[update_check] ${FN_UPD_URL_OVERRIDE} 読込失敗、既定URLにフォールバック ${String(e)}`, 'ET');
+			return defaultUrl;
+		}
 	}
 	async #idxjs_found(o: T_FETCH, url: string, mbo: MessageBoxOptions) {
 		if (CmnLib.debugLog) DebugMng.myTrace('[update_check] _index.jsonを取得しました', 'D');
