@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0](https://github.com/famibee/skynovel_esm/compare/v2.3.0...v2.4.0) (2026-09-15)
+
+
+### Features
+
+* **app:** update_check失敗時に出版者サイトを開くか確認するダイアログを追加 ([8988f77](https://github.com/famibee/skynovel_esm/commit/8988f77c13904bcc32ccc97f66ce64782ce681ab))
+
+
+### Bug Fixes
+
+* **ci:** release PRの自動マージが検索インデックス遅延で無効化される不具合を修正 ([c5b65f9](https://github.com/famibee/skynovel_esm/commit/c5b65f925104d8e21e2b859f630146b69a4722ff))
+
 ## [2.3.0](https://github.com/famibee/skynovel_esm/compare/v2.2.3...v2.3.0) (2026-09-12)
 
 
