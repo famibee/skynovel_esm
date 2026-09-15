@@ -167,6 +167,17 @@ var u = class {
 			message: `アプリ【${this.cfg.oCfg.book.title}】の更新確認に失敗しました。\n更新サーバーに接続できません。`,
 			detail: "配布元がアップデート機能の提供を終了している可能性があります。" + (this.#e.homepage ? `\n配布元にお問い合わせください: ${this.#e.homepage}` : "")
 		});
+		let { pub_url: n } = this.cfg.oCfg.book;
+		if (!n) return;
+		let { response: r } = await this.#t.invoke("showMessageBox", {
+			...e,
+			buttons: ["OK", "Cancel"],
+			defaultId: 0,
+			cancelId: 1,
+			message: "出版者サイトを開きますか？",
+			detail: n
+		});
+		r > 0 || this.#t.invoke("navigate_to", n);
 	}
 	async #s(e) {
 		let t = this.$path_userdata + p;

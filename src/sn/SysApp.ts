@@ -352,6 +352,23 @@ export class SysApp extends SysBase {
 			detail	: '配布元がアップデート機能の提供を終了している可能性があります。'
 				+ (this.#hInfo.homepage ? `\n配布元にお問い合わせください: ${this.#hInfo.homepage}` : ''),
 		});
+
+		// 開いてよいか確認した上でnavigate_to（shell.openExternal）に
+		// 渡す。pub_url未設定ならこの案内自体を出さない
+		const {pub_url} = this.cfg.oCfg.book;
+		if (! pub_url) return;
+
+		const {response} = await this.#em.invoke('showMessageBox', {
+			...mbo,
+			buttons	: ['OK', 'Cancel'],
+			defaultId	: 0,
+			cancelId	: 1,
+			message	: '出版者サイトを開きますか？',
+			detail	: pub_url,
+		});
+		if (response > 0) return;
+
+		void this.#em.invoke('navigate_to', pub_url);
 	}
 	// userData直下に upd_url.json（暗号化可）があれば、シナリオ指定のurlより優先して使う
 	// （配布済みアプリのパッチサーバーURLが恒久的に死んだ場合の唯一の変更手段。TODO.md参照）
